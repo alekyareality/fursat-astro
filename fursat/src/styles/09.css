@@ -6,3 +6,9 @@ button,.pill,.fx-ghost,.fx-reserve,.fx-add,.fx-chip,.af-chip{-webkit-user-select
 @media(pointer:coarse){input,textarea,select,.askdock .af-input,#ask-fursat.af .af-input{font-size:16px!important}}
 /* headline shine: a few passes after the reveal, not forever (the sparkle keeps twinkling) */
 .go .fx-h1 .l2 u{animation-iteration-count:3}
+
+/* ---------- BJNEXUS craft floor: focus ring, selection, balanced headings, reduced motion ---------- */
+:focus-visible{outline:2px solid var(--rust,#B5532A);outline-offset:3px}
+::selection{background:rgba(181,83,42,.24);color:#1A1608}
+h1,h2,h3,.fx-h1,.fx-h2,.af-title,.wz-t{text-wrap:balance}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-iteration-count:1!important;scroll-behavior:auto!important}}
