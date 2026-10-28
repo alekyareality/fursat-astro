@@ -1,0 +1,8 @@
+/* ---------- mobile-native + performance pass (from Emil's mobile-native / animation-performance skills) ---------- */
+html{-webkit-tap-highlight-color:transparent}
+a,button,[role=button],label,select,summary{touch-action:manipulation}
+button,.pill,.fx-ghost,.fx-reserve,.fx-add,.fx-chip,.af-chip{-webkit-user-select:none;user-select:none}
+/* iOS zooms the page when an input is under 16px and never zooms back */
+@media(pointer:coarse){input,textarea,select,.askdock .af-input,#ask-fursat.af .af-input{font-size:16px!important}}
+/* headline shine: a few passes after the reveal, not forever (the sparkle keeps twinkling) */
+.go .fx-h1 .l2 u{animation-iteration-count:3}

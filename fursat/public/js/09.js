@@ -1,0 +1,1 @@
+(function(){var v=navigator.vibrate?function(n){try{navigator.vibrate(n)}catch(e){}}:function(){};document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".af-chip,#snd,#vz"))v(12)},true)})();

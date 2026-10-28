@@ -1,0 +1,48 @@
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "@id": "https://fursatind.in/#restaurant",
+  "name": "Fursat Kitchen | Bar",
+  "alternateName": "Fursat",
+  "description": "Fursat Kitchen | Bar at Capital Park, Madhapur, Hyderabad: a café, kitchen, bar and banquet space. Ask Fursat for dishes by mood. New website coming soon.",
+  "url": "https://fursatind.in/",
+  "image": "https://fursatind.in/og-image.jpg",
+  "logo": "https://fursatind.in/og-image.jpg",
+  "telephone": [
+   "+919059670033",
+   "+919848360033"
+  ],
+  "servesCuisine": [
+   "Indian",
+   "Hyderabadi",
+   "Andhra",
+   "Continental",
+   "Asian"
+  ],
+  "hasMap": "https://www.google.com/maps/search/?api=1&query=Fursat+Kitchen+Bar+Capital+Park+Madhapur+Hyderabad",
+  "address": {
+   "@type": "PostalAddress",
+   "streetAddress": "Capital Park, Madhapur",
+   "addressLocality": "Hyderabad",
+   "addressRegion": "Telangana",
+   "addressCountry": "IN"
+  },
+  "sameAs": [
+   "https://www.instagram.com/fursatind.in",
+   "https://www.instagram.com/fursat_bitesandbuffet",
+   "https://www.instagram.com/fursatbanquets"
+  ]
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://fursatind.in/#website",
+  "url": "https://fursatind.in/",
+  "name": "Fursat Kitchen | Bar",
+  "inLanguage": "en-IN",
+  "publisher": {
+   "@id": "https://fursatind.in/#restaurant"
+  }
+ }
+]
