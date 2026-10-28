@@ -2,3 +2,4 @@ node_modules
 dist
 .astro
 *.zip
+fursat/hero-t*.png
