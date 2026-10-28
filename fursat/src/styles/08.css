@@ -1,15 +1,12 @@
 /* ---------- hero dish name label (follows the hero video clock; names only) ---------- */
-.fx-dn{position:absolute;left:14px;bottom:14px;z-index:6;display:flex;flex-direction:column;gap:6px;padding:10px 16px 0;border-radius:16px;overflow:hidden;background:rgba(251,244,228,.88);border:1px solid rgba(255,255,255,.55);box-shadow:0 12px 30px -14px rgba(40,28,10,.4);pointer-events:none;max-width:calc(100% - 28px)}
+.fx-dn{position:absolute;left:14px;bottom:14px;z-index:6;display:flex;flex-direction:column;gap:6px;padding:10px 16px 0;border-radius:8px;overflow:hidden;background:#FBF4E4;pointer-events:none;max-width:calc(100% - 28px)}
 .fx-dn[hidden]{display:none}
-.fx-dn-k{display:flex;align-items:center;gap:7px;font:600 9px/1 var(--fx-disp,system-ui);letter-spacing:.18em;text-transform:uppercase;color:rgba(26,22,8,.55)}
-.fx-dn-k u{width:6px;height:6px;border-radius:50%;background:var(--rust,#B5532A)}
 .fx-dn-n{display:block;font:600 17px/1.15 var(--fx-disp,system-ui);letter-spacing:-.012em;color:var(--fx-ink,#1A1608)}
 .fx-dn-n span{display:inline-block}
 .fx-dn-bar{display:block;height:3px;margin:4px -16px 0;background:rgba(26,22,8,.08)}
 .fx-dn-bar i{display:block;height:100%;background:var(--rust,#B5532A);transform-origin:0 50%;transform:scaleX(0)}
 @media(min-width:900px){
- .fx-dn{left:auto;right:30px;bottom:30px;padding:13px 20px 0;border-radius:20px;gap:7px}
- .fx-dn-k{font-size:10px}
+ .fx-dn{left:auto;right:30px;bottom:30px;padding:13px 20px 0;border-radius:10px;gap:7px}
  .fx-dn-n{font-size:25px}
  .fx-dn-bar{margin:5px -20px 0}
 }

@@ -21,13 +21,13 @@
     words(n);box.dataset.dish=n;box.hidden=false;
     if(!nm.firstChild.animate)return;
     if(calm){nm.animate([{opacity:0},{opacity:1}],{duration:160,easing:"ease"});return}
-    /* Emil: strong ease-out, blur masks the swap, small travel, stagger so it reads as one gesture */
-    [].forEach.call(nm.children,function(s,k){s.animate([{opacity:0,transform:"translateY(.55em)",filter:"blur(4px)"},{opacity:1,transform:"none",filter:"blur(0)"}],{duration:280,delay:k*40,easing:EASE,fill:"backwards"})});
+    /* Emil: strong ease-out, small travel, stagger so it reads as one gesture */
+    [].forEach.call(nm.children,function(s,k){s.animate([{opacity:0,transform:"translateY(.55em)"},{opacity:1,transform:"none"}],{duration:280,delay:k*40,easing:EASE,fill:"backwards"})});
     if(first)box.animate([{opacity:0,transform:"translateY(10px) scale(.97)"},{opacity:1,transform:"none"}],{duration:240,easing:EASE})
   }
   function leave(done){
     if(calm||!nm.firstChild||!nm.firstChild.animate){done();return}
-    var last;[].forEach.call(nm.children,function(s){last=s.animate([{opacity:1,transform:"none",filter:"blur(0)"},{opacity:0,transform:"translateY(-.3em)",filter:"blur(2px)"}],{duration:100,easing:EASE,fill:"forwards"})});
+    var last;[].forEach.call(nm.children,function(s){last=s.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-.3em)"}],{duration:100,easing:EASE,fill:"forwards"})});
     last.finished.then(done,done)
   }
   function show(i){
