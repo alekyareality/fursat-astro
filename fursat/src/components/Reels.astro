@@ -1,0 +1,65 @@
+---
+/* Instagram reels stage. Natural 9:16, centre card plays (muted), neighbours peek, tap the centre card for sound.
+   Edit `reels` to change names, order or files. Names only, no prices. data-dish is ready for a later "click -> menu page" route. */
+const reels = [
+  { type: 'video', name: 'Fursat Happened', src: '/assets/reels/reel-fursat-happened-v1.mp4', poster: '/assets/reels/reel-fursat-happened-v1.webp', alt: 'Reel: our baby elephant at the table as one drink turns into a full spread' },
+  { type: 'video', name: 'Dynamite Prawns', src: '/assets/reels/reel-dynamite-prawns-v1.mp4', poster: '/assets/reels/reel-dynamite-prawns-v1.webp', alt: 'Reel: a guest holding a glass of Dynamite Prawns' },
+  { type: 'image', name: 'Ustad Nalli Gosht Biryani', poster: '/assets/reels/post-nalli-biryani-v1.webp', alt: 'Ustad Nalli Gosht Biryani in a brass handi with two nalli bones. Caption: Life lo em miss ayina parledhu… Plate lo Nalli piece miss avvakudadhu bhai!' },
+  { type: 'video', name: 'Veg Combo', src: '/assets/reels/reel-veg-combo-v1.mp4', poster: '/assets/reels/reel-veg-combo-v1.webp', alt: 'Reel: flames in the kitchen, then the Veg Combo thali served' },
+  { type: 'video', name: 'Inside Fursat', src: '/assets/reels/reel-inside-fursat-v1.mp4', poster: '/assets/reels/reel-inside-fursat-v1.webp', alt: 'Reel: inside Fursat, a dessert being plated and the Capital Park entrance' },
+];
+const heading = ['I', 'said', 'one', 'drink.', 'Fursat', 'happened.'];
+---
+<section class="rl" id="reels" aria-labelledby="rl-h">
+  <div class="rl-head">
+    <h2 class="rl-h" id="rl-h" aria-label="I said one drink. Fursat happened.">
+      <span aria-hidden="true">{heading.map((w, i) => <><span class="rl-w" style={`--i:${i}`}>{w}</span>{' '}</>)}</span>
+    </h2>
+    <a class="rl-ig" href="https://www.instagram.com/fursatind.in" target="_blank" rel="noopener">Watch more on Instagram<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+
+  <div class="rl-ctl">
+    <div class="rl-btns">
+      <button class="rl-b" type="button" id="rl-prev" aria-label="Previous reel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+      <button class="rl-b" type="button" id="rl-next" aria-label="Next reel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+
+  <div class="rl-stage">
+    <ul class="rl-track" id="rl-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Fursat Instagram reels. Use the arrow keys to move between them.">
+      {reels.map((r, i) => (
+        <li class="rl-card" data-i={i} data-type={r.type} data-s="muted" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${reels.length}: ${r.name}`} style={`--i:${i}`}>
+          <div class="rl-frame">
+            {r.type === 'video'
+              ? <video class="rl-v" muted loop playsinline webkit-playsinline preload="none" disablepictureinpicture disableremoteplayback poster={r.poster} data-src={r.src} width="540" height="960" aria-label={r.alt}></video>
+              : <img class="rl-v" src={r.poster} alt={r.alt} width="720" height="720" loading="lazy" decoding="async" />}
+            {r.type === 'video' && (
+              <button class="rl-snd" type="button" aria-label="Turn sound on">
+                <svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>
+                <svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.500a9 9 0 0 1 0 13"/></svg>
+                <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.500v13l11-6.500z"/></svg>
+              </button>
+            )}
+          </div>
+          <p class="rl-cap">
+            <span class="rl-n" data-dish={r.name} translate="no">{r.name}</span>
+            {r.type === 'video' && <span class="rl-bar" aria-hidden="true"><i></i></span>}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="rl-cta"><button class="rl-reserve" type="button" data-open="book">Reserve a table</button></div>
+
+  <noscript>
+    <style is:inline>.rl-stage,.rl-ctl,.rl-cta{display:none}</style>
+    <ul class="rl-plain">
+      {reels.map((r) => (
+        <li><a href="https://www.instagram.com/fursatind.in" target="_blank" rel="noopener"><img src={r.poster} alt="" width="180" height={r.type === 'video' ? 320 : 180} loading="lazy" decoding="async" /><span translate="no">{r.name}</span></a></li>
+      ))}
+    </ul>
+  </noscript>
+
+  <p class="rl-sr" id="rl-live" aria-live="polite"></p>
+</section>

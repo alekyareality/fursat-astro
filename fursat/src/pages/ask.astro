@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base>
+<a class="skip" href="#ask-main">Skip to main content</a>
+<div class="as">
+  <header class="as-top"><a class="as-back" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Back to Fursat</span></a></header>
+  <main id="ask-main" tabindex="-1" class="as-main">
+    <div class="as-host" id="as-host" data-pose="idle"><div class="as-stage"><img class="as-p as-idle" src="/assets/ask-mascot-md.webp" alt="Fursat&rsquo;s elephant host in a gold crown and sunglasses" width="400" height="400" fetchpriority="high" decoding="async"><img class="as-p as-chew" src="/assets/ask-mascot-chew-md.webp" alt="" width="400" height="400" decoding="async"><img class="as-p as-cheer" src="/assets/ask-mascot-cheer-md.webp" alt="" width="400" height="400" decoding="async"></div><p class="as-say" id="as-say">Hungry? Tell me your mood.</p></div>
+    <h1 class="as-h">What are you in the mood for?</h1>
+    <p class="as-sub">Tell Fursat how you feel and we will find the dish.</p>
+    <div class="as-tabs" role="group" aria-label="Choose a menu"><button type="button" data-tab="food" aria-pressed="true">Food</button><button type="button" data-tab="drinks" aria-pressed="false">Drinks</button><button type="button" data-tab="sree" aria-pressed="false">Sreemukhi&rsquo;s Special</button></div>
+    <section class="af" id="ask-fursat" data-theme="light" aria-label="Ask Fursat food host"><div class="af-card"><div class="af-top"><img class="af-logo" id="af-logo" alt="Fursat Cafe, Kitchen, Bar and Banquet"><span class="af-by">Caf&eacute; &middot; Kitchen &middot; Bar &middot; Banquet</span></div><div class="af-orbwrap"><div class="af-orb" aria-hidden="true"><div class="af-orb-in" id="af-dishes"></div></div></div><h3 class="af-title">Ask <em>Fursat</em></h3><p class="af-sub">Discover dishes by mood</p><div class="af-form" id="af-form" role="search"><label class="af-sr" for="af-q">Tell Fursat what you feel like eating</label><input class="af-input" id="af-q" type="text" placeholder="Birthday with friends…" enterkeyhint="search" maxlength="120"><button class="af-mic" id="af-mic" type="button" aria-label="Speak your craving" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button class="af-send" id="af-send" type="button" aria-label="Ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div><div class="af-marquee" id="af-marquee"><div class="af-track" id="af-track"></div></div><button type="button" class="af-now" id="af-now" hidden></button><p class="af-hint">Try &ldquo;I&rsquo;m hungry&rdquo;, &ldquo;it&rsquo;s raining&rdquo; or &ldquo;something spicy under 400&rdquo;</p><div class="af-contact"><a class="wa" href="https://wa.me/919059670033?text=Hi%20Fursat!%20I%20would%20like%20to%20know%20more." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.47 15.04L2 22l5.1-1.34A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.2 15.02l-.3-.18-3 .79.8-2.92-.2-.31A8.1 8.1 0 0 1 12.04 3.8zM8.6 7.4c-.2 0-.5.07-.75.35-.26.28-1 .97-1 2.37s1.03 2.75 1.17 2.94c.14.19 2 3.17 4.9 4.32 2.4.95 2.9.76 3.42.71.52-.05 1.68-.69 1.92-1.35.24-.66.24-1.23.17-1.35-.07-.12-.26-.19-.54-.33-.28-.14-1.68-.83-1.94-.92-.26-.1-.45-.14-.64.14-.19.28-.73.92-.9 1.1-.16.19-.33.21-.61.07-.28-.14-1.2-.44-2.28-1.4-.84-.75-1.41-1.68-1.58-1.96-.16-.28-.02-.43.12-.57.13-.13.28-.33.43-.5.14-.16.19-.28.28-.47.1-.19.05-.35-.02-.5-.07-.14-.62-1.55-.86-2.1-.22-.5-.45-.5-.64-.51z"/></svg><span>WhatsApp us</span></a><a class="ph" href="tel:+919059670033"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>90596 70033</span></a></div></div></section>
+    <ul class="as-chips" data-for="food" aria-label="Try one of these">
+      <li><button type="button" data-mood="I&rsquo;m hungry">I&rsquo;m hungry</button></li>
+      <li><button type="button" data-mood="It&rsquo;s raining">It&rsquo;s raining</button></li>
+      <li><button type="button" data-mood="Birthday with friends">Birthday with friends</button></li>
+      <li><button type="button" data-mood="Something spicy under 400">Something spicy under 400</button></li>
+    </ul>
+    <ul class="as-chips" data-for="drinks" aria-label="Try one of these" hidden>
+      <li><button type="button" data-mood="Something refreshing">Something refreshing</button></li>
+      <li><button type="button" data-mood="Coffee">Coffee</button></li>
+      <li><button type="button" data-mood="Milk shake under 250">Milk shake under 250</button></li>
+      <li><button type="button" data-mood="Tea">Tea</button></li>
+    </ul>
+    <section class="as-results" id="as-results" aria-live="polite" hidden></section>
+  </main>
+</div>
+<style is:global>
+.as{min-height:100svh;background:var(--rl-bg);color:var(--rl-ink);}
+.as-top{padding:max(16px,env(safe-area-inset-top)) var(--pad,clamp(20px,5vw,84px)) 0}
+.as-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--rl-ink);text-decoration:none;font:600 1rem/1 var(--sans,"Manrope",system-ui,sans-serif)}
+.as-back svg{width:20px;height:20px;transition:transform .15s var(--rl-ease)}
+.as-main{max-width:720px;margin:0 auto;padding:clamp(24px,6vw,64px) var(--pad,clamp(20px,5vw,84px)) clamp(48px,8vw,96px);text-align:center;outline:0}
+.as-h{margin:0 0 12px;font:500 clamp(2.25rem,7vw,4.5rem)/1.05 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:-.02em;text-wrap:balance}
+.as-sub{margin:0 auto 32px;max-width:48ch;font:400 1.125rem/1.5 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.as .af{margin:0 auto}
+.as .af-title,.as .af-sub,.as .af-hint{display:none}
+.as .af-contact svg{width:20px;height:20px}
+.as .af-orbwrap:has(#af-dishes:empty),.as .af-marquee:has(#af-track:empty){display:none}
+.as .af-logo:not([src]){display:none}
+.as-host{display:grid;justify-items:center;gap:12px;margin:0 0 16px}
+.as-stage{position:relative;isolation:isolate;width:clamp(148px,44vw,200px);aspect-ratio:1;display:grid}
+.as-stage::after{content:"";position:absolute;left:18%;right:18%;bottom:-2px;height:10px;border-radius:50%;background:color-mix(in srgb,var(--rl-deep) 70%,transparent);transform:scaleY(.6);z-index:-1}
+.as-p{grid-area:1/1;width:100%;height:100%;object-fit:contain;opacity:0;transform-origin:50% 100%;transition:opacity .15s var(--rl-ease)}
+.as-host[data-pose="idle"] .as-idle,.as-host[data-pose="chew"] .as-chew,.as-host[data-pose="cheer"] .as-cheer{opacity:1}
+.as-host[data-pose="idle"] .as-idle{animation:as-breathe 3.6s ease-in-out infinite}
+.as-host[data-pose="chew"] .as-chew{animation:as-chew .3s var(--rl-ease) 3}
+.as-host[data-pose="cheer"] .as-cheer{animation:as-hop .6s var(--rl-ease) 2}
+@keyframes as-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.015,1.025)}}
+@keyframes as-chew{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(3px) rotate(-2.5deg) scale(1.03,.97)}}
+@keyframes as-hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px) scale(.97,1.04)}70%{transform:translateY(0) scale(1.04,.96)}}
+.as-star{position:absolute;left:50%;top:42%;width:12px;height:12px;margin:-6px 0 0 -6px;background:var(--rl-gold);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);pointer-events:none;animation:as-star .9s var(--rl-ease) forwards}
+@keyframes as-star{from{opacity:1;transform:translate(0,0) scale(.5)}to{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1.1)}}
+.as-say{position:relative;margin:0;padding:8px 16px;border-radius:999px;border:1px solid var(--rl-gold);font:500 1rem/1.3 var(--serif,"Playfair Display",Georgia,serif);color:var(--rl-ink);transition:opacity .15s var(--rl-ease)}
+.as-say.is-swap{opacity:0}
+.as-tabs{display:inline-flex;gap:4px;margin:0 0 24px;padding:4px;border:1px solid var(--rl-line);border-radius:999px}
+.as-tabs button{transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease),color .15s var(--rl-ease);min-height:44px;padding:0 14px;white-space:nowrap;border:0;border-radius:999px;background:transparent;color:var(--rl-ink);font:600 .875rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation}
+.as-tabs button[aria-pressed="true"]{background:var(--rl-gold);color:var(--rl-deep)}
+.as-tabs button:focus-visible{outline:2px solid var(--rl-gold);outline-offset:2px}
+.as-chips[hidden]{display:none}
+.as-chips{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.as-chips button{min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--rl-line);background:transparent;color:var(--rl-ink);font:600 .9375rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease),color .15s var(--rl-ease)}
+.as-chips button:active,.as-tabs button:active{transform:scale(.97)}
+.as-chips button:focus-visible,.as-back:focus-visible{outline:2px solid var(--rl-gold);outline-offset:3px}
+.as-results{margin-top:48px;text-align:left}
+.as-rh{margin:0 0 16px;font:500 clamp(1.5rem,4vw,2.25rem)/1.15 var(--serif,"Playfair Display",Georgia,serif);outline:0;text-wrap:balance}
+.as-list{list-style:none;margin:0;padding:0}
+.as-row{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--rl-track);animation:as-in .5s var(--rl-ease) backwards;animation-delay:calc(min(var(--k),7)*45ms)}
+@keyframes as-in{from{opacity:0;transform:translateY(8px)}}
+.as-n{margin:0 0 4px;font:500 1.25rem/1.25 var(--serif,"Playfair Display",Georgia,serif)}
+.as-m{margin:0;font:500 .875rem/1.4 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-gold)}
+.as-d{margin:8px 0 0;max-width:60ch;font:400 .9375rem/1.5 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.as-p{margin:0;font:700 1.125rem/1.25 var(--sans,"Manrope",system-ui,sans-serif);white-space:nowrap}
+.as-fine{margin:16px 0;font:400 .875rem/1.4 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.as-wa{display:inline-flex;align-items:center;min-height:52px;padding:0 32px;border-radius:999px;background:var(--rl-gold);color:var(--rl-deep);font:700 1rem/1 var(--sans,"Manrope",system-ui,sans-serif);text-decoration:none;touch-action:manipulation;transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease)}
+.as-wa:active{transform:scale(.97)}.as-wa:focus-visible{outline:2px solid var(--rl-gold);outline-offset:3px}
+@media(hover:hover){.as-wa:hover{background:var(--rl-ink)}}
+@media(prefers-reduced-motion:reduce){.as-row,.as-p,.as-star{animation:none!important}.as-star{display:none}}
+@media(hover:hover){.as-chips button:hover{background:var(--rl-gold);color:var(--rl-deep);border-color:var(--rl-gold)}.as-back:hover svg{transform:translateX(-4px)}}
+@media(prefers-reduced-motion:reduce){.as-back svg{transition:none}}
+</style>
+<script is:inline src="/js/ask.js"></script>
+</Base>

@@ -1,0 +1,32 @@
+/* Tailwind v4 without preflight so the existing site CSS is untouched. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) important; /* beats the site's unlayered CSS */
+
+@theme {
+  --color-fk-cream: #F2EEE4;
+  --color-fk-paper: #FFFDF6;
+  --color-fk-ink: #2A2514;
+  --color-fk-olive: #404517;
+  --color-fk-green: #17200F;
+  --color-fk-gold: #E0A63C;
+  --color-fk-deep: #1A1608;
+  --color-fk-terra: #C2431A;
+  --color-fk-line: #D9D2BD;
+  --font-fk-serif: "Playfair Display", Georgia, serif;
+  --font-fk-sans: "Manrope", system-ui, sans-serif;
+}
+
+/* Scoped mini-reset in the base layer so utilities win. */
+@layer base {
+[data-menu], [data-menu] *, [data-menu] *::before, [data-menu] *::after { box-sizing: border-box; }
+[data-menu] button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+[data-menu] ul { list-style: none; margin: 0; padding: 0; }
+[data-menu] h1, [data-menu] h2, [data-menu] h3, [data-menu] p { margin: 0; }
+[data-menu] :focus-visible { outline: 2px solid var(--color-fk-olive); outline-offset: 2px; }
+[data-menu] .on-dark:focus-visible { outline-color: var(--color-fk-gold); }
+[data-menu] .no-scrollbar { scrollbar-width: none; }
+[data-menu] .no-scrollbar::-webkit-scrollbar { display: none; }
+/* Scroll lock must not shift layout (Motion would animate the jump). */
+html:has([data-menu]) { scrollbar-gutter: stable; }
+}

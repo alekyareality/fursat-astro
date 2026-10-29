@@ -1,0 +1,1275 @@
+{
+ "groups": [
+  {
+   "id": "bar",
+   "label": "Bar parties",
+   "blurb": "Food and drinks, served for a set time."
+  },
+  {
+   "id": "elite",
+   "label": "Elite buffet",
+   "blurb": "Starters, mains, rice and dessert with mocktails."
+  },
+  {
+   "id": "banquet",
+   "label": "Banquet",
+   "blurb": "Welcome drink, soup, salad and a full spread."
+  }
+ ],
+ "packages": [
+  {
+   "id": "platinum",
+   "group": "bar",
+   "name": "Platinum",
+   "price": 4999,
+   "tone": "red",
+   "sections": [
+    {
+     "h": "Starters",
+     "lines": [
+      "Veg, any 3",
+      "Non-veg, any 3"
+     ]
+    },
+    {
+     "h": "Main course",
+     "lines": [
+      "Veg, any 2",
+      "Non-veg, any 2"
+     ]
+    },
+    {
+     "h": "Rice",
+     "lines": [
+      "Biryani / pulao / fried, any 1"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "lines": [
+      "Indian breads",
+      "Mirchi ka Salan",
+      "Raita",
+      "Steamed rice",
+      "Plain curd"
+     ]
+    },
+    {
+     "h": "Dessert",
+     "lines": [
+      "Any 2"
+     ]
+    }
+   ],
+   "drinks": {
+    "serve": "2.5 hrs",
+    "lines": [
+     "3 cocktails",
+     "3 mocktails",
+     "Aerated drinks"
+    ],
+    "brands": [
+     "Heineken / Budweiser / Kingfisher Ultra",
+     "JW Black Label",
+     "Chivas Regal 12 years",
+     "Toki Suntory",
+     "Absolut Vodka",
+     "Bacardi White Rum",
+     "Bombay Sapphire"
+    ]
+   }
+  },
+  {
+   "id": "gold",
+   "group": "bar",
+   "name": "Gold",
+   "price": 3499,
+   "tone": "green",
+   "sections": [
+    {
+     "h": "Starters",
+     "lines": [
+      "Veg, any 3",
+      "Non-veg, any 3"
+     ]
+    },
+    {
+     "h": "Main course",
+     "lines": [
+      "Veg, any 2",
+      "Non-veg, any 2"
+     ]
+    },
+    {
+     "h": "Rice",
+     "lines": [
+      "Biryani / pulao / fried, any 1"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "lines": [
+      "Indian breads",
+      "Mirchi ka Salan",
+      "Raita",
+      "Steamed rice",
+      "Plain curd"
+     ]
+    },
+    {
+     "h": "Dessert",
+     "lines": [
+      "Any 2"
+     ]
+    }
+   ],
+   "drinks": {
+    "serve": "2.5 hrs",
+    "lines": [
+     "3 cocktails",
+     "3 mocktails",
+     "Aerated drinks"
+    ],
+    "brands": [
+     "Budweiser / Kingfisher Ultra",
+     "Ballantine’s Finest",
+     "Red Label",
+     "Jameson",
+     "Absolut Vodka",
+     "Bacardi White Rum",
+     "Dark Rum"
+    ]
+   }
+  },
+  {
+   "id": "silver",
+   "group": "bar",
+   "name": "Silver",
+   "price": 2799,
+   "tone": "red",
+   "sections": [
+    {
+     "h": "Starters",
+     "lines": [
+      "Veg, any 3",
+      "Non-veg, any 3"
+     ]
+    },
+    {
+     "h": "Main course",
+     "lines": [
+      "Veg, any 2",
+      "Non-veg, any 1"
+     ]
+    },
+    {
+     "h": "Rice",
+     "lines": [
+      "Biryani / pulao / fried, any 1"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "lines": [
+      "Indian breads",
+      "Mirchi ka Salan",
+      "Raita",
+      "Steamed rice",
+      "Plain curd"
+     ]
+    },
+    {
+     "h": "Dessert",
+     "lines": [
+      "Any 2"
+     ]
+    }
+   ],
+   "drinks": {
+    "serve": "2.5 hrs",
+    "lines": [
+     "3 Barman Special cocktails",
+     "3 Barman Special mocktails",
+     "Aerated drinks"
+    ],
+    "brands": [
+     "Kingfisher Premium Draught",
+     "100 Pipers",
+     "Black Dog",
+     "Smirnoff Vodka",
+     "Greater Than Gin",
+     "Bacardi White Rum",
+     "Dark Rum"
+    ]
+   }
+  },
+  {
+   "id": "beerbash",
+   "group": "bar",
+   "name": "Beer Bash",
+   "price": 2499,
+   "tone": "green",
+   "sections": [],
+   "drinks": {
+    "serve": "2.0 hrs",
+    "lines": [
+     "Draught beer"
+    ],
+    "brands": [
+     "Kingfisher Premium Draught"
+    ]
+   }
+  },
+  {
+   "id": "elite-vn",
+   "group": "elite",
+   "name": "Elite Veg & Non-veg",
+   "price": 1499,
+   "tone": "red",
+   "sections": [
+    {
+     "h": "Starters",
+     "lines": [
+      "Veg, any 3",
+      "Non-veg, any 3"
+     ]
+    },
+    {
+     "h": "Main course",
+     "lines": [
+      "Veg, any 2",
+      "Non-veg, any 2"
+     ]
+    },
+    {
+     "h": "Rice",
+     "lines": [
+      "Biryani / pulao / fried, any 1"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "lines": [
+      "Indian breads",
+      "Mirchi ka Salan",
+      "Raita",
+      "Steamed rice",
+      "Plain curd"
+     ]
+    },
+    {
+     "h": "Dessert",
+     "lines": [
+      "Any 2"
+     ]
+    }
+   ],
+   "drinks": {
+    "serve": "",
+    "lines": [
+     "2 Barman Special mocktails",
+     "Aerated drinks"
+    ],
+    "brands": []
+   }
+  },
+  {
+   "id": "elite-v",
+   "group": "elite",
+   "name": "Elite Veg",
+   "price": 1199,
+   "veg": true,
+   "tone": "green",
+   "sections": [
+    {
+     "h": "Starters",
+     "lines": [
+      "Veg, any 3"
+     ]
+    },
+    {
+     "h": "Main course",
+     "lines": [
+      "Veg, any 2"
+     ]
+    },
+    {
+     "h": "Rice",
+     "lines": [
+      "Biryani / pulao / fried, any 2"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "lines": [
+      "Indian breads",
+      "Mirchi ka Salan",
+      "Raita",
+      "Steamed rice",
+      "Plain curd"
+     ]
+    },
+    {
+     "h": "Dessert",
+     "lines": [
+      "Any 3"
+     ]
+    }
+   ],
+   "drinks": {
+    "serve": "",
+    "lines": [
+     "2 Barman Special mocktails",
+     "Aerated drinks"
+    ],
+    "brands": []
+   }
+  },
+  {
+   "id": "b925",
+   "group": "banquet",
+   "name": "Package 925 · Veg",
+   "price": 925,
+   "veg": true,
+   "tone": "green",
+   "sections": [
+    {
+     "h": "Welcome drink (mocktail)",
+     "rule": "Any 1",
+     "items": [
+      "Orange Chaska",
+      "Virgin Mojito"
+     ]
+    },
+    {
+     "h": "Soup",
+     "rule": "Any 1",
+     "items": [
+      "Veg Manchow Soup",
+      "Tomato Soup"
+     ]
+    },
+    {
+     "h": "Salad",
+     "rule": "Any 1",
+     "items": [
+      "Green Salad",
+      "Russian Salad"
+     ]
+    },
+    {
+     "h": "Veg starters",
+     "rule": "Any 2",
+     "items": [
+      "Baby Corn Manchurian",
+      "Kothameera Paneer",
+      "Veg Manchurian",
+      "Bhutan Veg"
+     ]
+    },
+    {
+     "h": "Rice",
+     "rule": "Any 1",
+     "items": [
+      "Veg Biryani",
+      "Brown Onion Bagara Rice",
+      "Gongura Paneer Pulao"
+     ]
+    },
+    {
+     "h": "Veg curries",
+     "rule": "Any 2",
+     "items": [
+      "Paneer Lababdar",
+      "Palak Paneer",
+      "Mix Veg Curry",
+      "Guttivankaya"
+     ]
+    },
+    {
+     "h": "Dal",
+     "rule": "Any 1",
+     "items": [
+      "Dal Tadka",
+      "Dal Makhani",
+      "Palakurra Pappu",
+      "Hyderabadi Dal"
+     ]
+    },
+    {
+     "h": "Indian breads",
+     "rule": "",
+     "items": [
+      "Roti / Naan"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "rule": "",
+     "items": [
+      "Sambar",
+      "Rasam",
+      "Steam Rice",
+      "Papad",
+      "Pickle",
+      "Curd"
+     ]
+    },
+    {
+     "h": "Desserts",
+     "rule": "Any 1",
+     "items": [
+      "Gulab jamun",
+      "Vanilla Ice Cream",
+      "Kadhu ka Kheer"
+     ]
+    },
+    {
+     "h": "Veg fry",
+     "rule": "Any 1",
+     "items": [
+      "Bhendi Fry",
+      "Totakura Pakora",
+      "Aloo Fry",
+      "Dondakaya Vepudu"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b1049",
+   "group": "banquet",
+   "name": "Package 1049",
+   "price": 1049,
+   "veg": false,
+   "tone": "red",
+   "sections": [
+    {
+     "h": "Welcome drink (mocktail)",
+     "rule": "Any 1",
+     "items": [
+      "Orange Chaska",
+      "Virgin Mojito"
+     ]
+    },
+    {
+     "h": "Soup",
+     "rule": "Any 1",
+     "items": [
+      "Veg Manchow Soup",
+      "Tomato Soup"
+     ]
+    },
+    {
+     "h": "Salad",
+     "rule": "Any 1",
+     "items": [
+      "Green Salad",
+      "Russian Salad"
+     ]
+    },
+    {
+     "h": "Veg starters",
+     "rule": "Any 2",
+     "items": [
+      "Baby Corn Manchurian",
+      "Kothameera Paneer",
+      "Veg Manchurian",
+      "Bhutan Veg"
+     ]
+    },
+    {
+     "h": "Non-veg starters",
+     "rule": "Any 2",
+     "items": [
+      "Apollo Fish",
+      "Fish Tikka",
+      "Karivepaku Kodi Vepudu",
+      "Buhari Chicken 65",
+      "Chicken Tikka"
+     ]
+    },
+    {
+     "h": "Rice, veg",
+     "rule": "Any 1",
+     "items": [
+      "Veg Dum Biryani",
+      "Brown Onion Bagara Rice",
+      "Gongura Paneer Pulao",
+      "Kothameera Paneer Pulao"
+     ]
+    },
+    {
+     "h": "Rice, non-veg",
+     "rule": "Any 1",
+     "items": [
+      "Chicken Dum Biryani",
+      "Fursat Spl Chicken Pulao",
+      "Chicken Fry Pc Pulao (Bone)",
+      "Chicken 65 Biryani"
+     ]
+    },
+    {
+     "h": "Veg curries",
+     "rule": "Any 2",
+     "items": [
+      "Paneer Lababdar",
+      "Palak Paneer",
+      "Mix Veg Curry",
+      "Guttivankaya"
+     ]
+    },
+    {
+     "h": "Non-veg curries",
+     "rule": "Any 1",
+     "items": [
+      "Telangana Chicken Curry",
+      "Chettinad Chicken",
+      "Chepala Pulusu",
+      "Fish Masala"
+     ]
+    },
+    {
+     "h": "Dal",
+     "rule": "Any 1",
+     "items": [
+      "Dal Tadka",
+      "Dal Makhani",
+      "Palakurra Pappu",
+      "Hyderabadi Dal"
+     ]
+    },
+    {
+     "h": "Indian breads",
+     "rule": "",
+     "items": [
+      "Roti / Naan"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "rule": "",
+     "items": [
+      "Sambar",
+      "Rasam",
+      "Steam Rice",
+      "Papad",
+      "Pickle",
+      "Curd"
+     ]
+    },
+    {
+     "h": "Desserts",
+     "rule": "Any 1",
+     "items": [
+      "Gulab Jamun",
+      "Kadhu ka Kheer",
+      "Vanilla Ice Cream"
+     ]
+    },
+    {
+     "h": "Veg fry",
+     "rule": "Any 1",
+     "items": [
+      "Bhendi Fry",
+      "Totakura Pakora",
+      "Aloo Fry",
+      "Dondakaya Vepudu"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b1299",
+   "group": "banquet",
+   "name": "Package 1299 · Veg",
+   "price": 1299,
+   "veg": true,
+   "tone": "green",
+   "sections": [
+    {
+     "h": "Welcome drink (mocktail)",
+     "rule": "Any 2",
+     "items": [
+      "Orange Chaska",
+      "Virgin Mojito",
+      "Blue Lagoon",
+      "Fruit Punch"
+     ]
+    },
+    {
+     "h": "Soup",
+     "rule": "Any 1",
+     "items": [
+      "Veg Manchow Soup",
+      "Tomato Basil Soup",
+      "Sweet Corn Soup",
+      "Hot n Sour Soup"
+     ]
+    },
+    {
+     "h": "Salad",
+     "rule": "Any 2",
+     "items": [
+      "Green Salad",
+      "Russian Salad",
+      "Waldorf Salad",
+      "Aloo Papadi Salad"
+     ]
+    },
+    {
+     "h": "Veg starters",
+     "rule": "Any 4",
+     "items": [
+      "Baby Corn Lollipop",
+      "Gongura Paneer Vepudu",
+      "Mini Burmese Parcel",
+      "Shanghai Roll",
+      "Paneer Tikka",
+      "Tempura Broccoli Bites",
+      "Jalapeno Cheese Balls",
+      "Beetroot Cheesy Sticks"
+     ]
+    },
+    {
+     "h": "Rice, veg",
+     "rule": "Any 2",
+     "items": [
+      "Veg Dum Biryani",
+      "Brown Onion Bagara Rice",
+      "Gongura Paneer Pulao",
+      "Kothameera Paneer Pulao",
+      "Coconut Rice"
+     ]
+    },
+    {
+     "h": "Veg curries",
+     "rule": "Any 2",
+     "items": [
+      "Paneer Lababdar",
+      "Palak Paneer",
+      "Mix Veg Curry",
+      "Guttivankaya"
+     ]
+    },
+    {
+     "h": "Dal",
+     "rule": "Any 1",
+     "items": [
+      "Dal Tadka",
+      "Dal Makhani",
+      "Palakurra Pappu",
+      "Hyderabadi Dal"
+     ]
+    },
+    {
+     "h": "Indian breads",
+     "rule": "Any 2",
+     "items": [
+      "Roti",
+      "Naan",
+      "Butter Naan",
+      "Kulcha",
+      "Garlic Naan"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "rule": "",
+     "items": [
+      "Sambar",
+      "Rasam",
+      "Steam Rice",
+      "Papad",
+      "Pickle",
+      "Curd"
+     ]
+    },
+    {
+     "h": "Desserts",
+     "rule": "Any 2",
+     "items": [
+      "Melange Fruit Pudding",
+      "Double ka Meetha",
+      "Chocolate Brownie",
+      "Apricot Delight",
+      "Kadhu ka Kheer",
+      "Vanilla Ice Cream"
+     ]
+    },
+    {
+     "h": "Veg fry",
+     "rule": "Any 1",
+     "items": [
+      "Bhendi Fry",
+      "Totakura Pakora",
+      "Aloo Fry",
+      "Dondakaya Vepudu"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b1399",
+   "group": "banquet",
+   "name": "Package 1399",
+   "price": 1399,
+   "veg": false,
+   "tone": "red",
+   "sections": [
+    {
+     "h": "Welcome drink (mocktail)",
+     "rule": "Any 2",
+     "items": [
+      "Orange Chaska",
+      "Virgin Mojito",
+      "Blue Lagoon",
+      "Fruit Punch"
+     ]
+    },
+    {
+     "h": "Soup",
+     "rule": "Any 1",
+     "items": [
+      "Veg Manchow Soup",
+      "Tomato Basil Soup",
+      "Sweet Corn Soup",
+      "Hot n Sour Soup"
+     ]
+    },
+    {
+     "h": "Salad",
+     "rule": "Any 2",
+     "items": [
+      "Green Salad",
+      "Russian Salad",
+      "Waldorf Salad",
+      "Aloo Papadi Salad"
+     ]
+    },
+    {
+     "h": "Veg starters",
+     "rule": "Any 3",
+     "items": [
+      "Baby Corn Lollipop",
+      "Gongura Paneer Vepudu",
+      "Mini Burmese Parcel",
+      "Shanghai Roll",
+      "Paneer Tikka",
+      "Tempura Broccoli Bites",
+      "Jalapeno Cheese Balls",
+      "Beetroot Cheesy Sticks"
+     ]
+    },
+    {
+     "h": "Non-veg starters",
+     "rule": "Any 2",
+     "items": [
+      "Apollo Fish",
+      "Amritsari Fish fry",
+      "Karivepaku Kodi Vepudu",
+      "Jeedi Kodi Pakodi",
+      "Coriander Chicken",
+      "Buhari Chicken",
+      "Gongura Chicken Tikka"
+     ]
+    },
+    {
+     "h": "Rice, veg",
+     "rule": "Any 1",
+     "items": [
+      "Veg Dum Biryani",
+      "Brown Onion Bagara Rice",
+      "Gongura Paneer Pulao",
+      "Kothameera Paneer Pulao",
+      "Coconut Rice"
+     ]
+    },
+    {
+     "h": "Rice, non-veg",
+     "rule": "Any 1",
+     "items": [
+      "Chicken Dum Biryani",
+      "Fursat Spl Chicken Pulao",
+      "Chicken Fry Pc Pulao (Bone)",
+      "Chicken 65 Biryani"
+     ]
+    },
+    {
+     "h": "Veg curries",
+     "rule": "Any 2",
+     "items": [
+      "Paneer Lababdar",
+      "Palak Paneer",
+      "Mix Veg Curry",
+      "Guttivankaya"
+     ]
+    },
+    {
+     "h": "Non-veg curries",
+     "rule": "Any 1",
+     "items": [
+      "Telangana Chicken Curry",
+      "Chettinad Chicken",
+      "Chepala Pulusu",
+      "Fish Masala"
+     ]
+    },
+    {
+     "h": "Dal",
+     "rule": "Any 1",
+     "items": [
+      "Dal Tadka",
+      "Dal Makhani",
+      "Palakurra Pappu",
+      "Hyderabadi Dal"
+     ]
+    },
+    {
+     "h": "Indian breads",
+     "rule": "Any 2",
+     "items": [
+      "Roti",
+      "Naan",
+      "Butter Naan",
+      "Kulcha",
+      "Garlic Naan"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "rule": "",
+     "items": [
+      "Sambar",
+      "Rasam",
+      "Steam Rice",
+      "Papad",
+      "Pickle",
+      "Curd"
+     ]
+    },
+    {
+     "h": "Desserts",
+     "rule": "Any 2",
+     "items": [
+      "Melange Fruit Pudding",
+      "Double ka Meetha",
+      "Chocolate Brownie",
+      "Apricot Delight",
+      "Kadhu ka Kheer",
+      "Vanilla Ice Cream"
+     ]
+    },
+    {
+     "h": "Veg fry",
+     "rule": "Any 1",
+     "items": [
+      "Bhendi Fry",
+      "Totakura Pakora",
+      "Aloo Fry",
+      "Dondakaya Vepudu"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b1599",
+   "group": "banquet",
+   "name": "Package 1599",
+   "price": 1599,
+   "veg": false,
+   "tone": "red",
+   "sections": [
+    {
+     "h": "Welcome drink (mocktail)",
+     "rule": "Any 1",
+     "items": [
+      "Orange Chaska",
+      "Virgin Mojito",
+      "Blue Lagoon",
+      "Fruit Punch"
+     ]
+    },
+    {
+     "h": "Soup",
+     "rule": "Any 1",
+     "items": [
+      "Veg Manchow Soup",
+      "Tomato Basil Soup",
+      "Sweet Corn Soup",
+      "Hot n Sour Soup"
+     ]
+    },
+    {
+     "h": "Salad",
+     "rule": "Any 2",
+     "items": [
+      "Green Salad",
+      "Russian Salad",
+      "Waldorf Salad",
+      "Aloo Papadi Salad"
+     ]
+    },
+    {
+     "h": "Veg starters",
+     "rule": "Any 3",
+     "items": [
+      "Baby Corn Lollipop",
+      "Gongura Paneer Vepudu",
+      "Mini Burmese Parcel",
+      "Shanghai Roll",
+      "Paneer Tikka",
+      "Tempura Broccoli Bites",
+      "Jalapeno Cheese Balls",
+      "Beetroot Cheesy Sticks"
+     ]
+    },
+    {
+     "h": "Non-veg starters",
+     "rule": "Any 3",
+     "items": [
+      "Apollo Fish",
+      "Amritsari Fish fry",
+      "Karivepaku Kodi Vepudu",
+      "Jeedi Kodi Pakodi",
+      "Coriander Chicken",
+      "Godavari Royyalla Vepudu",
+      "Loose Prawns"
+     ]
+    },
+    {
+     "h": "Rice, veg",
+     "rule": "Any 1",
+     "items": [
+      "Veg Dum Biryani",
+      "Brown Onion Bagara Rice",
+      "Gongura Paneer Pulao",
+      "Kothameera Paneer Pulao",
+      "Coconut Rice"
+     ]
+    },
+    {
+     "h": "Rice, non-veg",
+     "rule": "Any 1",
+     "items": [
+      "Chicken Dum Biryani",
+      "Fursat Spl Chicken Pulao",
+      "Chicken Fry Pc Pulao (Bone)",
+      "Chicken 65 Biryani",
+      "Rambo Biryani",
+      "Mutton Dum Biryani",
+      "Mughlai Mutton Biryani"
+     ]
+    },
+    {
+     "h": "Veg curries",
+     "rule": "Any 2",
+     "items": [
+      "Paneer Lababdar",
+      "Palak Paneer",
+      "Mix Veg Curry",
+      "Guttivankaya"
+     ]
+    },
+    {
+     "h": "Non-veg curries",
+     "rule": "Any 2",
+     "items": [
+      "Telangana Chicken Curry",
+      "Chettinad Chicken",
+      "Chepala Pulusu",
+      "Fish Masala"
+     ]
+    },
+    {
+     "h": "Dal",
+     "rule": "Any 1",
+     "items": [
+      "Dal Tadka",
+      "Dal Makhani",
+      "Palakurra Pappu",
+      "Hyderabadi Dal"
+     ]
+    },
+    {
+     "h": "Indian breads",
+     "rule": "Any 2",
+     "items": [
+      "Roti",
+      "Naan",
+      "Butter Naan",
+      "Kulcha",
+      "Garlic Naan"
+     ]
+    },
+    {
+     "h": "Accompaniments",
+     "rule": "",
+     "items": [
+      "Sambar",
+      "Rasam",
+      "Steam Rice",
+      "Papad",
+      "Pickle",
+      "Curd"
+     ]
+    },
+    {
+     "h": "Desserts",
+     "rule": "Any 3",
+     "items": [
+      "Melange Fruit Pudding",
+      "Double ka Meetha",
+      "Chocolate Brownie",
+      "Apricot Delight",
+      "Kadhu ka Kheer",
+      "Vanilla Ice Cream"
+     ]
+    },
+    {
+     "h": "Veg fry",
+     "rule": "Any 1",
+     "items": [
+      "Bhendi Fry",
+      "Totakura Pakora",
+      "Aloo Fry",
+      "Dondakaya Vepudu"
+     ]
+    }
+   ]
+  }
+ ],
+ "choices": [
+  {
+   "h": "Veg appetizers",
+   "cols": [
+    {
+     "h": "Indian",
+     "items": [
+      "Hara bhara kebab",
+      "Banjara onion fritters",
+      "Achari gobi tikka",
+      "Tandoori paneer tikka",
+      "Sarso tandoori aloo",
+      "Malai sahi broccoli",
+      "Pachi mirchi paneer fry",
+      "Cocktail samosa",
+      "Delhi style corn tikkiya",
+      "Achari paneer tikka"
+     ]
+    },
+    {
+     "h": "Continental",
+     "items": [
+      "Cheese corn croquettes",
+      "Jalapeno cheese poppers",
+      "Mushroom feta cigars",
+      "Crispy spicy falafel",
+      "Loaded Mexican potato wedges",
+      "Potato mushroom croquettes",
+      "Chilli garlic potato wedges",
+      "Paneer popcorn"
+     ]
+    },
+    {
+     "h": "Asian",
+     "items": [
+      "Assorted crispy salt & pepper veg",
+      "Salt & pepper broccoli",
+      "Basil crispy lotus",
+      "Baby corn salt & pepper",
+      "Masala Szechwan lotus steam",
+      "Honey plum chilli water chestnut",
+      "Spicy chilli paneer",
+      "Andhra style paneer 65"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Non-veg appetizers",
+   "cols": [
+    {
+     "h": "Indian",
+     "items": [
+      "Chestnut chicken fritters",
+      "Solapuri chicken tikka",
+      "Bhuna mutton pepper fry",
+      "Hariyali pahadi wings",
+      "Smokey cheese wings",
+      "Szechwan spiced chicken tikka",
+      "Amritsari fish tikka",
+      "Lahori chicken tikka",
+      "Bhatti da murgh",
+      "Kodi vepudu"
+     ]
+    },
+    {
+     "h": "Continental",
+     "items": [
+      "BBQ chicken balls",
+      "Smoked BBQ chicken wings",
+      "Jerk spicy fish stick",
+      "Crispy fish with tropical salsa",
+      "Cajun grilled fish",
+      "Chicken & cheese cigar rolls"
+     ]
+    },
+    {
+     "h": "Asian",
+     "items": [
+      "Schezwan chicken wings",
+      "Andhra style spicy chilli chicken",
+      "Chicken spicy 65",
+      "Smokey chilli sriracha wings",
+      "Sweet & sour chilli chicken",
+      "Szechwan spiced prawns",
+      "Mandarin oyster fish",
+      "Salt & pepper chicken",
+      "Mongolian chicken"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Veg main course",
+   "cols": [
+    {
+     "h": "Indian",
+     "items": [
+      "Paneer matar masala",
+      "Baigun masala",
+      "Tawa veg taka tak",
+      "Paneer butter masala",
+      "Dal bukhari",
+      "Methi matar masala",
+      "Jeera mung dal",
+      "Kashmiri aloo dum",
+      "Palak paneer",
+      "Kashmiri laal paneer"
+     ]
+    },
+    {
+     "h": "Asian",
+     "items": [
+      "Hot & sour garlic paneer",
+      "Chilli paneer",
+      "Chilli oyster mushroom",
+      "Szechwan paneer",
+      "Gobi Manchurian gravy",
+      "Thai green curry",
+      "Thai red curry",
+      "Stir fry broccoli in black bean sauce"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Non-veg main course",
+   "cols": [
+    {
+     "h": "Indian",
+     "items": [
+      "Batti da murgh masala",
+      "Kadhai ka kukkad",
+      "Kolhapuri chicken rasa",
+      "Dum ka murgh kali mirchi",
+      "Delhi style mutton korma",
+      "Champaran bihari gosht",
+      "Kosha mutton er mangsho",
+      "Mutton chettinad",
+      "Spicy natu kodi kura (country chicken)",
+      "Chepala pulusu"
+     ]
+    },
+    {
+     "h": "Asian",
+     "items": [
+      "Chilli chicken",
+      "Kung pao chicken",
+      "Stir fry chicken",
+      "Chilli basil chicken",
+      "Stir fry bamboo shoot chicken",
+      "Cantonese style prawns",
+      "Chilli fish",
+      "Szechwan fish",
+      "Chilli coriander chicken",
+      "Chicken in Hunan sauce"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Rice, biryani, pulav and pasta",
+   "cols": [
+    {
+     "h": "Veg",
+     "items": [
+      "Hakka noodles",
+      "Veg fried rice",
+      "Jeera rice / Nasi goreng veg",
+      "Szechwan veg noodles",
+      "Matar pulao",
+      "Kashmiri Navratan dry fruit pulao",
+      "Hyderabadi veg biryani",
+      "Pilaf Mediterranean rice",
+      "Bell pepper herb rice",
+      "Penne alfredo"
+     ]
+    },
+    {
+     "h": "Non-veg",
+     "items": [
+      "Hakka noodles chicken / mix",
+      "Shanghai style fried rice chicken",
+      "Nasi goreng non-veg",
+      "Burnt garlic fried rice non-veg",
+      "Szechwan noodles chicken",
+      "Hyderabadi chicken biryani",
+      "Kolkata style dum biryani",
+      "Pesto creamy grilled chicken",
+      "Penne arrabiata chicken"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Desserts",
+   "cols": [
+    {
+     "h": "",
+     "items": [
+      "Gulab jamun with vanilla ice cream",
+      "Chocolate brownie",
+      "Rabdi jalebi",
+      "Fruit truffle mousse",
+      "Dessert of the day",
+      "Apricot delight"
+     ]
+    }
+   ]
+  }
+ ],
+ "addons": [
+  {
+   "n": "Starters, veg / egg",
+   "p": "150–200"
+  },
+  {
+   "n": "Starters, chicken / mutton",
+   "p": "200–250"
+  },
+  {
+   "n": "Starters, seafood",
+   "p": "250–300"
+  },
+  {
+   "n": "Main course, veg / non-veg",
+   "p": "200–300"
+  },
+  {
+   "n": "Desserts",
+   "p": "150–200"
+  }
+ ]
+}

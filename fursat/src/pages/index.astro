@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import SvgDefs from '../components/SvgDefs.astro';
 import Hero from '../components/Hero.astro';
+import Reels from '../components/Reels.astro';
+import Mascot from '../components/Mascot.astro';
 import Sparkles from '../components/Sparkles.astro';
 import BookingDialog from '../components/BookingDialog.astro';
 import StickyBar from '../components/StickyBar.astro';
@@ -17,8 +19,13 @@ import Wizard from '../components/Wizard.astro';
 import VoiceButton from '../components/VoiceButton.astro';
 ---
 <Base>
+<a class="skip" href="#main">Skip to main content</a>
 <SvgDefs />
+<main id="main" tabindex="-1">
 <Hero />
+<Reels />
+</main>
+<Mascot />
 <Sparkles />
 <BookingDialog />
 <StickyBar />
@@ -47,4 +54,6 @@ import VoiceButton from '../components/VoiceButton.astro';
 <script is:inline src="/js/13.js"></script>
 <script is:inline src="/js/14.js"></script>
 <script is:inline src="/js/15.js"></script>
+<script is:inline src="/js/16.js"></script>
+<script is:inline src="/js/17.js"></script>
 </Base>

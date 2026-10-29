@@ -1,0 +1,76 @@
+/* ---------- Instagram reels stage (BJNEXUS rules: one scroll moment, transform/opacity/clip-path only, hover gated, reduced-motion path, content visible without JS) ---------- */
+:root{--rl-bg:#17200F;--rl-well:#0D1308;--rl-ink:#F4ECDA;--rl-dim:rgba(244,236,218,.72);--rl-line:rgba(244,236,218,.45);--rl-track:rgba(244,236,218,.2);--rl-chip:rgba(244,236,218,.95);--rl-gold:#E0A63C;--rl-deep:#1A1608;--rl-ease:cubic-bezier(.16,1,.3,1);--terracotta:#C2431A;--pv-ink:#2A2514;--pv-ring:#404517;--pv-bg:rgba(250,245,233,.9);--pv-line:rgba(42,37,20,.35);--pv-hover:#FFFDF6}
+.rl{--cw:min(70vw,calc(min(74svh,660px)*9/16));position:relative;background:var(--rl-bg);color:var(--rl-ink);padding:clamp(56px,9vw,120px) 0 calc(clamp(56px,8vw,104px) + 56px);overflow-x:clip}
+.rl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:0 var(--pad,clamp(20px,5vw,84px));margin-bottom:clamp(20px,3vw,36px)}
+.rl-h{margin:0;font:500 clamp(2rem,5vw,4rem)/1.06 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:-.02em;text-wrap:balance}
+.rl-ig{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--rl-ink);font:600 .95rem/1 var(--sans,"Manrope",system-ui,sans-serif);text-decoration:none;border-bottom:1px solid var(--rl-gold)}
+.rl-ig svg{width:16px;height:16px;transition:transform .3s var(--rl-ease)}
+.rl-stage{position:relative}
+.rl-track{list-style:none;margin:0;padding:0 calc(50% - var(--cw)/2);display:flex;align-items:center;gap:clamp(12px,2vw,28px);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:relative;outline-offset:6px}
+.rl-track::-webkit-scrollbar{display:none}
+.rl-card{flex:0 0 var(--cw);scroll-snap-align:center;display:flex;flex-direction:column;gap:12px;transition:transform .5s var(--rl-ease),opacity .5s var(--rl-ease)}
+.rl.js .rl-card:not(.is-active){transform:scale(.86);opacity:.5}
+.rl-frame{position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:var(--rl-well);cursor:pointer}
+.rl-card[data-type=image] .rl-frame{aspect-ratio:1/1}
+.rl-v{display:block;width:100%;height:100%;object-fit:contain;background:var(--rl-well)}
+.rl-snd{position:absolute;left:10px;top:10px;width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;background:var(--rl-chip);color:var(--rl-deep);cursor:pointer;transition:transform .15s var(--rl-ease)}
+.rl-snd:active{transform:scale(.97)}
+.rl-snd svg{width:20px;height:20px;display:none}
+.rl-card[data-s=muted] .i-off,.rl-card[data-s=sound] .i-on,.rl-card[data-s=paused] .i-play{display:block}
+.rl.js .rl-card:not(.is-active) .rl-snd{visibility:hidden}
+.rl-cap{margin:0;display:flex;flex-direction:column;gap:8px}
+.rl.js .rl-cap{opacity:0;transition:opacity .4s var(--rl-ease)}
+.rl.js .is-active .rl-cap{opacity:1}
+.rl-n{font:500 clamp(1.15rem,2.2vw,1.5rem)/1.15 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:-.01em;color:var(--rl-ink)}
+.rl-bar{display:block;height:2px;background:var(--rl-track);overflow:hidden}
+.rl-bar i{display:block;height:100%;background:var(--rl-gold);transform-origin:0 50%;transform:scaleX(0);transition:transform .25s linear}
+.rl-ctl{display:flex;align-items:center;justify-content:flex-end;padding:0 var(--pad,clamp(20px,5vw,84px));margin-bottom:clamp(16px,2.4vw,28px)}
+.rl-btns{display:flex;gap:8px}
+.rl-b{width:48px;height:48px;border-radius:50%;border:1px solid var(--rl-line);background:transparent;color:var(--rl-ink);display:grid;place-items:center;cursor:pointer;transition:background .25s var(--rl-ease),color .25s var(--rl-ease),transform .15s var(--rl-ease)}
+.rl-b svg{width:20px;height:20px}
+.rl-b:active{transform:scale(.97)}
+.rl-b:disabled{opacity:.35;cursor:default}
+.rl-cta{display:flex;justify-content:center;padding:clamp(24px,3.5vw,44px) var(--pad,clamp(20px,5vw,84px)) 0}
+.rl-reserve{min-height:52px;padding:0 32px;border:0;border-radius:999px;background:var(--rl-gold);color:var(--rl-deep);font:700 1rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation;transition:transform .16s var(--rl-ease),background-color .16s var(--rl-ease)}
+.rl-reserve:active{transform:scale(.97)}
+.rl-plain{list-style:none;margin:0;padding:0 var(--pad,clamp(20px,5vw,84px));display:flex;flex-wrap:wrap;gap:20px}
+.rl-plain a{display:flex;flex-direction:column;gap:8px;color:var(--rl-ink);text-decoration:none;font:500 1.1rem/1.2 var(--serif,"Playfair Display",Georgia,serif)}
+.rl-plain img{display:block;width:180px;height:auto;border-radius:12px;background:var(--rl-well)}
+@media(hover:hover){.rl-b:not(:disabled):hover{background:var(--rl-ink);color:var(--rl-deep)}.rl-ig:hover svg{transform:translateX(4px)}.rl-reserve:hover{background:var(--rl-ink)}}
+.rl :focus-visible{outline:2px solid var(--rl-gold);outline-offset:3px}
+.rl-sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* entrance: masked reveal of the frames + staggered words, once (only when JS is running, so content is visible without it) */
+.rl.js .rl-frame{clip-path:inset(0 0 100% 0)}
+.rl.js.rl-in .rl-frame{clip-path:inset(0);transition:clip-path .9s var(--rl-ease);transition-delay:calc(var(--i)*70ms)}
+.js .rl-w{display:inline-block;opacity:0;transform:translateY(.45em)}
+.rl.js.rl-in .rl-w{opacity:1;transform:none;transition:opacity .6s var(--rl-ease),transform .6s var(--rl-ease);transition-delay:calc(var(--i)*45ms)}
+@media(max-width:700px){.rl-head{flex-direction:column;align-items:flex-start;gap:12px}}
+@media(prefers-reduced-motion:reduce){.rl *{transition:none!important}.rl.js .rl-frame{clip-path:none}.js .rl-w{opacity:1;transform:none}}
+
+/* ---------- landing fixes (BJNEXUS rules): skip link, anchor offsets, static Instagram links (no ticker), flat headings, hero video pause control ---------- */
+.skip{position:fixed;left:12px;top:12px;transform:translateY(-96px);z-index:2147483001;padding:12px 16px;border-radius:999px;background:var(--rl-deep);color:var(--rl-ink);font:700 14px/1 var(--sans,"Manrope",system-ui,sans-serif);text-decoration:none}
+.skip:focus-visible{transform:none;outline:2px solid var(--rl-gold);outline-offset:3px}
+main:focus{outline:none}
+#top,#signature,#reels,#ask-fursat{scroll-margin-top:16px}
+/* Instagram: all four links always visible */
+.fx-igcol-h{text-transform:none;letter-spacing:.01em;font-size:13px}
+@media(min-width:900px){
+  .fx-igwin{height:auto;overflow:visible;-webkit-mask-image:none;mask-image:none}
+  .fx-igtrk{animation:none!important;transform:none!important;will-change:auto}
+  .fx-igcol .igx-i{height:58px;margin:0 0 8px}
+}
+@media(min-width:900px){.fx-stage{--igw:208px;--cwid:calc((var(--W) - 2*var(--g) - var(--igw) - 32px - 64px)/3)}}
+/* flat colour instead of gradient text */
+.wz-t em{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:var(--terracotta)!important;color:var(--terracotta)!important;animation:none!important}
+#ask-fursat.af .af-title em{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:var(--terracotta)!important;color:var(--terracotta)!important}
+/* hero video pause button */
+.top .r .fx-pv{display:inline-grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid var(--pv-line);border-radius:50%;background:var(--pv-bg);color:var(--pv-ink);cursor:pointer;transition-property:transform,background-color;transition-duration:160ms;transition-timing-function:cubic-bezier(.23,1,.32,1)}
+.fx-pv svg{width:14px;height:14px}
+.fx-pv .i-play,.fx-pv[data-s=paused] .i-pause{display:none}
+.fx-pv[data-s=paused] .i-play{display:block}
+.fx-pv:active{transform:scale(.97)}
+.fx-pv:focus-visible{outline:2px solid var(--pv-ring);outline-offset:3px}
+@media(hover:hover){.fx-pv:hover{background:var(--pv-hover)}}
+@media(min-width:900px){.top .r .fx-pv{position:absolute;right:0;top:calc(100% + 14px/var(--u));width:calc(44px/var(--u));height:calc(44px/var(--u))}.fx-pv svg{width:calc(16px/var(--u));height:calc(16px/var(--u))}}
+@media(prefers-reduced-motion:reduce){.skip,.fx-pv{transition:none}}
+.rl-b,.rl-snd,.rl-frame,.fx-pv{touch-action:manipulation}

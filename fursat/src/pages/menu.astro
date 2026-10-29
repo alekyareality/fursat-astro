@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import MenuExplorer from '../components/menu/MenuExplorer';
+import menu from '../../public/data/menu.json';
+import '../styles/menu-tw.css';
+---
+<Base>
+  <main class="fm-main">
+    <header class="fm-head">
+      <a class="fm-back" href="/">Back to Fursat</a>
+      <h1>Menu</h1>
+    </header>
+    <MenuExplorer client:load items={menu} />
+  </main>
+</Base>
+<style>
+  .fm-main { background: #F2EEE4; min-height: 100svh; }
+  .fm-head { max-width: 64rem; margin: 0 auto; padding: 24px 20px 16px; }
+  .fm-head h1 { font: 400 clamp(32px, 6vw, 48px)/1.1 "Playfair Display", Georgia, serif; color: #C2431A; margin: 12px 0 0; text-wrap: balance; }
+  .fm-back { color: #404517; font: 600 14px "Manrope", system-ui, sans-serif; text-decoration: none; display: inline-flex; min-height: 44px; align-items: center; }
+</style>
