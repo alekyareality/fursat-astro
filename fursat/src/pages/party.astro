@@ -1,0 +1,170 @@
+---
+import Base from '../layouts/Base.astro';
+import data from '../data/party.json';
+import PartyStage from '../components/party/PartyStage';
+// CLIENT/LEGAL TO CONFIRM: liquor brand names stay off the public page until cleared (Telangana excise advertising rules).
+const SHOW_LIQUOR_BRANDS = false;
+// ASSUMPTION TO CONFIRM: the printed prices ("4999+Taxes") read as per guest.
+const UNIT = 'per guest';
+const WA = '919059670033';
+const inr = (n: number) => '\u20b9' + n.toLocaleString('en-IN');
+const lead = (p: any) => p.sections.slice(0, 4).map((s: any) => [s.h, s.rule || (s.lines || []).join(' \u00b7 ')]);
+const waBase = 'https://wa.me/' + WA + '?text=';
+const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a party.');
+---
+<Base>
+<a class="skip" href="#pk-main">Skip to main content</a>
+<div class="pa">
+  <header class="pa-top"><a class="pa-back" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Back to Fursat</span></a></header>
+  <main id="pk-main" tabindex="-1" class="pa-main">
+    <div class="pa-host" id="pa-host" data-pose="idle"><div class="pa-stage"><img class="pa-p pa-idle" src="/assets/ask-mascot-md.webp" alt="Fursat&rsquo;s elephant host in a gold crown and sunglasses" width="400" height="400" decoding="async"><img class="pa-p pa-cheer" src="/assets/ask-mascot-cheer-md.webp" alt="" width="400" height="400" decoding="async"></div></div>
+    <h1 class="pa-h">Plan your party at Fursat</h1>
+    <p class="pa-sub">Pick a package, tell us how many are coming, and we will confirm the rest on WhatsApp.</p>
+    <div class="pa-tabs" role="group" aria-label="Choose a package type">
+      {data.groups.map((g, i) => <button type="button" data-tab={g.id} aria-pressed={i === 0 ? 'true' : 'false'}>{g.label}</button>)}
+    </div>
+    {data.groups.map((g, gi) => (
+      <section class="pa-group" data-group={g.id} hidden={gi !== 0 ? true : undefined} aria-label={g.label}>
+        <p class="pa-blurb">{g.blurb}</p>
+        <div class="pk-row">
+          {data.packages.filter((p: any) => p.group === g.id).map((p: any, i: number) => (
+            <article class="pk" style={`--i:${i}`} data-id={p.id} data-price={p.price} data-name={p.name}>
+              <div class="pk-face" data-tone={p.tone}>
+                <h2 class="pk-name">{p.name}</h2>
+                <p class="pk-price"><span class="pk-amt">{inr(p.price)}</span><span class="pk-unit">+ taxes, {UNIT}</span></p>
+                <dl class="pk-sum">
+                  {lead(p).map(([h, v]: string[]) => <div><dt>{h}</dt><dd>{v}</dd></div>)}
+                  {p.drinks && <div><dt>Drinks{p.drinks.serve ? ' \u00b7 ' + p.drinks.serve : ''}</dt><dd>{p.drinks.lines.join(' \u00b7 ')}</dd></div>}
+                </dl>
+                <details class="pk-more">
+                  <summary>Everything included</summary>
+                  {p.sections.map((s: any) => (
+                    <div class="pk-sec">
+                      <h3>{s.h}{s.rule ? ' \u2013 ' + s.rule : ''}</h3>
+                      <p>{(s.items || s.lines).join(' \u00b7 ')}</p>
+                    </div>
+                  ))}
+                  {p.drinks && (
+                    <div class="pk-sec">
+                      <h3>Drinks{p.drinks.serve ? ' \u2013 serving ' + p.drinks.serve : ''}</h3>
+                      <p>{[...(SHOW_LIQUOR_BRANDS ? p.drinks.brands : []), ...p.drinks.lines].join(' \u00b7 ')}</p>
+                      {p.group === 'bar' && <p class="pk-age">Alcohol is served to guests aged 21 and above only.</p>}
+                    </div>
+                  )}
+                </details>
+                <button class="pk-plan" type="button" data-plan={p.id}>Plan this party</button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="pa-plan" id="pa-plan" aria-labelledby="pa-plan-h">
+      <h2 id="pa-plan-h">Estimate your party</h2>
+      <PartyStage client:visible poster="/assets/party-stage-poster.webp" />
+      <div class="pa-fields">
+        <label for="pa-pkg">Package</label>
+        <select id="pa-pkg">{data.packages.map((p: any) => <option value={p.id} data-price={p.price}>{p.name} &ndash; {inr(p.price)}</option>)}</select>
+        <label for="pa-n">Guests</label>
+        <div class="pa-step"><button type="button" id="pa-minus" aria-label="Fewer guests">&minus;</button><input id="pa-n" type="number" inputmode="numeric" min="1" max="500" value="25"><button type="button" id="pa-plus" aria-label="More guests">+</button></div>
+      </div>
+      <p class="pa-total" id="pa-total" aria-live="polite"></p>
+      <p class="pa-fine">Estimate before taxes, {UNIT}. Your final quote is confirmed by the Fursat team.</p>
+      <a class="pa-wa" id="pa-wa" href={waHi} target="_blank" rel="noopener">Send this plan on WhatsApp</a>
+    </section>
+
+    <section class="pa-choices" aria-labelledby="pa-ch-h">
+      <h2 id="pa-ch-h">Choose your dishes</h2>
+      <p class="pa-blurb">For Platinum, Gold, Silver and the Elite packages. Banquet menus list their dishes on the card.</p>
+      {data.choices.map((c: any) => (
+        <details class="pa-acc">
+          <summary>{c.h}</summary>
+          <div class="pa-cols">{c.cols.map((col: any) => <div>{col.h && <h3>{col.h}</h3>}<ul>{col.items.map((it: string) => <li>{it}</li>)}</ul></div>)}</div>
+        </details>
+      ))}
+    </section>
+
+    <section class="pa-add" aria-labelledby="pa-ad-h">
+      <h2 id="pa-ad-h">Add-ons</h2>
+      <ul class="pa-addlist">{data.addons.map((a: any) => <li><span>{a.n}</span><b>{inr(0).replace('0', a.p)}</b></li>)}</ul>
+      <p class="pa-fine">Add-on prices are as printed on the Fursat party menu.</p>
+    </section>
+  </main>
+</div>
+<style is:global>
+:root{--pk-red:#A83A26;--pk-green:#34522A;--pk-cream:#F6EBD3}
+.pa{min-height:100svh;background:var(--rl-bg);color:var(--rl-ink)}
+.pa-top{padding:max(16px,env(safe-area-inset-top)) var(--pad,clamp(20px,5vw,84px)) 0}
+.pa-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--rl-ink);text-decoration:none;font:600 1rem/1 var(--sans,"Manrope",system-ui,sans-serif)}
+.pa-back svg{width:20px;height:20px;transition:transform .15s var(--rl-ease)}
+.pa-back:focus-visible,.pa-wa:focus-visible,.pk-plan:focus-visible,.pa-tabs button:focus-visible,.pk-more summary:focus-visible,.pa-acc summary:focus-visible,.pa-fields select:focus-visible,.pa-step button:focus-visible,.pa-step input:focus-visible{outline:2px solid var(--rl-gold);outline-offset:3px}
+.pa-main{max-width:1180px;margin:0 auto;padding:clamp(16px,4vw,48px) var(--pad,clamp(20px,5vw,84px)) clamp(56px,8vw,112px);outline:0}
+.pa-host{display:grid;justify-items:center;margin:0 0 8px}
+.pa-stage{position:relative;isolation:isolate;width:clamp(112px,32vw,148px);aspect-ratio:1;display:grid}
+.pa-stage::after{content:"";position:absolute;left:18%;right:18%;bottom:-2px;height:9px;border-radius:50%;background:color-mix(in srgb,var(--rl-deep) 70%,transparent);transform:scaleY(.6);z-index:-1}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){.pa-stage{transform:perspective(560px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s var(--rl-ease)}.pa-stage::after{translate:var(--sh,0px) 0;transition:translate .2s var(--rl-ease)}}
+.pa-p{grid-area:1/1;width:100%;height:100%;object-fit:contain;opacity:0;transform-origin:50% 100%;transition:opacity .15s var(--rl-ease)}
+.pa-host[data-pose="idle"] .pa-idle,.pa-host[data-pose="cheer"] .pa-cheer{opacity:1}
+.pa-host[data-pose="cheer"] .pa-cheer{animation:pa-hop .6s var(--rl-ease) 2}
+@keyframes pa-hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px) scale(.97,1.04)}70%{transform:translateY(0) scale(1.04,.96)}}
+.pa-star{position:absolute;left:50%;top:42%;width:12px;height:12px;margin:-6px 0 0 -6px;background:var(--rl-gold);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);pointer-events:none;animation:pa-star .9s var(--rl-ease) forwards}
+@keyframes pa-star{from{opacity:1;transform:translate(0,0) scale(.5)}to{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1.1)}}
+.pa-h{margin:0 0 12px;text-align:center;font:500 clamp(2rem,6.5vw,4rem)/1.08 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:-.02em;text-wrap:balance}
+.pa-sub{margin:0 auto 28px;max-width:52ch;text-align:center;font:400 1.0625rem/1.5 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.pa-tabs{display:flex;width:max-content;max-width:100%;margin:0 auto 20px;gap:4px;padding:4px;border:1px solid var(--rl-line);border-radius:999px;overflow-x:auto}
+.pa-tabs button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:var(--rl-ink);white-space:nowrap;font:600 .9375rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease),color .15s var(--rl-ease)}
+.pa-tabs button:active{transform:scale(.97)}
+.pa-tabs button[aria-pressed="true"]{background:var(--rl-gold);color:var(--rl-deep)}
+.pa-blurb{margin:0 0 20px;text-align:center;font:400 1rem/1.5 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.pa-group[hidden]{display:none}
+.pk-row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 28px;margin:0 calc(var(--pad,20px)*-1);padding-inline:var(--pad,20px);scroll-padding-inline:var(--pad,20px);align-items:flex-start;overscroll-behavior-x:contain}
+.pk{flex:0 0 min(84vw,330px);scroll-snap-align:center;perspective:900px;animation:pk-in .5s var(--rl-ease) backwards;animation-delay:calc(min(var(--i),5)*60ms)}
+@keyframes pk-in{from{opacity:0;transform:scale(.95) translateY(8px)}}
+.pk-face{position:relative;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s var(--rl-ease);padding:72px 24px 24px;border-radius:165px 165px 24px 24px;color:var(--pk-cream);text-align:center;box-shadow:0 16px 28px color-mix(in srgb,var(--rl-deep) 55%,transparent)}
+.pk-face[data-tone="red"]{background:var(--pk-red)}
+.pk-face[data-tone="green"]{background:var(--pk-green)}
+.pk-name{margin:0 0 8px;transform:translateZ(18px);font:700 clamp(1.5rem,5vw,1.875rem)/1.1 var(--sans,"Manrope",system-ui,sans-serif);text-wrap:balance}
+.pk-price{margin:0 0 20px;display:grid;gap:2px;transform:translateZ(34px)}
+.pk-amt{font:500 2.25rem/1.05 var(--serif,"Playfair Display",Georgia,serif)}
+.pk-unit{font:500 .875rem/1.3 var(--sans,"Manrope",system-ui,sans-serif)}
+.pk-sum{margin:0 0 16px;text-align:left;display:grid;gap:10px}
+.pk-sum div{padding-top:10px;border-top:1px solid color-mix(in srgb,var(--pk-cream) 40%,transparent)}
+.pk-sum dt{font:700 .9375rem/1.3 var(--sans,"Manrope",system-ui,sans-serif)}
+.pk-sum dd{margin:2px 0 0;font:400 .9375rem/1.4 var(--sans,"Manrope",system-ui,sans-serif)}
+.pk-more{margin:0 0 16px;text-align:left}
+.pk-more summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font:700 .9375rem/1.3 var(--sans,"Manrope",system-ui,sans-serif);text-decoration:underline;text-underline-offset:4px}
+.pk-more summary:focus-visible{outline-color:var(--pk-cream)}
+.pk-sec{padding:10px 0;border-top:1px solid color-mix(in srgb,var(--pk-cream) 40%,transparent)}
+.pk-sec h3{margin:0 0 4px;font:700 .9375rem/1.3 var(--sans,"Manrope",system-ui,sans-serif)}
+.pk-sec p{margin:0;font:400 .9375rem/1.5 var(--sans,"Manrope",system-ui,sans-serif)}
+.pk-sec .pk-age{margin-top:6px;font-weight:700}
+.pk-plan{min-height:48px;width:100%;border:2px solid var(--pk-cream);border-radius:999px;background:var(--pk-cream);color:var(--rl-deep);font:700 1rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease)}
+.pk-plan:active,.pa-wa:active,.pa-step button:active{transform:scale(.97)}
+.pk-plan:focus-visible{outline-color:var(--pk-cream);outline-offset:3px}
+.pa-plan,.pa-choices,.pa-add{margin-top:clamp(32px,6vw,64px);max-width:720px;margin-inline:auto}
+.pa-plan h2,.pa-choices h2,.pa-add h2{margin:0 0 16px;font:500 clamp(1.5rem,4vw,2.25rem)/1.15 var(--serif,"Playfair Display",Georgia,serif);text-wrap:balance}
+.pa-fields{display:grid;grid-template-columns:auto 1fr;gap:12px 16px;align-items:center}
+.pa-fields label{font:600 .9375rem/1.3 var(--sans,"Manrope",system-ui,sans-serif)}
+.pa-fields select,.pa-step input{min-height:48px;width:100%;padding:0 12px;border:1px solid var(--rl-line);border-radius:12px;background:transparent;color:var(--rl-ink);font:500 1rem/1.2 var(--sans,"Manrope",system-ui,sans-serif)}
+.pa-fields select option{color:#1A1608}
+.pa-step{display:grid;grid-template-columns:48px 1fr 48px;gap:8px}
+.pa-step button{min-height:48px;border:1px solid var(--rl-line);border-radius:12px;background:transparent;color:var(--rl-ink);font:600 1.25rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--rl-ease)}
+.pa-step input{text-align:center}
+.pa-total{margin:20px 0 4px;font:500 clamp(1.75rem,6vw,2.5rem)/1.1 var(--serif,"Playfair Display",Georgia,serif)}
+.pa-fine{margin:0 0 16px;font:400 .875rem/1.4 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.pa-wa{display:inline-flex;align-items:center;min-height:52px;padding:0 32px;border-radius:999px;background:var(--rl-gold);color:var(--rl-deep);font:700 1rem/1 var(--sans,"Manrope",system-ui,sans-serif);text-decoration:none;touch-action:manipulation;transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease)}
+.pa-acc{border-top:1px solid var(--rl-track)}
+.pa-acc:last-of-type{border-bottom:1px solid var(--rl-track)}
+.pa-acc summary{min-height:56px;display:flex;align-items:center;cursor:pointer;font:500 1.25rem/1.25 var(--serif,"Playfair Display",Georgia,serif)}
+.pa-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 24px;padding:0 0 20px}
+.pa-cols h3{margin:0 0 6px;font:700 .9375rem/1.3 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-gold)}
+.pa-cols ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font:400 .9375rem/1.4 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.pa-addlist{list-style:none;margin:0 0 12px;padding:0}
+.pa-addlist li{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--rl-track);font:500 1rem/1.3 var(--sans,"Manrope",system-ui,sans-serif)}
+@media(min-width:900px){.pk-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));overflow:visible;margin:0;padding:8px 0 28px;gap:24px}.pk{flex:none}}
+@media(hover:hover){.pa-wa:hover{background:var(--rl-ink)}.pk-plan:hover{background:transparent;color:var(--pk-cream)}.pa-tabs button:hover:not([aria-pressed="true"]){background:color-mix(in srgb,var(--rl-gold) 20%,transparent)}.pa-back:hover svg{transform:translateX(-4px)}.pa-step button:hover{border-color:var(--rl-gold)}}
+@media(prefers-reduced-motion:reduce){.pk,.pa-star,.pa-host[data-pose="cheer"] .pa-cheer{animation:none!important}.pa-star{display:none}.pk-face{transition:none}}
+</style>
+<script is:inline src="/js/party.js"></script>
+</Base>
