@@ -74,3 +74,5 @@ main:focus{outline:none}
 @media(min-width:900px){.top .r .fx-pv{position:absolute;right:0;top:calc(100% + 14px/var(--u));width:calc(44px/var(--u));height:calc(44px/var(--u))}.fx-pv svg{width:calc(16px/var(--u));height:calc(16px/var(--u))}}
 @media(prefers-reduced-motion:reduce){.skip,.fx-pv{transition:none}}
 .rl-b,.rl-snd,.rl-frame,.fx-pv{touch-action:manipulation}
+/* Desktop scroll: 07.css locks html and body to one screen at 900px and up (coming-soon landing), which made the reels and the mascot unreachable. Let the page scroll again; html.lock (intro) still wins. */
+@media(min-width:900px){html{overflow-y:auto;height:auto}body{overflow:visible;height:auto;min-height:100%}}
