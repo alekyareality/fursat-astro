@@ -10,15 +10,17 @@ const iFood = '<path d="M4 16a8 8 0 0 1 16 0z"/><path d="M3 19.5h18"/><circle cx
 <section class="ms" id="ms" aria-label="Ask Fursat mascot" data-code={coupon.code}>
   <p class="ms-bubble" id="ms-bubble">Click me for your <em>special offer</em>!</p>
   <div class="ms-stage">
+    <div class="ms-float"><div class="ms-live">
     <button class="ms-body" id="ms-body" type="button" aria-expanded="false" aria-controls="ms-panel" aria-label="Feed the Fursat elephant for a special offer">
-      <span class="ms-float"><span class="ms-live"><span class="ms-tilt" id="ms-tilt">
+      <span class="ms-tilt" id="ms-tilt">
         {hasImg ? <><img class="ms-p ms-idle" src="/assets/ask-mascot-md.webp" alt="" width="400" height="400" decoding="async" /><img class="ms-p ms-chew" src="/assets/ask-mascot-chew-md.webp" alt="" width="400" height="400" decoding="async" /><img class="ms-p ms-cheer" src="/assets/ask-mascot-cheer-md.webp" alt="" width="400" height="400" decoding="async" /></> :
         <svg viewBox="0 0 120 120" aria-hidden="true"><ellipse class="e1" cx="22" cy="58" rx="20" ry="26"/><ellipse class="e1" cx="98" cy="58" rx="20" ry="26"/><circle class="e2" cx="60" cy="62" r="34"/><path class="tr" d="M60 74c0 16-2 26 8 32" fill="none" stroke-width="14" stroke-linecap="round"/><path class="cr" d="M38 36l7-16 8 10 7-14 7 14 8-10 7 16z"/><rect class="sg" x="36" y="52" width="20" height="13" rx="6"/><rect class="sg" x="64" y="52" width="20" height="13" rx="6"/><path class="sg2" d="M56 57h8" stroke-width="3"/><path class="sm" d="M50 78q10 8 20 0" fill="none" stroke-width="3" stroke-linecap="round"/></svg>}
-      </span></span></span>
+      </span>
       <span class="ms-dot" id="ms-dot" aria-hidden="true">1</span>
     </button>
+    <a class="ms-sign" href="/ask" aria-label="Ask Fursat: find a dish for your mood"><span class="ms-sign-t"><span class="ms-ask">Ask</span><span class="ms-fur" translate="no">Fursat</span></span></a>
+    </div></div>
     <i class="ms-spark ms-s1" aria-hidden="true"></i><i class="ms-spark ms-s2" aria-hidden="true"></i><i class="ms-spark ms-s3" aria-hidden="true"></i>
-    <a class="ms-sign" href="/ask" aria-label="Ask Fursat: find a dish for your mood"><span class="ms-sign-t"><span class="ms-ask">Ask</span> <span class="ms-fur" translate="no">Fursat</span></span></a>
   </div>
   <div class="ms-panel" id="ms-panel" role="region" aria-label="Feed the elephant" aria-live="polite" hidden>
     <div class="ms-feed" id="ms-feed">
@@ -39,9 +41,12 @@ const iFood = '<path d="M4 16a8 8 0 0 1 16 0z"/><path d="M3 19.5h18"/><circle cx
   </div>
 </section>
 <style is:global>
-:root{--ms-skin:#D9A88F;--ms-ear:#C98E74;--ms-dark:#1A1608;--ms-gold:#E0A63C;--ms-cream:#F4ECDA;--ms-field:#17200F;--ms-rust:#C94716;--ms-ease:cubic-bezier(.16,1,.3,1);--ms-size:150px}
+:root{--ms-skin:#D9A88F;--ms-ear:#C98E74;--ms-dark:#1A1608;--ms-gold:#E0A63C;--ms-cream:#F4ECDA;--ms-field:#17200F;--ms-rust:#C94716;--ms-ease:cubic-bezier(.16,1,.3,1);--ms-size:170px;--ms-ask:calc(var(--ms-size)*.4)}
 .ms{position:relative;display:grid;justify-items:center;gap:12px;padding:0 var(--pad,clamp(20px,5vw,84px)) clamp(56px,8vw,104px);margin-top:-56px;background:var(--rl-bg,var(--ms-field));color:var(--rl-ink,var(--ms-cream));perspective:640px;overflow-x:clip}
-.ms-stage{position:relative;display:grid;justify-items:center;width:max-content}
+.ms-stage{position:relative;display:block;width:var(--ms-size);height:var(--ms-size)}
+.js .ms:not(.is-in) .ms-stage{opacity:0}
+.ms.is-in .ms-stage{animation:ms-rise 1.1s var(--ms-ease) backwards}
+@keyframes ms-rise{0%{opacity:0;transform:translateY(64px) scale(.84)}60%{opacity:1}}
 .ms-body{all:unset;box-sizing:border-box;position:relative;display:block;width:var(--ms-size);height:var(--ms-size);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border-radius:50%}
 .ms-body::before{content:"";position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ms-gold) 45%,transparent),transparent 66%);animation:ms-glow 3.8s ease-in-out infinite;pointer-events:none}
 .ms-body:focus-visible,.ms-sign:focus-visible,.ms-chip:focus-visible,.ms-copy:focus-visible,.ms-wa:focus-visible,.ms-res:focus-visible{outline:2px solid var(--ms-gold);outline-offset:3px}
@@ -74,17 +79,22 @@ const iFood = '<path d="M4 16a8 8 0 0 1 16 0z"/><path d="M3 19.5h18"/><circle cx
 .ms-dot::after{content:"";position:absolute;inset:-2px;border-radius:12px;border:2px solid var(--ms-rust);animation:ms-ping 2s ease-out infinite}
 .ms-dot[hidden]{display:none}
 @keyframes ms-ping{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.9)}}
-.ms-sign{position:relative;z-index:1;margin-top:-20px;display:block;padding:9px 24px 10px;border-radius:999px;background:var(--ms-field);border:2px solid var(--ms-gold);box-shadow:0 0 18px color-mix(in srgb,var(--ms-gold) 38%,transparent),0 8px 18px color-mix(in srgb,var(--ms-dark) 45%,transparent);text-decoration:none;touch-action:manipulation;transition:transform .15s var(--ms-ease)}
-.ms-sign::before,.ms-sign::after{content:"";position:absolute;inset:-8px;border-radius:999px;border:3px dotted var(--ms-gold);pointer-events:none}
-.ms-sign::before{animation:ms-bulb 1.4s steps(1) infinite}
-.ms-sign::after{inset:-7px;border-width:4px;border-color:var(--ms-cream);opacity:.35;animation:ms-bulb 1.4s steps(1) infinite reverse}
-@keyframes ms-bulb{0%{opacity:1}50%{opacity:.25}}
-.ms-sign:active{transform:scale(.97)}
-.ms-sign-t{display:block;white-space:nowrap;line-height:1.1;color:var(--ms-cream);font:700 1.0625rem/1.1 "Poppins","Poppins Fallback",var(--sans,"Manrope",system-ui,sans-serif);letter-spacing:-.02em}
-.ms-fur{color:var(--ms-gold);font:italic 700 1.2em/1 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:0}
+.ms-sign{position:absolute;left:50%;top:84%;z-index:3;display:grid;place-items:center;width:var(--ms-ask);height:var(--ms-ask);margin:calc(var(--ms-ask)/-2) 0 0 calc(var(--ms-ask)/-2);border-radius:50%;background:var(--ms-field);border:2px solid var(--ms-gold);box-shadow:0 0 14px color-mix(in srgb,var(--ms-gold) 45%,transparent),0 6px 12px color-mix(in srgb,var(--ms-dark) 45%,transparent);text-decoration:none;touch-action:manipulation;transition:background-color .15s var(--ms-ease)}
+.ms.is-in .ms-sign{animation:ms-signin .7s var(--ms-ease) .6s backwards,ms-beat 1.15s ease-in-out 1.3s infinite}
+.ms-sign::before,.ms-sign::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.ms-sign::before{inset:-6px;border:2.5px dotted var(--ms-gold);animation:ms-bulb 1.4s steps(1) infinite}
+.ms-sign::after{inset:-2px;border:2px solid var(--ms-gold);opacity:0}
+.ms.is-in .ms-sign::after{animation:ms-ripple 1.15s ease-out 1.3s infinite}
+@keyframes ms-bulb{0%{opacity:1}50%{opacity:.3}}
+@keyframes ms-signin{from{opacity:0;transform:scale(.2) rotate(-20deg)}}
+@keyframes ms-beat{0%,52%,100%{transform:scale(1)}12%{transform:scale(1.2)}24%{transform:scale(.97)}36%{transform:scale(1.12)}}
+@keyframes ms-ripple{0%{opacity:.75;transform:scale(1)}45%,100%{opacity:0;transform:scale(1.9)}}
+.ms-sign-t{display:grid;justify-items:center;gap:calc(var(--ms-ask)*.03);line-height:1;text-align:center}
+.ms-ask{color:var(--ms-cream);font:700 calc(var(--ms-ask)*.15)/1 "Poppins","Poppins Fallback",var(--sans,"Manrope",system-ui,sans-serif);letter-spacing:.06em;text-transform:uppercase}
+.ms-fur{color:var(--ms-gold);font:italic 700 calc(var(--ms-ask)*.235)/1 var(--serif,"Playfair Display",Georgia,serif)}
 .ms-bubble{position:relative;margin:0 0 8px;max-width:260px;padding:12px 16px;border-radius:18px;background:var(--ms-field);color:var(--ms-cream);border:1.5px solid var(--ms-gold);box-shadow:0 0 16px color-mix(in srgb,var(--ms-gold) 30%,transparent);font:italic 600 1.0625rem/1.3 var(--serif,"Playfair Display",Georgia,serif);text-align:center;cursor:pointer;animation:ms-nudge 2.4s ease-in-out infinite}
 .js .ms:not(.is-in) .ms-bubble{opacity:0;animation:none}
-.ms.is-in .ms-bubble{animation:ms-pop .45s var(--ms-ease) backwards,ms-nudge 2.4s ease-in-out .5s infinite}
+.ms.is-in .ms-bubble{animation:ms-pop .5s var(--ms-ease) .35s backwards,ms-nudge 2.4s ease-in-out .9s infinite}
 .ms-bubble em{color:var(--ms-gold);font-weight:700}
 .ms-bubble::after{content:"";position:absolute;left:50%;margin-left:-7px;bottom:-8px;width:14px;height:14px;background:var(--ms-field);border-right:1.5px solid var(--ms-gold);border-bottom:1.5px solid var(--ms-gold);transform:rotate(45deg)}
 @keyframes ms-pop{from{opacity:0;transform:scale(.95) translateY(8px)}}
@@ -117,8 +127,8 @@ const iFood = '<path d="M4 16a8 8 0 0 1 16 0z"/><path d="M3 19.5h18"/><circle cx
 .ms-copy{background:var(--ms-dark);color:var(--ms-cream)}
 .ms-wa{background:transparent;color:var(--ms-dark)}
 .ms-res{width:100%;background:var(--ms-gold);border-color:var(--ms-gold);color:var(--ms-dark)}
-@media(hover:hover){.ms-sign:hover{transform:translateY(-2px)}.ms-chip:hover{background:var(--ms-gold);color:var(--ms-dark)}.ms-wa:hover{background:var(--ms-dark);color:var(--ms-cream)}.ms-res:hover{background:var(--ms-cream);border-color:var(--ms-dark)}}
-@media(min-width:900px){:root{--ms-size:200px}.ms-sign-t{font-size:1.1875rem}.ms-bubble{max-width:300px;font-size:1.25rem}}
-@media(prefers-reduced-motion:reduce){.ms-body::before,.ms-float,.ms-live,.ms-sign::before,.ms-sign::after,.ms-bubble,.ms-dot::after,.ms-ticket,.ms-code,.ms-body[data-pose] .ms-tilt,.ms-star{animation:none}.ms-spark,.ms-star{display:none}.ms-body::before{opacity:.6}.ms-tilt{transition:none}.ms-panel{animation-name:ms-fade;animation-duration:.2s}@keyframes ms-fade{from{opacity:0}}}
+@media(hover:hover){.ms-sign:hover{background:var(--ms-gold)}.ms-sign:hover .ms-ask,.ms-sign:hover .ms-fur{color:var(--ms-dark)}.ms-chip:hover{background:var(--ms-gold);color:var(--ms-dark)}.ms-wa:hover{background:var(--ms-dark);color:var(--ms-cream)}.ms-res:hover{background:var(--ms-cream);border-color:var(--ms-dark)}}
+@media(min-width:900px){:root{--ms-size:220px}.ms-bubble{max-width:300px;font-size:1.25rem}}
+@media(prefers-reduced-motion:reduce){.ms-body::before,.ms-float,.ms-live,.ms-sign,.ms-sign::before,.ms-bubble,.ms-dot::after,.ms-ticket,.ms-code,.ms-body[data-pose] .ms-tilt,.ms-star,.ms.is-in .ms-stage,.ms.is-in .ms-sign,.ms.is-in .ms-bubble{animation:none}.ms-sign::after{display:none}.js .ms:not(.is-in) .ms-stage,.js .ms:not(.is-in) .ms-bubble{opacity:1}.ms-spark,.ms-star{display:none}.ms-body::before{opacity:.6}.ms-tilt{transition:none}.ms-panel{animation-name:ms-fade;animation-duration:.2s}@keyframes ms-fade{from{opacity:0}}}
 </style>
 <script is:inline src="/js/mascot.js"></script>
