@@ -526,11 +526,13 @@ window.FursatConcierge={open:openIt,route:route};
 (function(){
   var v=document.getElementById("fxplv");
   if(!v)return;
-  if(matchMedia("(prefers-reduced-motion:reduce)").matches){v.removeAttribute("autoplay");return}
+  /* reduced motion: still load the video (poster -> real frame) but never autoplay; the pause/play button (17.js) starts it on request */
+  var calm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(calm){v.removeAttribute("autoplay");v.preload="metadata"}
   var vis=true;
   function play(){var p=v.play();p&&p.catch&&p.catch(function(){})}
   var ready=false,live=false,hero=document.getElementById("top");
-  function start(){if(live||!ready||!(hero&&hero.classList.contains("go")))return;live=true;try{v.currentTime=2.45}catch(e){}play()}
+  function start(){if(live||!ready||!(hero&&hero.classList.contains("go")))return;live=true;try{v.currentTime=2.45}catch(e){}if(!calm)play()}
   v.addEventListener("loadedmetadata",function(){try{v.currentTime=2.45}catch(e){}},{once:true});
   var d=v.getAttribute("data-src"),sm=v.getAttribute("data-src-sm");if(sm&&(matchMedia("(max-width:899px)").matches||(navigator.connection&&navigator.connection.saveData)))d=sm;
   function loaded(){ready=true;start()}

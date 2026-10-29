@@ -3,8 +3,8 @@
 (function(){
   var v=document.getElementById("fxplv"),b=document.getElementById("fxpv");
   if(!v||!b)return;
-  if(matchMedia("(prefers-reduced-motion:reduce)").matches){b.hidden=true;return}
-  var orig=v.play.bind(v),user=false;
+  var calm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var orig=v.play.bind(v),user=calm; /* reduced motion: starts paused, the button plays it */
   v.play=function(){return user?Promise.resolve():orig()};
   function set(){b.dataset.s=user?"paused":"playing";b.setAttribute("aria-label",user?"Play background video":"Pause background video")}
   b.addEventListener("click",function(){

@@ -31,9 +31,9 @@ import Base from '../layouts/Base.astro';
 .as-top{padding:max(16px,env(safe-area-inset-top)) var(--pad,clamp(20px,5vw,84px)) 0}
 .as-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--rl-ink);text-decoration:none;font:600 1rem/1 var(--sans,"Manrope",system-ui,sans-serif)}
 .as-back svg{width:20px;height:20px;transition:transform .15s var(--rl-ease)}
-.as-main{max-width:720px;margin:0 auto;padding:clamp(24px,6vw,64px) var(--pad,clamp(20px,5vw,84px)) clamp(48px,8vw,96px);text-align:center;outline:0}
-.as-h{margin:0 0 12px;font:500 clamp(2.25rem,7vw,4.5rem)/1.05 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:-.02em;text-wrap:balance}
-.as-sub{margin:0 auto 32px;max-width:48ch;font:400 1.125rem/1.5 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
+.as-main{max-width:720px;margin:0 auto;padding:clamp(4px,1.5vw,16px) var(--pad,clamp(20px,5vw,84px)) clamp(48px,8vw,96px);text-align:center;outline:0}
+.as-h{margin:0 0 8px;font:500 clamp(1.875rem,6vw,3rem)/1.1 var(--serif,"Playfair Display",Georgia,serif);letter-spacing:-.02em;text-wrap:balance}
+.as-sub{margin:0 auto 20px;max-width:48ch;font:400 1rem/1.5 var(--sans,"Manrope",system-ui,sans-serif);color:var(--rl-dim)}
 .ac{margin:0 auto;max-width:560px}
 .ac-card{padding:20px;border-radius:24px;background:var(--rl-ink);color:var(--rl-deep);text-align:left}
 .ac-by{margin:0 0 14px;font:700 .6875rem/1.4 var(--sans,"Manrope",system-ui,sans-serif);letter-spacing:.14em;text-transform:uppercase;color:#1F5E3A}
@@ -54,8 +54,8 @@ import Base from '../layouts/Base.astro';
 .ac-wa svg,.ac-ph svg{width:18px;height:18px;flex:none}
 .ac-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 @media(hover:hover){.ac-wa:hover{background:#186a2e}.ac-go:hover{background:#B8431A}.ac-ph:hover{text-decoration:underline}}
-.as-host{display:grid;justify-items:center;gap:12px;margin:0 0 16px}
-.as-stage{position:relative;isolation:isolate;width:clamp(148px,44vw,200px);aspect-ratio:1;display:grid}
+.as-host{display:grid;justify-items:center;gap:8px;margin:0 0 12px}
+.as-stage{position:relative;isolation:isolate;width:clamp(112px,30vw,148px);aspect-ratio:1;display:grid}
 .as-stage::after{content:"";position:absolute;left:18%;right:18%;bottom:-2px;height:10px;border-radius:50%;background:color-mix(in srgb,var(--rl-deep) 70%,transparent);transform:scaleY(.6);z-index:-1}
 .as-p{grid-area:1/1;width:100%;height:100%;object-fit:contain;opacity:0;transform-origin:50% 100%;transition:opacity .15s var(--rl-ease)}
 .as-host[data-pose="idle"] .as-idle,.as-host[data-pose="chew"] .as-chew,.as-host[data-pose="cheer"] .as-cheer{opacity:1}
@@ -69,12 +69,12 @@ import Base from '../layouts/Base.astro';
 @keyframes as-star{from{opacity:1;transform:translate(0,0) scale(.5)}to{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1.1)}}
 .as-say{position:relative;margin:0;padding:8px 16px;border-radius:999px;border:1px solid var(--rl-gold);font:500 1rem/1.3 var(--serif,"Playfair Display",Georgia,serif);color:var(--rl-ink);transition:opacity .15s var(--rl-ease)}
 .as-say.is-swap{opacity:0}
-.as-tabs{display:inline-flex;gap:4px;margin:0 0 24px;padding:4px;border:1px solid var(--rl-line);border-radius:999px}
+.as-tabs{display:inline-flex;gap:4px;margin:0 0 16px;padding:4px;border:1px solid var(--rl-line);border-radius:999px}
 .as-tabs button{transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease),color .15s var(--rl-ease);min-height:44px;padding:0 14px;white-space:nowrap;border:0;border-radius:999px;background:transparent;color:var(--rl-ink);font:600 .875rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation}
 .as-tabs button[aria-pressed="true"]{background:var(--rl-gold);color:var(--rl-deep)}
 .as-tabs button:focus-visible{outline:2px solid var(--rl-gold);outline-offset:2px}
 .as-chips[hidden]{display:none}
-.as-chips{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.as-chips{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 .as-chips button{min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--rl-line);background:transparent;color:var(--rl-ink);font:600 .9375rem/1 var(--sans,"Manrope",system-ui,sans-serif);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--rl-ease),background-color .15s var(--rl-ease),color .15s var(--rl-ease)}
 .as-chips button:active,.as-tabs button:active{transform:scale(.97)}
 .as-chips button:focus-visible,.as-back:focus-visible{outline:2px solid var(--rl-gold);outline-offset:3px}
