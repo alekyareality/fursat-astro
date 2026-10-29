@@ -14,6 +14,7 @@
   function ensure(i,how){
     var c=cards[i];if(!c)return;var v=vid(c);if(!v)return;
     if(!v.getAttribute("src")){v.setAttribute("src",v.getAttribute("data-src"));v.preload=how||"metadata";
+      v.addEventListener("error",function(){v.removeAttribute("src");setS(c,"paused")});
       var bar=c.querySelector(".rl-bar i");
       v.addEventListener("timeupdate",function(){if(bar&&v.duration)bar.style.transform="scaleX("+Math.min(1,v.currentTime/v.duration).toFixed(3)+")"});
     }else if(how==="auto")v.preload="auto"
@@ -37,7 +38,11 @@
   function sync(fromStart){
     if(active<0)return;var v=vid(cards[active]);if(!v)return;
     if(inView&&auto&&!document.hidden){if(v.paused)play(active,fromStart)}
-    else if(!v.paused)v.pause()
+    else{
+      if(!v.paused)v.pause();
+      /* autoplay is off (reduced motion, data saver) or the stage is offscreen: show a play button instead of a dead-looking poster */
+      var c=cards[active];if(!auto&&v.paused&&c.getAttribute("data-s")==="muted")setS(c,"paused")
+    }
   }
   function centre(){
     var r=track.getBoundingClientRect(),mid=r.left+r.width/2,best=0,bd=1e9;
@@ -77,10 +82,13 @@
   /* entrance + visibility */
   if("IntersectionObserver" in window){
     new IntersectionObserver(function(es){es.forEach(function(e){
-      if(e.isIntersecting)root.classList.add("rl-in");
+      if(e.isIntersecting)root.classList.add("rl-in")
+    })},{threshold:[0,.2]}).observe(root);
+    /* watch the card stage, not the whole section: a tall section on a phone can never reach 35% visible */
+    new IntersectionObserver(function(es){es.forEach(function(e){
       inView=e.intersectionRatio>=.35;
       if(active<0&&inView)activate(shown);else sync(false)
-    })},{threshold:[0,.2,.35,.6]}).observe(root)
+    })},{threshold:[0,.35,.6]}).observe(track.parentNode)
   }else{root.classList.add("rl-in");inView=true;activate(0)}
   document.addEventListener("visibilitychange",function(){sync(false)});
 })();
