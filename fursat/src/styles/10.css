@@ -131,3 +131,23 @@ main:focus{outline:none}
   .fx-igcol .igx-i{height:52px;margin:0}
   .fx-igcol .igx-i:hover{transform:translateY(-2px)}
 }
+
+/* ---------- UPDATE 18: reels drift stage ----------
+   Applies only when 16.js adds .dr, so the plain scroll-snap row above is still the no-JS fallback.
+   Colour layers (.rl-bgs) and waves (.rl-wv) are created by 16.js and cross-fade by opacity / move by transform only. */
+.rl.dr{isolation:isolate;transition:none}
+.rl-bgs,.rl-wv{position:absolute;inset:0;pointer-events:none}
+.rl-bgs{z-index:-2}
+.rl-bgs i{position:absolute;inset:0;opacity:0}
+.rl-wv{z-index:-1;overflow:hidden}
+.rl-wv i{position:absolute;left:0;bottom:0;width:200%;height:clamp(130px,22vw,280px);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'%3E%3Cpath fill='%23fff4d6' fill-opacity='.075' d='M0 110C200 50 400 50 600 110S1000 170 1200 110V200H0Z'/%3E%3C/svg%3E") repeat-x 0 100%/50% 100%;animation:rl-wave 48s linear infinite;will-change:transform}
+.rl-wv i+i{height:clamp(96px,16vw,210px);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'%3E%3Cpath fill='%23fff4d6' fill-opacity='.055' d='M0 120C150 170 450 170 600 120S1050 70 1200 120V200H0Z'/%3E%3C/svg%3E");animation-duration:31s}
+@keyframes rl-wave{to{transform:translate3d(-50%,0,0)}}
+.rl.dr::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(48% 46% at 50% 56%,rgba(255,238,196,.17),transparent 72%)}
+.rl.dr .rl-track{display:block;position:relative;overflow:visible;padding:0;height:calc(var(--cw)*16/9 + 112px);scroll-snap-type:none;perspective:1300px;perspective-origin:50% 38%;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab}
+.rl.dr .rl-track:active{cursor:grabbing}
+.rl.dr .rl-card{position:absolute;left:50%;top:30px;flex:none;width:var(--cw);margin-left:calc(var(--cw)/-2);transition:none;will-change:transform,opacity;backface-visibility:hidden}
+.rl.dr .rl-track img{-webkit-user-drag:none;user-drag:none}
+.rl.dr .rl-card.is-active .rl-frame{box-shadow:0 28px 56px rgba(0,0,0,.38)}
+.rl.lite .rl-wv{display:none}
+@media(prefers-reduced-motion:reduce){.rl-wv i{animation:none}}
