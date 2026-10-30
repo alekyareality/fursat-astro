@@ -25,6 +25,8 @@ const chips = {
 };
 ---
 <Base>
+<link rel="preload" href="/assets/fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/sacramento-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <a class="skip" href="#ask-main">Skip to main content</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol><symbol id="i-leaf-solid" viewBox="0 0 24 24"><path d="M21 3C11 3 4.5 8.5 4.5 15.5c0 1.4.3 2.7.9 3.8C7 13.5 10 10 14 8c-3 2.7-5.5 6.4-6.8 11.7.8.6 1.8 1 3 1C18 20.7 21.5 14 21 3Z" fill="currentColor"/></symbol><symbol id="i-mark" viewBox="0 0 24 24"><path d="M12 2.2c1.9 2.1 2.7 3.9 2.7 5.8 0 1.9-1.1 3.3-2.7 4.2-1.6-.9-2.7-2.3-2.7-4.2 0-1.9.8-3.7 2.7-5.8Z" fill="var(--as-gold,#C9983F)"/><path d="M3.6 8.2c2.6-.5 4.8.4 5.8 2.6-.4 1.7-1.8 2.8-3.7 2.9-1.6-.2-2.6-2.2-2.1-5.5ZM20.4 8.2c-2.6-.5-4.8.4-5.8 2.6.4 1.7 1.8 2.8 3.7 2.9 1.6-.2 2.6-2.2 2.1-5.5Z" fill="var(--as-gold-lo,#A97C2C)"/><path d="M11.4 21.6c-.3-3.3-2.2-5.4-7-5.6.2 3.4 2.9 5.4 7 5.6ZM12.6 21.6c.3-3.3 2.2-5.4 7-5.6-.2 3.4-2.9 5.4-7 5.6Z" fill="currentColor"/><path d="M12 12.4V22.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
 <symbol id="i-spice" viewBox="0 0 24 24"><path d="M3 22 15.2 8.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path transform="translate(15.2 8.2) rotate(-48)" d="M0 0C2.2-2.9 6.3-3.1 9.5 0 6.3 3.1 2.2 2.9 0 0Z" fill="currentColor"/><path transform="translate(11.6 12.3) rotate(-115)" d="M0 0C2.2-2.9 6.3-3.1 9.5 0 6.3 3.1 2.2 2.9 0 0Z" fill="currentColor"/><path transform="translate(11.6 12.3) rotate(-5)" d="M0 0C2.2-2.9 6.3-3.1 9.5 0 6.3 3.1 2.2 2.9 0 0Z" fill="currentColor" opacity="0.85"/><path transform="translate(7.6 16.8) rotate(-125)" d="M0 0C2.2-2.9 6.3-3.1 9.5 0 6.3 3.1 2.2 2.9 0 0Z" fill="currentColor" opacity="0.9"/><path transform="translate(7.6 16.8) rotate(-15)" d="M0 0C2.2-2.9 6.3-3.1 9.5 0 6.3 3.1 2.2 2.9 0 0Z" fill="currentColor" opacity="0.7"/></symbol>
@@ -39,6 +41,38 @@ const chips = {
 <div class="as">
   <section class="as-hero" aria-label="Fursat">
     <div class="as-art">
+      <div class="as-left">
+      <img class="as-sp as-sp-tl" src={A + 'sprig-tl.webp'} width="100" height="106" alt="" decoding="async">
+      <div class="as-intro">
+        <p class="as-eyebrow">Good food <i aria-hidden="true">&bull;</i> Slow moments <i aria-hidden="true">&bull;</i> Together</p>
+        <h1 class="as-h"><span>What are you</span> <span>in the mood for?</span></h1>
+        <p class="as-rule" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-sprig"/></svg><span></span></p>
+        <p class="as-sub">Tell Fursat how you feel and we will find the dish.</p>
+      </div>
+      <section class="ac" id="ask-fursat" aria-label="Ask Fursat, your food companion">
+        <svg class="ac-bg" viewBox="0 0 667 416" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="acg" cx="50%" cy="55%" r="65%"><stop offset="0" stop-color="#F8F2E2"/><stop offset="1" stop-color="#F3EEDA"/></radialGradient></defs><path d="M48.0,0.5 60.0,0.5 72.0,0.5 84.0,0.6 96.0,0.7 108.0,0.7 120.0,0.9 132.0,1.0 144.0,1.4 156.0,2.3 168.0,3.3 180.0,3.9 192.0,4.0 204.0,4.0 216.0,4.0 228.0,4.0 240.0,4.1 252.0,4.6 264.0,5.4 276.0,6.4 288.0,7.3 300.0,8.4 312.0,9.7 324.0,11.0 336.0,12.2 348.0,13.4 360.0,14.7 372.0,15.9 384.0,17.0 396.0,18.0 408.0,19.0 420.0,20.0 432.0,20.9 444.0,21.7 456.0,22.4 468.0,23.1 480.0,23.8 492.0,24.5 504.0,25.1 516.0,25.8 528.0,26.5 540.0,27.5 552.0,28.8 564.0,30.3 576.0,31.9 588.0,33.6 600.0,35.3 612.0,37.2 624.0,39.1 631.6,40.1 636.7,40.8 641.7,42.2 646.5,44.3 650.9,47.0 654.9,50.2 658.5,54.0 661.5,58.3 663.9,62.9 665.6,67.7 666.6,72.8 667.0,78.0 666.9,373.1 666.0,379.4 664.3,385.4 661.8,391.2 658.6,396.5 654.6,401.4 650.0,405.7 644.9,409.3 639.3,412.2 633.4,414.3 627.3,415.6 621.0,416.0 48.5,415.9 41.4,414.9 34.6,413.0 28.1,410.2 22.0,406.5 16.5,402.0 11.7,396.8 7.6,391.0 4.3,384.7 1.9,378.0 0.5,371.1 0.0,364.0 0.1,45.7 1.0,39.2 2.8,32.9 5.4,26.9 8.8,21.3 12.9,16.2 17.7,11.8 23.1,8.0 28.9,5.0 35.0,2.8 41.5,1.4 48.0,1.0Z" fill="url(#acg)" stroke="#FBF7EA" stroke-opacity=".9" stroke-width="1.5"/></svg>
+        <img class="ac-decor" src={A + 'card-decor.webp'} width="1334" height="832" alt="" decoding="async">
+        <h2 class="ac-title"><span class="ac-ask" aria-hidden="true">ask</span><span class="ac-name" translate="no">FURSAT</span><span class="ac-cap">Your food companion</span></h2>
+        <div class="ac-form" role="search">
+          <svg class="ac-lead" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mark"/></svg>
+          <label class="ac-sr" for="af-q">Tell Fursat what you feel like eating</label>
+          <input class="ac-input" id="af-q" type="text" placeholder="Something spicy under 400" enterkeyhint="search" maxlength="120" autocomplete="off">
+          <button class="ac-mic" id="af-mic" type="button" aria-label="Speak your mood" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3ZM19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg></button>
+          <button class="ac-go" id="af-send" type="button" aria-label="Ask"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <ul class="ac-chips" data-for="food" aria-label="Try one of these">
+          <li><button type="button" data-mood={chips.food[0][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[0][1]}/></svg>{chips.food[0][0]}</button></li>
+          <li><button type="button" data-mood={chips.food[1][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[1][1]}/></svg>{chips.food[1][0]}</button></li>
+          <li class="ac-br" aria-hidden="true"></li>
+          <li class="ac-skip"><a class="ac-skipchip" href="#as-results"><span>Skip to main content</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><button type="button" data-mood={chips.food[2][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[2][1]}/></svg>{chips.food[2][0]}</button></li>
+          <li class="ac-br" aria-hidden="true"></li>
+          <li><button type="button" data-mood={chips.food[3][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[3][1]}/></svg>{chips.food[3][0]}</button></li>
+        </ul>
+        <ul class="ac-chips" data-for="drinks" aria-label="Try one of these" hidden>{chips.drinks.map(([t]) => <li><button type="button" data-mood={t}>{t}</button></li>)}</ul>
+        <div class="ac-tabs" role="group" aria-label="Choose a menu"><span class="ac-ind" aria-hidden="true"></span><button type="button" data-tab="food" aria-pressed="true">Food</button><button type="button" data-tab="drinks" aria-pressed="false">Drinks</button><button type="button" data-tab="sree" aria-pressed="false">Sreemukhi’s Special</button></div>
+      </section>
+      </div>
       <div class="as-photo" id="as-photo" role="group" aria-roledescription="carousel" aria-label="Fursat photos"><picture><source media="(max-width:759px)" type="image/webp" srcset={A + 'hero-m640.webp 640w, ' + A + 'hero-m900.webp 900w'} sizes="100vw"><img class="sl on" src={A + 'hero.webp'} width="2124" height="1065" alt="Fursat’s elephant host in a gold crown and sunglasses, resting his chin on a marble table in the café" fetchpriority="high" decoding="async"></picture>
       {dishes.map((d) => <img class="sl sl-d" src={'/assets/' + d[1] + '.webp'} width="900" height="514" alt={d[2]} loading="lazy" decoding="async" />)}
       <div class="as-ctl">
@@ -49,45 +83,10 @@ const chips = {
         <button class="as-sb" id="as-pz" type="button" aria-label="Pause slideshow" aria-pressed="false"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.500v14H7zM13.500 5H17v14h-3.500z"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.500v13l11-6.500z"/></svg></button>
       </div>
     </div>
-      <svg class="as-paper" viewBox="0 0 896 540" aria-hidden="true"><path d="M0 -2H649L647.1 3 645.1 6 643.0 9 640.9 12 638.6 15 636.3 18 633.8 21 631.1 24 628.1 27 624.9 30 621.3 33 617.4 36 613.1 39 608.3 42 603.1 45 597.7 48 592.0 51 585.8 54 579.3 57 572.7 60 566.0 63 559.0 66 551.9 69 544.8 72 537.7 75 530.6 78 523.5 81 516.7 84 510.1 87 503.7 90 497.5 93 491.7 96 486.2 99 480.9 102 476.0 105 471.5 108 467.3 111 463.4 114 459.8 117 456.5 120 453.5 123 450.7 126 448.1 129 445.7 132 443.4 135 441.3 138 439.3 141 437.5 144 435.9 147 434.3 150 432.9 153 431.6 156 430.5 159 429.4 162 428.5 165 427.8 168 427.2 171 426.7 174 426.3 177 426.1 180 426.1 183 426.1 186 426.1 189 426.1 192 426.2 195 426.4 198 426.6 201 426.9 204 427.1 207 427.3 210 427.5 213 427.5 216 427.5 219 427.3 222 427.0 225 426.7 228 426.1 231 425.4 234 424.4 237 423.3 240 422.1 243 420.7 246 419.2 249 417.6 252 415.9 255 414.2 258 412.4 261 410.6 264 408.8 267 407.0 270 405.2 273 403.5 276 402.0 279 400.5 282 399.1 285 397.5 288 395.9 291 394.2 294 392.4 297 390.4 300 388.3 303 386.0 306 383.5 309 380.8 312 377.7 315 374.2 318 370.5 321 366.5 324 362.2 327 357.7 330 352.8 333 347.6 336 341.9 339 335.6 342 329.0 345 322.2 348 315.2 351 307.9 354 300.4 357 292.9 360 285.6 363 278.2 366 270.8 369 263.2 372 256.0 375 249.0 378 241.1 381 230.9 384 215.4 387 195.0 390L190 398 139 412 111 427 0 442Z"/><path d="M783 537 784 533 800 526 816 521 832 518 848 516 864 516 880 517 898 517V540H783Z"/></svg>
-      <span class="as-lobex" aria-hidden="true"></span>
-      <span class="as-blobx" aria-hidden="true"></span>
-      <img class="as-blob" src={A + 'blob.webp'} width="310" height="250" alt="" decoding="async">
-      <img class="as-sp as-sp-tl" src={A + 'sprig-tl.webp'} width="100" height="106" alt="" decoding="async">
-      <img class="as-sp as-sp-gd" src={A + 'sprig-gold.webp'} width="48" height="84" alt="" decoding="async">
-      <div class="as-intro">
-        <p class="as-eyebrow">Good food <i aria-hidden="true">&bull;</i> Slow moments <i aria-hidden="true">&bull;</i> Together</p>
-        <h1 class="as-h"><span>What are you</span> <span>in the mood for?</span></h1>
-        <p class="as-rule" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-sprig"/></svg><span></span></p>
-        <p class="as-sub">Tell Fursat how you feel and we will find the dish.</p>
-      </div>
     </div>
   </section>
 
   <main id="ask-main" tabindex="-1" class="as-main">
-    <section class="ac" id="ask-fursat" aria-label="Ask Fursat, your food companion">
-      <svg class="ac-bg" viewBox="0 0 667 416" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="acg" cx="50%" cy="55%" r="65%"><stop offset="0" stop-color="#F8F2E2"/><stop offset="1" stop-color="#F3EEDA"/></radialGradient></defs><path d="M48.0,0.5 60.0,0.5 72.0,0.5 84.0,0.6 96.0,0.7 108.0,0.7 120.0,0.9 132.0,1.0 144.0,1.4 156.0,2.3 168.0,3.3 180.0,3.9 192.0,4.0 204.0,4.0 216.0,4.0 228.0,4.0 240.0,4.1 252.0,4.6 264.0,5.4 276.0,6.4 288.0,7.3 300.0,8.4 312.0,9.7 324.0,11.0 336.0,12.2 348.0,13.4 360.0,14.7 372.0,15.9 384.0,17.0 396.0,18.0 408.0,19.0 420.0,20.0 432.0,20.9 444.0,21.7 456.0,22.4 468.0,23.1 480.0,23.8 492.0,24.5 504.0,25.1 516.0,25.8 528.0,26.5 540.0,27.5 552.0,28.8 564.0,30.3 576.0,31.9 588.0,33.6 600.0,35.3 612.0,37.2 624.0,39.1 631.6,40.1 636.7,40.8 641.7,42.2 646.5,44.3 650.9,47.0 654.9,50.2 658.5,54.0 661.5,58.3 663.9,62.9 665.6,67.7 666.6,72.8 667.0,78.0 666.9,373.1 666.0,379.4 664.3,385.4 661.8,391.2 658.6,396.5 654.6,401.4 650.0,405.7 644.9,409.3 639.3,412.2 633.4,414.3 627.3,415.6 621.0,416.0 48.5,415.9 41.4,414.9 34.6,413.0 28.1,410.2 22.0,406.5 16.5,402.0 11.7,396.8 7.6,391.0 4.3,384.7 1.9,378.0 0.5,371.1 0.0,364.0 0.1,45.7 1.0,39.2 2.8,32.9 5.4,26.9 8.8,21.3 12.9,16.2 17.7,11.8 23.1,8.0 28.9,5.0 35.0,2.8 41.5,1.4 48.0,1.0Z" fill="url(#acg)" stroke="#FBF7EA" stroke-opacity=".9" stroke-width="1.5"/></svg>
-      <img class="ac-decor" src={A + 'card-decor.webp'} width="1334" height="832" alt="" decoding="async">
-      <h2 class="ac-title"><span class="ac-ask" aria-hidden="true">ask</span><span class="ac-name" translate="no">FURSAT</span><span class="ac-cap">Your food companion</span></h2>
-      <div class="ac-form" role="search">
-        <svg class="ac-lead" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mark"/></svg>
-        <label class="ac-sr" for="af-q">Tell Fursat what you feel like eating</label>
-        <input class="ac-input" id="af-q" type="text" placeholder="Something spicy under 400" enterkeyhint="search" maxlength="120" autocomplete="off">
-        <button class="ac-mic" id="af-mic" type="button" aria-label="Speak your mood" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3ZM19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg></button>
-        <button class="ac-go" id="af-send" type="button" aria-label="Ask"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-      </div>
-      <ul class="ac-chips" data-for="food" aria-label="Try one of these">
-        <li><button type="button" data-mood={chips.food[0][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[0][1]}/></svg>{chips.food[0][0]}</button></li>
-        <li><button type="button" data-mood={chips.food[1][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[1][1]}/></svg>{chips.food[1][0]}</button></li>
-        <li class="ac-br" aria-hidden="true"></li>
-        <li class="ac-skip"><a class="ac-skipchip" href="#as-results"><span>Skip to main content</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-        <li><button type="button" data-mood={chips.food[2][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[2][1]}/></svg>{chips.food[2][0]}</button></li>
-        <li class="ac-br" aria-hidden="true"></li>
-        <li><button type="button" data-mood={chips.food[3][0]}><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><use href={"#" + chips.food[3][1]}/></svg>{chips.food[3][0]}</button></li>
-      </ul>
-      <ul class="ac-chips" data-for="drinks" aria-label="Try one of these" hidden>{chips.drinks.map(([t]) => <li><button type="button" data-mood={t}>{t}</button></li>)}</ul>
-      <div class="ac-tabs" role="group" aria-label="Choose a menu"><span class="ac-ind" aria-hidden="true"></span><button type="button" data-tab="food" aria-pressed="true">Food</button><button type="button" data-tab="drinks" aria-pressed="false">Drinks</button><button type="button" data-tab="sree" aria-pressed="false">Sreemukhi’s Special</button></div>
-    </section>
     <section class="rs" id="as-results" aria-live="polite" hidden></section>
   </main>
   <img class="as-bowl" src={A + 'bowl.webp'} width="440" height="178" alt="" decoding="async" loading="lazy">
@@ -167,16 +166,6 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 .rs-h span{max-width:12em;text-wrap:balance}
 .rs-h span::after{content:"";display:inline-block;width:calc(var(--u)*40);margin-left:.4em;vertical-align:.25em;border-top:1px solid var(--as-line)}
 .rs-list{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(var(--u)*22);margin:0;padding:0}
-.pk{display:flex;flex-direction:column;padding:calc(var(--u)*3);border:1px solid #E4D9BC;border-radius:calc(var(--u)*16);background:#F8F3E4;box-shadow:0 calc(var(--u)*6) calc(var(--u)*18) rgb(var(--as-sh)/.14);animation:as-in .5s var(--as-ease) backwards;animation-delay:calc(min(var(--k),7)*60ms)}
-.pk-img{position:relative;aspect-ratio:226/114;border-radius:calc(var(--u)*14) calc(var(--u)*14) calc(var(--u)*5) calc(var(--u)*5);overflow:hidden;background:linear-gradient(150deg,var(--as-green),var(--as-green-deep))}
-.pk-img img{width:100%;height:100%;object-fit:cover}
-.pk-ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--as-gold)}.pk-ph svg{width:34%;height:34%;opacity:.5}
-.pk-badge{position:absolute;left:calc(var(--u)*10);top:calc(var(--u)*10);display:grid;place-items:center;width:calc(var(--u)*36);height:calc(var(--u)*36);min-width:26px;min-height:26px;border-radius:50%;background:#FBF7EA;color:var(--as-leaf)}
-.pk-badge{color:var(--as-green)}.pk-badge svg{width:56%;height:56%}
-.pk-b{display:flex;flex:1;flex-direction:column;padding:calc(var(--u)*14) calc(var(--u)*14) calc(var(--u)*12)}
-.pk-n{margin:0;font:400 max(17px,calc(var(--u)*19))/1.22 var(--as-serif);color:var(--as-green);text-wrap:balance}
-.pk-m{margin:calc(var(--u)*8) 0 0;font:400 max(11px,calc(var(--u)*11))/1.5 var(--as-sans);color:var(--as-mute)}
-.pk-p{margin:auto 0 0;padding-top:calc(var(--u)*8);font:400 max(16px,calc(var(--u)*16))/1 var(--as-serif);color:var(--as-green)}
 .rs-sep{display:flex;align-items:center;gap:calc(var(--u)*18);margin:calc(var(--u)*22) auto calc(var(--u)*14);max-width:calc(var(--u)*368);color:var(--as-gold-lo)}
 .rs-sep::before,.rs-sep::after{content:"";flex:1;border-top:1px solid var(--as-line)}.rs-sep svg{width:22px;height:22px;color:var(--as-leaf)}
 .rs-wa{display:flex;align-items:center;justify-content:center;gap:10px;width:max-content;min-height:44px;height:calc(var(--u)*36);margin:0 auto;padding:0 calc(var(--u)*30);border-radius:999px;background:var(--as-green);color:var(--as-cream);font:400 max(12px,calc(var(--u)*12))/1 var(--as-serif);text-decoration:none;touch-action:manipulation;transition:transform .15s var(--as-ease),background-color .15s var(--as-ease)}
@@ -188,7 +177,7 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 .as-endg{right:0;width:calc(var(--u)*256)}
 @keyframes as-in{from{opacity:0;transform:translateY(8px)}}
 @media(hover:hover){.as-reserve:hover,.rs-wa:hover{background:var(--as-green-deep)}.ac-chips button:hover{background:#E6DCC0}.ac-tabs button:hover{color:var(--as-green)}.ac-go:hover{transform:scale(1.04)}.ac-skipchip:hover{background:var(--as-green-deep)}}
-@media(prefers-reduced-motion:reduce){.pk{animation:none}.as-reserve,.ac-go,.ac-chips button,.rs-wa,.ac-skipchip{transition:none}}
+@media(prefers-reduced-motion:reduce){.as-reserve,.ac-go,.ac-chips button,.rs-wa,.ac-skipchip{transition:none}}
 @media(max-width:759px){
   .as-hero{height:auto}
   .as-art{position:relative;width:100%;height:auto;display:flex;flex-direction:column}
@@ -210,7 +199,7 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
   .as-main{padding-bottom:150px}.as-main:has(.rs:not([hidden])){padding-bottom:110px}
   .rs{width:auto;max-width:calc(100% - 32px);margin-top:28px}
   .rs-h{font-size:1.625rem;gap:10px;padding-left:0}.rs-h svg{width:24px;height:24px}
-  .rs-list{grid-template-columns:minmax(0,1fr);gap:16px}.pk{border-radius:22px}.pk-img{border-radius:18px 18px 8px 8px}.pk-b{padding:14px}.pk-n{font-size:1.25rem}.pk-m{font-size:.8125rem}.pk-p{font-size:1.125rem}
+
   .rs-sep{margin:24px auto 16px}.rs-wa{padding:0 24px;font-size:.9375rem}.rs-fine{max-width:34ch}
   .as-bowl{width:min(46vw,200px)}.as-endg{width:min(40vw,170px)}
 }
@@ -248,8 +237,7 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 .ac-chips li:nth-child(2) button{animation-delay:.87s}.ac-chips li:nth-child(4) .ac-skipchip{animation-delay:.94s}.ac-chips li:nth-child(5) button{animation-delay:1.01s}.ac-chips li:nth-child(7) button{animation-delay:1.08s}
 .as-sp{transform-origin:0 0;animation:as-sway 7s cubic-bezier(.77,0,.175,1) infinite alternate}.as-sp-gd{animation-duration:9s;animation-delay:-3s}
 @supports(animation-timeline:scroll()){.as-photo img{animation:as-settle 1.5s var(--as-ease) backwards,as-par linear both;animation-timeline:auto,scroll(root);animation-range:normal,0 60vh}}
-@media(hover:hover){.pk{transition:transform .2s var(--as-ease),box-shadow .2s var(--as-ease)}.pk:hover{transform:translateY(-3px);box-shadow:0 calc(var(--u)*12) calc(var(--u)*26) rgb(var(--as-sh)/.2)}.pk-img img{transition:scale .5s var(--as-ease)}.pk:hover .pk-img img{scale:1.045}.pk-badge svg{transition:transform .3s var(--as-ease)}.pk:hover .pk-badge svg{transform:rotate(-8deg) scale(1.08)}}
-@media(prefers-reduced-motion:reduce){.as-eyebrow,.as-h span,.as-rule,.as-sub,.as-photo img,.ac-chips button,.ac-skipchip,.as-sp{animation:none!important}.pk,.pk-img img,.pk-badge svg,.hd-cta svg{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.as-eyebrow,.as-h span,.as-rule,.as-sub,.as-photo img,.ac-chips button,.ac-skipchip,.as-sp{animation:none!important}.hd-cta svg{transition:none!important}}
 
 /* ---- UPDATE 9: progress hairline, sliding tab indicator, chip light, field bloom ---- */
 .hd-prog{position:absolute;left:calc(var(--u)*56);right:calc(var(--u)*56);bottom:calc(var(--u)*9);height:2px;border-radius:2px;background:var(--as-gold);transform-origin:0 50%;pointer-events:none}
@@ -303,13 +291,128 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 @supports(animation-timeline:scroll()){.as-prog{animation:as-prog linear both;animation-timeline:scroll(root)}@keyframes as-prog{to{transform:scaleX(1)}}}
 html.fx2 .ac:not(.in){opacity:0;translate:0 28px}
 html.fx2 .ac{transition:opacity .8s var(--as-ease),translate .8s var(--as-ease)}
-.pk{transform-style:preserve-3d;--rx:0deg;--ry:0deg}
-.pk{position:relative}
-@media(hover:hover) and (pointer:fine){.pk.tilt{transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-3px);transition:transform .12s ease-out,box-shadow .2s}}
-.pk-img img{animation:pk-drift 9s ease-in-out infinite alternate}
-@keyframes pk-drift{to{scale:1.06}}
 .as-reserve,.ac-go{will-change:translate}
-@media(prefers-reduced-motion:reduce){html.fx2 .ac:not(.in){opacity:1;translate:0 0}.pk-img img{animation:none}.as-prog{display:none}}
+@media(prefers-reduced-motion:reduce){html.fx2 .ac:not(.in){opacity:1;translate:0 0}.as-prog{display:none}}
+
+/* ---- UPDATE 14: leaf-plate results (renamed .pk -> .mc: .pk is a fixed overlay in 05.css and hid every result) ---- */
+.rs.pre .mc,.rs.pre .rs-h{opacity:0}
+.rs-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(var(--u)*34) calc(var(--u)*26);align-items:start}
+.mc{--c1:#1F4129;--c2:#3A6B46;position:relative;display:flex;flex-direction:column;min-width:0}
+.mc[data-t="1"]{--c1:#4B5A22;--c2:#7F9440}
+.mc[data-t="2"]{--c1:#82381F;--c2:#B8602F}
+.mc[data-t="3"]{--c1:#8A6322;--c2:#C9983F}
+.mc-fig{position:relative}
+.mc-img{position:relative;aspect-ratio:10/9;overflow:hidden;border-radius:50% 5% 50% 5%;background:var(--c1);isolation:isolate}
+.mc:nth-child(even) .mc-img{border-radius:5% 50% 5% 50%}
+.mc-img img{display:block;width:100%;height:100%;object-fit:cover}
+.mc-ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--as-cream);background:radial-gradient(60% 60% at 30% 25%,rgb(255 255 255/.16),transparent 70%),linear-gradient(150deg,var(--c2),var(--c1))}
+.mc-ph svg{width:34%;height:34%;opacity:.92}
+.mc-seal{position:absolute;bottom:0;left:calc(var(--u)*8);translate:0 34%;display:grid;place-items:center;align-content:center;width:max(54px,calc(var(--u)*66));height:max(54px,calc(var(--u)*66));border-radius:50%;background:linear-gradient(150deg,#F0CB78,#C9983F);color:#1B2A15;box-shadow:0 calc(var(--u)*6) calc(var(--u)*14) rgb(var(--as-sh)/.28),inset 0 0 0 2px rgb(255 248 224/.55);font-family:var(--as-serif);line-height:1;text-align:center}
+.mc:nth-child(even) .mc-seal{left:auto;right:calc(var(--u)*8);translate:0 34%}
+.mc-seal b{font-weight:500;font-size:max(16px,calc(var(--u)*18))}
+.mc-seal small{font:600 max(9px,calc(var(--u)*8.5))/1 var(--as-sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.mc-b{display:flex;flex-direction:column;gap:calc(var(--u)*7);padding:calc(var(--u)*30) calc(var(--u)*4) 0}
+.mc-n{display:flex;align-items:flex-start;gap:8px;margin:0;font:400 max(19px,calc(var(--u)*21))/1.18 var(--as-serif);color:var(--as-green);text-wrap:balance}
+.mc-vg{flex:none;width:13px;height:13px;margin-top:.32em;border:1.5px solid currentColor;border-radius:3px;display:grid;place-items:center}
+.mc-vg::after{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.mc-vg.is-veg{color:#2E7D32}.mc-vg.is-nv{color:#B3261E}
+.mc-m{margin:0;font:400 max(13px,calc(var(--u)*12.5))/1.45 var(--as-sans);color:#4A5446}
+.mc-w{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 0;padding:0}
+.mc-w li{padding:4px 10px;border-radius:999px;background:var(--as-chip);color:var(--as-green);font:500 max(12px,calc(var(--u)*11))/1.2 var(--as-sans)}
+@media(hover:hover){.mc-img img,.mc-ph svg{transition:scale .6s var(--as-ease)}.mc:hover .mc-img img,.mc:hover .mc-ph svg{scale:1.05}}
+@media(prefers-reduced-motion:reduce){.mc-img img,.mc-ph svg{transition:none}.rs.pre .mc,.rs.pre .rs-h{opacity:1}}
+/* header: icons and type must always be visible */
+.hd svg{display:block;flex:none;overflow:visible}
+.hd-bg{opacity:1!important;background:rgb(247 240 223/.94)}
+.hd-cta svg{width:max(14px,calc(var(--u)*13));height:max(14px,calc(var(--u)*13))}
+.hd-logo,.hd-logo svg{color:var(--as-green)}
+.hd-links a,.hd-t{color:var(--as-ink)}
+.hd-cta,.hd-cta svg{color:var(--as-cream)}
+.hd-logo span,.hd-links a,.hd-cta{font-family:var(--as-serif);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media(max-width:759px){
+  .hd-logo svg{width:26px;height:26px}.hd-cta{font-size:.875rem}
+  .rs-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 14px}
+  .mc-seal{width:50px;height:50px;left:6px;translate:0 30%}.mc:nth-child(even) .mc-seal{left:auto;right:6px;translate:0 30%}
+  .mc-seal b{font-size:1rem}
+  .mc-b{padding:24px 2px 0}.mc-n{font-size:1.125rem}.mc-m{font-size:.8125rem}
+}
+@media(max-width:339px){.rs-list{grid-template-columns:minmax(0,1fr)}}
+
+/* ---- UPDATE 17: Ask-first hero. One grid: heading + Ask card top-left, photo slideshow right. No absolute canvas, no overlaps. ---- */
+.as-hero{position:relative;z-index:1;height:auto;padding:clamp(92px,8.5vw,112px) clamp(16px,4vw,56px) clamp(28px,3.5vw,48px);box-sizing:border-box}
+.as-art{position:relative;width:auto;max-width:1280px;height:auto;margin:0 auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:0 clamp(20px,3.2vw,48px);align-items:stretch}
+.as-left{position:relative;z-index:3;display:flex;flex-direction:column;gap:clamp(18px,2vw,26px);min-width:0}
+.as-sp-tl{display:none}
+.as-intro{position:static;left:auto;top:auto;width:auto}
+.as-eyebrow{font-size:.6875rem;white-space:normal}
+.as-h{margin:12px 0 0;font:400 clamp(2.4rem,4.2vw,3.6rem)/1.04 var(--as-serif)}
+.as-h span{display:block;white-space:normal}
+.as-rule{margin:14px 0 10px}.as-rule svg{width:20px;height:20px}.as-rule span{width:70px}
+.as-sub{max-width:36ch;font:400 1rem/1.5 var(--as-sans)}
+/* the Ask card */
+.ac{position:relative;width:auto;height:auto;max-width:none;margin:0;padding:clamp(40px,3.4vw,48px) clamp(18px,2.4vw,32px) 12px;border-radius:44px 22px 44px 44px;background:#F7F2E2;border:1px solid #E4D9BC;box-shadow:0 16px 36px rgb(var(--as-sh)/.2);text-align:center}
+.ac-bg,.ac-decor{display:none}
+.ac-title{position:relative;left:auto;top:auto;width:auto;display:flex;flex-direction:column;align-items:center}
+.ac-ask{position:absolute;left:calc(50% - 9.25rem);top:-1.5rem;font-size:4rem}
+.ac-name{margin-top:1.15rem;font-size:2.5rem;padding-left:.16em}
+.ac-cap{font-size:.6875rem}
+.ac-form{position:relative;left:auto;top:auto;width:auto;height:58px;margin-top:22px;padding:0 6px 0 20px;gap:10px}
+.ac-lead{width:24px;height:24px}.ac-input{font-size:.9375rem}.ac-go{width:44px;height:44px}
+.ac-chips{position:relative;left:auto;top:auto;width:auto;gap:10px;margin-top:16px}
+.ac-chips li.ac-br,.ac-skip{display:none!important}
+.ac-chips button{height:44px;padding:0 18px;gap:10px;font-size:.875rem;margin-bottom:0}
+.ac-chips svg.ci{width:26px;height:26px;min-width:26px;margin-left:-6px;padding:5px}
+.ac-tabs{position:relative;left:auto;bottom:auto;width:auto;flex-wrap:wrap;margin-top:8px}
+.ac-tabs button{font-size:.8125rem}
+/* photo: always inside its own stacking context, always behind the text */
+.as-photo{position:relative;z-index:0;isolation:isolate;left:auto;top:auto;right:auto;height:auto;min-height:clamp(440px,44vw,600px);margin:0;border-radius:120px 44px 44px 44px;overflow:hidden;background:var(--as-photo);box-shadow:0 18px 40px rgb(var(--as-sh)/.22)}
+.as-photo img.sl,.as-photo img.sl-d{position:absolute;inset:0;left:0;top:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:44% 50%}
+.as-photo img.sl-d{object-position:50% 50%}
+.as-photo img.sl:not(.sl-d){animation:as-settle 1.5s var(--as-ease) backwards}
+.as-ctl{left:16px;right:auto;top:auto;bottom:16px;justify-content:flex-start}
+/* results: clean menu cards, same size for every dish */
+.as-main{padding-bottom:clamp(120px,14vw,200px)}
+.as-main:has(.rs:not([hidden])){padding-bottom:clamp(120px,14vw,200px)}
+.rs{width:min(1120px,calc(100% - 32px));max-width:none;margin:clamp(8px,2vw,24px) auto 0}
+.rs-h{padding-left:0;margin-bottom:20px}.rs-h span{max-width:26em}
+.rs-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;align-items:stretch}
+.mc{display:grid;grid-template-columns:92px minmax(0,1fr) auto;align-items:center;column-gap:16px;padding:12px 18px 12px 12px;background:#FBF7EA;border:1px solid #E6DBBE;border-radius:22px;box-shadow:0 6px 18px rgb(var(--as-sh)/.08)}
+.mc-fig{display:contents}
+.mc-img,.mc:nth-child(even) .mc-img{grid-column:1;grid-row:1;width:92px;height:92px;aspect-ratio:1;border-radius:16px}
+.mc-ph svg{width:44%;height:44%}
+.mc-b{grid-column:2;grid-row:1;padding:0;gap:6px;min-width:0}
+.mc-n{font-size:1.125rem;line-height:1.2}
+.mc-m{font-size:.8125rem}
+.mc-w li{padding:3px 9px;font-size:.75rem}
+.rs-list .mc:nth-child(n) .mc-seal{grid-column:3;grid-row:1;position:static;left:auto;right:auto;translate:none;width:auto;height:auto;display:flex;flex-direction:column;align-items:flex-end;background:none;box-shadow:none;border-radius:0;color:var(--as-green);padding-left:4px;text-align:right}
+.mc-seal b{font-size:1.25rem}
+.mc-seal small{margin:0 0 2px;color:var(--as-mute)}
+@media(min-width:760px){.ac-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ac-chips[hidden]{display:none}.ac-chips li{display:block}.ac-chips button{width:100%;justify-content:center;padding:0 10px;gap:8px;white-space:normal;line-height:1.2;text-align:left}}
+@media(max-width:959px){
+  .as-art{grid-template-columns:minmax(0,1fr);gap:22px}
+  .as-photo{min-height:0;aspect-ratio:4/3.3}
+}
+@media(max-width:759px){
+  .as-intro{order:0}.ac{order:1}
+  .as-hero{padding:80px 14px 20px}.as-eyebrow{letter-spacing:.22em}.ac-input{font-size:.8125rem}
+  .as-sp-tl{display:none}
+  .as-h{font-size:clamp(2.2rem,10.5vw,3rem)}
+  .as-sub{font-size:.9375rem}
+  .ac{padding:36px 14px 10px;border-radius:40px 20px 40px 40px}
+  .ac-ask{left:calc(50% - 7.75rem);top:-1.35rem;font-size:3.4rem}
+  .ac-name{font-size:2.1rem;margin-top:.9rem}
+  .ac-form{height:56px;margin-top:18px;padding:0 6px 0 16px}
+  .ac-chips button{font-size:.8125rem;padding:0 14px}
+  .as-photo{border-radius:80px 32px 32px 32px}
+  .as-ctl{left:12px;right:12px;bottom:12px;justify-content:space-between;padding:4px 4px 4px 14px}
+  .as-capn{display:none}
+  .rs{width:calc(100% - 28px)}
+  .rs-list{grid-template-columns:minmax(0,1fr);gap:12px}
+  .mc{grid-template-columns:72px minmax(0,1fr) auto;column-gap:12px;padding:10px 14px 10px 10px}
+  .mc-img,.mc:nth-child(even) .mc-img{width:72px;height:72px;border-radius:14px}
+  .mc-n{font-size:1.0625rem}
+}
+@media(prefers-reduced-motion:reduce){.as-photo img.sl:not(.sl-d){animation:none}}
 </style>
 <script is:inline>
 (function(){var ph=document.getElementById("as-photo");if(!ph)return;
@@ -348,10 +451,6 @@ if(!fine)return;
 document.addEventListener("pointermove",function(e){var b=e.target.closest&&e.target.closest(".as-reserve,.ac-go");
  document.querySelectorAll(".as-reserve,.ac-go").forEach(function(x){if(x!==b)x.style.translate=""});
  if(b){var r=b.getBoundingClientRect();b.style.translate=((e.clientX-r.left-r.width/2)*.16).toFixed(1)+"px "+((e.clientY-r.top-r.height/2)*.28).toFixed(1)+"px"}
- var p=e.target.closest&&e.target.closest(".pk");
- document.querySelectorAll(".pk.tilt").forEach(function(x){if(x!==p){x.classList.remove("tilt");x.style.removeProperty("--rx");x.style.removeProperty("--ry")}});
- if(p){var q=p.getBoundingClientRect(),x=(e.clientX-q.left)/q.width,y=(e.clientY-q.top)/q.height;p.classList.add("tilt");
-  p.style.setProperty("--ry",((x-.5)*8).toFixed(2)+"deg");p.style.setProperty("--rx",((.5-y)*6).toFixed(2)+"deg") }
 },{passive:true});
 document.addEventListener("pointerleave",function(){document.querySelectorAll(".as-reserve,.ac-go").forEach(function(x){x.style.translate=""})});
 })();

@@ -119,3 +119,15 @@ main:focus{outline:none}
 .rl-frame::after{display:none}
 .rl-mq{-webkit-text-stroke:0;color:rgba(244,236,218,.07)}
 @media(prefers-reduced-motion:reduce){.rl{transition:none}.rl-lv i,.rl-card.is-active .rl-n{animation:none}.rl-th{transition:none}}
+
+/* ---------- UPDATE 17: Instagram links moved clear of the floating mascot ----------
+   The mascot floats in the right gutter (width = --igw). The "Follow along" links now sit
+   in the empty left strip under the hero buttons, as a 2x2 block, so they can never be covered. */
+@media(min-width:900px){
+  .askdock{pointer-events:none}
+  .fx-igcol{left:var(--g);top:500px;width:min(480px,calc(var(--W) - 2*var(--g) - var(--igw) - 64px));height:auto}
+  .fx-igcol-h{margin:0 0 8px 4px}
+  .fx-igtrk{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+  .fx-igcol .igx-i{height:52px;margin:0}
+  .fx-igcol .igx-i:hover{transform:translateY(-2px)}
+}
