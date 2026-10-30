@@ -2,15 +2,15 @@
 /* Instagram reels stage. Natural 9:16, centre card plays (muted), neighbours peek, tap the centre card for sound.
    Edit `reels` to change names, order or files. Names only, no prices. data-dish is ready for a later "click -> menu page" route. */
 const reels = [
-  { type: 'video', name: 'Fursat Happened', src: '/assets/reels/reel-fursat-happened-v1.mp4', poster: '/assets/reels/reel-fursat-happened-v1.webp', alt: 'Reel: our baby elephant at the table as one drink turns into a full spread' },
-  { type: 'video', name: 'Dynamite Prawns', src: '/assets/reels/reel-dynamite-prawns-v1.mp4', poster: '/assets/reels/reel-dynamite-prawns-v1.webp', alt: 'Reel: a guest holding a glass of Dynamite Prawns' },
-  { type: 'image', name: 'Ustad Nalli Gosht Biryani', poster: '/assets/reels/post-nalli-biryani-v1.webp', alt: 'Ustad Nalli Gosht Biryani in a brass handi with two nalli bones. Caption: Life lo em miss ayina parledhu… Plate lo Nalli piece miss avvakudadhu bhai!' },
-  { type: 'video', name: 'Veg Combo', src: '/assets/reels/reel-veg-combo-v1.mp4', poster: '/assets/reels/reel-veg-combo-v1.webp', alt: 'Reel: flames in the kitchen, then the Veg Combo thali served' },
-  { type: 'video', name: 'Inside Fursat', src: '/assets/reels/reel-inside-fursat-v1.mp4', poster: '/assets/reels/reel-inside-fursat-v1.webp', alt: 'Reel: inside Fursat, a dessert being plated and the Capital Park entrance' },
+  { type: 'video', name: 'Fursat Happened', tone: '#1F4129', src: '/assets/reels/reel-fursat-happened-v1.mp4', poster: '/assets/reels/reel-fursat-happened-v1.webp', alt: 'Reel: our baby elephant at the table as one drink turns into a full spread' },
+  { type: 'video', name: 'Dynamite Prawns', tone: '#5E2216', src: '/assets/reels/reel-dynamite-prawns-v1.mp4', poster: '/assets/reels/reel-dynamite-prawns-v1.webp', alt: 'Reel: a guest holding a glass of Dynamite Prawns' },
+  { type: 'video', name: 'Veg Combo', tone: '#3B4719', src: '/assets/reels/reel-veg-combo-v1.mp4', poster: '/assets/reels/reel-veg-combo-v1.webp', alt: 'Reel: flames in the kitchen, then the Veg Combo thali served' },
+  { type: 'video', name: 'Inside Fursat', tone: '#2A2112', src: '/assets/reels/reel-inside-fursat-v1.mp4', poster: '/assets/reels/reel-inside-fursat-v1.webp', alt: 'Reel: inside Fursat, a dessert being plated and the Capital Park entrance' },
 ];
 const heading = ['I', 'said', 'one', 'drink.', 'Fursat', 'happened.'];
 ---
 <section class="rl" id="reels" aria-labelledby="rl-h">
+  <p class="rl-mq" aria-hidden="true">Fursat happened. Fursat happened. Fursat happened.</p>
   <div class="rl-head">
     <h2 class="rl-h" id="rl-h" aria-label="I said one drink. Fursat happened.">
       <span aria-hidden="true">{heading.map((w, i) => <><span class="rl-w" style={`--i:${i}`}>{w}</span>{' '}</>)}</span>
@@ -19,6 +19,7 @@ const heading = ['I', 'said', 'one', 'drink.', 'Fursat', 'happened.'];
   </div>
 
   <div class="rl-ctl">
+    <p class="rl-count" aria-hidden="true"><b id="rl-cur">01</b><span> / {String(reels.length).padStart(2, '0')}</span></p>
     <div class="rl-btns">
       <button class="rl-b" type="button" id="rl-prev" aria-label="Previous reel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
       <button class="rl-b" type="button" id="rl-next" aria-label="Next reel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -28,11 +29,13 @@ const heading = ['I', 'said', 'one', 'drink.', 'Fursat', 'happened.'];
   <div class="rl-stage">
     <ul class="rl-track" id="rl-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Fursat Instagram reels. Use the arrow keys to move between them.">
       {reels.map((r, i) => (
-        <li class="rl-card" data-i={i} data-type={r.type} data-s="muted" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${reels.length}: ${r.name}`} style={`--i:${i}`}>
+        <li class="rl-card" data-i={i} data-type={r.type} data-tone={r.tone} data-s="muted" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${reels.length}: ${r.name}`} style={`--i:${i}`}>
           <div class="rl-frame">
             {r.type === 'video'
               ? <video class="rl-v" muted loop playsinline webkit-playsinline preload="none" disablepictureinpicture disableremoteplayback poster={r.poster} data-src={r.src} width="540" height="960" aria-label={r.alt}></video>
               : <img class="rl-v" src={r.poster} alt={r.alt} width="720" height="720" loading="lazy" decoding="async" />}
+            <span class="rl-tag" aria-hidden="true">@fursatind.in</span>
+            <span class="rl-lv" aria-hidden="true"><i></i>Now playing</span>
             {r.type === 'video' && (
               <button class="rl-snd" type="button" aria-label="Turn sound on">
                 <svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>
@@ -48,6 +51,10 @@ const heading = ['I', 'said', 'one', 'drink.', 'Fursat', 'happened.'];
         </li>
       ))}
     </ul>
+  </div>
+
+  <div class="rl-rail" id="rl-rail" role="group" aria-label="Jump to a reel">
+    {reels.map((r, i) => <button class="rl-th" type="button" data-i={i} aria-label={`Go to reel ${i + 1}: ${r.name}`} aria-current={i === 0 ? 'true' : 'false'}><img src={r.poster} alt="" width="48" height="64" loading="lazy" decoding="async" /><span class="rl-th-n" aria-hidden="true">{r.name}</span></button>)}
   </div>
 
   <div class="rl-cta"><button class="rl-reserve" type="button" data-open="book">Reserve a table</button></div>

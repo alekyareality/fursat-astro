@@ -36,6 +36,11 @@ import '../styles/10.css';
 <link rel="preload" href="/assets/1233814dd2.woff" as="font" type="font/woff" crossorigin>
 <link rel="icon" href="/assets/9a3bba811b.webp">
 <script type="application/ld+json" is:inline set:html={JSON.stringify(ld)}></script>
+<style is:global>
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:cubic-bezier(.23,1,.32,1)}
+@media(prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+</style>
 </head>
 <body>
 <slot />
