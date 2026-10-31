@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-
 import react from '@astrojs/react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://fursatind.in',
@@ -10,6 +10,7 @@ export default defineConfig({
   build: { inlineStylesheets: 'never' },
   devToolbar: { enabled: false },
   vite: {
+    plugins: [tailwindcss()],
     ssr: {
       // Prevent Three.js CJS deprecation warning during SSR
       noExternal: ['three', '@react-three/fiber', '@react-three/drei'],
