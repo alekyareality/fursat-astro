@@ -4,70 +4,52 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import MascotOfferModal from '../components/MascotOfferModal.astro';
-import rawMenu from '../../public/data/menu.json';
+import foodData from '../data/food.json';
+import drinksData from '../data/drinks.json';
 
 // ── Build-time data processing ──────────────────────────────────────────────
-// Each item shape: { n, p, c, k, v, d?, s?, img?, f?, a? }
-const allItems = rawMenu as Array<{
-  n: string;
-  p: number;
-  c: string;
-  k: string;
-  v?: string;
-  d?: string;
-  s?: number;
-  img?: string;
-  f?: number;
-  a?: number;
-}>;
+type MenuItem = {
+  name: string;
+  section: string;
+  description?: string;
+  price: number | null;
+  veg?: boolean;
+  spicy?: boolean;
+  chefSpecial?: boolean;
+  image?: string;
+  alc?: boolean;
+  price30ml?: number;
+  priceBottle?: number;
+  priceGlass?: number | null;
+  priceBucket?: number;
+  price500ml?: number;
+  price330ml?: number;
+  pricePitcher?: number;
+  priceTower?: number;
+  subCategory?: string;
+  note?: string;
+  kind: 'food' | 'drink';
+};
 
-// Ordered category list (displayed in tabs)
-const TAB_CATEGORIES = [
-  'All',
-  'Starters',
-  'Regional specials',
-  'Mains',
-  'Biryani & rice',
-  'Asian mains',
-  'South Indian',
-  'Pizza',
-  'Pasta',
-  'Momos',
-  'Sandwiches & burgers',
-  'Soups',
-  'Salads',
-  'Breads',
-  'All day breakfast',
-  'Finger bites',
-  'Quick bites',
-  'Kids menu',
-  'Healthy bowls',
-  'Cookies',
-  'Desserts',
-  'Mocktails',
-  'Milk shakes',
-  'Smoothies',
-  'Hot coffee',
-  'Cold coffee & frappes',
-  'Iced coffee',
-  'Tea',
-  'Soft drinks',
-  "Sreemukhi's food",
-  "Sreemukhi's drinks",
-];
+type MenuSection = {
+  section: string;
+  items: MenuItem[];
+};
 
-// Normalize category names from JSON (some have & vs &amp; issues) to match TAB_CATEGORIES
-function normalizeCategory(c: string): string {
-  return c
-    .replace(/Biryani\s*&\s*rice/i, 'Biryani & rice')
-    .replace(/Cold coffee\s*&\s*frappes/i, 'Cold coffee & frappes')
-    .replace(/Sandwiches\s*&\s*burgers/i, 'Sandwiches & burgers');
-}
-
-// Get unique actual categories present in data, preserving TAB_CATEGORIES order
-const presentCategories = TAB_CATEGORIES.filter(tab =>
-  tab === 'All' || allItems.some(it => normalizeCategory(it.c) === tab)
+const foodItems: MenuItem[] = (foodData as MenuSection[]).flatMap((sec) =>
+  sec.items.map((it) => ({ ...it, kind: 'food' as const }))
 );
+
+const drinksItems: MenuItem[] = (drinksData as MenuSection[]).flatMap((sec) =>
+  sec.items.map((it) => ({ ...it, kind: 'drink' as const }))
+);
+
+const allItems = [...foodItems, ...drinksItems];
+
+const presentCategories = [
+  'All',
+  ...Array.from(new Set(allItems.map((it) => it.section))),
+];
 
 // Slug helper for data-cat attributes and tab IDs (safe for HTML attrs)
 function slug(s: string) {
@@ -117,25 +99,26 @@ function slug(s: string) {
     <section class="mn-grid-wrap" aria-label="Menu items">
       <div class="mn-grid" id="mn-grid">
         {allItems.map((item) => {
-          const cat = normalizeCategory(item.c);
+          const cat = item.section;
           const catSlug = slug(cat);
-          const isVeg = item.v === 'veg';
-          const isNonVeg = item.v === 'nonveg';
-          const isOpt = item.v === 'opt';
-          const isAlc = item.a === 1;
-          const isSpicy = item.s === 1;
-          const hasImg = !!item.img;
+          const isVeg = item.veg === true;
+          const isNonVeg = item.veg === false;
+          const isAlc = item.alc === true;
+          const isSpicy = item.spicy === true;
+          const isChef = item.chefSpecial === true;
+          const hasImg = !!item.image;
           return (
             <article
               class="mn-card mot-card-lit"
               data-cat={catSlug}
-              aria-label={item.n}
+              data-kind={item.kind}
+              aria-label={item.name}
             >
               {hasImg && (
                 <div class="mn-card-img-wrap">
                   <img
-                    src={item.img}
-                    alt={item.n}
+                    src={item.image}
+                    alt={item.name}
                     class="mn-card-img"
                     loading="lazy"
                     decoding="async"
@@ -150,16 +133,29 @@ function slug(s: string) {
                   <div class="mn-badges">
                     {isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
                     {isNonVeg && <span class="mn-dot mn-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
-                    {isOpt && <span class="mn-badge-pill mn-badge-pill--opt">Veg/NV</span>}
+                    {isChef && <span class="mn-badge-pill mn-badge-pill--opt" title="Chef's Special">Chef's Spl</span>}
                     {isAlc && <span class="mn-badge-pill mn-badge-pill--alc">Alcohol</span>}
                     {isSpicy && <span class="mn-spicy" title="Spicy" aria-label="Spicy">🌶</span>}
                   </div>
                 </div>
-                <h2 class="mn-dish-name">{item.n}</h2>
-                {item.d && <p class="mn-dish-desc">{item.d}</p>}
+                <h2 class="mn-dish-name">{item.name}</h2>
+                {item.description && <p class="mn-dish-desc">{item.description}</p>}
                 <div class="mn-card-footer">
-                  <span class="mn-price">₹{item.p}</span>
-                  {item.f === 1 && <span class="mn-flex-note">prices vary</span>}
+                  <span class="mn-price">
+                    {item.price != null ? `₹${item.price}` : (item.priceBottle != null ? `₹${item.priceBottle} (Btl)` : 'Price on request')}
+                  </span>
+                  {item.price30ml != null && item.priceBottle != null && (
+                    <span class="mn-flex-note">30ml: ₹{item.price30ml} · Btl: ₹{item.priceBottle}</span>
+                  )}
+                  {item.priceGlass != null && item.priceBottle != null && (
+                    <span class="mn-flex-note">Glass: ₹{item.priceGlass} · Btl: ₹{item.priceBottle}</span>
+                  )}
+                  {item.priceBucket != null && (
+                    <span class="mn-flex-note">Bucket: ₹{item.priceBucket}</span>
+                  )}
+                  {item.subCategory && (
+                    <span class="mn-flex-note">{item.subCategory}</span>
+                  )}
                 </div>
               </div>
             </article>

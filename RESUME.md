@@ -15,6 +15,6 @@ Small-fixes session. Tick each item after committing.
 - [-] HERO 2 parked: .on is never added, 10.6s LCP cause unknown
 - [-] HERO 3 parked: .on is never added, 10.6s LCP cause unknown
 - [x] MENU 1: Extract PDF menu data to food.json and drinks.json
-- [ ] MENU 2: Replace existing menu data on menu page
+- [x] MENU 2: Replace existing menu data on menu page
 - [ ] MENU 3: Food / Drinks split switch on menu page
 - [ ] MENU 4: Build once (14 pages), commit docs: menu done
