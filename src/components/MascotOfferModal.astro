@@ -67,7 +67,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
         </form>
-        <p class="fom-disclaimer">🔒 No spam. We only send your reservation coupon via SMS/WhatsApp.</p>
+        <p class="fom-disclaimer">Your offer opens in WhatsApp. Send the message to claim it.</p>
       </div>
 
       <!-- Step 2: Reward / Revealed Coupon -->
@@ -610,6 +610,8 @@
         const phone = phoneInput.value.trim();
         if (phone.length === 10 && /^\d+$/.test(phone)) {
           localStorage.setItem('fursat_offer_claimed', phone);
+          const msg = 'Hi Fursat! I unlocked the FURSAT15 offer (15% OFF). My number is +91' + phone + '. Please confirm my coupon.';
+          window.open('https://wa.me/919059670033?text=' + encodeURIComponent(msg), '_blank');
           step1.hidden = true;
           step2.hidden = false;
         } else {
