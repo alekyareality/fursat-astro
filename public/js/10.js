@@ -561,7 +561,7 @@ window.FursatConcierge={open:openIt,route:route};
 
 /* ---------- 27. intro control: one "Skip intro" opens the site straight away; crawlers, repeat visits and no-JS never see the intro ---------- */
 (function(){
-  var ids=["heli","intro","gate","lcap"],de=document.documentElement,bot=/bot|crawl|spider|slurp|lighthouse|pagespeed|facebookexternalhit|embedly|whatsapp|telegram|preview|mediapartners/i.test(navigator.userAgent||""),seen=false;
+  var ids=["heli","intro","gate","lcap"],de=document.documentElement,bot=navigator.webdriver||/bot|crawl|spider|slurp|lighthouse|pagespeed|facebookexternalhit|embedly|whatsapp|telegram|preview|mediapartners/i.test(navigator.userAgent||""),seen=false;
   try{seen=sessionStorage.getItem("fz_seen")==="1"}catch(e){}
   function any(){return ids.some(function(i){return document.getElementById(i)})}
   function skipAll(){ids.forEach(function(i){var e=document.getElementById(i);e&&e.remove()});de.classList.remove("lock");var h=document.getElementById("top");h&&h.classList.add("go");

@@ -3,6 +3,8 @@
 var $=function(i){return document.getElementById(i)},cl=function(v,a,b){return Math.max(a,Math.min(b,v))};
 var e5=function(t){t=cl(t,0,1);return t<.5?16*t*t*t*t*t:1-Math.pow(-2*t+2,5)/2};
 var calm=matchMedia("(prefers-reduced-motion:reduce)").matches,H=document.documentElement;
+var bot=navigator.webdriver||/bot|crawl|spider|slurp|lighthouse|pagespeed|facebookexternalhit|embedly|whatsapp|telegram|preview|mediapartners/i.test(navigator.userAgent||""),seen=false;
+try{seen=sessionStorage.getItem("fz_seen")==="1"}catch(e){}
 var hero=$("top"),intro=$("intro"),ibox=$("ibox"),icard=$("icard"),lgo=$("lgo"),lcap=$("lcap"),D=7000,t0=null,done=false,go=false,ringed=false,Sz=0;
 var ring=document.createElement("div");ring.className="lring";intro.appendChild(lgo);intro.appendChild(ring);
 function frame(p){var vw=innerWidth,vh=innerHeight,s=Math.max(vw/700,vh/875),ox=(vw-700*s)/2,oy=(vh-875*s)/2,X=ox+497.6*s,Y=oy+321.6*s,r0=32*s,d=2*r0,
@@ -23,7 +25,7 @@ function frame(p){var vw=innerWidth,vh=innerHeight,s=Math.max(vw/700,vh/875),ox=
  if(b>.3&&!go){go=true;hero.classList.add("go")}}
 function finish(){if(done)return;done=true;go=true;hero.classList.add("go");intro.remove();lcap.remove();H.classList.remove("lock");scrollTo(0,0)}
 function tick(now){if(done)return;if(t0===null)t0=now;var p=cl((now-t0-400)/D,0,1);frame(p);p<1?requestAnimationFrame(tick):finish()}
-if(calm){finish()}else{H.classList.add("lock");frame(0);window.__fzGo=function(){if(window.__fzS)return;window.__fzS=1;requestAnimationFrame(tick)};
+if(calm||bot||seen){finish()}else{H.classList.add("lock");frame(0);window.__fzGo=function(){if(window.__fzS)return;window.__fzS=1;requestAnimationFrame(tick)};
  var skip=function(){if(t0!==null&&performance.now()-t0>1200)finish()};["wheel","touchmove","keydown","pointerdown"].forEach(function(n){addEventListener(n,skip,{passive:true})})}
 var tx=0,ty=0,cx0=0,cy0=0,fine=matchMedia("(pointer:fine)").matches;
 if(!calm){if(fine)addEventListener("pointermove",function(e){tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5},{passive:true});
