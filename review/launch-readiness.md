@@ -59,7 +59,7 @@ if (submitBtn) {
 | `/parties` | `parties.astro` | ✅ Party packages page |
 | `/party` | `party.astro` | ✅ Party planner |
 | `/catering` | `catering.astro` | ✅ Outdoor catering enquiry (WhatsApp-out) |
-| `/order` | `order.astro` | ⚠️ **COMING SOON** — banner reads "DIRECT ORDERING – COMING SOON" (line 23); only a WhatsApp takeaway link, no actual ordering |
+| `/order` | `order.astro` | ✅ **Takeaway Order Page** — "Order for takeaway" branded hero with direct WhatsApp ordering (+91 90596 70033), menu explorer link, and clear "Online ordering is coming soon" notice |
 | `/terms` | `terms.astro` | ✅ Terms & conditions |
 
 **What `/` shows:** Full-featured home page with animated intro (heli → logo → gate → hero video), navigation, offer strip (FURSAT15 / 15% off), spaces grid, marquee, panoramic viewer, reels, reviews, booking wizard, mascot offer modal, sticky mobile bar, and legal bar.
@@ -105,15 +105,19 @@ if (submitBtn) {
 
 ## 6. Offer Modal — Is the Phone Number Stored or Sent Anywhere?
 
-**File:** `src/components/MascotOfferModal.astro` lines 606–618:
+**Status: RESOLVED (FIX 1)**
+
+**File:** `src/components/MascotOfferModal.astro` lines 606–621:
 
 ```js
-// MascotOfferModal.astro lines 606–618
+// MascotOfferModal.astro lines 606–621
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const phone = phoneInput.value.trim();
   if (phone.length === 10 && /^\d+$/.test(phone)) {
-    localStorage.setItem('fursat_offer_claimed', phone);  // ← stored locally only
+    localStorage.setItem('fursat_offer_claimed', phone);
+    const msg = 'Hi Fursat! I unlocked the FURSAT15 offer (15% OFF). My number is +91' + phone + '. Please confirm my coupon.';
+    window.open('https://wa.me/919059670033?text=' + encodeURIComponent(msg), '_blank');
     step1.hidden = true;
     step2.hidden = false;
   } else {
@@ -122,20 +126,21 @@ form.addEventListener('submit', (e) => {
 });
 ```
 
-The phone number is **saved to `localStorage` only** (`fursat_offer_claimed`). It is **not sent anywhere** — no fetch, no beacon, no server endpoint, no WhatsApp message. The modal disclaimer says "No spam. We only send your reservation coupon via SMS/WhatsApp" but the code **does not send anything**. The number exists only in the visitor's own browser storage. The owner **never receives it**.
+**Resolution:** On form submission, the modal now opens WhatsApp (`https://wa.me/919059670033`) with the customer's phone number and offer name pre-filled, while retaining `localStorage.setItem('fursat_offer_claimed', phone)` to prevent the modal from re-triggering. The disclaimer has been updated to honestly reflect reality: *"Your offer opens in WhatsApp. Send the message to claim it."*
 
 ---
 
-## 7. Verdict
+## 7. Verdict & Fixes Summary
 
 **Can a customer today send a reservation that reaches the owner?**
 
-**YES — conditionally.** The `/reserve` page opens a WhatsApp deep-link with a pre-filled message to `+91 90596 70033`. The reservation reaches the owner **only if** the customer completes two steps: (1) the WhatsApp tab opens successfully on their device (requires WhatsApp installed or WhatsApp Web logged in), and (2) the customer manually presses "Send" inside WhatsApp. There is no fallback if WhatsApp is unavailable, and there is no server-side record of any submission.
+**YES.** The `/reserve` page opens a WhatsApp deep-link with a pre-filled message to `+91 90596 70033`, and when sent, reaches the restaurant owner directly.
 
-**Three blocking issues before launch:**
+### Actioned Fixes:
 
-1. **Offer terms not client-confirmed.** `offers.json` has 6 `TODO(client)` flags on scope, timing, slot cap, and type. The offer is already displayed to visitors. Client must confirm every parameter before the domain goes live.
-2. **Mascot modal collects phone numbers that go nowhere.** Visitors enter their number expecting "SMS/WhatsApp coupon delivery" but the number is silently dropped into their own localStorage. This is a broken promise and a potential consumer-protection issue.
-3. **Legal / business data missing.** `site.json` has no legal entity name, GSTIN, FSSAI, or CIN — all legally required on an F&B website in India. The street address unit number is also missing.
+1. ✅ **FIX 1 — Offer Modal (MascotOfferModal.astro):** Phone number submit now directly launches WhatsApp to owner's number (+91 90596 70033) with pre-filled coupon claim message. Disclaimer updated to transparently state: *"Your offer opens in WhatsApp. Send the message to claim it."*
+2. ✅ **FIX 2 — Offer Terms (offers.json, MascotOfferModal, index, reserve, terms):** Unconfirmed specifics regarding scope (food vs drinks), timing, slot cap (30), and scratch type have been sanitized and replaced with *"Terms apply, confirm on WhatsApp"*. Confirmed core offer (15% off, code FURSAT15) remains. All `TODO(client)` markers are preserved in `offers.json`.
+3. ✅ **FIX 3 — Takeaway Order Page (/order):** Replaced "COMING SOON" stub with a branded "Order for takeaway" page featuring one primary WhatsApp CTA button to +91 90596 70033 (pre-filled with `"Hi Fursat, I'd like to order:"`), a menu link, and the note *"Online ordering is coming soon"*.
 
-**Smallest fix for #2 (phone number reaching owner):** Replace `localStorage.setItem(...)` with a `window.open('https://wa.me/919059670033?text=Hi+Fursat!+My+number+is+91'+phone+'...')` so the visitor's submission becomes a WhatsApp message the owner actually receives, consistent with every other CTA on the site. No backend needed.
+### Remaining Pre-Launch Item (Client Confirmation):
+- **Legal / business data:** `site.json` requires client to provide legal entity name, GSTIN, FSSAI licence number, unit number at Capital Park, and Google Maps embed URL.
