@@ -107,6 +107,7 @@ async function runBudget() {
       has3D: p.has3D,
       jsGzipKb,
       jsPass,
+      jsFiles,
       heroImage: heroImageUrl || 'none',
       heroKb,
       heroPass,
@@ -144,6 +145,9 @@ async function runBudget() {
       ` <= ${BUDGETS.maxHeroImageKb}K`.padStart(14) +
       overall.padStart(10)
     );
+    if (['Menu', 'Cafe', 'Story', 'Home'].includes(r.page)) {
+      console.log(`   └─ Script URLs (${r.jsFiles.length}): ` + r.jsFiles.map(f => `${f.url} (${(f.gz/1024).toFixed(1)}k gz)`).join(', '));
+    }
   }
   console.log('-'.repeat(80));
 

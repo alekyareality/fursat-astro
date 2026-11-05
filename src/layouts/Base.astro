@@ -12,6 +12,12 @@ import '../styles/09.css';
 import '../styles/10.css';
 import '../styles/motion.css';
 
+interface PreloadImage {
+  href: string;
+  media?: string;
+  type?: string;
+}
+
 interface Props {
   title?: string;
   description?: string;
@@ -19,7 +25,8 @@ interface Props {
   ogImage?: string;
   ogImageAlt?: string;
   pageType?: string;
-  preloadImage?: { href: string; media?: string; type?: string };
+  preloadImage?: PreloadImage;
+  preloadImages?: PreloadImage[];
 }
 
 const {
@@ -30,6 +37,7 @@ const {
   ogImageAlt = 'A baby elephant sipping a pink Fursat cocktail',
   pageType = 'website',
   preloadImage,
+  preloadImages = preloadImage ? [preloadImage] : [],
 } = Astro.props;
 ---
 <!doctype html>
@@ -55,16 +63,16 @@ const {
 <link rel="preload" href="/assets/9fbca90fa3.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="/assets/8da3ca8f0a.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="/assets/1233814dd2.woff" as="font" type="font/woff" crossorigin>
-{preloadImage && (
+{preloadImages.map(img => (
   <link
     rel="preload"
     as="image"
-    href={preloadImage.href}
-    media={preloadImage.media}
-    type={preloadImage.type || 'image/webp'}
+    href={img.href}
+    media={img.media}
+    type={img.type || 'image/webp'}
     fetchpriority="high"
   />
-)}
+))}
 <link rel="icon" href="/assets/9a3bba811b.webp">
 <script type="application/ld+json" is:inline set:html={JSON.stringify(ld)}></script>
 <style is:global>

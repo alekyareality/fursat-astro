@@ -15,37 +15,41 @@ function extractMetrics(file) {
     tbt: a['total-blocking-time']?.displayValue,
     cls: a['cumulative-layout-shift']?.displayValue,
     speedIndex: a['speed-index']?.displayValue,
-    lcpElement: a['largest-contentful-paint-element']?.details?.items?.[0]?.node?.snippet || a['largest-contentful-paint-element']?.displayValue
+    lcpElement: a['lcp-breakdown-insight']?.details?.items?.find(i => i.type === 'node')?.snippet ||
+                a['largest-contentful-paint-element']?.details?.items?.[0]?.node?.snippet ||
+                a['largest-contentful-paint-element']?.displayValue
   };
 }
 
-const home = extractMetrics('review/lighthouse-home.json');
-const banquet = extractMetrics('review/lighthouse-banquet.json');
+const homeBefore = extractMetrics('review/lighthouse-home.json');
+const banquetBefore = extractMetrics('review/lighthouse-banquet.json');
+const homeAfter = extractMetrics('review/lighthouse-home-after.json');
+const banquetAfter = extractMetrics('review/lighthouse-banquet-after.json');
 
-console.log('='.repeat(60));
-console.log('LIGHTHOUSE MOBILE AUDIT RESULTS');
-console.log('='.repeat(60));
-if (home) {
-  console.log('Home (/):');
-  console.log(`  Performance:   ${home.performance}/100`);
-  console.log(`  Accessibility: ${home.accessibility}/100`);
-  console.log(`  Best Practices:${home.bestPractices}/100`);
-  console.log(`  SEO:           ${home.seo}/100`);
-  console.log(`  LCP:           ${home.lcp}`);
-  console.log(`  CLS:           ${home.cls}`);
-  console.log(`  TBT:           ${home.tbt}`);
-  console.log(`  FCP:           ${home.fcp}`);
-  console.log(`  Speed Index:   ${home.speedIndex}`);
+console.log('='.repeat(80));
+console.log('LIGHTHOUSE MOBILE AUDIT COMPARISON: BEFORE VS AFTER STEP 3');
+console.log('='.repeat(80));
+
+function printComparison(name, before, after) {
+  console.log(`\n${name}:`);
+  console.log(`  Metric                 Before          After           Target / Change`);
+  console.log(`  ----------------------------------------------------------------------`);
+  if (before && after) {
+    console.log(`  Performance:           ${String(before.performance).padEnd(16)}${String(after.performance).padEnd(16)}${after.performance >= 90 ? '✅ 90+' : '⚠️ ' + (after.performance - before.performance > 0 ? '+' : '') + (after.performance - before.performance)}`);
+    console.log(`  Accessibility:         ${String(before.accessibility).padEnd(16)}${String(after.accessibility).padEnd(16)}${after.accessibility >= 95 ? '✅ 95+' : '⚠️ '}`);
+    console.log(`  Best Practices:        ${String(before.bestPractices).padEnd(16)}${String(after.bestPractices).padEnd(16)}`);
+    console.log(`  SEO:                   ${String(before.seo).padEnd(16)}${String(after.seo).padEnd(16)}`);
+    console.log(`  LCP:                   ${String(before.lcp).padEnd(16)}${String(after.lcp).padEnd(16)}${parseFloat(after.lcp) <= 2.5 ? '✅ < 2.5s' : '⚠️ '}`);
+    console.log(`  CLS:                   ${String(before.cls).padEnd(16)}${String(after.cls).padEnd(16)}`);
+    console.log(`  TBT:                   ${String(before.tbt).padEnd(16)}${String(after.tbt).padEnd(16)}`);
+    console.log(`  FCP:                   ${String(before.fcp).padEnd(16)}${String(after.fcp).padEnd(16)}`);
+  } else if (before) {
+    console.log(`  Performance:           ${before.performance}`);
+    console.log(`  Accessibility:         ${before.accessibility}`);
+    console.log(`  LCP:                   ${before.lcp}`);
+  }
 }
-if (banquet) {
-  console.log('\nBanquet (/banquet):');
-  console.log(`  Performance:   ${banquet.performance}/100`);
-  console.log(`  Accessibility: ${banquet.accessibility}/100`);
-  console.log(`  Best Practices:${banquet.bestPractices}/100`);
-  console.log(`  SEO:           ${banquet.seo}/100`);
-  console.log(`  LCP:           ${banquet.lcp}`);
-  console.log(`  CLS:           ${banquet.cls}`);
-  console.log(`  TBT:           ${banquet.tbt}`);
-  console.log(`  FCP:           ${banquet.fcp}`);
-  console.log(`  Speed Index:   ${banquet.speedIndex}`);
-}
+
+printComparison('Banquet (/banquet)', banquetBefore, banquetAfter);
+printComparison('Home (/)', homeBefore, homeAfter);
+

@@ -3,13 +3,125 @@
     "page": "Home",
     "path": "/",
     "has3D": true,
-    "jsGzipKb": "108.78",
+    "jsGzipKb": "108.95",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/mascot.js",
+        "raw": 7111,
+        "gz": 2691
+      },
+      {
+        "url": "/js/01.js",
+        "raw": 85,
+        "gz": 93
+      },
+      {
+        "url": "/js/02.js",
+        "raw": 1594,
+        "gz": 580
+      },
+      {
+        "url": "/js/04.js",
+        "raw": 24659,
+        "gz": 9448
+      },
+      {
+        "url": "/js/05.js",
+        "raw": 2779,
+        "gz": 1133
+      },
+      {
+        "url": "/js/03.js",
+        "raw": 57143,
+        "gz": 19012
+      },
+      {
+        "url": "/js/06.js",
+        "raw": 6748,
+        "gz": 3149
+      },
+      {
+        "url": "/js/07.js",
+        "raw": 3253,
+        "gz": 1510
+      },
+      {
+        "url": "/js/08.js",
+        "raw": 2710,
+        "gz": 1106
+      },
+      {
+        "url": "/js/09.js",
+        "raw": 220,
+        "gz": 165
+      },
+      {
+        "url": "/js/11.js",
+        "raw": 650,
+        "gz": 346
+      },
+      {
+        "url": "/js/10.js",
+        "raw": 59275,
+        "gz": 19927
+      },
+      {
+        "url": "/js/12.js",
+        "raw": 36468,
+        "gz": 13547
+      },
+      {
+        "url": "/js/15.js",
+        "raw": 1079,
+        "gz": 596
+      },
+      {
+        "url": "/js/14.js",
+        "raw": 3360,
+        "gz": 1497
+      },
+      {
+        "url": "/js/13.js",
+        "raw": 2979,
+        "gz": 1330
+      },
+      {
+        "url": "/js/17.js",
+        "raw": 868,
+        "gz": 511
+      },
+      {
+        "url": "/js/16.js",
+        "raw": 6401,
+        "gz": 2336
+      },
+      {
+        "url": "/js/18.js",
+        "raw": 2604,
+        "gz": 1131
+      },
+      {
+        "url": "/js/19.js",
+        "raw": 980,
+        "gz": 541
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "/assets/51db3af80d.webp",
     "heroKb": "66.20",
     "heroPass": true,
-    "totalTransferKb": "5203.94",
-    "nonHeroTransferKb": "5137.74",
+    "totalTransferKb": "3041.69",
+    "nonHeroTransferKb": "2975.48",
     "overallPass": true
   },
   {
@@ -18,11 +130,23 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
-    "heroImage": "/assets/interior/fursat_space_18-m720.webp",
-    "heroKb": "104.16",
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
+    "heroImage": "/assets/interior/fursat_space_18-m480.webp",
+    "heroKb": "57.86",
     "heroPass": true,
-    "totalTransferKb": "2846.66",
-    "nonHeroTransferKb": "2742.50",
+    "totalTransferKb": "2800.56",
+    "nonHeroTransferKb": "2742.70",
     "overallPass": true
   },
   {
@@ -31,6 +155,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -44,6 +180,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -57,6 +205,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -70,6 +230,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -83,6 +255,28 @@
     "has3D": false,
     "jsGzipKb": "35.59",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/ask.js",
+        "raw": 11660,
+        "gz": 4956
+      },
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/ask-fx.js",
+        "raw": 1163,
+        "gz": 567
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "/assets/ask/hero-m900.webp",
     "heroKb": "74.71",
     "heroPass": true,
@@ -96,6 +290,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -109,6 +315,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -122,6 +340,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -135,6 +365,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -148,6 +390,18 @@
     "has3D": false,
     "jsGzipKb": "30.19",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "raw": 72435,
+        "gz": 28277
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -161,6 +415,18 @@
     "has3D": false,
     "jsGzipKb": "4.48",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/js/parties.js",
+        "raw": 4673,
+        "gz": 1950
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
@@ -174,6 +440,48 @@
     "has3D": true,
     "jsGzipKb": "343.73",
     "jsPass": true,
+    "jsFiles": [
+      {
+        "url": "/js/party.js",
+        "raw": 4126,
+        "gz": 1629
+      },
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
+      },
+      {
+        "url": "/_astro/PartyStage.D2j_vEOD.js",
+        "raw": 95,
+        "gz": 104
+      },
+      {
+        "url": "/_astro/PartyStage.CiwJ8-5y.js",
+        "raw": 3355,
+        "gz": 1806
+      },
+      {
+        "url": "/_astro/index.DYn5FPbd.js",
+        "raw": 8332,
+        "gz": 3225
+      },
+      {
+        "url": "/_astro/client.CtjDF7p6.js",
+        "raw": 211690,
+        "gz": 65791
+      },
+      {
+        "url": "/_astro/index.Bb8JjhAW.js",
+        "raw": 3851,
+        "gz": 1718
+      },
+      {
+        "url": "/_astro/StageCanvas.CAUbmF0N.js",
+        "raw": 998126,
+        "gz": 275066
+      }
+    ],
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
