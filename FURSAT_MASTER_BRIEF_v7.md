@@ -30,7 +30,7 @@ Mark `[x]` only after the owner has seen the screenshots. Date each tick.
 
 - [x] Step 0: audit report saved as review/audit-v7.md (November 5, 2026)
 - [ ] Step 1: safety checks (photo contact sheet checked by owner, TODO search clean, phone-number storage answered, routes explained)
-- [x] Step 2: Phase 1 follow-up closed (JS off, keyboard, view transitions, reduced motion, bottom bar, JS size, Lighthouse) (November 5, 2026)
+- [ ] Step 2: Phase 1 follow-up closed (JS off, keyboard, view transitions, reduced motion, bottom bar, JS size, Lighthouse)
 - [ ] Step 3: mobile foundations (device tiers, art-directed images, lazy heavy JS, budget script passing)
 - [ ] Step 4: Menu page 3D (record tier reached per dish: GLB / plate-photo / photo viewer)
 - [ ] Step 5: Event planner (Banquet, Events, Catering) tested end to end for every event type
