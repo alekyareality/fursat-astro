@@ -106,7 +106,7 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
             </div>
 
             <!-- Submit CTA -->
-            <button type="button" id="res-submit-btn" class="rs-submit-btn">
+            <button type="button" id="res-submit-btn" class="rs-submit-btn mot-btn-press mot-confetti">
               <span>Confirm Reservation on WhatsApp</span>
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.3C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
             </button>
@@ -521,10 +521,17 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
-    // Set default date to today
+    // Set default date to today & handle date change with slot shimmer
     const dateInput = document.getElementById('res-date');
     if (dateInput) {
       dateInput.value = new Date().toISOString().split('T')[0];
+      dateInput.addEventListener('change', () => {
+        const chips = document.querySelectorAll('.rs-time-chip');
+        chips.forEach(c => c.classList.add('mot-skeleton'));
+        setTimeout(() => {
+          chips.forEach(c => c.classList.remove('mot-skeleton'));
+        }, 350);
+      });
     }
 
     // Guest Selector
@@ -572,6 +579,12 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
           alert('Please enter your Name and Mobile Number.');
           return;
         }
+
+        // Trigger confetti celebration on booking success
+        submitBtn.classList.add('mot-confetti--active');
+        setTimeout(() => {
+          submitBtn.classList.remove('mot-confetti--active');
+        }, 1200);
 
         const msg = `Hi Fursat! I would like to reserve a table:\n\n• Name: ${name}\n• Phone: ${phone}\n• Guests: ${selectedGuests}\n• Date: ${date}\n• Time: ${selectedTime}\n• Occasion: ${occasion}\n• Coupon: FURSAT15 (15% Off)`;
         const url = `https://wa.me/919059670033?text=${encodeURIComponent(msg)}`;
