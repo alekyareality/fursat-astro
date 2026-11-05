@@ -19,6 +19,7 @@ interface Props {
   ogImage?: string;
   ogImageAlt?: string;
   pageType?: string;
+  preloadImage?: { href: string; media?: string; type?: string };
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   ogImage = 'https://fursatind.in/og-image.jpg',
   ogImageAlt = 'A baby elephant sipping a pink Fursat cocktail',
   pageType = 'website',
+  preloadImage,
 } = Astro.props;
 ---
 <!doctype html>
@@ -53,6 +55,16 @@ const {
 <link rel="preload" href="/assets/9fbca90fa3.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="/assets/8da3ca8f0a.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="/assets/1233814dd2.woff" as="font" type="font/woff" crossorigin>
+{preloadImage && (
+  <link
+    rel="preload"
+    as="image"
+    href={preloadImage.href}
+    media={preloadImage.media}
+    type={preloadImage.type || 'image/webp'}
+    fetchpriority="high"
+  />
+)}
 <link rel="icon" href="/assets/9a3bba811b.webp">
 <script type="application/ld+json" is:inline set:html={JSON.stringify(ld)}></script>
 <style is:global>
