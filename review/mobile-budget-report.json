@@ -3,18 +3,18 @@
     "page": "Home",
     "path": "/",
     "has3D": true,
-    "jsGzipKb": "108.95",
+    "jsGzipKb": "109.01",
     "jsPass": true,
     "jsFiles": [
-      {
-        "url": "/js/motion-kit.js",
-        "raw": 10827,
-        "gz": 2640
-      },
       {
         "url": "/js/mascot.js",
         "raw": 7111,
         "gz": 2691
+      },
+      {
+        "url": "/js/motion-kit.js",
+        "raw": 10827,
+        "gz": 2640
       },
       {
         "url": "/js/01.js",
@@ -27,6 +27,11 @@
         "gz": 580
       },
       {
+        "url": "/js/03.js",
+        "raw": 57143,
+        "gz": 19012
+      },
+      {
         "url": "/js/04.js",
         "raw": 24659,
         "gz": 9448
@@ -37,14 +42,9 @@
         "gz": 1133
       },
       {
-        "url": "/js/03.js",
-        "raw": 57143,
-        "gz": 19012
-      },
-      {
         "url": "/js/06.js",
-        "raw": 6748,
-        "gz": 3149
+        "raw": 6813,
+        "gz": 3162
       },
       {
         "url": "/js/07.js",
@@ -68,8 +68,18 @@
       },
       {
         "url": "/js/10.js",
-        "raw": 59275,
-        "gz": 19927
+        "raw": 59859,
+        "gz": 19971
+      },
+      {
+        "url": "/js/13.js",
+        "raw": 2979,
+        "gz": 1330
+      },
+      {
+        "url": "/js/14.js",
+        "raw": 3360,
+        "gz": 1497
       },
       {
         "url": "/js/12.js",
@@ -82,14 +92,9 @@
         "gz": 596
       },
       {
-        "url": "/js/14.js",
-        "raw": 3360,
-        "gz": 1497
-      },
-      {
-        "url": "/js/13.js",
-        "raw": 2979,
-        "gz": 1330
+        "url": "/js/18.js",
+        "raw": 2604,
+        "gz": 1131
       },
       {
         "url": "/js/17.js",
@@ -100,11 +105,6 @@
         "url": "/js/16.js",
         "raw": 6401,
         "gz": 2336
-      },
-      {
-        "url": "/js/18.js",
-        "raw": 2604,
-        "gz": 1131
       },
       {
         "url": "/js/19.js",
@@ -120,8 +120,8 @@
     "heroImage": "/assets/51db3af80d.webp",
     "heroKb": "66.20",
     "heroPass": true,
-    "totalTransferKb": "3041.69",
-    "nonHeroTransferKb": "2975.48",
+    "totalTransferKb": "3042.32",
+    "nonHeroTransferKb": "2976.12",
     "overallPass": true
   },
   {
@@ -195,8 +195,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "3091.86",
-    "nonHeroTransferKb": "3091.86",
+    "totalTransferKb": "1927.33",
+    "nonHeroTransferKb": "1927.33",
     "overallPass": true
   },
   {
@@ -257,14 +257,14 @@
     "jsPass": true,
     "jsFiles": [
       {
-        "url": "/js/ask.js",
-        "raw": 11660,
-        "gz": 4956
-      },
-      {
         "url": "/js/motion-kit.js",
         "raw": 10827,
         "gz": 2640
+      },
+      {
+        "url": "/js/ask.js",
+        "raw": 11660,
+        "gz": 4956
       },
       {
         "url": "/js/ask-fx.js",
@@ -442,14 +442,14 @@
     "jsPass": true,
     "jsFiles": [
       {
-        "url": "/js/party.js",
-        "raw": 4126,
-        "gz": 1629
-      },
-      {
         "url": "/js/motion-kit.js",
         "raw": 10827,
         "gz": 2640
+      },
+      {
+        "url": "/js/party.js",
+        "raw": 4126,
+        "gz": 1629
       },
       {
         "url": "/_astro/PartyStage.D2j_vEOD.js",
@@ -457,9 +457,9 @@
         "gz": 104
       },
       {
-        "url": "/_astro/PartyStage.CiwJ8-5y.js",
-        "raw": 3355,
-        "gz": 1806
+        "url": "/_astro/client.CtjDF7p6.js",
+        "raw": 211690,
+        "gz": 65791
       },
       {
         "url": "/_astro/index.DYn5FPbd.js",
@@ -467,14 +467,14 @@
         "gz": 3225
       },
       {
-        "url": "/_astro/client.CtjDF7p6.js",
-        "raw": 211690,
-        "gz": 65791
-      },
-      {
         "url": "/_astro/index.Bb8JjhAW.js",
         "raw": 3851,
         "gz": 1718
+      },
+      {
+        "url": "/_astro/PartyStage.CiwJ8-5y.js",
+        "raw": 3355,
+        "gz": 1806
       },
       {
         "url": "/_astro/StageCanvas.CAUbmF0N.js",
