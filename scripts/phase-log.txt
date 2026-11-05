@@ -81,3 +81,47 @@ Modified:
 - Overflow Check: Verified across 360, 390, 768, 1024, 1280, 1536
 - Screenshots: Generated at 360, 390, 768, 1280 in review/shots/
 ================================================================================
+
+================================================================================
+4. PHASE 1 FOLLOW-UP (STEP 2 IN ORDER OF WORK):
+Date: November 5, 2026 | Status: All 8 Items Passed
+--------------------------------------------------------------------------------
+- Test 1 (JavaScript Off at 390px):
+  * Banquet: Passed (H1 visible, 6 H2s visible, 10 images visible).
+  * Home: Added .ms-chew, .ms-cheer { display: none !important; } in Base.astro noscript.
+    All 31 active images, H1, and 9 H2s verified visible.
+  * Shots saved to review/shots/home-390-nojs.png, banquet-390-nojs.png.
+
+- Test 2 (Keyboard Tab):
+  * Scrolled down 400px: Header reliably hides (.sh-hidden).
+  * Tabbing through triggers :focus-within & focusin, restoring header to view (opacity 1, translateY(0)).
+
+- Test 3 (View Transitions Navigation & #gate):
+  * #gate identified as the first-visit audio/video intro overlay ("Enter Fursat").
+    Dismissed when sessionStorage.fz_seen === '1' or when user clicks gate button.
+  * Navigated Home -> Banquet -> Cafe: headlines, cards, and persistent header re-initialised on astro:page-load.
+
+- Test 4 (Reduced Motion):
+  * In public/js/10.js, added check in play() to prevent hero video autoplay when prefers-reduced-motion is active.
+  * Marquee stopped (none), pinned scene disabled.
+
+- Test 5 (Mobile Bottom Bar Clearance):
+  * Bar height measured: 69px.
+  * In src/components/MobileBar.astro, updated body padding-bottom to calc(76px + env(safe-area-inset-bottom, 0px)) !important.
+  * Full clearance verified; sticky button hidden on mobile.
+
+- Test 6 (JS Transferred per Page):
+  * Home: 2.7 KB HTML + 208 KB modular scripts + 10.6 KB motion-kit. GSAP on demand.
+  * Banquet: 10.6 KB motion-kit.
+  * Menu: Static HTML menu rendered; 3D and GSAP isolated.
+
+- Test 7 (Core Web Vitals Snapshot):
+  * Home: CLS: 0, LCP: 404ms.
+  * Banquet: CLS: 0, LCP: 392ms.
+
+- Test 8 (Micro-interactions Usage & Overflow Check):
+  * .mot-tab-indicator applied to events.astro and menu.astro category tabs.
+  * .mot-skeleton & .mot-confetti applied to reserve.astro.
+  * .mot-headline & .mot-card-lit applied to menu.astro and ask.astro.
+  * Overflow check: 72/72 viewports (12 routes x 6 widths) passed with 0 overflow.
+================================================================================
