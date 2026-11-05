@@ -12,5 +12,9 @@ Small-fixes session. Tick each item after committing.
 - [x] FIX 5 unconfirmed claims
 - HERO 0 Baseline: Median LCP = 10.59s (perf: 62, tbt: 309ms, cls: 0)
 - [x] HERO 1 remove bot
-- [ ] HERO 2 poster img
-- [ ] HERO 3 LCP
+- [-] HERO 2 parked: .on is never added, 10.6s LCP cause unknown
+- [-] HERO 3 parked: .on is never added, 10.6s LCP cause unknown
+- [ ] MENU 1: Extract PDF menu data to food.json and drinks.json
+- [ ] MENU 2: Replace existing menu data on menu page
+- [ ] MENU 3: Food / Drinks split switch on menu page
+- [ ] MENU 4: Build once (14 pages), commit docs: menu done
