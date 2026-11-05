@@ -4,12 +4,12 @@
     "code": "FURSAT15",
     "label": "Flat 15% Off",
     "discountPercent": 15,
-    "scope": "food_and_soft_beverages",
+    "scope": "Terms apply, confirm on WhatsApp",
     "_scopeNote": "TODO(client): Confirm – food only, food+soft drinks, or whole bill? Alcohol excluded until confirmed.",
     "validFrom": "12:00",
-    "validTo": "16:00",
+    "validTo": "Terms apply, confirm on WhatsApp",
     "_timingNote": "TODO(client): Confirm window. Opening at 12 PM was confirmed; end time 4 PM is a suggestion.",
-    "slotCapPerDay": 30,
+    "slotCapPerDay": "Terms apply, confirm on WhatsApp",
     "_slotNote": "TODO(client): Confirm cap. 30 is a placeholder.",
     "minimumGuests": 1,
     "minimumBill": 0,
@@ -18,8 +18,9 @@
     "weekendOffer": null,
     "alcoholIncluded": false,
     "_alcoholNote": "TODO(client): Do not include alcohol until client confirms local excise rules.",
+    "terms": "Terms apply, confirm on WhatsApp",
     "scratchCard": {
-      "type": "digital",
+      "type": "Terms apply, confirm on WhatsApp",
       "_typeNote": "TODO(client): Digital (on website) or physical (at restaurant)?",
       "enabled": true
     }
