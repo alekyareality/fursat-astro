@@ -1053,29 +1053,6 @@
     ]
   },
   {
-    "section": "Mains & Pasta",
-    "items": [
-      {
-        "name": "BBQ Grilled Chicken with Herb Rice",
-        "description": "Grilled Chicken Breast Glazed with BBQ Sauce, Served with Herb Inflamed Rice",
-        "price": 595,
-        "veg": false,
-        "spicy": false,
-        "chefSpecial": true,
-        "section": "Mains & Pasta"
-      },
-      {
-        "name": "Chicken Stroganoff",
-        "description": "Tender Chicken Strips in Creamy Mushroom Sauce over Herbed Rice",
-        "price": 595,
-        "veg": false,
-        "spicy": false,
-        "chefSpecial": false,
-        "section": "Mains & Pasta"
-      }
-    ]
-  },
-  {
     "section": "Pasta",
     "items": [
       {
@@ -1207,29 +1184,6 @@
     ]
   },
   {
-    "section": "Momos",
-    "items": [
-      {
-        "name": "Thai Chilli, Basil, Chicken Momos",
-        "price": 435,
-        "veg": false,
-        "spicy": true,
-        "chefSpecial": false,
-        "section": "Momos",
-        "description": ""
-      },
-      {
-        "name": "ExoticVeg Momos",
-        "price": 355,
-        "veg": true,
-        "spicy": false,
-        "chefSpecial": false,
-        "section": "Momos",
-        "description": ""
-      }
-    ]
-  },
-  {
     "section": "Asian mains",
     "items": [
       {
@@ -1357,6 +1311,24 @@
         "spicy": false,
         "chefSpecial": false,
         "section": "Asian mains"
+      },
+      {
+        "name": "Thai Chilli, Basil, Chicken Momos",
+        "price": 435,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "ExoticVeg Momos",
+        "price": 355,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
       }
     ]
   },
@@ -1506,6 +1478,24 @@
         "chefSpecial": false,
         "section": "Mains",
         "description": ""
+      },
+      {
+        "name": "BBQ Grilled Chicken with Herb Rice",
+        "description": "Grilled Chicken Breast Glazed with BBQ Sauce, Served with Herb Inflamed Rice",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Mains"
+      },
+      {
+        "name": "Chicken Stroganoff",
+        "description": "Tender Chicken Strips in Creamy Mushroom Sauce over Herbed Rice",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains"
       }
     ]
   },
