@@ -1,0 +1,406 @@
+---
+// TableSpread.astro - Interactive Table Items Motion
+// Items cascade and settle onto the marble table as the guest arrives or scrolls
+const tableItems = [
+  {
+    name: 'Angaraa Chicken Tikka',
+    category: 'Tandoor Special',
+    price: '₹525',
+    img: '/assets/dishes/angaraa_chicken_tikka_.webp',
+    posX: '15%',
+    posY: '25%',
+    rotation: '-4deg',
+    delay: '0.1s'
+  },
+  {
+    name: 'Tandoori Prawns',
+    category: 'Coastal Grills',
+    price: '₹599',
+    img: '/assets/dishes/tandoori_prawns_.webp',
+    posX: '42%',
+    posY: '15%',
+    rotation: '2deg',
+    delay: '0.25s'
+  },
+  {
+    name: 'Pandu Mirchi Kodi Kebab',
+    category: 'Chef Signature',
+    price: '₹495',
+    img: '/assets/dishes/pandu_mirchi_kodi_kebab.webp',
+    posX: '70%',
+    posY: '22%',
+    rotation: '5deg',
+    delay: '0.4s'
+  },
+  {
+    name: 'Karvepaku Kodi Vepudu',
+    category: 'Telangana Spiced',
+    price: '₹475',
+    img: '/assets/dishes/karvepaku_kodi_vepudu.webp',
+    posX: '25%',
+    posY: '55%',
+    rotation: '3deg',
+    delay: '0.55s'
+  },
+  {
+    name: 'Lotus Biscoff Delight',
+    category: 'Dessert Craft',
+    price: '₹345',
+    img: '/assets/dishes/lotus_biscoff_.webp',
+    posX: '58%',
+    posY: '58%',
+    rotation: '-3deg',
+    delay: '0.7s'
+  }
+];
+---
+
+<section class="ts-section" id="table-experience" aria-labelledby="ts-heading">
+  <div class="ts-head-wrap">
+    <span class="ts-kicker">A FEAST IN MOTION</span>
+    <h2 class="ts-title" id="ts-heading">Your Table Awaits at Fursat</h2>
+    <p class="ts-desc">Watch our signature creations take their place upon the table. Click any dish to explore notes & pairings.</p>
+  </div>
+
+  <!-- The Interactive Table Surface -->
+  <div class="ts-table-container">
+    <div class="ts-table-surface" id="ts-surface">
+      <div class="ts-marble-texture" aria-hidden="true"></div>
+
+      <!-- Center Ambient Brand Platter -->
+      <div class="ts-centerpiece" aria-hidden="true">
+        <div class="ts-platter-ring"></div>
+        <img src="/assets/c86f49db5a.webp" alt="" class="ts-brand-mark" width="90" height="90" />
+        <span class="ts-cp-sub">RESERVED TABLE</span>
+      </div>
+
+      <!-- Moving Table Items -->
+      {tableItems.map((item, i) => (
+        <div 
+          class="ts-item" 
+          style={`--x: ${item.posX}; --y: ${item.posY}; --rot: ${item.rotation}; --delay: ${item.delay};`}
+          data-name={item.name}
+          data-price={item.price}
+        >
+          <div class="ts-item-shadow"></div>
+          <div class="ts-plate">
+            <img src={item.img} alt={item.name} class="ts-dish-img" loading="lazy" />
+            <div class="ts-dish-pill">
+              <span class="ts-dp-name">{item.name}</span>
+              <span class="ts-dp-price">{item.price}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Mobile Fallback Grid -->
+  <div class="ts-mobile-grid">
+    {tableItems.map(item => (
+      <div class="ts-mob-card">
+        <img src={item.img} alt={item.name} class="ts-mob-img" loading="lazy" />
+        <div class="ts-mob-info">
+          <small>{item.category}</small>
+          <h4>{item.name}</h4>
+          <b>{item.price}</b>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="ts-cta-center">
+    <a href="/menu" class="ts-view-menu-btn">
+      <span>Explore Full 150+ Dish Menu</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+
+<style is:global>
+  .ts-section {
+    background: #17200F;
+    color: #F4ECDA;
+    padding: clamp(60px, 8vw, 110px) 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .ts-head-wrap {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto clamp(30px, 5vw, 48px);
+    padding: 0 20px;
+  }
+  .ts-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .ts-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    font-weight: 600;
+    color: #F4ECDA;
+    margin: 0;
+    line-height: 1.15;
+  }
+  .ts-desc {
+    font-size: 1rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 12px 0 0;
+    line-height: 1.45;
+  }
+
+  /* Table Container */
+  .ts-table-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: none;
+  }
+  @media (min-width: 860px) {
+    .ts-table-container { display: block; }
+    .ts-mobile-grid { display: none; }
+  }
+
+  .ts-table-surface {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    border-radius: 40px;
+    background: radial-gradient(circle at 50% 50%, #2A2112 0%, #171207 70%, #0D0A03 100%);
+    border: 3px solid rgba(224, 166, 60, 0.4);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 0 100px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+  }
+  .ts-marble-texture {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    background-image: radial-gradient(rgba(244, 236, 218, 0.25) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+  .ts-centerpiece {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 2px dashed rgba(224, 166, 60, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .ts-brand-mark {
+    opacity: 0.65;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+  }
+  .ts-cp-sub {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: rgba(224, 166, 60, 0.75);
+  }
+
+  /* Moving Dish Items */
+  .ts-item {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%) rotate(var(--rot));
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(.16,1,.3,1), z-index 0.1s;
+    animation: ts-glide 1.2s cubic-bezier(.16,1,.3,1) var(--delay) backwards;
+  }
+  .ts-item:hover {
+    transform: translate(-50%, -60%) scale(1.08) rotate(0deg);
+    z-index: 20;
+  }
+  @keyframes ts-glide {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -20%) scale(0.7) rotate(-15deg);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(var(--rot));
+    }
+  }
+  /* Respect reduced-motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .ts-item {
+      animation: none;
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(var(--rot));
+      transition: none;
+    }
+    .ts-item:hover {
+      transform: translate(-50%, -50%) rotate(var(--rot));
+    }
+  }
+  .ts-item-shadow {
+    position: absolute;
+    bottom: -15px;
+    left: 10%;
+    width: 80%;
+    height: 25px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    filter: blur(10px);
+    transition: transform 0.3s ease;
+  }
+  .ts-item:hover .ts-item-shadow {
+    transform: scale(1.2) translateY(8px);
+    opacity: 0.4;
+  }
+  .ts-plate {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    padding: 6px;
+    background: linear-gradient(135deg, rgba(224, 166, 60, 0.7) 0%, rgba(26, 22, 8, 0.9) 100%);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  }
+  .ts-dish-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid #1A1608;
+  }
+  .ts-dish-pill {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #17200F;
+    border: 1px solid #E0A63C;
+    border-radius: 999px;
+    padding: 4px 12px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    transition: transform 0.2s ease;
+  }
+  .ts-dp-name {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #F4ECDA;
+  }
+  .ts-dp-price {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: #E0A63C;
+  }
+
+  /* Mobile Grid */
+  .ts-mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 0 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .ts-mob-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(244, 236, 218, 0.05);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    border-radius: 16px;
+    padding: 12px;
+  }
+  .ts-mob-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #E0A63C;
+  }
+  .ts-mob-info small {
+    font-size: 0.75rem;
+    color: #E0A63C;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .ts-mob-info h4 {
+    margin: 2px 0 4px;
+    font-size: 0.95rem;
+    color: #F4ECDA;
+  }
+  .ts-mob-info b {
+    color: #E0A63C;
+  }
+
+  .ts-cta-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+  .ts-view-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .ts-view-menu-btn:hover {
+    background: #F4ECDA;
+    transform: translateY(-2px);
+  }
+  .ts-view-menu-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+</style>
+
+
+<script>
+  // GSAP ScrollTrigger — dishes slide in as user scrolls into the TableSpread section
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced && window.innerWidth >= 768) {
+    const items = Array.from(document.querySelectorAll<HTMLElement>('.ts-item'));
+
+    items.forEach((el, i) => {
+      const side = i % 2 === 0 ? -100 : 100;
+      gsap.fromTo(el,
+        { opacity: 0, y: 50, x: side, scale: 0.75 },
+        {
+          opacity: 1, y: 0, x: 0, scale: 1,
+          duration: 1.1,
+          ease: 'power3.out',
+          delay: i * 0.08,
+          scrollTrigger: {
+            trigger: '.ts-table-wrap',
+            start: 'top 78%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    });
+  }
+</script>

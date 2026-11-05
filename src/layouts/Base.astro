@@ -1,0 +1,78 @@
+---
+import ld from '../data/ld.json';
+import '../styles/01.css';
+import '../styles/02.css';
+import '../styles/03.css';
+import '../styles/04.css';
+import '../styles/05.css';
+import '../styles/06.css';
+import '../styles/07.css';
+import '../styles/08.css';
+import '../styles/09.css';
+import '../styles/10.css';
+import '../styles/motion.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
+  pageType?: string;
+}
+
+const {
+  title = 'Fursat Kitchen | Bar – Café, Bar & Banquet in Madhapur, Hyderabad',
+  description = 'Fursat Kitchen | Bar at Capital Park, Madhapur, Hyderabad: a café, kitchen, bar and banquet space. Ask Fursat for dishes by mood. Party packages from ₹925 per person, buffets and bar bashes.',
+  canonical = 'https://fursatind.in/',
+  ogImage = 'https://fursatind.in/og-image.jpg',
+  ogImageAlt = 'A baby elephant sipping a pink Fursat cocktail',
+  pageType = 'website',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light"><title>{title}</title>
+<meta name="description" content={description}>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<link rel="canonical" href={canonical}>
+<meta name="theme-color" content="#F2EEE4">
+<meta name="application-name" content="Fursat">
+<meta name="apple-mobile-web-app-title" content="Fursat">
+<meta name="format-detection" content="telephone=yes">
+<meta name="geo.region" content="IN-TG"><meta name="geo.placename" content="Madhapur, Hyderabad">
+<meta property="og:type" content={pageType}><meta property="og:site_name" content="Fursat Kitchen | Bar">
+<meta property="og:title" content={title}><meta property="og:description" content={description}>
+<meta property="og:url" content={canonical}><meta property="og:locale" content="en_IN">
+<meta property="og:image" content={ogImage}><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content={ogImageAlt}>
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content={title}><meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={ogImage}><meta name="twitter:image:alt" content={ogImageAlt}>
+<link rel="preload" href="/assets/9fbca90fa3.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/assets/8da3ca8f0a.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/assets/1233814dd2.woff" as="font" type="font/woff" crossorigin>
+<link rel="icon" href="/assets/9a3bba811b.webp">
+<script type="application/ld+json" is:inline set:html={JSON.stringify(ld)}></script>
+<style is:global>
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:cubic-bezier(.23,1,.32,1)}
+@media(prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+</style>
+<noscript>
+<style is:global>
+  #intro, #ibox, #gate, #gatebtn, .lcap, .lgo, .lring { display: none !important; }
+  .rv { opacity: 1 !important; transform: none !important; }
+  .mot-headline, .mot-reveal-img, .mot-card-lit { opacity: 1 !important; clip-path: none !important; transform: none !important; }
+  html.lock, body { overflow: auto !important; }
+  #site-header.sh-hidden { transform: none !important; opacity: 1 !important; pointer-events: auto !important; }
+  .ss-dish, .ss-heading, .ss-para { opacity: 1 !important; transform: none !important; }
+  .ms-chew, .ms-cheer { display: none !important; }
+</style>
+</noscript>
+</head>
+<body>
+<slot />
+</body>
+</html>

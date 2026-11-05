@@ -1,0 +1,534 @@
+---
+// SiteHeader.astro - Fursat Luxury Hospitality Navigation
+// Structure: Menu ▾ | Celebrate ▾ | Order | Ask Fursat | Story  +  gold Reserve button
+interface Props {
+  active?: string;
+}
+const { active = 'home' } = Astro.props;
+---
+<header class="sh-header" id="site-header">
+  <div class="sh-inner">
+    <!-- Brand Logo -->
+    <a href="/" class="sh-logo" aria-label="Fursat Kitchen | Bar Home">
+      <img src="/assets/c86f49db5a.webp" alt="Fursat Kitchen & Bar" width="118" height="88" />
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="sh-nav" aria-label="Main Navigation">
+      <!-- Menu Dropdown -->
+      <div class="sh-drop">
+        <button class:list={["sh-link", "sh-drop-btn", { active: active === 'menu' }]} type="button" aria-expanded="false">
+          <span>Menu</span>
+          <svg class="sh-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="sh-menu">
+          <a href="/menu" class="sh-sub-item">
+            <span class="sh-si-t">All Categories</span>
+            <small>North Indian, Asian, Continental & Kebabs</small>
+          </a>
+          <a href="/restaurant-bar#bar-menu" class="sh-sub-item">
+            <span class="sh-si-t">Bar & Mixology</span>
+            <small>Artisanal Cocktails, Single Malts & Beers</small>
+          </a>
+          <a href="/cafe#cafe-menu" class="sh-sub-item">
+            <span class="sh-si-t">Café & Coffee</span>
+            <small>Specialty Brews, Shakes & Bakes</small>
+          </a>
+          <a href="/menu?tab=craft" class="sh-sub-item">
+            <span class="sh-si-t">Craft Your Plate ✨</span>
+            <small>Customize your feast step-by-step</small>
+          </a>
+        </div>
+      </div>
+
+      <!-- Celebrate Dropdown -->
+      <div class="sh-drop">
+        <button class:list={["sh-link", "sh-drop-btn", { active: active === 'celebrate' || active === 'banquet' || active === 'events' }]} type="button" aria-expanded="false">
+          <span>Celebrate</span>
+          <svg class="sh-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="sh-menu">
+          <a href="/banquet" class="sh-sub-item">
+            <span class="sh-si-t">The Grand Banquet Hall</span>
+            <small>Capacity 50–350 guests with AV & live stage</small>
+          </a>
+          <a href="/events" class="sh-sub-item">
+            <span class="sh-si-t">Private Celebrations</span>
+            <small>Birthdays, Anniversaries, Kitty & Bar Bashes</small>
+          </a>
+          <a href="/catering" class="sh-sub-item">
+            <span class="sh-si-t">Outdoor Catering</span>
+            <small>Fursat royal dining delivered to your venue</small>
+          </a>
+        </div>
+      </div>
+
+      <a href="/restaurant-bar" class:list={["sh-link", { active: active === 'restaurant-bar' }]}>Bar & Kitchen</a>
+      <a href="/cafe" class:list={["sh-link", { active: active === 'cafe' }]}>Café</a>
+      <a href="/order" class:list={["sh-link", "sh-badge-link", { active: active === 'order' }]}>
+        <span>Order</span>
+        <span class="sh-pill">Phase 2</span>
+      </a>
+      <a href="/ask" class:list={["sh-link", { active: active === 'ask' }]}>Ask Fursat</a>
+      <a href="/story" class:list={["sh-link", { active: active === 'story' }]}>Story</a>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="sh-actions">
+      <a href="https://wa.me/919059670033" target="_blank" rel="noopener" class="sh-wa" aria-label="WhatsApp Fursat">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.3C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+      </a>
+
+      <!-- Gold Reserve Button -->
+      <a href="/reserve" class="sh-reserve-btn" data-open="book">
+        <span>Reserve</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+
+      <!-- Mobile Hamburger -->
+      <button class="sh-burger" id="sh-burger" type="button" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="sh-mobile-panel" id="sh-mobile-panel" hidden>
+    <div class="sh-mp-inner">
+      <div class="sh-mp-group">
+        <span class="sh-mp-label">Dining & Bar</span>
+        <a href="/menu" class="sh-mp-link">Explore Menu</a>
+        <a href="/restaurant-bar" class="sh-mp-link">Restaurant & Bar (21+)</a>
+        <a href="/cafe" class="sh-mp-link">Fursat Café & Shakes</a>
+        <a href="/order" class="sh-mp-link">Online Ordering <span class="sh-pill">Phase 2</span></a>
+      </div>
+      <div class="sh-mp-group">
+        <span class="sh-mp-label">Occasions & Spaces</span>
+        <a href="/banquet" class="sh-mp-link">The Banquet Hall (50–350 Pax)</a>
+        <a href="/events" class="sh-mp-link">Birthdays, Kitty & Bar Bashes</a>
+        <a href="/catering" class="sh-mp-link">Outdoor Catering</a>
+      </div>
+      <div class="sh-mp-group">
+        <span class="sh-mp-label">Experience</span>
+        <a href="/ask" class="sh-mp-link">Ask Fursat (Mood Search)</a>
+        <a href="/story" class="sh-mp-link">Our Story & Heritage</a>
+        <a href="/terms" class="sh-mp-link">Offers & Terms</a>
+      </div>
+      <div class="sh-mp-cta">
+        <a href="/reserve" class="sh-mp-reserve" data-open="book">Reserve a Table (15% Off)</a>
+        <p class="sh-mp-time">Open Daily 12:00 PM – 11:30 PM · Capital Park, Madhapur</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style is:global>
+  .sh-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    view-transition-name: site-header;
+    background: rgba(23, 32, 15, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(224, 166, 60, 0.22);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .sh-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px clamp(16px, 3.5vw, 40px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .sh-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .sh-logo:hover {
+    transform: scale(1.03);
+  }
+  .sh-logo img {
+    height: clamp(42px, 5.5vw, 56px);
+    width: auto;
+    object-fit: contain;
+  }
+  .sh-nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 1.8vw, 24px);
+  }
+  .sh-link {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--rl-ink, #F4ECDA);
+    padding: 8px 12px;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease;
+    text-decoration: none;
+  }
+  .sh-link:hover, .sh-link.active {
+    color: var(--rl-gold, #E0A63C);
+    background: rgba(224, 166, 60, 0.08);
+  }
+  .sh-arr {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.25s ease;
+  }
+  .sh-drop {
+    position: relative;
+  }
+  .sh-drop:hover .sh-arr,
+  .sh-drop:focus-within .sh-arr {
+    transform: rotate(180deg);
+  }
+  .sh-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    min-width: 260px;
+    background: #17200F;
+    border: 1px solid rgba(224, 166, 60, 0.35);
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: opacity 0.22s cubic-bezier(.16,1,.3,1), transform 0.22s cubic-bezier(.16,1,.3,1);
+    z-index: 105;
+  }
+  .sh-drop:hover .sh-menu,
+  .sh-drop:focus-within .sh-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .sh-sub-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.16s ease;
+  }
+  .sh-sub-item:hover {
+    background: rgba(224, 166, 60, 0.14);
+  }
+  .sh-si-t {
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #F4ECDA;
+  }
+  .sh-sub-item:hover .sh-si-t {
+    color: #E0A63C;
+  }
+  .sh-sub-item small {
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.775rem;
+    color: rgba(244, 236, 218, 0.65);
+  }
+  .sh-pill {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(224, 166, 60, 0.2);
+    color: #E0A63C;
+    border: 1px solid rgba(224, 166, 60, 0.4);
+  }
+  .sh-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sh-wa {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: #25D366;
+    background: rgba(37, 211, 102, 0.12);
+    transition: transform 0.2s ease, background 0.2s ease;
+    text-decoration: none;
+  }
+  .sh-wa:hover {
+    transform: scale(1.1);
+    background: rgba(37, 211, 102, 0.25);
+  }
+  .sh-wa svg {
+    width: 20px;
+    height: 20px;
+  }
+  .sh-reserve-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #E0A63C 0%, #C88D25 100%);
+    color: #1A1608;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.9375rem;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(224, 166, 60, 0.35);
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+  }
+  .sh-reserve-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(224, 166, 60, 0.5);
+  }
+  .sh-reserve-btn:active {
+    transform: scale(0.97);
+  }
+  .sh-reserve-btn svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.2s ease;
+  }
+  .sh-reserve-btn:hover svg {
+    transform: translateX(3px);
+  }
+  .sh-burger {
+    all: unset;
+    cursor: pointer;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    padding: 4px;
+    box-sizing: border-box;
+  }
+  .sh-burger span {
+    display: block;
+    height: 2.5px;
+    width: 100%;
+    background: #F4ECDA;
+    border-radius: 2px;
+    transition: transform 0.24s ease, opacity 0.24s ease;
+  }
+  .sh-burger[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+  }
+  .sh-burger[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+  .sh-burger[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+  }
+  .sh-mobile-panel {
+    background: #17200F;
+    border-top: 1px solid rgba(224, 166, 60, 0.2);
+    padding: 20px clamp(16px, 4vw, 32px) 28px;
+    animation: sh-slide .25s ease-out;
+  }
+  @keyframes sh-slide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .sh-mp-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .sh-mp-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sh-mp-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #E0A63C;
+    margin-bottom: 2px;
+  }
+  .sh-mp-link {
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #F4ECDA;
+    text-decoration: none;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sh-mp-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(244, 236, 218, 0.1);
+  }
+  .sh-mp-reserve {
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .sh-mp-time {
+    font-size: 0.8125rem;
+    color: rgba(244, 236, 218, 0.6);
+    text-align: center;
+    margin: 0;
+  }
+
+  @media (max-width: 1040px) {
+    .sh-nav { display: none; }
+    .sh-burger { display: flex; }
+  }
+
+  /* ── Scroll-shrink & hide/show ─────────────────────────────────────────── */
+  .sh-header {
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.32s cubic-bezier(0.16,1,0.3,1),
+      opacity 0.32s ease;
+  }
+  .sh-header.sh-scrolled .sh-inner {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .sh-header.sh-scrolled .sh-logo img {
+    height: clamp(32px, 4vw, 42px);
+  }
+  .sh-header.sh-scrolled {
+    background: rgba(18, 25, 11, 0.97);
+    border-bottom-color: rgba(224, 166, 60, 0.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  .sh-header.sh-hidden {
+    transform: translateY(-110%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* Reappear on keyboard focus (Tab) */
+  .sh-header.sh-hidden:focus-within {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  /* ── Reduced motion: instant, no slide ────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .sh-header {
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .sh-header.sh-hidden {
+      transform: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .sh-header.sh-hidden:focus-within {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  function initHeader() {
+    const burger = document.getElementById('sh-burger');
+    const panel = document.getElementById('sh-mobile-panel');
+    if (burger && panel && !burger.dataset.init) {
+      burger.dataset.init = '1';
+      burger.addEventListener('click', () => {
+        const expanded = burger.getAttribute('aria-expanded') === 'true';
+        burger.setAttribute('aria-expanded', String(!expanded));
+        panel.hidden = expanded;
+      });
+    }
+
+    /* ── Scroll shrink + hide-on-down / show-on-up ───────────────────────── */
+    const header = document.getElementById('site-header');
+    if (!header || header.dataset.init) return;
+    header.dataset.init = '1';
+
+    // Show header immediately on focus-within (keyboard Tab navigation)
+    header.addEventListener('focusin', () => {
+      header.classList.remove('sh-hidden');
+    });
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    function onScroll() {
+      const y = window.scrollY;
+
+      /* Near top: always show, unshrink */
+      if (y < 20) {
+        header.classList.remove('sh-scrolled', 'sh-hidden');
+        lastY = y;
+        ticking = false;
+        return;
+      }
+
+      /* Shrink after 60px */
+      if (y > 60) {
+        header.classList.add('sh-scrolled');
+      } else {
+        header.classList.remove('sh-scrolled');
+      }
+
+      /* Hide on scroll-down, show on scroll-up */
+      if (y > lastY + 4) {
+        header.classList.add('sh-hidden');
+      } else if (y < lastY - 4) {
+        header.classList.remove('sh-hidden');
+      }
+
+      lastY = y;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeader);
+  } else {
+    initHeader();
+  }
+  document.addEventListener('astro:page-load', initHeader);
+</script>
+</script>

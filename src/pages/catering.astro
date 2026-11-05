@@ -1,0 +1,467 @@
+---
+// catering.astro - Outdoor Catering by Fursat
+// Royal Deccan feasts delivered & live-cooked at your venue
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+---
+<Base
+  title="Catering & Buffets — Fursat Kitchen | Bar | Hyderabad"
+  description="Fursat off-site catering for weddings, corporate lunches and private parties. Full buffet setups, live counters, bar service. Hyderabad-wide delivery."
+  canonical="https://fursatind.in/catering/"
+  ogImage="https://fursatind.in/assets/fursat_space_14.webp"
+  ogImageAlt="Fursat catering — buffet and live counter service"
+>
+  <SiteHeader active="celebrate" />
+
+  <main class="ct-page" id="main">
+    <!-- Hero Section -->
+    <section class="ct-hero">
+      <div class="ct-hero-wrap">
+        <span class="ct-kicker">GOURMET EXPERIENCES AT YOUR VENUE</span>
+        <h1 class="ct-title mot-headline">Fursat Outdoor Catering</h1>
+        <p class="ct-sub">
+          Bring the signature flavors, live tandoor artistry, and royal hospitality of Fursat to your farmhouse, villa, convention hall, or corporate campus across Hyderabad.
+        </p>
+        <div class="ct-hero-btns">
+          <a href="#quote" class="ct-btn-gold">Request Catering Menu & Quote</a>
+          <a href="tel:+919059670033" class="ct-btn-ghost">Call Catering Chef: +91 90596 70033</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catering Capabilities -->
+    <section class="ct-services">
+      <div class="ct-container">
+        <div class="ct-sec-head text-center">
+          <span class="ct-kicker">LIVE COUNTERS & SETUPS</span>
+          <h2 class="ct-sec-title mot-headline">What We Bring to Your Gathering</h2>
+        </div>
+
+        <div class="ct-grid">
+          <div class="ct-card">
+            <div class="ct-card-icon">🔥</div>
+            <h3>Live Charcoal Tandoor</h3>
+            <p>Hot, sizzling Angaraa Tikka, Tandoori Prawns, Paneer Kebabs, and crisp rotis & naans rolled and baked on-site.</p>
+          </div>
+
+          <div class="ct-card">
+            <div class="ct-card-icon">🍲</div>
+            <h3>Dum Biryani Handis</h3>
+            <p>Sealed clay and copper handis of Hyderabadi Mutton & Chicken Dum Biryani, unsealed live before your guests for peak aroma.</p>
+          </div>
+
+          <div class="ct-card">
+            <div class="ct-card-icon">🍹</div>
+            <h3>Mocktail & Mixology Bar</h3>
+            <p>Bespoke mobile bar setups with flair mixologists serving botanical mocktails, smoked coolers, and cold brews.</p>
+          </div>
+
+          <div class="ct-card">
+            <div class="ct-card-icon">🧁</div>
+            <h3>Live Chaat & Dessert Island</h3>
+            <p>Interactive street-food chaats, live jalebi counters, Lotus Biscoff dessert pots, and artisanal ice cream rolls.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Service Scale Section -->
+    <section class="ct-scale">
+      <div class="ct-container">
+        <div class="ct-sec-head text-center">
+          <span class="ct-kicker">OUR CATERING SCALE</span>
+          <h2 class="ct-sec-title">From Intimate Dinners to Grand Weddings</h2>
+        </div>
+        <div class="ct-scale-grid">
+          <div class="ct-stat-card">
+            <div class="ct-stat-number">30–80</div>
+            <div class="ct-stat-unit">Guests</div>
+            <div class="ct-stat-label">Intimate Gatherings</div>
+          </div>
+          <div class="ct-stat-card">
+            <div class="ct-stat-number">80–300</div>
+            <div class="ct-stat-unit">Guests</div>
+            <div class="ct-stat-label">Corporate &amp; Social Events</div>
+          </div>
+          <div class="ct-stat-card">
+            <div class="ct-stat-number">300–1500</div>
+            <div class="ct-stat-unit">Guests</div>
+            <div class="ct-stat-label">Grand Weddings &amp; Conventions</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Strip -->
+    <section class="ct-gallery-strip">
+      <div class="ct-gallery-scroll">
+        <div class="ct-gallery-item">
+          <img src="/assets/interior/fursat_space_02.webp" alt="Fursat Interior Space" loading="lazy" />
+        </div>
+        <div class="ct-gallery-item">
+          <img src="/assets/interior/fursat_space_05.webp" alt="Fursat Dining Area" loading="lazy" />
+        </div>
+        <div class="ct-gallery-item">
+          <img src="/assets/interior/fursat_space_10.webp" alt="Fursat Ambiance" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Catering Quote Form -->
+    <section class="ct-quote" id="quote">
+      <div class="ct-container ct-quote-wrap">
+        <div class="ct-form-card">
+          <div class="ct-fc-head">
+            <span class="ct-kicker">GET AN ESTIMATE</span>
+            <h2>Book Fursat Outdoor Catering</h2>
+            <p>Provide your event details below. Our Catering Director will connect with a curated sample menu and per-head pricing.</p>
+          </div>
+
+          <form class="ct-form" action="https://wa.me/919059670033" target="_blank"
+            data-utm="utm_source=website&utm_medium=cta&utm_campaign=catering">
+            <div class="ct-row">
+              <div class="ct-field">
+                <label>Host Name *</label>
+                <input type="text" required placeholder="e.g. Dr. S. Rao" />
+              </div>
+              <div class="ct-field">
+                <label>Contact Number *</label>
+                <input type="tel" required placeholder="e.g. 98483 60033" />
+              </div>
+            </div>
+
+            <div class="ct-row">
+              <div class="ct-field">
+                <label>Event Location / Area in Hyderabad *</label>
+                <input type="text" required placeholder="e.g. Moinabad Farmhouse / Jubilee Hills" />
+              </div>
+              <div class="ct-field">
+                <label>Guest Count (Min 30) *</label>
+                <input type="number" min="30" max="1500" required placeholder="e.g. 75 Guests" />
+              </div>
+            </div>
+
+            <div class="ct-row">
+              <div class="ct-field">
+                <label>Event Date *</label>
+                <input type="date" required />
+              </div>
+              <div class="ct-field">
+                <label>Preferred Cuisine Mix</label>
+                <select>
+                  <option>North Indian + Royal Hyderabadi</option>
+                  <option>Pan-Asian + Continental</option>
+                  <option>Pure Vegetarian Feast</option>
+                  <option>Barbecue & Kebabs Special</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="ct-submit-btn">
+              <span>Request Catering Proposal via WhatsApp</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <MascotOfferModal />
+  <SiteFooter />
+<MobileBar active="celebrate" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .ct-page {
+    background: #17200F;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .ct-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .ct-hero {
+    position: relative;
+    background: url('/assets/interior/fursat_space_14.webp') center/cover no-repeat;
+    padding: clamp(60px, 8vw, 100px) 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(224, 166, 60, 0.2);
+  }
+  .ct-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,15,5,0.65) 0%, rgba(18,25,11,0.92) 100%);
+  }
+  .ct-hero-wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .ct-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .ct-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 600;
+    color: #F4ECDA;
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+  .ct-sub {
+    font-size: 1.05rem;
+    color: rgba(244, 236, 218, 0.8);
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+  .ct-hero-btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  .ct-btn-gold {
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .ct-btn-ghost {
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: rgba(244, 236, 218, 0.08);
+    border: 1px solid rgba(224, 166, 60, 0.35);
+    color: #F4ECDA;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  /* Services Grid */
+  .ct-services {
+    padding: clamp(60px, 8vw, 110px) 0;
+  }
+  .ct-sec-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #F4ECDA;
+    margin: 0 0 40px;
+  }
+  .ct-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 24px;
+  }
+  .ct-card {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    border-radius: 24px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ct-card-icon {
+    font-size: 2.2rem;
+  }
+  .ct-card h3 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.35rem;
+    color: #F4ECDA;
+    margin: 0;
+  }
+  .ct-card p {
+    font-size: 0.925rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Quote Form */
+  .ct-quote {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #12190B;
+  }
+  .ct-quote-wrap {
+    max-width: 820px;
+  }
+  .ct-form-card {
+    background: #17200F;
+    border: 2px solid rgba(224, 166, 60, 0.4);
+    border-radius: 28px;
+    padding: clamp(28px, 5vw, 48px);
+  }
+  .ct-fc-head {
+    margin-bottom: 28px;
+  }
+  .ct-fc-head h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    color: #F4ECDA;
+    margin: 6px 0 10px;
+  }
+  .ct-fc-head p {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0;
+  }
+  .ct-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .ct-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  @media (min-width: 640px) {
+    .ct-row { grid-template-columns: 1fr 1fr; }
+  }
+  .ct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ct-field label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #E0A63C;
+  }
+  .ct-field input, .ct-field select {
+    background: #090D05;
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.9375rem;
+  }
+  .ct-field input:focus, .ct-field select:focus {
+    outline: none;
+    border-color: #E0A63C;
+  }
+  .ct-submit-btn {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #E0A63C 0%, #C88D25 100%);
+    color: #1A1608;
+    font-weight: 800;
+    font-size: 1rem;
+    margin-top: 10px;
+    box-shadow: 0 6px 20px rgba(224, 166, 60, 0.35);
+  }
+  .ct-submit-btn svg { width: 18px; height: 18px; }
+
+  /* Scale / Stats Section */
+  .ct-scale {
+    padding: clamp(50px, 7vw, 90px) 0;
+    background: #12190B;
+    border-top: 1px solid rgba(224, 166, 60, 0.15);
+    border-bottom: 1px solid rgba(224, 166, 60, 0.15);
+  }
+  .ct-sec-head {
+    margin-bottom: 40px;
+  }
+  .ct-scale-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+  }
+  .ct-stat-card {
+    background: rgba(224, 166, 60, 0.07);
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    border-radius: 24px;
+    padding: 36px 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ct-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(224, 166, 60, 0.18);
+  }
+  .ct-stat-number {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: #E0A63C;
+    line-height: 1;
+  }
+  .ct-stat-unit {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: rgba(244, 236, 218, 0.6);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ct-stat-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #F4ECDA;
+    margin-top: 4px;
+  }
+
+  /* Gallery Strip */
+  .ct-gallery-strip {
+    padding: clamp(40px, 6vw, 70px) 0;
+    overflow: hidden;
+  }
+  .ct-gallery-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 0 clamp(16px, 4vw, 40px) 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(224,166,60,0.4) transparent;
+  }
+  .ct-gallery-scroll::-webkit-scrollbar {
+    height: 4px;
+  }
+  .ct-gallery-scroll::-webkit-scrollbar-thumb {
+    background: rgba(224, 166, 60, 0.4);
+    border-radius: 999px;
+  }
+  .ct-gallery-item {
+    flex: 0 0 clamp(260px, 30vw, 420px);
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: 64px 8px 64px 8px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  }
+  .ct-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .ct-gallery-item:hover img {
+    transform: scale(1.06);
+  }
+</style>

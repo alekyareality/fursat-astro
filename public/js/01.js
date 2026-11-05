@@ -1,0 +1,1 @@
+window.AskFursatConfig={whatsapp:"919059670033",phone:"+919059670033",theme:"light"};

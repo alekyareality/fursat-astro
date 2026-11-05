@@ -1,0 +1,582 @@
+---
+// reserve.astro - Fursat Direct Table Reservation & Slot Picker
+// Date, time, guests, live offer reveal, scratch card & terms
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+---
+<Base
+  title="Reserve a Table — Fursat Kitchen | Bar, Madhapur"
+  description="Book your table at Fursat Kitchen | Bar. Perfect for date nights, family lunches, celebrations and corporate dinners. Easy WhatsApp reservation."
+  canonical="https://fursatind.in/reserve/"
+  ogImage="https://fursatind.in/assets/fursat_space_01.webp"
+  ogImageAlt="Reserve a table at Fursat Kitchen | Bar"
+>
+  <SiteHeader active="reserve" />
+
+  <main class="rs-page" id="main">
+    <!-- Hero Section -->
+    <section class="rs-hero">
+      <div class="rs-hero-bg" aria-hidden="true"></div>
+      <div class="rs-hero-content">
+        <span class="rs-kicker">BOOK YOUR TABLE</span>
+        <h1 class="rs-hero-title mot-headline">Reserve a Table at Fursat</h1>
+        <p class="rs-hero-sub">Unhurried dining · Royal feasts · Signature mixology</p>
+        <div class="rs-hero-badges">
+          <span>⭐ Instant Confirmation</span>
+          <span>🎁 Digital Scratch Reward</span>
+          <span>🔥 15% OFF Lunch Slots</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="rs-container">
+      <div class="rs-grid">
+        <!-- Left: Reservation Form -->
+        <div class="rs-form-box">
+          <form class="rs-form" id="res-form" onsubmit="return false;">
+            <!-- Guests Counter -->
+            <div class="rs-group">
+              <label class="rs-label">Number of Guests</label>
+              <div class="rs-guests-selector">
+                {['2 Guests', '4 Guests', '6 Guests', '8 Guests', '10+ Guests'].map((g, i) => (
+                  <button type="button" class:list={["rs-guest-btn", { active: i === 1 }]} data-val={g}>{g}</button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Date Picker -->
+            <div class="rs-group">
+              <label class="rs-label" for="res-date">Select Date</label>
+              <input type="date" id="res-date" class="rs-input" required />
+            </div>
+
+            <!-- Slot Picker: Lunch vs Dinner -->
+            <div class="rs-group">
+              <div class="rs-slot-header">
+                <label class="rs-label">Preferred Time Slot</label>
+                <span class="rs-offer-tag">🔥 12 PM – 4 PM Slot: FLAT 15% OFF (Code: FURSAT15)</span>
+              </div>
+              <div class="rs-slots-grid">
+                <div class="rs-slot-section">
+                  <span class="rs-slot-period">Lunch (12 PM – 4 PM)</span>
+                  <div class="rs-slot-chips mot-tab-indicator">
+                    <button type="button" class="rs-time-chip active" data-time="12:30 PM">12:30 PM</button>
+                    <button type="button" class="rs-time-chip" data-time="01:00 PM">01:00 PM</button>
+                    <button type="button" class="rs-time-chip" data-time="01:30 PM">01:30 PM</button>
+                    <button type="button" class="rs-time-chip" data-time="02:30 PM">02:30 PM</button>
+                  </div>
+                </div>
+
+                <div class="rs-slot-section">
+                  <span class="rs-slot-period">Dinner (7 PM – 11 PM)</span>
+                  <div class="rs-slot-chips mot-tab-indicator">
+                    <button type="button" class="rs-time-chip" data-time="07:30 PM">07:30 PM</button>
+                    <button type="button" class="rs-time-chip" data-time="08:15 PM">08:15 PM</button>
+                    <button type="button" class="rs-time-chip" data-time="09:00 PM">09:00 PM</button>
+                    <button type="button" class="rs-time-chip" data-time="09:45 PM">09:45 PM</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Guest Contact Details -->
+            <div class="rs-row">
+              <div class="rs-field">
+                <label class="rs-label" for="res-name">Your Name</label>
+                <input type="text" id="res-name" class="rs-input" placeholder="e.g. Sumanth" required />
+              </div>
+              <div class="rs-field">
+                <label class="rs-label" for="res-phone">Mobile Number</label>
+                <input type="tel" id="res-phone" class="rs-input" placeholder="e.g. 98483 60033" required />
+              </div>
+            </div>
+
+            <!-- Occasion / Notes -->
+            <div class="rs-group">
+              <label class="rs-label" for="res-occasion">Special Occasion (Optional)</label>
+              <select id="res-occasion" class="rs-input">
+                <option value="Casual Dining">Casual Dining / Friends Catchup</option>
+                <option value="Birthday">Birthday Celebration</option>
+                <option value="Anniversary">Anniversary Dinner</option>
+                <option value="Business Lunch">Business Lunch / Meeting</option>
+              </select>
+            </div>
+
+            <!-- Submit CTA -->
+            <button type="button" id="res-submit-btn" class="rs-submit-btn">
+              <span>Confirm Reservation on WhatsApp</span>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.3C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+            </button>
+            <p class="rs-note">✓ Instant table assignment. No booking charges or cancellation fees.</p>
+          </form>
+        </div>
+
+        <!-- Right: Digital Scratch Card & Privilege Perks -->
+        <aside class="rs-sidebar">
+          <!-- Scratch Card Widget -->
+          <div class="rs-scratch-card">
+            <span class="rs-sc-kicker">DIGITAL PRIVILEGE REWARD</span>
+            <h3>Tap to Reveal Your Special Perk</h3>
+            <p>Every online table booking unlocks a secret complimentary reward for the table.</p>
+
+            <div class="rs-scratch-box mot-confetti" id="scratch-box">
+              <div class="rs-sb-cover" id="scratch-cover">
+                <span>🎁 Tap / Scratch to Reveal</span>
+              </div>
+              <div class="rs-sb-secret">
+                <span class="rs-sb-code">COMPLIMENTARY MOCKTAIL</span>
+                <p>1 Free Pitcher of Fursat Rahasyam on tables of 4+</p>
+                <code>CODE: FURVIP</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Space Photos -->
+          <div class="rs-preview-card">
+            <img src="/assets/interior/fursat_space_08.webp" alt="Dining Ambiance" class="rs-prev-img mot-reveal-img" />
+            <div class="rs-prev-body">
+              <h4>Fursat Kitchen | Bar</h4>
+              <p>Capital Park, Image Gardens Road, Madhapur, Hyderabad</p>
+              <div class="rs-prev-meta">
+                <span>⭐ 4.8 / 5 Rating</span>
+                <span>🕒 12:00 PM – 11:30 PM</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <MascotOfferModal />
+  <SiteFooter />
+<MobileBar active="reserve" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .rs-page {
+    background: #17200F;
+    color: #F4ECDA;
+    padding: 0 0 clamp(60px, 8vw, 100px);
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+
+  /* Hero */
+  .rs-hero {
+    position: relative;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  .rs-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url('/assets/interior/fursat_space_08.webp') center/cover no-repeat;
+    filter: brightness(0.35);
+  }
+  .rs-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: clamp(60px, 8vw, 100px) clamp(16px, 4vw, 40px);
+  }
+  .rs-hero-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    color: #F4ECDA;
+    margin: 8px 0 16px;
+    line-height: 1.1;
+  }
+  .rs-hero-sub {
+    font-size: 1.1rem;
+    color: rgba(244,236,218,0.8);
+    margin: 0 0 20px;
+  }
+  .rs-hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .rs-hero-badges span {
+    background: rgba(224,166,60,0.15);
+    border: 1px solid rgba(224,166,60,0.4);
+    color: #E0A63C;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  /* Page body */
+  .rs-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .rs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+    padding-top: clamp(40px, 6vw, 70px);
+  }
+  @media (min-width: 960px) {
+    .rs-grid {
+      grid-template-columns: 1.25fr 1fr;
+    }
+  }
+  .rs-form-box {
+    background: #12190B;
+    border: 2px solid rgba(224, 166, 60, 0.4);
+    border-radius: 28px;
+    padding: clamp(28px, 4.5vw, 48px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+  .rs-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .rs-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-weight: 600;
+    color: #F4ECDA;
+    margin: 0 0 10px;
+  }
+  .rs-sub {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0 0 28px;
+    line-height: 1.5;
+  }
+  .rs-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .rs-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rs-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #E0A63C;
+  }
+  .rs-guests-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .rs-guest-btn {
+    all: unset;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(244, 236, 218, 0.05);
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #F4ECDA;
+    transition: all 0.16s ease;
+  }
+  .rs-guest-btn.active, .rs-guest-btn:hover {
+    background: #E0A63C;
+    color: #1A1608;
+    border-color: #E0A63C;
+  }
+  .rs-input {
+    background: #090D05;
+    border: 1.5px solid rgba(224, 166, 60, 0.3);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.95rem;
+  }
+  .rs-input:focus {
+    outline: none;
+    border-color: #E0A63C;
+  }
+  .rs-slot-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .rs-offer-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #FFD56B;
+    background: rgba(224, 166, 60, 0.15);
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(224, 166, 60, 0.35);
+  }
+  .rs-slots-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: rgba(244, 236, 218, 0.02);
+    border: 1px solid rgba(244, 236, 218, 0.08);
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .rs-slot-period {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(244, 236, 218, 0.6);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .rs-slot-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .rs-time-chip {
+    all: unset;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(244, 236, 218, 0.06);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #F4ECDA;
+  }
+  .rs-time-chip.active, .rs-time-chip:hover {
+    background: #E0A63C;
+    color: #1A1608;
+    border-color: #E0A63C;
+  }
+  .rs-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 600px) {
+    .rs-row { grid-template-columns: 1fr 1fr; }
+  }
+  .rs-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rs-submit-btn {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #25D366 0%, #1EBE5D 100%);
+    color: #0D1308;
+    font-weight: 800;
+    font-size: 1rem;
+    margin-top: 10px;
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  }
+  .rs-submit-btn svg { width: 20px; height: 20px; }
+  .rs-note {
+    font-size: 0.8125rem;
+    color: rgba(244, 236, 218, 0.6);
+    text-align: center;
+    margin: 4px 0 0;
+  }
+
+  /* Right Sidebar */
+  .rs-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .rs-scratch-card {
+    background: #12190B;
+    border: 2px dashed #E0A63C;
+    border-radius: 24px;
+    padding: 28px;
+    text-align: center;
+  }
+  .rs-sc-kicker {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .rs-scratch-card h3 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.4rem;
+    color: #F4ECDA;
+    margin: 0 0 8px;
+  }
+  .rs-scratch-card p {
+    font-size: 0.875rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0 0 18px;
+  }
+  .rs-scratch-box {
+    position: relative;
+    background: #6B1E12;
+    border-radius: 16px;
+    height: 120px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  }
+  .rs-sb-cover {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #B58428 0%, #E0A63C 50%, #8C6215 100%);
+    color: #1A1608;
+    font-weight: 800;
+    font-size: 0.95rem;
+    display: grid;
+    place-items: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .rs-sb-cover.scratched {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+  }
+  .rs-sb-secret {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+  .rs-sb-code {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #FFD56B;
+  }
+  .rs-sb-secret p {
+    font-size: 0.775rem;
+    color: #F4ECDA;
+    margin: 2px 0 6px;
+  }
+  .rs-sb-secret code {
+    background: #17200F;
+    color: #E0A63C;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-weight: 800;
+    border: 1px solid #E0A63C;
+  }
+
+  .rs-preview-card {
+    background: #12190B;
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .rs-prev-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  .rs-prev-body {
+    padding: 20px;
+  }
+  .rs-prev-body h4 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.25rem;
+    color: #F4ECDA;
+    margin: 0 0 4px;
+  }
+  .rs-prev-body p {
+    font-size: 0.85rem;
+    color: rgba(244, 236, 218, 0.7);
+    margin: 0 0 14px;
+  }
+  .rs-prev-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: #E0A63C;
+    font-weight: 700;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Set default date to today
+    const dateInput = document.getElementById('res-date');
+    if (dateInput) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+
+    // Guest Selector
+    let selectedGuests = '4 Guests';
+    const guestBtns = document.querySelectorAll('.rs-guest-btn');
+    guestBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        guestBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedGuests = btn.getAttribute('data-val');
+      });
+    });
+
+    // Time Chips
+    let selectedTime = '12:30 PM';
+    const timeChips = document.querySelectorAll('.rs-time-chip');
+    timeChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        timeChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedTime = chip.getAttribute('data-time');
+      });
+    });
+
+    // Scratch Card Reveal
+    const scratchCover = document.getElementById('scratch-cover');
+    const scratchBox = document.getElementById('scratch-box');
+    if (scratchCover) {
+      scratchCover.addEventListener('click', () => {
+        scratchCover.classList.add('scratched');
+        if (scratchBox) scratchBox.classList.add('mot-confetti--active');
+      });
+    }
+
+    // WhatsApp Submit
+    const submitBtn = document.getElementById('res-submit-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => {
+        const name = (document.getElementById('res-name')?.value || '').trim();
+        const phone = (document.getElementById('res-phone')?.value || '').trim();
+        const date = document.getElementById('res-date')?.value || '';
+        const occasion = document.getElementById('res-occasion')?.value || 'Dining';
+
+        if (!name || !phone) {
+          alert('Please enter your Name and Mobile Number.');
+          return;
+        }
+
+        const msg = `Hi Fursat! I would like to reserve a table:\n\n• Name: ${name}\n• Phone: ${phone}\n• Guests: ${selectedGuests}\n• Date: ${date}\n• Time: ${selectedTime}\n• Occasion: ${occasion}\n• Coupon: FURSAT15 (15% Off)`;
+        const url = `https://wa.me/919059670033?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      });
+    }
+  });
+</script>

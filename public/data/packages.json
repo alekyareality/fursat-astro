@@ -1,0 +1,10 @@
+{
+  "note": "Only the ₹925 per person starting price is confirmed. Every tier with confirmed:false is a SAMPLE - replace pp, min and includes with the real package sheet, then set confirmed:true.",
+  "wa": "919059670033",
+  "tiers": [
+    {"id":"buffet","name":"Garden Buffet","pp":925,"from":true,"confirmed":true,"min":15,"img":"/assets/ask/schezwan-paneer.webp","tag":"Easy and generous","includes":["Starters served to the table","Veg and non-veg buffet","Dessert counter","Soft drinks and mocktails"],"for":["birthday","family","corporate"]},
+    {"id":"feast","name":"Celebration Feast","pp":1250,"from":false,"confirmed":false,"min":20,"img":"/assets/ask/chilli-chicken.webp","tag":"The full spread","includes":["Chef's starters platter","Live counter and biryani","Dessert and cake cutting setup","Mocktails on tap","Music and decor corner"],"for":["birthday","family"]},
+    {"id":"bar","name":"Bar Bash","pp":1650,"from":false,"confirmed":false,"min":20,"img":"/assets/ask/peri-peri-sandwich.webp","tag":"Evenings that go late","includes":["Finger bites and grill","Unlimited house pours (21+)","Signature cocktails","Mocktails for everyone else","DJ-ready floor"],"for":["bar","corporate"],"alc":true}
+  ],
+  "occasions":[["birthday","Birthday"],["family","Family get-together"],["corporate","Team outing"],["bar","Bar night"]]
+}

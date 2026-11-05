@@ -1,0 +1,99 @@
+{
+  "test1": {
+    "homeChecks": {
+      "h1Visible": true,
+      "h1Text": "Something\nBeautiful\nIs Taking Shape.",
+      "h2Count": 9,
+      "h2AllVisible": true,
+      "activeImgsCount": 31,
+      "activeImgsVisible": true
+    },
+    "banquetChecks": {
+      "h1Visible": true,
+      "h1Text": "The Grand Banquet at Fursat",
+      "h2Count": 6,
+      "h2AllVisible": true,
+      "imgCount": 10,
+      "imgsVisible": true
+    },
+    "homeShot": "C:\\Users\\Seminarhall\\.gemini\\antigravity\\scratch\\fursat-astro\\fursat\\review\\shots\\home-390-nojs.png",
+    "banquetShot": "C:\\Users\\Seminarhall\\.gemini\\antigravity\\scratch\\fursat-astro\\fursat\\review\\shots\\banquet-390-nojs.png"
+  },
+  "test2": {
+    "isHiddenBefore": true,
+    "headerReappeared": true
+  },
+  "test3": {
+    "step1": {
+      "page": "home",
+      "url": "/",
+      "headlinesCount": 2,
+      "magneticCount": 0,
+      "cardLitCount": 4,
+      "headerExists": true,
+      "headerHasInit": true
+    },
+    "step2": {
+      "page": "banquet",
+      "url": "/banquet",
+      "headlinesCount": 3,
+      "magneticCount": 0,
+      "cardLitCount": 0,
+      "headerExists": true,
+      "headerHasInit": true
+    },
+    "step3": {
+      "page": "cafe",
+      "url": "/cafe",
+      "headlinesCount": 4,
+      "magneticCount": 0,
+      "cardLitCount": 0,
+      "headerExists": true,
+      "headerHasInit": true
+    }
+  },
+  "test4": {
+    "checks": {
+      "isVideoPlaying": false,
+      "marqueeAnim": "none",
+      "isMarqueeStopped": true,
+      "pinnedMinHeight": null,
+      "isPinnedDisabled": true
+    },
+    "shotPath": "C:\\Users\\Seminarhall\\.gemini\\antigravity\\scratch\\fursat-astro\\fursat\\review\\shots\\home-reduced-motion.png"
+  },
+  "test5": {
+    "barVisible": true,
+    "barHeight": 69,
+    "bodyPaddingBottom": "76px",
+    "stickyHidden": true,
+    "footerExists": true
+  },
+  "test6": {
+    "/": {
+      "totalKB": "2.7",
+      "gsapLoaded": true,
+      "scriptCount": 23
+    },
+    "/banquet": {
+      "totalKB": "0.0",
+      "gsapLoaded": true,
+      "scriptCount": 2
+    },
+    "/menu": {
+      "totalKB": "0.0",
+      "gsapLoaded": true,
+      "scriptCount": 2
+    }
+  },
+  "test7": {
+    "/": {
+      "cls": 0,
+      "lcpMs": 404
+    },
+    "/banquet": {
+      "cls": 0,
+      "lcpMs": 392
+    }
+  }
+}

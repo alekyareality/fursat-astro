@@ -1,0 +1,4 @@
+
+.fz-spk{display:inline-flex;align-items:center;gap:.4rem;margin:.5rem 0 0;padding:.4rem .85rem;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;font:700 .72rem/1 var(--sans,system-ui);cursor:pointer;opacity:.85}
+.fz-spk[aria-pressed="true"]{background:#38562A;border-color:#38562A;color:#FFF3DD;opacity:1}
+.fz-spk:focus-visible{outline:2px solid #D4503A;outline-offset:2px}

@@ -1,0 +1,177 @@
+/*
+ * motion.css — Fursat Kitchen | Bar
+ * Micro-interaction utilities, skeletons, tab indicators, confetti, and
+ * shared mot-* animation helpers.
+ *
+ * All animations guard with prefers-reduced-motion.
+ * Only animate: transform, opacity, clip-path.
+ */
+
+/* ── Button Press ─────────────────────────────────────────────────────────── */
+.mot-btn-press {
+  transition: transform 100ms ease;
+}
+.mot-btn-press:active {
+  transform: scale(0.96);
+}
+
+/* ── Shimmer Skeleton ─────────────────────────────────────────────────────── */
+@keyframes mot-shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position:  200% 0; }
+}
+.mot-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(244, 236, 218, 0.06) 25%,
+    rgba(244, 236, 218, 0.14) 50%,
+    rgba(244, 236, 218, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: mot-shimmer 1.6s ease infinite;
+  border-radius: 8px;
+  color: transparent;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Tab Indicator (animated gold underline) ─────────────────────────────── */
+.mot-tab-indicator {
+  position: relative;
+  display: inline-flex;
+  gap: 0;
+}
+.mot-tab-indicator [role="tab"] {
+  position: relative;
+  padding-bottom: 6px;
+  cursor: pointer;
+}
+.mot-tab-indicator [role="tab"]::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #E0A63C;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mot-tab-indicator [role="tab"][aria-selected="true"]::after,
+.mot-tab-indicator [role="tab"].active::after {
+  transform: scaleX(1);
+}
+
+/* ── Confetti Burst (5 colored squares) ──────────────────────────────────── */
+@keyframes mot-confetti-fall-1 {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(-40px, 80px) rotate(300deg) scale(0.4); }
+}
+@keyframes mot-confetti-fall-2 {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(50px, 90px) rotate(-240deg) scale(0.3); }
+}
+@keyframes mot-confetti-fall-3 {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(-20px, 70px) rotate(180deg) scale(0.5); }
+}
+@keyframes mot-confetti-fall-4 {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(60px, 60px) rotate(270deg) scale(0.4); }
+}
+@keyframes mot-confetti-fall-5 {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(-60px, 50px) rotate(-360deg) scale(0.3); }
+}
+
+.mot-confetti {
+  position: relative;
+  display: inline-block;
+}
+.mot-confetti::before,
+.mot-confetti::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* Five squares via box-shadow on a single pseudo element */
+.mot-confetti.mot-confetti--active::before {
+  background: #E0A63C;
+  animation: mot-confetti-fall-1 0.7s ease-out forwards;
+  box-shadow:
+    12px -4px 0 0 #3A6B35,
+    -12px -6px 0 0 #E05C3C,
+     24px  2px 0 0 #5B3CD4,
+    -24px  2px 0 0 #3CB4E0;
+}
+
+/* ── Headline reveal (CSS fallback when GSAP not loaded) ─────────────────── */
+.mot-headline {
+  /* Content visible by default */
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Reveal image (default visible) ─────────────────────────────────────── */
+.mot-reveal-img {
+  opacity: 1;
+  clip-path: none;
+}
+
+/* ── Card glow shared vars ───────────────────────────────────────────────── */
+.mot-card-lit {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-opacity: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Marquee shared ──────────────────────────────────────────────────────── */
+.mot-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ── Parallax frame ─────────────────────────────────────────────────────── */
+.mot-parallax-frame {
+  overflow: hidden;
+}
+.mot-parallax-frame img {
+  will-change: transform;
+  /* Slightly taller so parallax shift doesn't reveal gaps */
+  height: 120%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* ══ prefers-reduced-motion: kill all animations ══════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .mot-btn-press {
+    transition: none;
+  }
+  .mot-btn-press:active {
+    transform: none;
+  }
+  .mot-skeleton {
+    animation: none;
+    background: rgba(244, 236, 218, 0.08);
+  }
+  .mot-tab-indicator [role="tab"]::after {
+    transition: none;
+  }
+  .mot-confetti.mot-confetti--active::before {
+    animation: none;
+  }
+  .mot-parallax-frame img {
+    height: 100%;
+    will-change: auto;
+  }
+}

@@ -1,0 +1,18 @@
+node_modules/
+dist/
+.astro/
+raw_assets/
+.env
+.env.*
+review/photo-map.html
+*.glb
+
+# Large video files in public
+public/assets/*.mp4
+public/**/*.mp4
+*.mov
+*.mp4.raw
+
+# System & logs
+.DS_Store
+*.log

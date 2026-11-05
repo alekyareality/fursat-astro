@@ -1,0 +1,640 @@
+---
+// MascotOfferModal.astro - Fursat 15% Special Lead Capture & Scratch Modal
+// Directly inspired by the custom mascot mockup (emerald/gold sherwani elephant with sunglasses)
+---
+<div class="fom-wrapper" id="fom-wrapper">
+  <!-- Floating Mascot Trigger Badge -->
+  <aside class="fom-trigger" id="fom-trigger" aria-label="Unlock Special Offer">
+    <div class="fom-bubble" id="fom-bubble">
+      <span class="fom-bubble-glow"></span>
+      <p class="fom-bubble-txt">Psst... I've got a <b>Special Offer</b> for you! 🎁</p>
+    </div>
+    
+    <button class="fom-mascot-btn" id="fom-open" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Open Fursat 15% Special Offer">
+      <div class="fom-mascot-img-wrap">
+        <img src="/assets/ask-mascot.webp" alt="Fursat Royal Elephant Mascot" class="fom-mascot-img" width="130" height="130" />
+      </div>
+      <span class="fom-beacon" aria-hidden="true"></span>
+    </button>
+  </aside>
+
+  <!-- Modal Backdrop & Dialog -->
+  <dialog class="fom-modal" id="fom-modal" aria-labelledby="fom-title">
+    <div class="fom-box">
+      <!-- Close Button -->
+      <button class="fom-close" id="fom-close" type="button" aria-label="Close offer modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <!-- Step 1: Lead Capture -->
+      <div class="fom-step fom-step-capture" id="fom-step-1">
+        <div class="fom-header">
+          <img src="/assets/c86f49db5a.webp" alt="Fursat Bar & Kitchen" class="fom-logo" width="80" height="60" />
+          <h2 class="fom-title" id="fom-title">Unlock Your Fursat Special!</h2>
+          <p class="fom-sub">Share your mobile number to reveal an exclusive dining offer for your table.</p>
+        </div>
+
+        <div class="fom-character">
+          <div class="fom-ele-card">
+            <span class="fom-sparkle s1">✦</span>
+            <span class="fom-sparkle s2">✦</span>
+            <div class="fom-avatar">
+              <span class="fom-crown">👑</span>
+              <span class="fom-sunglasses">🕶️</span>
+              <span class="fom-gift">🎁</span>
+              <img src="/assets/ask-mascot-cheer-md.webp" alt="Fursat Mascot" width="120" height="120" />
+            </div>
+            <p class="fom-tag">Royal Welcome Gift</p>
+          </div>
+        </div>
+
+        <form class="fom-form" id="fom-form" onsubmit="return false;">
+          <div class="fom-input-group">
+            <span class="fom-prefix">+91</span>
+            <input 
+              type="tel" 
+              id="fom-phone" 
+              class="fom-input" 
+              placeholder="Enter 10-digit mobile number" 
+              pattern="[0-9]{10}" 
+              maxlength="10" 
+              required 
+              aria-label="Mobile Number" 
+            />
+          </div>
+          <button type="submit" class="fom-submit-btn" id="fom-submit">
+            <span>Get My Offer</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+        <p class="fom-disclaimer">🔒 No spam. We only send your reservation coupon via SMS/WhatsApp.</p>
+      </div>
+
+      <!-- Step 2: Reward / Revealed Coupon -->
+      <div class="fom-step fom-step-reward" id="fom-step-2" hidden>
+        <div class="fom-header">
+          <img src="/assets/c86f49db5a.webp" alt="Fursat Bar & Kitchen" class="fom-logo" width="80" height="60" />
+          <h2 class="fom-title">Here's Your Fursat Special!</h2>
+          <p class="fom-sub">Present this code to your captain when dining at Fursat.</p>
+        </div>
+
+        <!-- Glowing Coupon Ticket -->
+        <div class="fom-ticket">
+          <div class="fom-ticket-notch top"></div>
+          <div class="fom-ticket-notch bottom"></div>
+          <div class="fom-tk-badge">EXCLUSIVE DINE-IN OFFER</div>
+          <div class="fom-tk-offer">
+            <span class="fom-tk-flat">FLAT</span>
+            <b class="fom-tk-percent">15% OFF*</b>
+            <span class="fom-tk-scope">ON FOOD & SOFT BEVERAGES</span>
+          </div>
+
+          <div class="fom-code-box">
+            <span class="fom-cb-label">Use Code:</span>
+            <code class="fom-code" id="fom-code">FURSAT15</code>
+            <button type="button" class="fom-copy-btn" id="fom-copy" aria-label="Copy code">
+              <span id="fom-copy-txt">Copy</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="fom-cta-group">
+          <a href="/reserve" class="fom-reserve-act" id="fom-book-now" data-open="book">
+            <span>Book a Table Now</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="https://wa.me/919059670033?text=Hi%20Fursat!%20I%20unlocked%20coupon%20code%20FURSAT15%20for%2015%25%20OFF.%20I%20would%20like%20to%20reserve%20a%20table." target="_blank" rel="noopener" class="fom-wa-act">
+            <span>Claim via WhatsApp</span>
+          </a>
+        </div>
+        <p class="fom-terms-note">*Valid on food & soft drinks. Table slots 12 PM to 11 PM at Capital Park, Madhapur.</p>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<style is:global>
+  /* Floating Trigger in bottom corner */
+  .fom-trigger {
+    position: fixed;
+    right: clamp(14px, 2.5vw, 32px);
+    bottom: clamp(16px, 3vh, 32px);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .fom-trigger > * {
+    pointer-events: auto;
+  }
+  .fom-bubble {
+    position: relative;
+    background: #17200F;
+    color: #F4ECDA;
+    border: 1.5px solid #E0A63C;
+    border-radius: 16px;
+    padding: 10px 16px;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.875rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(224, 166, 60, 0.25);
+    animation: fom-float 3.4s ease-in-out infinite;
+    cursor: pointer;
+  }
+  .fom-bubble b {
+    color: #E0A63C;
+  }
+  .fom-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    right: 32px;
+    width: 14px;
+    height: 14px;
+    background: #17200F;
+    border-right: 1.5px solid #E0A63C;
+    border-bottom: 1.5px solid #E0A63C;
+    transform: rotate(45deg);
+  }
+  @keyframes fom-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .fom-mascot-btn {
+    all: unset;
+    cursor: pointer;
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #253618 0%, #17200F 100%);
+    border: 2.5px solid #E0A63C;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(224, 166, 60, 0.35);
+    display: grid;
+    place-items: center;
+    transition: transform 0.2s cubic-bezier(.16,1,.3,1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fom-mascot-btn:hover {
+    transform: scale(1.08) rotate(-3deg);
+  }
+  .fom-mascot-btn:active {
+    transform: scale(0.95);
+  }
+  .fom-mascot-img-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fom-mascot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fom-beacon {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid #E0A63C;
+    animation: fom-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    pointer-events: none;
+  }
+  @keyframes fom-ping {
+    0% { transform: scale(1); opacity: 0.9; }
+    75%, 100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* Modal Dialog */
+  .fom-modal {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    max-width: 92vw;
+    width: 440px;
+    z-index: 1000;
+  }
+  .fom-modal::backdrop {
+    background: rgba(13, 19, 8, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .fom-box {
+    position: relative;
+    background: linear-gradient(165deg, #1C2713 0%, #12190B 100%);
+    border: 1.5px solid rgba(224, 166, 60, 0.45);
+    border-radius: 24px;
+    padding: clamp(24px, 5vw, 36px) clamp(20px, 4vw, 30px);
+    color: #F4ECDA;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(224, 166, 60, 0.2);
+  }
+  .fom-close {
+    all: unset;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(244, 236, 218, 0.1);
+    display: grid;
+    place-items: center;
+    color: #F4ECDA;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .fom-close:hover {
+    background: rgba(224, 166, 60, 0.25);
+    transform: scale(1.08);
+  }
+  .fom-close svg {
+    width: 18px;
+    height: 18px;
+  }
+  .fom-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .fom-logo {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 4px;
+  }
+  .fom-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(1.4rem, 4vw, 1.75rem);
+    font-weight: 700;
+    color: #E0A63C;
+    margin: 0;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  .fom-sub {
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.875rem;
+    color: rgba(244, 236, 218, 0.8);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .fom-character {
+    display: flex;
+    justify-content: center;
+    margin: 18px 0;
+  }
+  .fom-ele-card {
+    position: relative;
+    background: rgba(224, 166, 60, 0.08);
+    border: 1px dashed rgba(224, 166, 60, 0.35);
+    border-radius: 18px;
+    padding: 16px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .fom-avatar {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: #17200F;
+    border: 2px solid #E0A63C;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .fom-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fom-crown {
+    position: absolute;
+    top: -4px;
+    font-size: 1.2rem;
+    z-index: 2;
+  }
+  .fom-sparkle {
+    position: absolute;
+    color: #E0A63C;
+    font-size: 1.2rem;
+    animation: fom-twinkle 2s infinite ease-in-out;
+  }
+  .fom-sparkle.s1 { top: 8px; left: 12px; }
+  .fom-sparkle.s2 { bottom: 8px; right: 12px; animation-delay: 1s; }
+  @keyframes fom-twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  .fom-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #E0A63C;
+    margin: 0;
+  }
+  .fom-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fom-input-group {
+    display: flex;
+    align-items: center;
+    background: #0D1308;
+    border: 1.5px solid rgba(224, 166, 60, 0.35);
+    border-radius: 999px;
+    padding: 4px 6px 4px 18px;
+    transition: border-color 0.2s ease;
+  }
+  .fom-input-group:focus-within {
+    border-color: #E0A63C;
+    box-shadow: 0 0 14px rgba(224, 166, 60, 0.25);
+  }
+  .fom-prefix {
+    font-weight: 700;
+    color: #E0A63C;
+    font-size: 0.95rem;
+    padding-right: 8px;
+    border-right: 1px solid rgba(244, 236, 218, 0.2);
+  }
+  .fom-input {
+    all: unset;
+    flex: 1;
+    padding: 10px 12px;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.95rem;
+    color: #F4ECDA;
+  }
+  .fom-submit-btn {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #E0A63C 0%, #C88D25 100%);
+    color: #1A1608;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 1rem;
+    font-weight: 800;
+    box-shadow: 0 6px 18px rgba(224, 166, 60, 0.35);
+    transition: transform 0.16s ease;
+  }
+  .fom-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(224, 166, 60, 0.5);
+  }
+  .fom-submit-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  .fom-disclaimer {
+    font-size: 0.75rem;
+    color: rgba(244, 236, 218, 0.55);
+    text-align: center;
+    margin: 10px 0 0;
+  }
+
+  /* Step 2 Reward Ticket */
+  .fom-ticket {
+    position: relative;
+    background: #6B1E12;
+    border: 2px dashed #E0A63C;
+    border-radius: 16px;
+    padding: 22px 20px;
+    margin: 20px 0;
+    text-align: center;
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  .fom-ticket-notch {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #17200F;
+    border-radius: 50%;
+    border: 1.5px solid rgba(224, 166, 60, 0.45);
+  }
+  .fom-ticket-notch.top { top: -11px; left: calc(50% - 11px); }
+  .fom-ticket-notch.bottom { bottom: -11px; left: calc(50% - 11px); }
+  .fom-tk-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #F4ECDA;
+    opacity: 0.9;
+    margin-bottom: 6px;
+  }
+  .fom-tk-offer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 14px;
+  }
+  .fom-tk-flat {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #F4ECDA;
+  }
+  .fom-tk-percent {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #FFD56B;
+    line-height: 1;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  .fom-tk-scope {
+    font-size: 0.775rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #F4ECDA;
+  }
+  .fom-code-box {
+    background: rgba(13, 19, 8, 0.7);
+    border: 1px solid #E0A63C;
+    border-radius: 12px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .fom-cb-label {
+    font-size: 0.8rem;
+    color: rgba(244, 236, 218, 0.7);
+  }
+  .fom-code {
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #FFD56B;
+    letter-spacing: 0.1em;
+  }
+  .fom-copy-btn {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition: background 0.15s ease;
+  }
+  .fom-copy-btn:hover {
+    background: #F4ECDA;
+  }
+  .fom-copy-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .fom-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .fom-reserve-act {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #E0A63C 0%, #C88D25 100%);
+    color: #1A1608;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(224, 166, 60, 0.35);
+  }
+  .fom-wa-act {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 999px;
+    background: rgba(37, 211, 102, 0.15);
+    border: 1px solid rgba(37, 211, 102, 0.4);
+    color: #25D366;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .fom-terms-note {
+    font-size: 0.725rem;
+    color: rgba(244, 236, 218, 0.6);
+    text-align: center;
+    margin: 12px 0 0;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('fom-open');
+    const bubble = document.getElementById('fom-bubble');
+    const modal = document.getElementById('fom-modal');
+    const closeBtn = document.getElementById('fom-close');
+    const form = document.getElementById('fom-form');
+    const phoneInput = document.getElementById('fom-phone');
+    const step1 = document.getElementById('fom-step-1');
+    const step2 = document.getElementById('fom-step-2');
+    const copyBtn = document.getElementById('fom-copy');
+    const copyTxt = document.getElementById('fom-copy-txt');
+    const bookNow = document.getElementById('fom-book-now');
+
+    const openModal = () => {
+      if (modal && typeof modal.showModal === 'function') {
+        // Check if already claimed
+        const savedPhone = localStorage.getItem('fursat_offer_claimed');
+        if (savedPhone) {
+          step1.hidden = true;
+          step2.hidden = false;
+        } else {
+          step1.hidden = false;
+          step2.hidden = true;
+        }
+        modal.showModal();
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    };
+
+    const closeModal = () => {
+      if (modal) {
+        modal.close();
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    };
+
+    if (trigger) trigger.addEventListener('click', openModal);
+    if (bubble) bubble.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // Close when clicking on backdrop
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        const rect = modal.getBoundingClientRect();
+        const isInDialog = (
+          rect.top <= e.clientY &&
+          e.clientY <= rect.top + rect.height &&
+          rect.left <= e.clientX &&
+          e.clientX <= rect.left + rect.width
+        );
+        if (!isInDialog) {
+          closeModal();
+        }
+      });
+    }
+
+    // Submit phone number to unlock offer
+    if (form && phoneInput) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const phone = phoneInput.value.trim();
+        if (phone.length === 10 && /^\d+$/.test(phone)) {
+          localStorage.setItem('fursat_offer_claimed', phone);
+          step1.hidden = true;
+          step2.hidden = false;
+        } else {
+          alert('Please enter a valid 10-digit mobile number.');
+        }
+      });
+    }
+
+    // Copy coupon code
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText('FURSAT15').then(() => {
+          copyTxt.textContent = 'Copied!';
+          setTimeout(() => {
+            copyTxt.textContent = 'Copy';
+          }, 2000);
+        });
+      });
+    }
+
+    // Open booking modal if on home page
+    if (bookNow) {
+      bookNow.addEventListener('click', () => {
+        closeModal();
+      });
+    }
+  });
+</script>

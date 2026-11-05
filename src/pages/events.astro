@@ -1,0 +1,331 @@
+---
+// events.astro - Private Celebrations & Gatherings at Fursat
+// Occasions tabs: Birthday, Anniversary, Corporate, Kitty, Bar Bash
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+---
+<Base
+  title="Private Events — Birthdays, Bar Bashes & More | Fursat Kitchen | Bar"
+  description="Celebrate your birthday, anniversary, kitty party or bar bash at Fursat. Dedicated event team, custom menus and decor. Book your private event in Madhapur."
+  canonical="https://fursatind.in/events/"
+  ogImage="https://fursatind.in/assets/fursat_space_12.webp"
+  ogImageAlt="Fursat private events — birthday and bar bash packages"
+>
+  <SiteHeader active="events" />
+
+  <main class="ev-page" id="main">
+    <!-- Hero Section -->
+    <section class="ev-hero">
+      <div class="ev-hero-wrap">
+        <span class="ev-kicker">UNFORGETTABLE OCCASIONS</span>
+        <h1 class="ev-title mot-headline">Celebrate Every Milestone at Fursat</h1>
+        <p class="ev-sub">
+          From high-energy birthday bashes and intimate anniversary dinners to corporate mixer evenings and chic kitty gatherings. Custom decor, curated feasts, and royal Deccan hospitality.
+        </p>
+        <div class="ev-hero-tabs mot-tab-indicator">
+          <a href="#birthday" class="ev-htab">🎂 Birthdays</a>
+          <a href="#anniversary" class="ev-htab">💍 Anniversaries</a>
+          <a href="#corporate" class="ev-htab">💼 Corporate</a>
+          <a href="#kitty" class="ev-htab">✨ Kitty Parties</a>
+          <a href="#barbash" class="ev-htab">🍸 Bar Bashes</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Occasions Showcase -->
+    <section class="ev-occasions">
+      <div class="ev-container">
+        <!-- Birthday Bashes -->
+        <div class="ev-occ-card" id="birthday">
+          <div class="ev-occ-img">
+            <img src="/assets/interior/fursat_space_17.webp" alt="Birthday setup at Fursat" />
+          </div>
+          <div class="ev-occ-info">
+            <span class="ev-occ-badge">PARTY SPECIAL</span>
+            <h2>Birthday Bashes with Pro DJ & Cake Craft</h2>
+            <p>
+              Make your birthday truly epic. We arrange balloon arcades, neon signage, custom multi-tier artisan cakes from our bakery, dynamic party lighting, and an energetic DJ setup.
+            </p>
+            <ul class="ev-occ-perks">
+              <li>Customized welcome cocktail or mocktail for all guests</li>
+              <li>Signature cake cutting ceremony with cold-fire pyro sparklers</li>
+              <li>Custom starter platters circulating fresh from the charcoal tandoor</li>
+            </ul>
+            <a href="/banquet#enquire" class="ev-occ-btn">Book a Birthday Event</a>
+          </div>
+        </div>
+
+        <!-- Corporate Gatherings -->
+        <div class="ev-occ-card reverse" id="corporate">
+          <div class="ev-occ-img">
+            <img src="/assets/interior/fursat_space_02.webp" alt="Corporate banquet dining" />
+          </div>
+          <div class="ev-occ-info">
+            <span class="ev-occ-badge">CORPORATE EXCELLENCE</span>
+            <h2>Team Dinners, Mixers & Product Launches</h2>
+            <p>
+              Located in the heart of Madhapur's IT corridor, Fursat provides a seamless blend of professional AV facilities and relaxed, sophisticated hospitality for corporate groups of 20 to 300+.
+            </p>
+            <ul class="ev-occ-perks">
+              <li>High-speed Wi-Fi, dual 4K laser projectors, and cordless collar mics</li>
+              <li>Dedicated billing, corporate GST invoicing, and custom per-head packages</li>
+              <li>Private bar counters and networking lounge setups</li>
+            </ul>
+            <a href="/banquet#enquire" class="ev-occ-btn">Plan Corporate Gathering</a>
+          </div>
+        </div>
+
+        <!-- Kitty Parties & Socials -->
+        <div class="ev-occ-card" id="kitty">
+          <div class="ev-occ-img">
+            <img src="/assets/interior/fursat_space_11.webp" alt="Sunlit social space" />
+          </div>
+          <div class="ev-occ-info">
+            <span class="ev-occ-badge">AFTERNOON DELIGHTS</span>
+            <h2>Chic Kitty Parties & Ladies Luncheons</h2>
+            <p>
+              Enjoy a delightful afternoon in our sunlit café and lounge. Chat over artisan dim sums, chaat counters, botanical mocktails, and decadent dessert platters.
+            </p>
+            <ul class="ev-occ-perks">
+              <li>Special lunch slot privileges from 12:00 PM to 4:00 PM</li>
+              <li>Interactive games space & personalized selfie photo booths</li>
+              <li>Complimentary dessert platter for the party host</li>
+            </ul>
+            <a href="/banquet#enquire" class="ev-occ-btn">Reserve a Kitty Party</a>
+          </div>
+        </div>
+
+        <!-- Bar Bashes 21+ -->
+        <div class="ev-occ-card reverse" id="barbash">
+          <div class="ev-occ-img">
+            <img src="/assets/interior/fursat_space_08.webp" alt="Bar bash cocktail counter" />
+          </div>
+          <div class="ev-occ-info">
+            <span class="ev-occ-badge">NIGHTLIFE & MIXOLOGY</span>
+            <h2>Exclusive Bar Bashes & Cocktail Evenings</h2>
+            <p>
+              Host a private buyout or reserved high-table enclave in our 21+ Bar Lounge. Live flair bartending, craft cocktails, craft beers, and bass-heavy acoustic sets.
+            </p>
+            <ul class="ev-occ-perks">
+              <li>Unlimited starter & cocktail packages tailored to your budget</li>
+              <li>Flair mixologist show & customized signature drinks menu</li>
+              <li>VIP lounge seating with dedicated captain service</li>
+            </ul>
+            <a href="/banquet#enquire" class="ev-occ-btn">Host a Bar Bash</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WhatsApp Enquiry CTA -->
+    <section class="ev-cta">
+      <div class="ev-container text-center">
+        <h2>Ready to Plan Your Event?</h2>
+        <p>Talk directly with our Events Concierge on WhatsApp to get dates, custom menus, and instant pricing.</p>
+        <a href="https://wa.me/919059670033?text=Hi%20Fursat!%20I%20would%20like%20to%20plan%20an%20event%20at%20Fursat.&utm_source=website&utm_medium=cta&utm_campaign=events" target="_blank" rel="noopener" class="ev-wa-btn">
+          <span>Chat with Event Concierge</span>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.3C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <MascotOfferModal />
+  <SiteFooter />
+<MobileBar active="celebrate" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .ev-page {
+    background: #17200F;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .ev-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .ev-hero {
+    background: #12190B;
+    padding: clamp(60px, 8vw, 100px) 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(224, 166, 60, 0.2);
+  }
+  .ev-hero-wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .ev-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .ev-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.4rem, 5.5vw, 4rem);
+    font-weight: 600;
+    color: #F4ECDA;
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+  .ev-sub {
+    font-size: 1.05rem;
+    color: rgba(244, 236, 218, 0.8);
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+  .ev-hero-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .ev-htab {
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(244, 236, 218, 0.05);
+    border: 1px solid rgba(224, 166, 60, 0.35);
+    color: #F4ECDA;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.16s ease, color 0.16s ease;
+  }
+  .ev-htab:hover {
+    background: #E0A63C;
+    color: #1A1608;
+  }
+
+  /* Occasions Cards */
+  .ev-occasions {
+    padding: clamp(60px, 8vw, 110px) 0;
+  }
+  .ev-occ-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+    background: rgba(244, 236, 218, 0.03);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    border-radius: 28px;
+    padding: clamp(24px, 4vw, 44px);
+    margin-bottom: 40px;
+  }
+  @media (min-width: 900px) {
+    .ev-occ-card {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ev-occ-card.reverse {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ev-occ-card.reverse .ev-occ-img {
+      order: 2;
+    }
+  }
+  .ev-occ-img {
+    height: clamp(260px, 35vw, 380px);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1.5px solid rgba(224, 166, 60, 0.3);
+  }
+  .ev-occ-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ev-occ-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .ev-occ-info h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    color: #F4ECDA;
+    margin: 0 0 14px;
+    line-height: 1.2;
+  }
+  .ev-occ-info p {
+    font-size: 1rem;
+    color: rgba(244, 236, 218, 0.8);
+    line-height: 1.55;
+    margin: 0 0 20px;
+  }
+  .ev-occ-perks {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ev-occ-perks li {
+    font-size: 0.925rem;
+    color: rgba(244, 236, 218, 0.85);
+    padding-left: 20px;
+    position: relative;
+  }
+  .ev-occ-perks li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    color: #E0A63C;
+  }
+  .ev-occ-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-weight: 800;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  /* CTA */
+  .ev-cta {
+    background: #12190B;
+    padding: clamp(60px, 8vw, 100px) 0;
+    border-top: 1px solid rgba(224, 166, 60, 0.2);
+  }
+  .ev-cta h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #F4ECDA;
+    margin: 0 0 12px;
+  }
+  .ev-cta p {
+    font-size: 1.05rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0 0 32px;
+  }
+  .ev-wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    border-radius: 999px;
+    background: #25D366;
+    color: #0D1308;
+    font-weight: 800;
+    font-size: 1.05rem;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  }
+  .ev-wa-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+// terms.astro - Fursat Offer Terms, House Rules & Privacy Policy
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+---
+<Base
+  title="Terms & Conditions — Fursat Kitchen | Bar"
+  description="Terms and conditions, privacy policy, FSSAI compliance, and booking policies for Fursat Kitchen | Bar, Madhapur, Hyderabad."
+  canonical="https://fursatind.in/terms/"
+>
+  <SiteHeader active="terms" />
+
+  <main class="tr-page" id="main">
+    <div class="tr-container">
+      <div class="tr-doc-card">
+        <span class="tr-kicker">LEGAL & POLICIES</span>
+        <h1 class="tr-title mot-headline">Offer Terms, House Rules & Privacy Policy</h1>
+        <p class="tr-updated">Last Updated: November 2026</p>
+
+        <!-- Section 1: Offer Terms -->
+        <section class="tr-section">
+          <h2>1. Promotional Offer Terms & Conditions (Code: FURSAT15)</h2>
+          <ul>
+            <li>
+              <b>Discount Scope:</b> The 15% discount (using code <code>FURSAT15</code>) applies strictly to Food & Non-Alcoholic Soft Beverages for dine-in guests.
+            </li>
+            <li>
+              <b>Exclusions:</b> As per state excise guidelines, the offer does not apply to alcoholic beverages, tobacco, or statutory government taxes (GST) / service charges.
+            </li>
+            <li>
+              <b>Redemption:</b> The coupon code must be presented to the service captain prior to bill generation. Only one promotional coupon may be applied per table/bill.
+            </li>
+            <li>
+              <b>Validity:</b> Valid on dine-in table slots between 12:00 PM and 11:30 PM at Fursat Kitchen | Bar, Capital Park, Madhapur, Hyderabad. Not combinable with banquet packages or third-party aggregator promotions (Zomato Gold / Swiggy Dineout).
+            </li>
+          </ul>
+        </section>
+
+        <!-- Section 2: House Rules -->
+        <section class="tr-section">
+          <h2>2. House Rules & Admission Policy</h2>
+          <ul>
+            <li>
+              <b>Age Policy for Bar:</b> Alcohol service is strictly restricted to guests aged 21 and above. Valid government-issued photo ID (Aadhaar, Passport, Driving License) may be requested.
+            </li>
+            <li>
+              <b>Table Holding:</b> Reserved tables will be held for a grace period of 20 minutes past the confirmed reservation time. In case of delay, please inform our reception at +91 90596 70033.
+            </li>
+            <li>
+              <b>Dress Code:</b> Smart casual dining attire is encouraged. Management reserves the right of admission.
+            </li>
+          </ul>
+        </section>
+
+        <!-- Section 3: Privacy Policy -->
+        <section class="tr-section" id="privacy">
+          <h2>3. Privacy Policy</h2>
+          <p>
+            At Fursat Kitchen | Bar (operated under Alekya Reality / Fursat Hospitality LLP), we respect your privacy:
+          </p>
+          <ul>
+            <li>
+              <b>Information We Collect:</b> When you reserve a table, enter our mascot offer modal, or submit a banquet enquiry, we collect your name, phone number, and reservation preferences.
+            </li>
+            <li>
+              <b>How We Use It:</b> We use this data solely to confirm table reservations, send coupon codes, communicate updates regarding your booking via SMS/WhatsApp, and coordinate banquet proposals.
+            </li>
+            <li>
+              <b>No Third-Party Sharing:</b> We never sell, rent, or trade your personal contact details to external marketing agencies or brokers.
+            </li>
+          </ul>
+        </section>
+
+        <!-- Section 4: Cancellation & Refund -->
+        <section class="tr-section" id="refund">
+          <h2>4. Reservation & Banquet Cancellation Policy</h2>
+          <ul>
+            <li>
+              <b>A-la-carte Dining:</b> No cancellation fee is charged for regular table reservations. We kindly request at least 2 hours notice if you need to reschedule.
+            </li>
+            <li>
+              <b>Banquet & Private Events:</b> Advance deposits for banquet dates are refundable up to 7 days prior to the scheduled event date, subject to a 10% administrative fee.
+            </li>
+          </ul>
+        </section>
+
+        <!-- Contact Box -->
+        <div class="tr-contact-box">
+          <p>
+            For any clarifications regarding our terms or reservations, contact our General Manager at:
+            <br />
+            <b>Fursat Kitchen | Bar</b> · Capital Park, Madhapur, Hyderabad · <a href="mailto:hello@fursatind.in">hello@fursatind.in</a> · +91 90596 70033
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter />
+<MobileBar active="" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .tr-page {
+    background: #17200F;
+    color: #F4ECDA;
+    padding: clamp(50px, 7vw, 90px) 0;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .tr-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .tr-doc-card {
+    background: #12190B;
+    border: 1.5px solid rgba(224, 166, 60, 0.35);
+    border-radius: 28px;
+    padding: clamp(28px, 5vw, 56px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+  .tr-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .tr-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    color: #F4ECDA;
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+  .tr-updated {
+    font-size: 0.85rem;
+    color: rgba(244, 236, 218, 0.55);
+    margin: 0 0 36px;
+    border-bottom: 1px solid rgba(244, 236, 218, 0.1);
+    padding-bottom: 16px;
+  }
+  .tr-section {
+    margin-bottom: 36px;
+  }
+  .tr-section h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.45rem;
+    color: #E0A63C;
+    margin: 0 0 14px;
+  }
+  .tr-section p {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.8);
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
+  .tr-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tr-section li {
+    font-size: 0.9375rem;
+    color: rgba(244, 236, 218, 0.8);
+    line-height: 1.55;
+    padding-left: 20px;
+    position: relative;
+  }
+  .tr-section li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    color: #E0A63C;
+    font-size: 0.8rem;
+    top: 2px;
+  }
+  .tr-section b {
+    color: #F4ECDA;
+  }
+  .tr-section code {
+    background: rgba(224, 166, 60, 0.2);
+    color: #FFD56B;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .tr-contact-box {
+    margin-top: 40px;
+    padding: 20px;
+    background: rgba(224, 166, 60, 0.08);
+    border: 1px dashed rgba(224, 166, 60, 0.4);
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: rgba(244, 236, 218, 0.85);
+    line-height: 1.6;
+  }
+  .tr-contact-box a {
+    color: #E0A63C;
+  }
+</style>

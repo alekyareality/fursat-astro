@@ -1,0 +1,134 @@
+---
+/**
+ * MarqueeStrip.astro — Fursat Kitchen | Bar
+ * Horizontal CSS marquee strip. No JS required for animation.
+ * Pauses on hover and focus-within for accessibility.
+ *
+ * Props:
+ *   items     — Array of strings to display
+ *   speed     — Animation duration in seconds (default 32)
+ *   direction — 'left' (default) | 'right'
+ *
+ * CSS prefix: mq-
+ */
+interface Props {
+  items?: string[];
+  speed?: number;
+  direction?: 'left' | 'right';
+}
+
+const {
+  items = [
+    'Hyderabadi Biryani',
+    'Tandoor Specials',
+    'Craft Cocktails',
+    'Continental',
+    'North Indian',
+    'Asian',
+    'Street Food',
+    'Desserts',
+  ],
+  speed = 32,
+  direction = 'left',
+} = Astro.props;
+
+const animDir = direction === 'right' ? 'mq-scroll-right' : 'mq-scroll-left';
+---
+
+<div class="mq-strip mot-marquee" aria-hidden="true">
+  <!-- Two copies of items for seamless loop -->
+  <div class:list={['mq-track', animDir]} style={`--mq-speed:${speed}s`}>
+    {items.map(item => (
+      <span class="mq-item">
+        <span class="mq-dot" aria-hidden="true">✦</span>
+        {item}
+      </span>
+    ))}
+    {/* Duplicate for seamless wrap */}
+    {items.map(item => (
+      <span class="mq-item" aria-hidden="true">
+        <span class="mq-dot">✦</span>
+        {item}
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  /* ── Keyframes ─────────────────────────────────────────────────────────── */
+  @keyframes mq-scroll-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes mq-scroll-right {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0); }
+  }
+
+  /* ── Strip Container ───────────────────────────────────────────────────── */
+  .mq-strip {
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1A1200 0%, #2A1E00 100%);
+    border-top: 1px solid rgba(224, 166, 60, 0.2);
+    border-bottom: 1px solid rgba(224, 166, 60, 0.2);
+    padding: 14px 0;
+    /* Pause on hover */
+  }
+  .mq-strip:hover .mq-track,
+  .mq-strip:focus-within .mq-track {
+    animation-play-state: paused;
+  }
+
+  /* ── Scrolling Track ───────────────────────────────────────────────────── */
+  .mq-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  .mq-track.mq-scroll-left {
+    animation: mq-scroll-left var(--mq-speed, 32s) linear infinite;
+  }
+  .mq-track.mq-scroll-right {
+    animation: mq-scroll-right var(--mq-speed, 32s) linear infinite;
+  }
+
+  /* ── Individual Items ──────────────────────────────────────────────────── */
+  .mq-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 28px;
+    font-family: var(--sans, 'Manrope', system-ui, sans-serif);
+    font-size: clamp(0.8125rem, 1.2vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(244, 236, 218, 0.82);
+    text-transform: uppercase;
+  }
+
+  .mq-dot {
+    color: #E0A63C;
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  /* ── Reduced Motion: Stop animation ───────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .mq-track {
+      animation: none !important;
+    }
+    /* Show items wrapped instead */
+    .mq-strip {
+      overflow: visible;
+    }
+    .mq-track {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 24px;
+    }
+  }
+</style>

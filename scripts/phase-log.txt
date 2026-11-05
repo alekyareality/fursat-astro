@@ -1,0 +1,83 @@
+================================================================================
+FURSAT BUILD — PHASE 1 LOG: WOW LAYER
+Date: November 5, 2026
+Status: Phase 1 Completed & Verified
+================================================================================
+
+1. WHAT CHANGED & ARCHITECTURE:
+- src/lib/motion.ts:
+  * Central motion library exporting EASE, SPRING, prefersReducedMotion().
+  * Dynamic GSAP loader (initGSAP) loading ScrollTrigger & SplitText on demand.
+  * Helper functions: splitReveal(), leafWipe(), magneticButton(), cursorLitCard(), counterUp(), initScrollStory().
+  * Animates ONLY transform, opacity, and clip-path.
+
+- public/js/motion-kit.js:
+  * Vanilla IIFE motion script for non-React pages.
+  * Checks prefers-reduced-motion and fine-pointer media queries.
+  * Dynamically loads /js/gsap.min.js.
+  * Powers .mot-headline (SplitText reveal), .mot-reveal-img (leaf clipPath wipe),
+    .mot-magnetic, .mot-card-lit, .mot-counter, .mot-marquee, .mot-parallax-frame.
+
+- src/styles/motion.css:
+  * Micro-interactions: .mot-btn-press (100ms scale), .mot-skeleton (shimmer),
+    .mot-tab-indicator (sliding gold underline), .mot-confetti (5-color burst).
+  * Strict @media (prefers-reduced-motion: reduce) fallback killing transitions/animations.
+  * Linked in src/layouts/Base.astro.
+
+- src/components/SiteHeader.astro:
+  * Dynamic header behavior: shrinks on scroll (>60px), hides on scroll-down (+4px),
+    returns on scroll-up (-4px) and resets near top (<20px).
+  * Added view-transition-name: site-header for cross-page persistence.
+  * Mobile burger drawer and nav integrated.
+
+- src/components/MobileBar.astro:
+  * Fixed bottom mobile navigation (Menu, Ask, Reserve, WhatsApp).
+  * Added view-transition-name: mobile-bar for smooth page transitions.
+
+- src/components/MarqueeStrip.astro:
+  * Pure CSS infinite marquee strip (mq- prefix), pausing on hover and focus-within.
+  * Integrated into Home page (src/pages/index.astro).
+
+- src/components/ScrollStoryHome.astro:
+  * Pinned scroll storytelling table scene.
+  * Primary: CSS scroll-driven animations (animation-timeline: view()).
+  * Fallback: GSAP ScrollTrigger & instant render on prefers-reduced-motion.
+
+- Page Enhancements:
+  * src/pages/index.astro: added .mot-headline, .mot-reveal-img, .mot-card-lit, MarqueeStrip, motion-kit.js.
+  * src/pages/banquet.astro: added .mot-headline, .mot-reveal-img, motion-kit.js.
+  * src/pages/cafe.astro: added .mot-headline, .mot-reveal-img, motion-kit.js.
+  * src/pages/restaurant-bar.astro: added .mot-headline, .mot-reveal-img, motion-kit.js.
+
+- Quality & Audit Tools:
+  * scripts/overflow-check.mjs: Playwright automated overflow checker for 12 routes at
+    360px, 390px, 768px, 1024px, 1280px, 1536px.
+  * scripts/take-screenshots.mjs: Automated multi-viewport screenshot capturer.
+
+================================================================================
+2. FILES CREATED / MODIFIED:
+Created:
+- src/lib/motion.ts
+- public/js/motion-kit.js
+- src/styles/motion.css
+- src/components/MarqueeStrip.astro
+- src/components/ScrollStoryHome.astro
+- scripts/overflow-check.mjs
+- scripts/take-screenshots.mjs
+- scripts/phase-log.txt
+
+Modified:
+- src/layouts/Base.astro
+- src/components/SiteHeader.astro
+- src/components/MobileBar.astro
+- src/pages/index.astro
+- src/pages/banquet.astro
+- src/pages/cafe.astro
+- src/pages/restaurant-bar.astro
+
+================================================================================
+3. VERIFICATION:
+- Production Build: Verified passing (14 routes static output)
+- Overflow Check: Verified across 360, 390, 768, 1024, 1280, 1536
+- Screenshots: Generated at 360, 390, 768, 1280 in review/shots/
+================================================================================

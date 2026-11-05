@@ -1,0 +1,593 @@
+---
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+import rawMenu from '../../public/data/menu.json';
+
+// ── Build-time data processing ──────────────────────────────────────────────
+// Each item shape: { n, p, c, k, v, d?, s?, img?, f?, a? }
+const allItems = rawMenu as Array<{
+  n: string;
+  p: number;
+  c: string;
+  k: string;
+  v?: string;
+  d?: string;
+  s?: number;
+  img?: string;
+  f?: number;
+  a?: number;
+}>;
+
+// Ordered category list (displayed in tabs)
+const TAB_CATEGORIES = [
+  'All',
+  'Starters',
+  'Regional specials',
+  'Mains',
+  'Biryani & rice',
+  'Asian mains',
+  'South Indian',
+  'Pizza',
+  'Pasta',
+  'Momos',
+  'Sandwiches & burgers',
+  'Soups',
+  'Salads',
+  'Breads',
+  'All day breakfast',
+  'Finger bites',
+  'Quick bites',
+  'Kids menu',
+  'Healthy bowls',
+  'Cookies',
+  'Desserts',
+  'Mocktails',
+  'Milk shakes',
+  'Smoothies',
+  'Hot coffee',
+  'Cold coffee & frappes',
+  'Iced coffee',
+  'Tea',
+  'Soft drinks',
+  "Sreemukhi's food",
+  "Sreemukhi's drinks",
+];
+
+// Normalize category names from JSON (some have & vs &amp; issues) to match TAB_CATEGORIES
+function normalizeCategory(c: string): string {
+  return c
+    .replace(/Biryani\s*&\s*rice/i, 'Biryani & rice')
+    .replace(/Cold coffee\s*&\s*frappes/i, 'Cold coffee & frappes')
+    .replace(/Sandwiches\s*&\s*burgers/i, 'Sandwiches & burgers');
+}
+
+// Get unique actual categories present in data, preserving TAB_CATEGORIES order
+const presentCategories = TAB_CATEGORIES.filter(tab =>
+  tab === 'All' || allItems.some(it => normalizeCategory(it.c) === tab)
+);
+
+// Slug helper for data-cat attributes and tab IDs (safe for HTML attrs)
+function slug(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+---
+
+<Base
+  title="Full Menu — Fursat Kitchen | Bar | Madhapur, Hyderabad"
+  description="Explore our full menu: signature dishes, cocktails, mocktails, bites and desserts. 150+ items across Indian kitchen & craft bar. Order online or dine in."
+  canonical="https://fursatind.in/menu/"
+  ogImage="https://fursatind.in/assets/fursat_space_07.webp"
+  ogImageAlt="Fursat menu — signature dishes and cocktails"
+>
+  <SiteHeader active="menu" />
+
+  <main class="mn-main" id="main">
+
+    <!-- ── Hero Header ─────────────────────────────────────────────────── -->
+    <header class="mn-hero">
+      <div class="mn-hero-inner">
+        <p class="mn-hero-eyebrow">Fursat Kitchen | Bar · Madhapur, Hyderabad</p>
+        <h1 class="mn-hero-title mot-headline">Our Menu</h1>
+        <p class="mn-hero-sub">Café · Bar · Kitchen · Banquet — {allItems.length} dishes &amp; drinks</p>
+      </div>
+    </header>
+
+    <!-- ── Sticky Category Tabs ─────────────────────────────────────────── -->
+    <nav class="mn-tabs-wrap" aria-label="Menu categories">
+      <div class="mn-tabs mot-tab-indicator" role="tablist" id="mn-tabs">
+        {presentCategories.map((cat, i) => (
+          <button
+            class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            data-cat={slug(cat)}
+            id={`tab-${slug(cat)}`}
+            type="button"
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+    </nav>
+
+    <!-- ── Menu Card Grid ────────────────────────────────────────────────── -->
+    <section class="mn-grid-wrap" aria-label="Menu items">
+      <div class="mn-grid" id="mn-grid">
+        {allItems.map((item) => {
+          const cat = normalizeCategory(item.c);
+          const catSlug = slug(cat);
+          const isVeg = item.v === 'veg';
+          const isNonVeg = item.v === 'nonveg';
+          const isOpt = item.v === 'opt';
+          const isAlc = item.a === 1;
+          const isSpicy = item.s === 1;
+          const hasImg = !!item.img;
+          return (
+            <article
+              class="mn-card mot-card-lit"
+              data-cat={catSlug}
+              aria-label={item.n}
+            >
+              {hasImg && (
+                <div class="mn-card-img-wrap">
+                  <img
+                    src={item.img}
+                    alt={item.n}
+                    class="mn-card-img"
+                    loading="lazy"
+                    decoding="async"
+                    width="400"
+                    height="220"
+                  />
+                </div>
+              )}
+              <div class="mn-card-body">
+                <div class="mn-card-top">
+                  <span class="mn-cat-badge">{cat}</span>
+                  <div class="mn-badges">
+                    {isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
+                    {isNonVeg && <span class="mn-dot mn-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
+                    {isOpt && <span class="mn-badge-pill mn-badge-pill--opt">Veg/NV</span>}
+                    {isAlc && <span class="mn-badge-pill mn-badge-pill--alc">Alcohol</span>}
+                    {isSpicy && <span class="mn-spicy" title="Spicy" aria-label="Spicy">🌶</span>}
+                  </div>
+                </div>
+                <h2 class="mn-dish-name">{item.n}</h2>
+                {item.d && <p class="mn-dish-desc">{item.d}</p>}
+                <div class="mn-card-footer">
+                  <span class="mn-price">₹{item.p}</span>
+                  {item.f === 1 && <span class="mn-flex-note">prices vary</span>}
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <!-- Empty state -->
+      <p class="mn-empty" id="mn-empty" hidden>No items in this category yet.</p>
+    </section>
+
+    <!-- ── CTA Banner ────────────────────────────────────────────────────── -->
+    <section class="mn-cta-wrap" aria-label="Reservation offer">
+      <div class="mn-cta">
+        <p class="mn-cta-label">Ready to dine?</p>
+        <h2 class="mn-cta-heading">Reserve Your Table &amp; Get <span class="mn-cta-gold">15% OFF</span></h2>
+        <p class="mn-cta-sub">Call us or walk in. Available for parties, banquets &amp; café seating.</p>
+        <a
+          href="tel:+918008009966"
+          class="mn-cta-btn"
+          aria-label="Call to reserve and get 15% off"
+        >
+          📞 Reserve &amp; Save 15%
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <MascotOfferModal />
+  <SiteFooter />
+<MobileBar active="menu" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<!-- ── Tab filter script ─────────────────────────────────────────────────── -->
+<script is:inline>
+(function () {
+  var tabs = document.querySelectorAll('.mn-tab');
+  var cards = document.querySelectorAll('.mn-card');
+  var emptyMsg = document.getElementById('mn-empty');
+
+  function activate(catSlug) {
+    // Update tab states
+    tabs.forEach(function (t) {
+      var active = t.dataset.cat === catSlug;
+      t.classList.toggle('mn-tab--active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+
+    // Show / hide cards
+    var visible = 0;
+    cards.forEach(function (card) {
+      var show = catSlug === 'all' || card.dataset.cat === catSlug;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+
+    if (emptyMsg) emptyMsg.hidden = visible > 0;
+
+    // Scroll active tab into view (horizontal)
+    var activeTab = document.querySelector('.mn-tab--active');
+    if (activeTab) {
+      activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    // Update URL hash without scroll jump
+    var hash = catSlug === 'all' ? '' : '#' + catSlug;
+    history.replaceState(null, '', window.location.pathname + hash);
+  }
+
+  // Bind click events
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      activate(tab.dataset.cat);
+    });
+  });
+
+  // Keyboard navigation (arrow keys within tablist)
+  document.getElementById('mn-tabs').addEventListener('keydown', function (e) {
+    var tabList = Array.from(tabs);
+    var idx = tabList.indexOf(document.activeElement);
+    if (idx === -1) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); tabList[(idx + 1) % tabList.length].focus(); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); tabList[(idx - 1 + tabList.length) % tabList.length].focus(); }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(document.activeElement.dataset.cat); }
+  });
+
+  // Restore from URL hash on load
+  var hash = window.location.hash.replace('#', '');
+  if (hash) {
+    var matchTab = Array.from(tabs).find(function (t) { return t.dataset.cat === hash; });
+    if (matchTab) activate(hash);
+  }
+})();
+</script>
+
+<style is:global>
+  /* ── Google Font import ─────────────────────────────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
+
+  /* ── Page shell ─────────────────────────────────────────────────────── */
+  .mn-main {
+    background: #12190B;
+    min-height: 100vh;
+    color: #F4ECDA;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  /* ── Hero ───────────────────────────────────────────────────────────── */
+  .mn-hero {
+    background: url('/assets/interior/fursat_space_07.webp') center/cover no-repeat;
+    padding: 80px 24px 56px;
+    text-align: center;
+    border-bottom: 1px solid rgba(224,166,60,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .mn-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,15,5,0.72) 0%, rgba(18,25,11,0.9) 100%);
+    pointer-events: none;
+  }
+  .mn-hero-inner { position: relative; z-index: 1; }
+  .mn-hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(224,166,60,0.7);
+    margin: 0 0 12px;
+  }
+  .mn-hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.4rem, 7vw, 4.5rem);
+    font-weight: 700;
+    color: #F4ECDA;
+    margin: 0 0 14px;
+    line-height: 1.1;
+  }
+  .mn-hero-sub {
+    font-size: 1rem;
+    color: rgba(244,236,218,0.55);
+    margin: 0;
+  }
+
+  /* ── Sticky tab bar ─────────────────────────────────────────────────── */
+  .mn-tabs-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #17200F;
+    border-bottom: 1px solid rgba(224,166,60,0.15);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .mn-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mn-tabs::-webkit-scrollbar { display: none; }
+  .mn-tab {
+    flex-shrink: 0;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(224,166,60,0.2);
+    background: transparent;
+    color: rgba(244,236,218,0.6);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+  .mn-tab:hover {
+    color: #F4ECDA;
+    border-color: rgba(224,166,60,0.5);
+    background: rgba(224,166,60,0.07);
+  }
+  .mn-tab--active {
+    background: #E0A63C;
+    color: #12190B;
+    border-color: #E0A63C;
+    font-weight: 700;
+    box-shadow: 0 0 14px rgba(224,166,60,0.45);
+  }
+  .mn-tab:focus-visible {
+    outline: 2px solid #E0A63C;
+    outline-offset: 2px;
+  }
+
+  /* ── Grid ───────────────────────────────────────────────────────────── */
+  .mn-grid-wrap {
+    padding: 36px 20px 56px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .mn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ── Card ───────────────────────────────────────────────────────────── */
+  .mn-card {
+    background: rgba(244,236,218,0.04);
+    border: 1px solid rgba(224,166,60,0.25);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.22s cubic-bezier(.23,1,.32,1), box-shadow 0.22s, border-color 0.22s;
+  }
+  .mn-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(224,166,60,0.55);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5), 0 0 0 1px rgba(224,166,60,0.15);
+  }
+
+  /* Card image */
+  .mn-card-img-wrap {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #0d1408;
+  }
+  .mn-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .mn-card:hover .mn-card-img { transform: scale(1.05); }
+
+  /* Card body */
+  .mn-card-body { padding: 16px 18px 18px; }
+  .mn-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .mn-cat-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(224,166,60,0.8);
+    background: rgba(224,166,60,0.1);
+    border: 1px solid rgba(224,166,60,0.2);
+    border-radius: 6px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mn-badges {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  /* Veg / non-veg dots */
+  .mn-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .mn-dot--veg    { background: #22c55e; box-shadow: 0 0 5px rgba(34,197,94,0.5); }
+  .mn-dot--nonveg { background: #ef4444; box-shadow: 0 0 5px rgba(239,68,68,0.5); }
+
+  /* Pill badges */
+  .mn-badge-pill {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .mn-badge-pill--opt {
+    background: rgba(234,179,8,0.15);
+    color: #eab308;
+    border: 1px solid rgba(234,179,8,0.3);
+  }
+  .mn-badge-pill--alc {
+    background: rgba(168,85,247,0.15);
+    color: #c084fc;
+    border: 1px solid rgba(168,85,247,0.3);
+  }
+  .mn-spicy { font-size: 0.85rem; }
+
+  /* Dish name */
+  .mn-dish-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #F4ECDA;
+    margin: 0 0 7px;
+    line-height: 1.35;
+  }
+
+  /* Description */
+  .mn-dish-desc {
+    font-size: 0.9rem;
+    color: rgba(244,236,218,0.7);
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+
+  /* Card footer: price */
+  .mn-card-footer {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .mn-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #E0A63C;
+    letter-spacing: -0.01em;
+  }
+  .mn-flex-note {
+    font-size: 0.72rem;
+    color: rgba(244,236,218,0.4);
+    font-style: italic;
+  }
+
+  /* Empty state */
+  .mn-empty {
+    text-align: center;
+    color: rgba(244,236,218,0.4);
+    padding: 60px 24px;
+    font-size: 1rem;
+  }
+
+  /* ── CTA Section ─────────────────────────────────────────────────────── */
+  .mn-cta-wrap {
+    padding: 24px 24px 72px;
+    display: flex;
+    justify-content: center;
+  }
+  .mn-cta {
+    background: linear-gradient(135deg, rgba(224,166,60,0.07) 0%, rgba(224,166,60,0.03) 100%);
+    border: 1px solid rgba(224,166,60,0.3);
+    border-radius: 28px;
+    padding: 48px 40px;
+    text-align: center;
+    max-width: 640px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .mn-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(224,166,60,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .mn-cta > * { position: relative; z-index: 1; }
+  .mn-cta-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(224,166,60,0.65);
+    margin: 0 0 10px;
+  }
+  .mn-cta-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color: #F4ECDA;
+    margin: 0 0 14px;
+    line-height: 1.2;
+  }
+  .mn-cta-gold {
+    color: #E0A63C;
+    text-shadow: 0 0 24px rgba(224,166,60,0.5);
+  }
+  .mn-cta-sub {
+    font-size: 0.95rem;
+    color: rgba(244,236,218,0.6);
+    margin: 0 0 28px;
+  }
+  .mn-cta-btn {
+    display: inline-block;
+    padding: 15px 36px;
+    background: linear-gradient(135deg, #E0A63C 0%, #c8882c 100%);
+    color: #12190B;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(224,166,60,0.4), 0 0 0 0 rgba(224,166,60,0);
+    animation: mn-glow-pulse 2.8s ease-in-out infinite;
+  }
+  .mn-cta-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(224,166,60,0.6);
+    animation: none;
+  }
+
+  @keyframes mn-glow-pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(224,166,60,0.4), 0 0 0 0 rgba(224,166,60,0.2); }
+    50%       { box-shadow: 0 4px 28px rgba(224,166,60,0.55), 0 0 0 10px rgba(224,166,60,0); }
+  }
+
+  /* ── Responsive tweaks ───────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .mn-hero { padding: 60px 20px 40px; }
+    .mn-grid { grid-template-columns: 1fr; }
+    .mn-cta   { padding: 36px 24px; }
+  }
+  @media (min-width: 1400px) {
+    .mn-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  }
+</style>

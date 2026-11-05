@@ -1,0 +1,648 @@
+---
+// banquet.astro - The Royal Banquet Hall at Fursat
+// Hero, photos, capacity specs, event packages, sample menu & enquiry form
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+---
+<Base
+  title="Banquet Hall — Fursat Kitchen | Bar | Madhapur Events"
+  description="Host your wedding, corporate event, or milestone celebration at Fursat's grand banquet hall in Madhapur. Packages from ₹925 per person. Up to 300 guests."
+  canonical="https://fursatind.in/banquet/"
+  ogImage="https://fursatind.in/assets/fursat_space_14.webp"
+  ogImageAlt="Fursat Banquet Hall — grand event space in Madhapur Hyderabad"
+>
+  <SiteHeader active="banquet" />
+
+  <main class="bq-page" id="main">
+    <!-- Hero Section -->
+    <section class="bq-hero">
+      <div class="bq-hero-bg">
+        <img src="/assets/interior/fursat_space_18.webp" alt="Fursat Grand Banquet Hall" class="bq-hero-img" />
+        <div class="bq-hero-overlay"></div>
+      </div>
+      <div class="bq-hero-content">
+        <span class="bq-kicker">ROYAL CELEBRATIONS & CORPORATE GALAS</span>
+        <h1 class="bq-title mot-headline">The Grand Banquet at Fursat</h1>
+        <p class="bq-sub">
+          A pillarless, acoustics-tuned luxury celebration venue at Capital Park, Madhapur. Accommodating 50 to 350 guests with bespoke royal buffets, state-of-the-art AV, and dedicated banquet concierges.
+        </p>
+        <div class="bq-hero-actions">
+          <a href="#enquire" class="bq-btn-gold">Enquire for Dates & Rates</a>
+          <a href="#packages" class="bq-btn-ghost">View Banquet Packages</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Venue Capacity & Specs -->
+    <section class="bq-specs">
+      <div class="bq-container">
+        <div class="bq-specs-grid">
+          <div class="bq-spec-box">
+            <span class="bq-spec-val">350</span>
+            <span class="bq-spec-lbl">Max Floating Capacity</span>
+          </div>
+          <div class="bq-spec-box">
+            <span class="bq-spec-val">220</span>
+            <span class="bq-spec-lbl">Round-Table Seating</span>
+          </div>
+          <div class="bq-spec-box">
+            <span class="bq-spec-val">4K</span>
+            <span class="bq-spec-lbl">Dual Laser Projection & AV</span>
+          </div>
+          <div class="bq-spec-box">
+            <span class="bq-spec-val">100%</span>
+            <span class="bq-spec-lbl">Valet Parking & Lift Access</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Photo Gallery -->
+    <section class="bq-gallery">
+      <div class="bq-container">
+        <div class="bq-sec-head text-center">
+          <span class="bq-kicker">VENUE AMBIANCE</span>
+          <h2 class="bq-sec-title mot-headline">Elegance in Every Detail</h2>
+        </div>
+
+        <div class="bq-gal-grid">
+          <div class="bq-gal-card">
+            <img src="/assets/interior/fursat_space_17.webp" alt="Banquet Stage & Lighting" class="mot-reveal-img" />
+            <div class="bq-gal-tag">Main Banquet Floor</div>
+          </div>
+          <div class="bq-gal-card">
+            <img src="/assets/interior/fursat_space_02.webp" alt="Dining Layout" class="mot-reveal-img" />
+            <div class="bq-gal-tag">Grand Dinner Seating</div>
+          </div>
+          <div class="bq-gal-card">
+            <img src="/assets/interior/fursat_space_14.webp" alt="Cocktail Counter" class="mot-reveal-img" />
+            <div class="bq-gal-tag">Private Banquet Bar</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section class="bq-packages" id="packages">
+      <div class="bq-container">
+        <div class="bq-sec-head text-center">
+          <span class="bq-kicker">CURATED EXPERIENCES</span>
+          <h2 class="bq-sec-title mot-headline">All-Inclusive Banquet Packages</h2>
+          <p class="bq-sec-desc">Transparent pricing with no hidden hall charges on minimum guarantee guest counts.</p>
+        </div>
+
+        <div class="bq-pkg-grid">
+          <!-- Silver Package -->
+          <div class="bq-pkg-card">
+            <div class="bq-pkg-head">
+              <span class="bq-pkg-badge">CLASSIC</span>
+              <h3>Silver Feast</h3>
+              <div class="bq-pkg-price">₹925 <span>/ guest + taxes</span></div>
+            </div>
+            <ul class="bq-pkg-features">
+              <li>2 Veg & 2 Non-Veg Welcome Starters</li>
+              <li>1 Soup & 2 Salads</li>
+              <li>2 Veg & 2 Non-Veg Curries</li>
+              <li>Dum Biryani (Chicken & Veg)</li>
+              <li>Assorted Tandoori Roti & Naan</li>
+              <li>2 Handcrafted Desserts</li>
+              <li>Standard Stage & Ambient Audio</li>
+            </ul>
+            <a href="#enquire" class="bq-pkg-btn">Select Silver</a>
+          </div>
+
+          <!-- Gold Package (Featured) -->
+          <div class="bq-pkg-card featured">
+            <div class="bq-pkg-ribbon">MOST POPULAR</div>
+            <div class="bq-pkg-head">
+              <span class="bq-pkg-badge">ROYAL</span>
+              <h3>Gold Celebrations</h3>
+              <div class="bq-pkg-price">₹1,150 <span>/ guest + taxes</span></div>
+            </div>
+            <ul class="bq-pkg-features">
+              <li>3 Veg & 3 Non-Veg Starters (incl. Kebabs)</li>
+              <li>2 Soups & 4 Gourmet Salads</li>
+              <li>3 Veg & 3 Non-Veg Curries (Mutton Nalli Curry)</li>
+              <li>Fursat Signature Gosht & Veg Dum Biryani</li>
+              <li>Live Tandoor & Naan Counter</li>
+              <li>3 Desserts (incl. Ice Cream Counter)</li>
+              <li>Pro DJ, Party Lights & Projector</li>
+            </ul>
+            <a href="#enquire" class="bq-pkg-btn featured">Select Gold</a>
+          </div>
+
+          <!-- Platinum Package -->
+          <div class="bq-pkg-card">
+            <div class="bq-pkg-head">
+              <span class="bq-pkg-badge">LUXURY</span>
+              <h3>Platinum Gala</h3>
+              <div class="bq-pkg-price">₹1,450 <span>/ guest + taxes</span></div>
+            </div>
+            <ul class="bq-pkg-features">
+              <li>4 Veg & 4 Non-Veg Starters (Prawns & Fish)</li>
+              <li>Live Chaat / Dim Sum Station</li>
+              <li>Slow-cooked Royal Mutton Rogan Josh</li>
+              <li>Hyderabadi Dum Gosht Biryani & Joha Pulao</li>
+              <li>Gourmet Dessert Spread (Lotus Biscoff + Halwa)</li>
+              <li>Mocktail Bar Counter & Welcome Drinks</li>
+              <li>Customized Theme Decor & Valet Coordination</li>
+            </ul>
+            <a href="#enquire" class="bq-pkg-btn">Select Platinum</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enquiry Form Section -->
+    <section class="bq-enquiry" id="enquire">
+      <div class="bq-container bq-enquiry-wrap">
+        <div class="bq-enquiry-card">
+          <div class="bq-eq-head">
+            <span class="bq-kicker">RESERVE YOUR DATE</span>
+            <h2>Banquet Booking & Date Check</h2>
+            <p>Tell us about your celebration. Our Banquet General Manager will connect within 15 minutes with availability & customized quotation.</p>
+          </div>
+
+          <form class="bq-form" id="bq-form" action="https://wa.me/919059670033" target="_blank"
+            data-utm="utm_source=website&utm_medium=cta&utm_campaign=banquet">
+            <div class="bq-form-row">
+              <div class="bq-form-field">
+                <label for="eq-name">Full Name *</label>
+                <input type="text" id="eq-name" required placeholder="e.g. Rajesh Kumar" />
+              </div>
+              <div class="bq-form-field">
+                <label for="eq-phone">Mobile / WhatsApp Number *</label>
+                <input type="tel" id="eq-phone" required placeholder="e.g. 98483 60033" />
+              </div>
+            </div>
+
+            <div class="bq-form-row">
+              <div class="bq-form-field">
+                <label for="eq-event">Occasion Type *</label>
+                <select id="eq-event">
+                  <option value="Birthday Party">Birthday Celebration</option>
+                  <option value="Wedding / Reception">Wedding / Sangeet / Reception</option>
+                  <option value="Corporate Gathering">Corporate Gala / Seminar</option>
+                  <option value="Anniversary">Anniversary Celebration</option>
+                  <option value="Kitty / Social">Kitty Party / Family Reunion</option>
+                </select>
+              </div>
+              <div class="bq-form-field">
+                <label for="eq-guests">Approx. Guest Count *</label>
+                <input type="number" id="eq-guests" min="30" max="400" placeholder="e.g. 100 Guests" required />
+              </div>
+            </div>
+
+            <div class="bq-form-row">
+              <div class="bq-form-field">
+                <label for="eq-date">Preferred Date *</label>
+                <input type="date" id="eq-date" required />
+              </div>
+              <div class="bq-form-field">
+                <label for="eq-package">Interested Package</label>
+                <select id="eq-package">
+                  <option value="Gold Package (₹1150/pax)">Gold Celebrations (₹1,150/pax)</option>
+                  <option value="Silver Package (₹925/pax)">Silver Feast (₹925/pax)</option>
+                  <option value="Platinum Package (₹1450/pax)">Platinum Gala (₹1,450/pax)</option>
+                  <option value="Customized Menu">Customized Menu Requirements</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="bq-submit-btn">
+              <span>Send Enquiry via WhatsApp / Call</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <p class="bq-direct-call">
+              Prefer calling directly? Reach our Banquet desk at <a href="tel:+919059670033">+91 90596 70033</a> or <a href="tel:+919848360033">+91 98483 60033</a>.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="bq-faq">
+      <div class="bq-container bq-faq-inner">
+        <h2 class="bq-sec-title text-center">Banquet FAQs</h2>
+        <div class="bq-faq-list">
+          <details class="bq-faq-item">
+            <summary>What is the advance payment to lock a banquet date?</summary>
+            <p>A 30% advance deposit secures your date on the Fursat banquet calendar. The remaining balance is payable on or before the day of the event.</p>
+          </details>
+          <details class="bq-faq-item">
+            <summary>Is outside decor or photography permitted?</summary>
+            <p>Yes, you are welcome to bring your preferred decorator or photographer. We also have seasoned in-house empanelled vendors with attractive bundled pricing.</p>
+          </details>
+          <details class="bq-faq-item">
+            <summary>Can alcohol be served at private banquet events?</summary>
+            <p>Yes! We have full bar license support. For private banquet bookings, we can provide liquor packages or coordinate special event permits (Form-24).</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <MascotOfferModal />
+  <SiteFooter />
+<MobileBar active="celebrate" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .bq-page {
+    background: #17200F;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .bq-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .bq-hero {
+    position: relative;
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    padding: clamp(60px, 10vw, 120px) clamp(16px, 4vw, 40px);
+    overflow: hidden;
+  }
+  .bq-hero-bg {
+    position: absolute;
+    inset: 0;
+  }
+  .bq-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bq-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(23, 32, 15, 0.75) 0%, rgba(13, 19, 8, 0.95) 100%);
+  }
+  .bq-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+  }
+  .bq-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .bq-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.5rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.1;
+    color: #F4ECDA;
+    margin: 0 0 20px;
+  }
+  .bq-sub {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: rgba(244, 236, 218, 0.85);
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+  .bq-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .bq-btn-gold {
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background 0.16s ease, transform 0.16s ease;
+  }
+  .bq-btn-gold:hover {
+    background: #F4ECDA;
+    transform: translateY(-2px);
+  }
+  .bq-btn-ghost {
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: rgba(244, 236, 218, 0.08);
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    color: #F4ECDA;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  /* Specs Bar */
+  .bq-specs {
+    background: #12190B;
+    border-top: 1px solid rgba(224, 166, 60, 0.2);
+    border-bottom: 1px solid rgba(224, 166, 60, 0.2);
+    padding: 32px 0;
+  }
+  .bq-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+    text-align: center;
+  }
+  .bq-spec-val {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #E0A63C;
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .bq-spec-lbl {
+    font-size: 0.85rem;
+    color: rgba(244, 236, 218, 0.75);
+    font-weight: 600;
+  }
+
+  /* Gallery */
+  .bq-gallery {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #17200F;
+  }
+  .bq-sec-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #F4ECDA;
+    margin: 0 0 36px;
+  }
+  .bq-gal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .bq-gal-card {
+    position: relative;
+    height: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(224, 166, 60, 0.3);
+  }
+  .bq-gal-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .bq-gal-card:hover img {
+    transform: scale(1.05);
+  }
+  .bq-gal-tag {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(13, 19, 8, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid #E0A63C;
+    color: #E0A63C;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  /* Packages */
+  .bq-packages {
+    padding: clamp(60px, 8vw, 110px) 0;
+    background: #12190B;
+  }
+  .bq-pkg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+  }
+  .bq-pkg-card {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1.5px solid rgba(224, 166, 60, 0.3);
+    border-radius: 24px;
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .bq-pkg-card.featured {
+    border-color: #E0A63C;
+    background: rgba(224, 166, 60, 0.08);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 25px rgba(224, 166, 60, 0.15);
+  }
+  .bq-pkg-card:hover {
+    transform: translateY(-5px);
+  }
+  .bq-pkg-ribbon {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #E0A63C;
+    color: #1A1608;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    border-radius: 999px;
+  }
+  .bq-pkg-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #E0A63C;
+    letter-spacing: 0.08em;
+  }
+  .bq-pkg-head h3 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.6rem;
+    color: #F4ECDA;
+    margin: 4px 0 12px;
+  }
+  .bq-pkg-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #E0A63C;
+  }
+  .bq-pkg-price span {
+    font-size: 0.85rem;
+    color: rgba(244, 236, 218, 0.65);
+    font-weight: 500;
+  }
+  .bq-pkg-features {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .bq-pkg-features li {
+    font-size: 0.925rem;
+    color: rgba(244, 236, 218, 0.85);
+    padding-left: 22px;
+    position: relative;
+  }
+  .bq-pkg-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #E0A63C;
+    font-weight: 800;
+  }
+  .bq-pkg-btn {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    border-radius: 999px;
+    background: rgba(244, 236, 218, 0.08);
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    color: #F4ECDA;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.16s ease;
+  }
+  .bq-pkg-btn.featured, .bq-pkg-btn:hover {
+    background: #E0A63C;
+    color: #1A1608;
+    border-color: #E0A63C;
+  }
+
+  /* Enquiry Section */
+  .bq-enquiry {
+    padding: clamp(60px, 8vw, 110px) 0;
+    background: #17200F;
+  }
+  .bq-enquiry-wrap {
+    max-width: 840px;
+  }
+  .bq-enquiry-card {
+    background: #12190B;
+    border: 2px solid rgba(224, 166, 60, 0.4);
+    border-radius: 28px;
+    padding: clamp(28px, 5vw, 48px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+  .bq-eq-head {
+    margin-bottom: 28px;
+  }
+  .bq-eq-head h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    color: #F4ECDA;
+    margin: 6px 0 10px;
+  }
+  .bq-eq-head p {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0;
+  }
+  .bq-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .bq-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  @media (min-width: 640px) {
+    .bq-form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .bq-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .bq-form-field label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #E0A63C;
+  }
+  .bq-form-field input, .bq-form-field select {
+    background: #090D05;
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+    font-size: 0.9375rem;
+  }
+  .bq-form-field input:focus, .bq-form-field select:focus {
+    outline: none;
+    border-color: #E0A63C;
+  }
+  .bq-submit-btn {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #E0A63C 0%, #C88D25 100%);
+    color: #1A1608;
+    font-weight: 800;
+    font-size: 1rem;
+    margin-top: 10px;
+    box-shadow: 0 6px 20px rgba(224, 166, 60, 0.35);
+  }
+  .bq-submit-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  .bq-direct-call {
+    font-size: 0.85rem;
+    color: rgba(244, 236, 218, 0.65);
+    text-align: center;
+    margin: 8px 0 0;
+  }
+  .bq-direct-call a {
+    color: #E0A63C;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  /* FAQ */
+  .bq-faq {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #12190B;
+  }
+  .bq-faq-inner { max-width: 800px; }
+  .bq-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .bq-faq-item {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1px solid rgba(224, 166, 60, 0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+  }
+  .bq-faq-item summary {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #E0A63C;
+    cursor: pointer;
+  }
+  .bq-faq-item p {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.8);
+    margin: 12px 0 0;
+    line-height: 1.5;
+  }
+</style>

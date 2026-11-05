@@ -1,0 +1,482 @@
+---
+// cafe.astro - Fursat Café & Shakes
+// Curated highlights, specialty coffee, bakes & organic fluid aesthetic
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+import BookingDialog from '../components/BookingDialog.astro';
+---
+<Base
+  title="Café Lounge — Fursat Kitchen | Bar | Madhapur"
+  description="Fursat Café Lounge — artisan coffees, teas and light bites in a warm, creative setting. Work, unwind or catch up with friends in Madhapur's cosiest café."
+  canonical="https://fursatind.in/cafe/"
+  ogImage="https://fursatind.in/assets/fursat_space_09.webp"
+  ogImageAlt="Fursat Café Lounge interior — cosy seating and warm lighting"
+>
+  <SiteHeader active="cafe" />
+
+  <main class="cf-page" id="main">
+    <!-- Fluid Curved Hero Section -->
+    <section class="cf-hero">
+      <div class="cf-hero-wrap">
+        <div class="cf-hero-text">
+          <span class="cf-kicker">SLOW MORNINGS · ARTISAN ROASTS</span>
+          <h1 class="cf-title mot-headline">Seasonal Sips & Slow Bakes</h1>
+          <p class="cf-sub">
+            Inspired by the rhythm of unhurried mornings. Specialty coffee roasted with single-origin beans, ceremonial matcha, house-whipped thick shakes, and oven-fresh pastries.
+          </p>
+          <div class="cf-hero-btns">
+            <a href="#cafe-menu" class="cf-btn-gold">Explore Café Menu</a>
+            <a href="/reserve" class="cf-btn-ghost" data-open="book">Book a Café Booth</a>
+          </div>
+        </div>
+
+        <div class="cf-hero-curved-img">
+          <div class="cf-wave-frame">
+            <img src="/assets/interior/fursat_space_11.webp" alt="Fursat Cafe Sunlight Seating" class="cf-frame-img mot-reveal-img" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curated Ritual Pillars -->
+    <section class="cf-pillars">
+      <div class="cf-container">
+        <div class="cf-sec-head text-center">
+          <span class="cf-kicker">ROOTED IN QUALITY · GUIDED BY RITUAL</span>
+          <h2 class="cf-sec-title mot-headline">Crafted for the Quiet Moments</h2>
+        </div>
+
+        <div class="cf-pillars-grid">
+          <div class="cf-pillar-card">
+            <div class="cf-pc-icon">☕</div>
+            <h3>Single-Origin Espresso</h3>
+            <p>100% Arabica beans ethically sourced from Chikmagalur estates, roasted light-medium for sweet fruity acidity.</p>
+          </div>
+          <div class="cf-pillar-card">
+            <div class="cf-pc-icon">🍵</div>
+            <h3>Ceremonial Grade Matcha</h3>
+            <p>Stone-ground Uji matcha whisked by hand, complemented with chilled oat milk and raw wildflower honey.</p>
+          </div>
+          <div class="cf-pillar-card">
+            <div class="cf-pc-icon">🥐</div>
+            <h3>House-Baked Daily</h3>
+            <p>French butter croissants, warm cinnamon knots, and pistachio rolls baked in small morning batches.</p>
+          </div>
+          <div class="cf-pillar-card">
+            <div class="cf-pc-icon">🥤</div>
+            <h3>Signature Thick Shakes</h3>
+            <p>Our famous Lotus Biscoff, Nutella Hazelnut, and Belgian Chocolate shakes churned with artisanal gelato.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cafe Highlights Menu -->
+    <section class="cf-menu-sec" id="cafe-menu">
+      <div class="cf-container">
+        <div class="cf-sec-head">
+          <span class="cf-kicker">THE CAFÉ SELECTION</span>
+          <h2 class="cf-sec-title mot-headline">Favorites from the Counter</h2>
+        </div>
+
+        <div class="cf-cards-grid">
+          <div class="cf-card">
+            <div class="cf-card-img-wrap">
+              <img src="/assets/dishes/lotus_biscoff_.webp" alt="Lotus Biscoff Shake" class="cf-card-img" />
+              <span class="cf-card-badge">Bestseller</span>
+            </div>
+            <div class="cf-card-body">
+              <div class="cf-card-head">
+                <h4>Lotus Biscoff Shake</h4>
+                <b class="cf-card-price">₹345</b>
+              </div>
+              <p>Caramelized Biscoff spread blended with vanilla bean cream, crowned with crushed biscuits.</p>
+            </div>
+          </div>
+
+          <div class="cf-card">
+            <div class="cf-card-img-wrap">
+              <img src="/assets/dishes/dsc08774.webp" alt="Artisan Cold Brew" class="cf-card-img" />
+              <span class="cf-card-badge">Cold Brew</span>
+            </div>
+            <div class="cf-card-body">
+              <div class="cf-card-head">
+                <h4>Amber Cold Brew</h4>
+                <b class="cf-card-price">₹265</b>
+              </div>
+              <p>Slow-steeped for 18 hours for deep chocolate notes, served over clear crystal ice.</p>
+            </div>
+          </div>
+
+          <div class="cf-card">
+            <div class="cf-card-img-wrap">
+              <img src="/assets/dishes/dsc08852.webp" alt="Classic Belgian Waffle" class="cf-card-img" />
+              <span class="cf-card-badge">Bakes</span>
+            </div>
+            <div class="cf-card-body">
+              <div class="cf-card-head">
+                <h4>Belgian Chocolate Waffle</h4>
+                <b class="cf-card-price">₹315</b>
+              </div>
+              <p>Crisp golden waffle drizzled with warm dark ganache, toasted almonds, and vanilla gelato.</p>
+            </div>
+          </div>
+
+          <div class="cf-card">
+            <div class="cf-card-img-wrap">
+              <img src="/assets/dishes/dsc08919.webp" alt="Avocado Toast & Sourdough" class="cf-card-img" />
+              <span class="cf-card-badge">Breakfast</span>
+            </div>
+            <div class="cf-card-body">
+              <div class="cf-card-head">
+                <h4>Smashed Avocado Sourdough</h4>
+                <b class="cf-card-price">₹365</b>
+              </div>
+              <p>Toasted country sourdough with Hass avocado, cherry tomatoes, feta crumble, and chili flakes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Atmosphere & Interior Gallery -->
+    <section class="cf-ambiance">
+      <div class="cf-container">
+        <div class="cf-sec-head text-center">
+          <span class="cf-kicker">ATMOSPHERE</span>
+          <h2 class="cf-sec-title mot-headline">Spaces Designed to Unwind</h2>
+        </div>
+
+        <div class="cf-gallery-grid">
+          <div class="cf-gal-item large">
+            <img src="/assets/interior/fursat_space_05.webp" alt="Cafe interior with natural light" />
+          </div>
+          <div class="cf-gal-item">
+            <img src="/assets/interior/fursat_space_06.webp" alt="Cozy seating corner" />
+          </div>
+          <div class="cf-gal-item">
+            <img src="/assets/interior/fursat_space_15.webp" alt="Artisan coffee bar counter" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="cf-faq">
+      <div class="cf-container cf-faq-wrap">
+        <h2 class="cf-sec-title text-center">Café FAQs</h2>
+        <div class="cf-faq-list">
+          <details class="cf-faq-item">
+            <summary>What are the café opening hours?</summary>
+            <p>Our café opens daily from 12:00 PM until 11:30 PM. Perfect for quiet lunch breaks, afternoon meetings, and evening desserts.</p>
+          </details>
+          <details class="cf-faq-item">
+            <summary>Is high-speed Wi-Fi and power available for remote working?</summary>
+            <p>Yes, our café booths and high-table areas are equipped with convenient power plugs and complimentary high-speed Wi-Fi for remote work or meetings.</p>
+          </details>
+          <details class="cf-faq-item">
+            <summary>Can I order café items along with the main restaurant menu?</summary>
+            <p>Yes, all café beverages, shakes, and desserts can be ordered from any table across Fursat.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <MascotOfferModal />
+  <BookingDialog />
+  <SiteFooter />
+<MobileBar active="menu" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .cf-page {
+    background: #17200F;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .cf-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .cf-hero {
+    padding: clamp(60px, 8vw, 110px) 0;
+    background: #12190B;
+  }
+  .cf-hero-wrap {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .cf-hero-wrap {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+  .cf-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .cf-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 600;
+    line-height: 1.12;
+    color: #F4ECDA;
+    margin: 0 0 20px;
+  }
+  .cf-sub {
+    font-size: 1.05rem;
+    color: rgba(244, 236, 218, 0.82);
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+  .cf-hero-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .cf-btn-gold {
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background 0.16s ease, transform 0.16s ease;
+  }
+  .cf-btn-gold:hover {
+    background: #F4ECDA;
+    transform: translateY(-2px);
+  }
+  .cf-btn-ghost {
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: rgba(244, 236, 218, 0.08);
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    color: #F4ECDA;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  /* Fluid organic wave frame from reference design */
+  .cf-hero-curved-img {
+    display: flex;
+    justify-content: center;
+  }
+  .cf-wave-frame {
+    width: 100%;
+    max-width: 500px;
+    height: 480px;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    overflow: hidden;
+    border: 3px solid #E0A63C;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(224, 166, 60, 0.25);
+    animation: cf-morph 12s ease-in-out infinite alternate;
+  }
+  @keyframes cf-morph {
+    0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    100% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; }
+  }
+  .cf-frame-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Pillars */
+  .cf-pillars {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #17200F;
+  }
+  .cf-sec-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #F4ECDA;
+    margin: 0 0 40px;
+  }
+  .cf-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .cf-pillar-card {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    border-radius: 24px;
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .cf-pillar-card:hover {
+    transform: translateY(-4px);
+    border-color: #E0A63C;
+  }
+  .cf-pc-icon {
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+  .cf-pillar-card h3 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.35rem;
+    color: #F4ECDA;
+    margin: 0;
+  }
+  .cf-pillar-card p {
+    font-size: 0.925rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Menu Cards Grid */
+  .cf-menu-sec {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #12190B;
+  }
+  .cf-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 24px;
+  }
+  .cf-card {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+  .cf-card:hover {
+    transform: translateY(-4px);
+    border-color: #E0A63C;
+  }
+  .cf-card-img-wrap {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+  .cf-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .cf-card:hover .cf-card-img {
+    transform: scale(1.05);
+  }
+  .cf-card-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #E0A63C;
+    color: #1A1608;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+  .cf-card-body {
+    padding: 20px;
+  }
+  .cf-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .cf-card-head h4 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.25rem;
+    color: #F4ECDA;
+    margin: 0;
+  }
+  .cf-card-price {
+    font-size: 1.1rem;
+    color: #E0A63C;
+    font-weight: 800;
+  }
+  .cf-card-body p {
+    font-size: 0.875rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  /* Gallery */
+  .cf-ambiance {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #17200F;
+  }
+  .cf-gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 768px) {
+    .cf-gallery-grid {
+      grid-template-columns: 1.5fr 1fr;
+      grid-template-rows: 240px 240px;
+    }
+    .cf-gal-item.large {
+      grid-row: span 2;
+    }
+  }
+  .cf-gal-item {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(224, 166, 60, 0.3);
+  }
+  .cf-gal-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* FAQ */
+  .cf-faq {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #12190B;
+  }
+  .cf-faq-wrap {
+    max-width: 800px;
+  }
+  .cf-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .cf-faq-item {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1px solid rgba(224, 166, 60, 0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+  }
+  .cf-faq-item summary {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #E0A63C;
+    cursor: pointer;
+  }
+  .cf-faq-item p {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.8);
+    margin: 12px 0 0;
+    line-height: 1.5;
+  }
+</style>

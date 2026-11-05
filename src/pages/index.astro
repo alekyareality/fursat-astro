@@ -1,0 +1,501 @@
+---
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import SvgDefs from '../components/SvgDefs.astro';
+import Hero from '../components/Hero.astro';
+import TableSpread from '../components/TableSpread.astro';
+import MarqueeStrip from '../components/MarqueeStrip.astro';
+import PanoramicViewer from '../components/PanoramicViewer.astro';
+import Reels from '../components/Reels.astro';
+import Mascot from '../components/Mascot.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+import Sparkles from '../components/Sparkles.astro';
+import BookingDialog from '../components/BookingDialog.astro';
+import StickyBar from '../components/StickyBar.astro';
+import PicksTray from '../components/PicksTray.astro';
+import MenuOverlay from '../components/MenuOverlay.astro';
+import LegalBar from '../components/LegalBar.astro';
+import LegalDialog from '../components/LegalDialog.astro';
+import IntroHeli from '../components/IntroHeli.astro';
+import IntroLogo from '../components/IntroLogo.astro';
+import IntroGate from '../components/IntroGate.astro';
+import IntroCaption from '../components/IntroCaption.astro';
+import Wizard from '../components/Wizard.astro';
+import VoiceButton from '../components/VoiceButton.astro';
+---
+<Base
+  title="Fursat Kitchen | Bar – Café, Bar & Banquet in Madhapur, Hyderabad"
+  description="Fursat Kitchen | Bar in Madhapur, Hyderabad — a vibrant café, kitchen, bar and banquet space. Dine, drink & celebrate. FURSAT15 for 15% off."
+  canonical="https://fursatind.in/"
+  ogImage="https://fursatind.in/assets/fursat_space_01.webp"
+  ogImageAlt="Fursat Kitchen | Bar interior — warm luxury dining in Madhapur"
+>
+<!-- SiteHeader is intentionally suppressed on Home: Hero.astro contains the original site nav (header.top.rv) driven by 01.js–19.js. Showing both would duplicate navigation. -->
+<SiteHeader active="home" />
+<a class="skip" href="#main">Skip to main content</a>
+<SvgDefs />
+<main id="main" tabindex="-1">
+<Hero />
+<TableSpread />
+
+<!-- ── Offer Strip ──────────────────────────────────────────────────── -->
+<div class="hm-offer-strip">
+  <span class="hm-os-fire">🔥</span>
+  <span class="hm-os-text">Lunch Offer: <strong>Flat 15% OFF</strong> on your bill</span>
+  <span class="hm-os-pill">Code: FURSAT15</span>
+  <span class="hm-os-time">Valid 12 PM – 4 PM daily</span>
+  <a href="/reserve" class="hm-os-cta">Reserve Now →</a>
+</div>
+
+<MarqueeStrip />
+
+<!-- ── Space Cards ──────────────────────────────────────────────────── -->
+<section class="hm-spaces" aria-labelledby="hm-spaces-h">
+  <div class="hm-spaces-inner">
+    <div class="hm-sec-head">
+      <span class="hm-kicker">EXPLORE FURSAT</span>
+      <h2 id="hm-spaces-h" class="hm-sec-title mot-headline">Every Occasion Has a Space</h2>
+    </div>
+    <div class="hm-spaces-grid">
+      <a href="/restaurant-bar" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_01.webp')">
+        <div class="hm-sp-overlay"></div>
+        <div class="hm-sp-body">
+          <span class="hm-sp-icon">🍹</span>
+          <h3>Restaurant & Bar</h3>
+          <p>Signature cocktails, Hyderabadi feasts & live kitchen energy</p>
+          <span class="hm-sp-link">Explore →</span>
+        </div>
+      </a>
+      <a href="/cafe" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_09.webp')">
+        <div class="hm-sp-overlay"></div>
+        <div class="hm-sp-body">
+          <span class="hm-sp-icon">☕</span>
+          <h3>Café & Coffee</h3>
+          <p>Specialty brews, slow bakes & unhurried mornings</p>
+          <span class="hm-sp-link">Explore →</span>
+        </div>
+      </a>
+      <a href="/banquet" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_04.webp')">
+        <div class="hm-sp-overlay"></div>
+        <div class="hm-sp-body">
+          <span class="hm-sp-icon">🎊</span>
+          <h3>Banquet Hall</h3>
+          <p>Royal celebrations for 30 to 300 guests with curated packages</p>
+          <span class="hm-sp-link">Explore →</span>
+        </div>
+      </a>
+      <a href="/events" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_12.webp')">
+        <div class="hm-sp-overlay"></div>
+        <div class="hm-sp-body">
+          <span class="hm-sp-icon">🎂</span>
+          <h3>Events & Parties</h3>
+          <p>Birthdays, anniversaries, bar bashes & corporate meets</p>
+          <span class="hm-sp-link">Explore →</span>
+        </div>
+      </a>
+      <a href="/catering" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_03.webp')">
+        <div class="hm-sp-overlay"></div>
+        <div class="hm-sp-body">
+          <span class="hm-sp-icon">🔥</span>
+          <h3>Outdoor Catering</h3>
+          <p>Live tandoor, dum biryani handis & flair mixology at your venue</p>
+          <span class="hm-sp-link">Explore →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<PanoramicViewer />
+<Reels />
+<Mascot />
+
+<!-- ── Google Reviews Section ─────────────────────────────── -->
+<section class="hm-reviews" aria-label="Guest Reviews">
+  <div class="hm-reviews-inner">
+    <div class="hm-sec-head">
+      <span class="hm-kicker" style="color:#E0A63C">WHAT GUESTS SAY</span>
+      <h2 class="hm-sec-title mot-headline" style="color:#F4ECDA">Fursat Moments, Reviewed</h2>
+      <div class="hm-stars-row" aria-label="4.6 out of 5 stars on Google">
+        <span class="hm-star-badge">
+          <svg viewBox="0 0 20 20" fill="#E0A63C" width="22" height="22" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <strong>4.6</strong> / 5 &nbsp;·&nbsp; Google Reviews
+        </span>
+      </div>
+    </div>
+
+    <div class="hm-rv-grid">
+      <article class="hm-rv-card mot-card-lit">
+        <div class="hm-rv-stars" aria-label="5 stars">★★★★★</div>
+        <blockquote class="hm-rv-text">"The nalli gosht biryani is absolutely mind-blowing. Rich, slow-cooked and perfectly spiced. The ambience is stunning — came for a birthday and everyone was blown away. Fursat is now our go-to in Madhapur!"</blockquote>
+        <footer class="hm-rv-author">
+          <span class="hm-rv-avatar">P</span>
+          <div>
+            <strong>Priya Sharma</strong>
+            <small>Google · Verified Diner</small>
+          </div>
+        </footer>
+      </article>
+
+      <article class="hm-rv-card hm-rv-card--featured mot-card-lit">
+        <div class="hm-rv-stars" aria-label="5 stars">★★★★★</div>
+        <blockquote class="hm-rv-text">"Came for a corporate dinner and left completely impressed. The cocktail bar is gorgeous, staff is warm and attentive, and the food quality is restaurant-level in every way. The banquet space is a hidden gem in Hyderabad."</blockquote>
+        <footer class="hm-rv-author">
+          <span class="hm-rv-avatar" style="background:#C9962B">R</span>
+          <div>
+            <strong>Rahul Mehta</strong>
+            <small>Google · Corporate Event</small>
+          </div>
+        </footer>
+      </article>
+
+      <article class="hm-rv-card mot-card-lit">
+        <div class="hm-rv-stars" aria-label="4 stars">★★★★☆</div>
+        <blockquote class="hm-rv-text">"The 'Ask Fursat' concept is so cool — you describe your mood and they suggest what to order. Had the layered mango mocktail and the pav bhaji fondue. Truly unique experience, great value too with the FURSAT15 code."</blockquote>
+        <footer class="hm-rv-author">
+          <span class="hm-rv-avatar" style="background:#3A6B35">A</span>
+          <div>
+            <strong>Ananya Reddy</strong>
+            <small>Google · Regular Guest</small>
+          </div>
+        </footer>
+      </article>
+
+      <article class="hm-rv-card mot-card-lit">
+        <div class="hm-rv-stars" aria-label="5 stars">★★★★★</div>
+        <blockquote class="hm-rv-text">"Booked the banquet for my daughter's graduation. The team was incredibly helpful, the decor was beautiful and the food was absolutely delicious. Every single guest complimented the venue. Will definitely be back!"</blockquote>
+        <footer class="hm-rv-author">
+          <span class="hm-rv-avatar" style="background:#B5532A">S</span>
+          <div>
+            <strong>Sunita Krishnan</strong>
+            <small>Google · Banquet Event</small>
+          </div>
+        </footer>
+      </article>
+    </div>
+
+    <div class="hm-rv-cta-row">
+      <a href="https://g.page/r/fursat-kitchen-bar/review" target="_blank" rel="noopener" class="hm-rv-cta-btn" aria-label="Leave a review on Google">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><polyline points="16 2 20 2 20 6"/><line x1="20" y1="2" x2="10" y2="12"/></svg>
+        Leave a Review on Google
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+<MascotOfferModal />
+<SiteFooter />
+<Sparkles />
+<BookingDialog />
+<StickyBar />
+<PicksTray />
+<MenuOverlay />
+<LegalBar />
+<LegalDialog />
+<IntroHeli />
+<IntroLogo />
+<IntroGate />
+<IntroCaption />
+<Wizard />
+<VoiceButton />
+<script is:inline src="/js/01.js"></script>
+<script is:inline src="/js/02.js"></script>
+<script is:inline src="/js/03.js"></script>
+<script is:inline src="/js/04.js"></script>
+<script is:inline src="/js/05.js"></script>
+<script is:inline src="/js/06.js"></script>
+<script is:inline src="/js/07.js"></script>
+<script is:inline src="/js/08.js"></script>
+<script is:inline src="/js/09.js"></script>
+<script is:inline id="fx-js" src="/js/10.js"></script>
+<script is:inline src="/js/11.js"></script>
+<script is:inline src="/js/12.js"></script>
+<script is:inline src="/js/13.js"></script>
+<script is:inline src="/js/14.js"></script>
+<script is:inline src="/js/15.js"></script>
+<script is:inline src="/js/16.js"></script>
+<script is:inline src="/js/17.js"></script>
+<script is:inline src="/js/18.js"></script>
+<script is:inline src="/js/19.js"></script>
+<MobileBar active="home" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+<style is:global>
+/* Unify header across all pages: use luxury SiteHeader, hide legacy Hero nav bar */
+.fxhero header.top { display: none !important; }
+.ms{position:fixed;right:clamp(10px,2vw,28px);bottom:clamp(64px,9vh,96px);margin:0;padding:0;background:none;width:auto;z-index:40;--ms-size:clamp(120px,16vw,200px)}
+
+/* ── Offer Strip ── */
+.hm-offer-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 20px;
+  background: linear-gradient(135deg, #1A1200 0%, #2A1E00 100%);
+  border-top: 1px solid rgba(224,166,60,0.3);
+  border-bottom: 1px solid rgba(224,166,60,0.3);
+  padding: 14px clamp(16px,4vw,40px);
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+}
+.hm-os-fire { font-size: 1.3rem; }
+.hm-os-text { color: #F4ECDA; font-size: 0.95rem; }
+.hm-os-text strong { color: #E0A63C; }
+.hm-os-pill {
+  background: rgba(224,166,60,0.15);
+  border: 1px solid #E0A63C;
+  color: #E0A63C;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.hm-os-time { color: rgba(244,236,218,0.65); font-size: 0.875rem; }
+.hm-os-cta {
+  background: #E0A63C;
+  color: #12190B;
+  padding: 7px 20px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+.hm-os-cta:hover { transform: translateY(-1px); }
+
+/* ── Space Cards ── */
+.hm-spaces {
+  background: #12190B;
+  padding: clamp(60px,8vw,100px) 0;
+}
+.hm-spaces-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 clamp(16px,4vw,40px);
+}
+.hm-sec-head {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.hm-kicker {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #E0A63C;
+  margin-bottom: 10px;
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+}
+.hm-sec-title {
+  font-family: var(--serif,"Playfair Display",Georgia,serif);
+  font-size: clamp(2rem,4.5vw,3.4rem);
+  color: #F4ECDA;
+  margin: 0;
+  line-height: 1.15;
+}
+.hm-spaces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+@media (min-width: 1000px) {
+  .hm-spaces-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+.hm-sp-card {
+  position: relative;
+  display: block;
+  min-height: 340px;
+  border-radius: 64px 8px 64px 8px;
+  overflow: hidden;
+  text-decoration: none;
+  background: var(--sp-bg) center/cover no-repeat;
+  transition: transform 0.35s cubic-bezier(.16,1,.3,1);
+}
+.hm-sp-card:hover { transform: translateY(-6px) scale(1.01); }
+.hm-sp-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,15,5,0.9) 0%, rgba(18,25,11,0.4) 60%, transparent 100%);
+  transition: background 0.3s ease;
+}
+.hm-sp-card:hover .hm-sp-overlay {
+  background: linear-gradient(to top, rgba(10,15,5,0.95) 0%, rgba(18,25,11,0.6) 70%, transparent 100%);
+}
+.hm-sp-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hm-sp-icon { font-size: 1.6rem; line-height: 1; }
+.hm-sp-body h3 {
+  font-family: var(--serif,"Playfair Display",Georgia,serif);
+  font-size: 1.25rem;
+  color: #F4ECDA;
+  margin: 0;
+  line-height: 1.2;
+}
+.hm-sp-body p {
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+  font-size: 0.8125rem;
+  color: rgba(244,236,218,0.75);
+  margin: 0;
+  line-height: 1.4;
+}
+.hm-sp-link {
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #E0A63C;
+  margin-top: 4px;
+  display: inline-block;
+  transition: letter-spacing 0.2s ease;
+}
+.hm-sp-card:hover .hm-sp-link { letter-spacing: 0.04em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-sp-card, .hm-sp-link { transition: none; }
+}
+@media (max-width: 600px) {
+  .hm-spaces-grid { grid-template-columns: 1fr 1fr; }
+  .hm-sp-card { min-height: 240px; border-radius: 32px 4px 32px 4px; }
+  .hm-offer-strip { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+/* ── Reviews Section ── */
+.hm-reviews {
+  background: #17200F;
+  padding: clamp(60px,8vw,100px) 0;
+  border-top: 1px solid rgba(201,150,43,0.12);
+}
+.hm-reviews-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(16px,4vw,40px);
+}
+.hm-stars-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+.hm-star-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,150,43,0.1);
+  border: 1px solid rgba(201,150,43,0.3);
+  border-radius: 999px;
+  padding: 6px 20px;
+  color: #F4ECDA;
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+  font-size: 0.9375rem;
+}
+.hm-rv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+.hm-rv-card {
+  background: rgba(244,236,218,0.04);
+  border: 1px solid rgba(201,150,43,0.15);
+  border-radius: 20px 4px 20px 4px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.hm-rv-card:hover {
+  border-color: rgba(201,150,43,0.4);
+  transform: translateY(-3px);
+}
+.hm-rv-card--featured {
+  background: rgba(201,150,43,0.07);
+  border-color: rgba(201,150,43,0.35);
+}
+.hm-rv-stars {
+  color: #E0A63C;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+.hm-rv-text {
+  color: rgba(244,236,218,0.85);
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin: 0;
+  font-style: italic;
+}
+.hm-rv-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+.hm-rv-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1F2A14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #E0A63C;
+  flex-shrink: 0;
+  border: 2px solid rgba(201,150,43,0.3);
+}
+.hm-rv-author strong {
+  display: block;
+  color: #F4ECDA;
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.hm-rv-author small {
+  color: rgba(244,236,218,0.5);
+  font-size: 0.75rem;
+}
+.hm-rv-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+.hm-rv-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(201,150,43,0.5);
+  color: #E0A63C;
+  font-family: var(--sans,"Manrope",system-ui,sans-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.hm-rv-cta-btn:hover {
+  background: rgba(201,150,43,0.12);
+  border-color: rgba(201,150,43,0.8);
+}
+@media (max-width: 600px) {
+  .hm-rv-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hm-rv-card { transition: none; }
+  .hm-rv-cta-btn { transition: none; }
+}
+</style>

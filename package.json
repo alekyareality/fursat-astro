@@ -1,0 +1,49 @@
+{
+  "name": "fursat-web",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.3"
+  },
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview --host",
+    "deploy": "node node_modules/wrangler/bin/wrangler.js pages deploy dist --project-name=fursat-kitchen-bar",
+    "deploy:login": "node node_modules/wrangler/bin/wrangler.js login",
+    "compress": "node scripts/compress-assets.mjs",
+    "compress:phase1": "node scripts/compress-assets.mjs --phase=1",
+    "compress:phase2": "node scripts/compress-assets.mjs --phase=2",
+    "compress:phase3": "node scripts/compress-assets.mjs --phase=3",
+    "compress:phase4": "node scripts/compress-assets.mjs --phase=4",
+    "compress:reset": "node scripts/compress-assets.mjs --reset"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.1.2",
+    "@astrojs/sitemap": "^3.2.0",
+    "@react-three/fiber": "^9.8.2",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/three": "^0.186.0",
+    "astro": "^5.0.0",
+    "framer-motion": "^14.7.1",
+    "gsap": "^3.15.1",
+    "motion": "^14.7.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.0.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "playwright": "^1.64.1",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.157.0"
+  },
+  "allowScripts": {
+    "workerd@1.20261103.1": true,
+    "sharp@0.34.5": true,
+    "esbuild@0.25.12": true
+  }
+}

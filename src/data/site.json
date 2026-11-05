@@ -1,0 +1,39 @@
+{
+  "name": "Fursat Kitchen | Bar",
+  "tagline": "Your Fursat, Served.",
+  "shortName": "Fursat",
+  "domain": "https://fursatind.in",
+  "phone": "+91 90596 70033",
+  "phonePlain": "919059670033",
+  "whatsapp": "919059670033",
+  "email": "TODO(client)@fursatind.in",
+  "address": {
+    "line1": "TODO(client): Unit number, Capital Park",
+    "line2": "Madhapur, Hyderabad",
+    "state": "Telangana",
+    "pin": "500081",
+    "googleMaps": "https://maps.google.com/?q=Fursat+Kitchen+Bar+Madhapur+Hyderabad",
+    "embed": "TODO(client): Google Maps embed URL"
+  },
+  "hours": {
+    "open": "12:00",
+    "close": "23:30",
+    "days": "Daily",
+    "display": "Open Daily 12:00 PM – 11:30 PM"
+  },
+  "legal": {
+    "name": "TODO(client): Legal entity name",
+    "gstin": "TODO(client): GSTIN",
+    "fssai": "TODO(client): FSSAI licence number",
+    "cin": "TODO(client): CIN if applicable"
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/fursat.hyd/",
+    "youtube": "TODO(client)"
+  },
+  "og": {
+    "image": "/og-home.jpg",
+    "width": 1200,
+    "height": 630
+  }
+}

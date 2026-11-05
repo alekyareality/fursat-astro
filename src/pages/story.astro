@@ -1,0 +1,351 @@
+---
+// story.astro - Fursat Brand Story, Values & Heritage
+// Brand story, values, legal name, address, map & FSSAI
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import MascotOfferModal from '../components/MascotOfferModal.astro';
+---
+<Base
+  title="Our Story — Fursat Kitchen | Bar | Madhapur, Hyderabad"
+  description="The story behind Fursat — a space born from the love of unhurried moments, good food and great company. Meet the team and the philosophy that drives us."
+  canonical="https://fursatind.in/story/"
+  ogImage="https://fursatind.in/assets/fursat_space_13.webp"
+  ogImageAlt="Fursat — the story behind Madhapur's beloved kitchen and bar"
+>
+  <SiteHeader active="story" />
+
+  <main class="st-page" id="main">
+    <!-- Hero Story -->
+    <section class="st-hero">
+      <div class="st-hero-wrap">
+        <span class="st-kicker">OUR ESSENCE</span>
+        <h1 class="st-title mot-headline">The Meaning of Fursat</h1>
+        <p class="st-sub">
+          In a world constantly running against the clock, <em>Fursat</em> (फ़ुर्सत) is the rare luxury of unhurried time. The quiet joy of pausing with friends, watching the ice melt slowly in a coupe glass, and savoring food that was never rushed.
+        </p>
+      </div>
+    </section>
+
+    <!-- Narrative Section -->
+    <section class="st-narrative">
+      <div class="st-container">
+        <div class="st-split">
+          <div class="st-narrative-img">
+            <img src="/assets/interior/fursat_space_02.webp" alt="Fursat Heritage Dining" class="mot-reveal-img" />
+          </div>
+          <div class="st-narrative-text">
+            <span class="st-kicker">UNHURRIED HOSPITALITY</span>
+            <h2>Where Time Slows Down</h2>
+            <p>
+              Born at Capital Park, Madhapur, Fursat was created as a sanctuary amidst Hyderabad's high-octane IT hub. We designed every square foot—from the warm acoustics and handcrafted velvet booths to the open charcoal pits—so that you never feel prompted to check your watch.
+            </p>
+            <p>
+              Whether it’s a spontaneous post-work drink, an intimate family anniversary, or a grand banquet feast, our team serves with the heartfelt generosity that defines genuine Deccan hospitality.
+            </p>
+            <div class="st-quote-box">
+              <p>“We don’t just serve meals; we protect your moments of pause.”</p>
+              <small>— The Fursat Culinary & Hospitality Team</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="st-values">
+      <div class="st-container">
+        <div class="st-sec-head text-center">
+          <span class="st-kicker">WHAT DRIVES US</span>
+          <h2 class="st-sec-title">Our Pillars of Craft</h2>
+        </div>
+
+        <div class="st-values-grid">
+          <div class="st-val-card">
+            <div class="st-val-num">01</div>
+            <h3>Patience Over Pace</h3>
+            <p>Slow marinations, whole-spice reductions, and slow-simmered nalli curries. We never cut corners in our kitchen.</p>
+          </div>
+
+          <div class="st-val-card">
+            <div class="st-val-num">02</div>
+            <h3>Thoughtful Ingredients</h3>
+            <p>Cold-pressed oils, single-estate Arabica coffee, pure ghee, and zero artificial coloring in our curries or cocktails.</p>
+          </div>
+
+          <div class="st-val-card">
+            <div class="st-val-num">03</div>
+            <h3>Spaces for Every Mood</h3>
+            <p>A sunlit café for reading and remote work, a high-energy bar for celebrations, and a royal banquet for lifetime milestones.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Space Gallery Strip -->
+    <section class="st-gallery" aria-label="Fursat spaces gallery">
+      <div class="st-gallery-scroll">
+        <img src="/assets/interior/fursat_space_13.webp" alt="Fursat warm dining space" class="st-gal-img" loading="lazy" />
+        <img src="/assets/interior/fursat_space_16.webp" alt="Fursat bar counter" class="st-gal-img" loading="lazy" />
+        <img src="/assets/interior/fursat_space_19.webp" alt="Fursat lounge seating" class="st-gal-img" loading="lazy" />
+        <img src="/assets/interior/fursat_space_07.webp" alt="Fursat café corner" class="st-gal-img" loading="lazy" />
+        <img src="/assets/interior/fursat_space_03.webp" alt="Fursat private dining" class="st-gal-img" loading="lazy" />
+      </div>
+    </section>
+
+    <!-- Legal & Entity Disclosures -->
+    <section class="st-legal">
+      <div class="st-container st-legal-wrap">
+        <div class="st-legal-box">
+          <h2>Official Business Information</h2>
+          <div class="st-info-grid">
+            <div class="st-ig-item">
+              <b>Operating Brand Name:</b>
+              <span>Fursat Kitchen | Bar (Café, Bar & Banquets)</span>
+            </div>
+            <div class="st-ig-item">
+              <b>Registered Legal Entity:</b>
+              <span>Alekya Reality / Fursat Hospitality LLP</span>
+            </div>
+            <div class="st-ig-item">
+              <b>FSSAI License Number:</b>
+              <span>13624013000521 (Central Licensing Authority)</span>
+            </div>
+            <div class="st-ig-item">
+              <b>Registered Address:</b>
+              <span>Level 3, Capital Park Building, Image Gardens Road, VIP Hills, Silicon Valley, Madhapur, Hyderabad, Telangana 500081</span>
+            </div>
+            <div class="st-ig-item">
+              <b>Operating Hours:</b>
+              <span>Open 7 Days a Week: 12:00 PM – 11:30 PM</span>
+            </div>
+            <div class="st-ig-item">
+              <b>Official Contact:</b>
+              <span>+91 90596 70033 / +91 98483 60033 · hello@fursatind.in</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <MascotOfferModal />
+  <SiteFooter />
+<MobileBar active="story" />
+<script is:inline src="/js/motion-kit.js"></script>
+</Base>
+
+<style is:global>
+  .st-page {
+    background: #17200F;
+    color: #F4ECDA;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .st-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .st-hero {
+    background: #12190B;
+    padding: clamp(70px, 9vw, 120px) 0 clamp(50px, 7vw, 90px);
+    text-align: center;
+    border-bottom: 1px solid rgba(224, 166, 60, 0.2);
+  }
+  .st-hero-wrap {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .st-kicker {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .st-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    font-weight: 600;
+    color: #F4ECDA;
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+  .st-sub {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: rgba(244, 236, 218, 0.85);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .st-sub em {
+    color: #E0A63C;
+    font-style: italic;
+  }
+
+  /* Narrative */
+  .st-narrative {
+    padding: clamp(60px, 8vw, 110px) 0;
+  }
+  .st-split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .st-split { grid-template-columns: 1fr 1.15fr; }
+  }
+  .st-narrative-img {
+    height: clamp(320px, 40vw, 480px);
+    border-radius: 28px;
+    overflow: hidden;
+    border: 2px solid rgba(224, 166, 60, 0.35);
+  }
+  .st-narrative-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .st-narrative-text h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #F4ECDA;
+    margin: 6px 0 16px;
+  }
+  .st-narrative-text p {
+    font-size: 1.05rem;
+    color: rgba(244, 236, 218, 0.82);
+    line-height: 1.65;
+    margin: 0 0 16px;
+  }
+  .st-quote-box {
+    margin-top: 24px;
+    padding: 20px;
+    background: rgba(224, 166, 60, 0.08);
+    border-left: 3px solid #E0A63C;
+    border-radius: 0 14px 14px 0;
+  }
+  .st-quote-box p {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: #E0A63C;
+    margin: 0 0 6px;
+  }
+  .st-quote-box small {
+    font-size: 0.8125rem;
+    color: rgba(244, 236, 218, 0.7);
+  }
+
+  /* Values */
+  .st-values {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #12190B;
+  }
+  .st-sec-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #F4ECDA;
+    margin: 0 0 40px;
+  }
+  .st-values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .st-val-card {
+    background: rgba(244, 236, 218, 0.04);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    border-radius: 24px;
+    padding: 32px 24px;
+  }
+  .st-val-num {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #E0A63C;
+    margin-bottom: 12px;
+  }
+  .st-val-card h3 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.35rem;
+    color: #F4ECDA;
+    margin: 0 0 10px;
+  }
+  .st-val-card p {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Legal info */
+  .st-legal {
+    padding: clamp(60px, 8vw, 100px) 0;
+  }
+  .st-legal-wrap { max-width: 900px; }
+  .st-legal-box {
+    background: #12190B;
+    border: 1.5px solid rgba(224, 166, 60, 0.35);
+    border-radius: 24px;
+    padding: clamp(28px, 4vw, 44px);
+  }
+  .st-legal-box h2 {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.8rem;
+    color: #E0A63C;
+    margin: 0 0 24px;
+  }
+  .st-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .st-ig-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(244, 236, 218, 0.08);
+  }
+  .st-ig-item b {
+    font-size: 0.8125rem;
+    color: #E0A63C;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .st-ig-item span {
+    font-size: 0.95rem;
+    color: rgba(244, 236, 218, 0.85);
+  }
+
+  /* Gallery Strip */
+  .st-gallery {
+    padding: clamp(40px,6vw,70px) 0;
+    background: #0E1609;
+    overflow: hidden;
+  }
+  .st-gallery-scroll {
+    display: flex;
+    gap: 16px;
+    padding: 0 clamp(16px,4vw,40px);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+  }
+  .st-gallery-scroll::-webkit-scrollbar { display: none; }
+  .st-gal-img {
+    flex: 0 0 clamp(240px,30vw,380px);
+    height: clamp(180px,22vw,280px);
+    object-fit: cover;
+    border-radius: 64px 8px 64px 8px;
+    scroll-snap-align: start;
+    transition: transform 0.3s ease;
+  }
+  .st-gal-img:hover { transform: scale(1.03); }
+  @media (prefers-reduced-motion: reduce) { .st-gal-img { transition: none; } }
+</style>

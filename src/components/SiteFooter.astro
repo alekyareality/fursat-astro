@@ -1,0 +1,253 @@
+---
+// SiteFooter.astro - Fursat Luxury Hospitality Footer
+// Legal Name, Address, FSSAI, Hours, Socials & Quick Links
+---
+<footer class="sf-footer" id="visit">
+  <div class="sf-container">
+    <!-- Top Row: Brand & Tagline -->
+    <div class="sf-top">
+      <div class="sf-brand-col">
+        <a href="/" class="sf-logo">
+          <img src="/assets/c86f49db5a.webp" alt="Fursat Kitchen | Bar" width="130" height="97" />
+        </a>
+        <p class="sf-tagline">
+          Good Food · Great Drinks · Better Days.<br />
+          The luxury of unhurried time at Capital Park, Madhapur.
+        </p>
+        <div class="sf-fssai-box">
+          <span class="sf-fssai-label">FSSAI Lic. No.</span>
+          <code class="sf-fssai-no">13624013000521</code>
+        </div>
+      </div>
+
+      <!-- Quick Nav Links -->
+      <div class="sf-links-grid">
+        <div class="sf-link-group">
+          <h4 class="sf-group-title">Dining & Drinks</h4>
+          <a href="/menu">Full Menu</a>
+          <a href="/restaurant-bar">Restaurant & Bar (21+)</a>
+          <a href="/cafe">Fursat Café</a>
+          <a href="/ask">Ask Fursat (Mood Search)</a>
+          <a href="/order">Order Online <small>(Phase 2)</small></a>
+        </div>
+
+        <div class="sf-link-group">
+          <h4 class="sf-group-title">Celebrations</h4>
+          <a href="/banquet">The Banquet Hall</a>
+          <a href="/events#birthdays">Birthdays & Anniversaries</a>
+          <a href="/events#corporate">Corporate Gatherings</a>
+          <a href="/events#kitty">Kitty Parties & Socials</a>
+          <a href="/catering">Outdoor Catering</a>
+        </div>
+
+        <div class="sf-link-group">
+          <h4 class="sf-group-title">Visit Us</h4>
+          <p class="sf-info-p">
+            <b>Location:</b><br />
+            Level 3, Capital Park, Image Gardens Road, VIP Hills, Silicon Valley, Madhapur, Hyderabad, Telangana 500081
+          </p>
+          <p class="sf-info-p">
+            <b>Hours:</b><br />
+            12:00 PM – 11:30 PM (Daily)
+          </p>
+          <p class="sf-info-p">
+            <b>Reservations:</b><br />
+            <a href="tel:+919059670033">+91 90596 70033</a> / <a href="tel:+919848360033">+91 98483 60033</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instagram Feeds Row -->
+    <div class="sf-social-strip">
+      <span class="sf-ss-title">Follow along on Instagram:</span>
+      <div class="sf-ss-links">
+        <a href="https://www.instagram.com/fursatind.in" target="_blank" rel="noopener">@fursatind.in (Kitchen & Bar)</a>
+        <a href="https://www.instagram.com/fursat_bitesandbuffet" target="_blank" rel="noopener">@fursat_bitesandbuffet</a>
+        <a href="https://www.instagram.com/fursatbanquets" target="_blank" rel="noopener">@fursatbanquets</a>
+        <a href="https://www.instagram.com/fursatsocialclub" target="_blank" rel="noopener">@fursatsocialclub</a>
+      </div>
+    </div>
+
+    <!-- Bottom Legal Bar -->
+    <div class="sf-bottom">
+      <p class="sf-copy">
+        © {new Date().getFullYear()} Fursat Kitchen & Bar (Alekya Reality / Fursat Hospitality LLP). All rights reserved.
+      </p>
+      <div class="sf-legal-links">
+        <a href="/terms">Offer Terms</a>
+        <a href="/terms#privacy">Privacy Policy</a>
+        <a href="/terms#refund">Refund Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style is:global>
+  .sf-footer {
+    background: #0D1308;
+    color: #F4ECDA;
+    border-top: 1px solid rgba(224, 166, 60, 0.25);
+    padding: clamp(50px, 7vw, 84px) 0 32px;
+    font-family: var(--sans, "Manrope", system-ui, sans-serif);
+  }
+  .sf-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+  }
+  .sf-top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+  @media (min-width: 960px) {
+    .sf-top {
+      grid-template-columns: 360px 1fr;
+    }
+  }
+  .sf-brand-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .sf-logo img {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+  }
+  .sf-tagline {
+    font-size: 0.9375rem;
+    color: rgba(244, 236, 218, 0.75);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .sf-fssai-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(244, 236, 218, 0.05);
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    width: fit-content;
+  }
+  .sf-fssai-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #E0A63C;
+    letter-spacing: 0.05em;
+  }
+  .sf-fssai-no {
+    font-size: 0.8125rem;
+    color: #F4ECDA;
+    font-family: monospace;
+  }
+  .sf-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+  }
+  .sf-link-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sf-group-title {
+    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #E0A63C;
+    margin: 0 0 6px;
+  }
+  .sf-link-group a {
+    color: rgba(244, 236, 218, 0.8);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: color 0.16s ease;
+  }
+  .sf-link-group a:hover {
+    color: #E0A63C;
+  }
+  .sf-link-group small {
+    color: rgba(224, 166, 60, 0.7);
+    font-size: 0.75rem;
+  }
+  .sf-info-p {
+    font-size: 0.875rem;
+    color: rgba(244, 236, 218, 0.7);
+    margin: 0;
+    line-height: 1.45;
+  }
+  .sf-info-p b {
+    color: #F4ECDA;
+  }
+  .sf-info-p a {
+    color: #E0A63C;
+    text-decoration: none;
+  }
+  .sf-social-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 0;
+    border-top: 1px solid rgba(244, 236, 218, 0.1);
+    border-bottom: 1px solid rgba(244, 236, 218, 0.1);
+    margin-bottom: 24px;
+  }
+  @media (min-width: 768px) {
+    .sf-social-strip {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  .sf-ss-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #E0A63C;
+  }
+  .sf-ss-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .sf-ss-links a {
+    color: rgba(244, 236, 218, 0.75);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .sf-ss-links a:hover {
+    color: #F4ECDA;
+  }
+  .sf-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: rgba(244, 236, 218, 0.5);
+  }
+  @media (min-width: 640px) {
+    .sf-bottom {
+      flex-direction: row;
+    }
+  }
+  .sf-copy {
+    margin: 0;
+  }
+  .sf-legal-links {
+    display: flex;
+    gap: 16px;
+  }
+  .sf-legal-links a {
+    color: rgba(244, 236, 218, 0.6);
+    text-decoration: none;
+  }
+  .sf-legal-links a:hover {
+    color: #E0A63C;
+  }
+</style>
