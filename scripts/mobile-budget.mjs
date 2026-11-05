@@ -25,7 +25,9 @@ const PAGES = [
   { name: 'Events', path: '/events', has3D: false },
   { name: 'Catering', path: '/catering', has3D: false },
   { name: 'Terms', path: '/terms', has3D: false },
-  { name: 'Order', path: '/order', has3D: false }
+  { name: 'Order', path: '/order', has3D: false },
+  { name: 'Parties', path: '/parties', has3D: false },
+  { name: 'Party', path: '/party', has3D: true }
 ];
 
 async function runBudget() {

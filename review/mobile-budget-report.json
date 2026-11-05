@@ -3,13 +3,13 @@
     "page": "Home",
     "path": "/",
     "has3D": true,
-    "jsGzipKb": "108.66",
+    "jsGzipKb": "108.78",
     "jsPass": true,
     "heroImage": "/assets/51db3af80d.webp",
     "heroKb": "66.20",
     "heroPass": true,
-    "totalTransferKb": "5530.11",
-    "nonHeroTransferKb": "5463.90",
+    "totalTransferKb": "5203.94",
+    "nonHeroTransferKb": "5137.74",
     "overallPass": true
   },
   {
@@ -21,8 +21,8 @@
     "heroImage": "/assets/interior/fursat_space_18-m720.webp",
     "heroKb": "104.16",
     "heroPass": true,
-    "totalTransferKb": "2900.68",
-    "nonHeroTransferKb": "2796.52",
+    "totalTransferKb": "2846.66",
+    "nonHeroTransferKb": "2742.50",
     "overallPass": true
   },
   {
@@ -34,8 +34,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "1080.36",
-    "nonHeroTransferKb": "1080.36",
+    "totalTransferKb": "1025.74",
+    "nonHeroTransferKb": "1025.74",
     "overallPass": true
   },
   {
@@ -47,8 +47,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "3146.48",
-    "nonHeroTransferKb": "3146.48",
+    "totalTransferKb": "3091.86",
+    "nonHeroTransferKb": "3091.86",
     "overallPass": true
   },
   {
@@ -60,8 +60,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "2032.69",
-    "nonHeroTransferKb": "2032.69",
+    "totalTransferKb": "1978.08",
+    "nonHeroTransferKb": "1978.08",
     "overallPass": true
   },
   {
@@ -73,8 +73,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "1431.74",
-    "nonHeroTransferKb": "1431.74",
+    "totalTransferKb": "1377.12",
+    "nonHeroTransferKb": "1377.12",
     "overallPass": true
   },
   {
@@ -86,8 +86,8 @@
     "heroImage": "/assets/ask/hero-m900.webp",
     "heroKb": "74.71",
     "heroPass": true,
-    "totalTransferKb": "1101.59",
-    "nonHeroTransferKb": "1026.88",
+    "totalTransferKb": "1046.98",
+    "nonHeroTransferKb": "972.27",
     "overallPass": true
   },
   {
@@ -99,8 +99,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "2078.67",
-    "nonHeroTransferKb": "2078.67",
+    "totalTransferKb": "2024.06",
+    "nonHeroTransferKb": "2024.06",
     "overallPass": true
   },
   {
@@ -112,8 +112,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "3314.89",
-    "nonHeroTransferKb": "3314.89",
+    "totalTransferKb": "3260.28",
+    "nonHeroTransferKb": "3260.28",
     "overallPass": true
   },
   {
@@ -125,8 +125,8 @@
     "heroImage": "none",
     "heroKb": "0.00",
     "heroPass": true,
-    "totalTransferKb": "2846.61",
-    "nonHeroTransferKb": "2846.61",
+    "totalTransferKb": "2791.99",
+    "nonHeroTransferKb": "2791.99",
     "overallPass": true
   },
   {
@@ -153,6 +153,32 @@
     "heroPass": true,
     "totalTransferKb": "1132.67",
     "nonHeroTransferKb": "1132.67",
+    "overallPass": true
+  },
+  {
+    "page": "Parties",
+    "path": "/parties",
+    "has3D": false,
+    "jsGzipKb": "4.48",
+    "jsPass": true,
+    "heroImage": "none",
+    "heroKb": "0.00",
+    "heroPass": true,
+    "totalTransferKb": "491.11",
+    "nonHeroTransferKb": "491.11",
+    "overallPass": true
+  },
+  {
+    "page": "Party",
+    "path": "/party",
+    "has3D": true,
+    "jsGzipKb": "343.73",
+    "jsPass": true,
+    "heroImage": "none",
+    "heroKb": "0.00",
+    "heroPass": true,
+    "totalTransferKb": "1664.80",
+    "nonHeroTransferKb": "1664.80",
     "overallPass": true
   }
 ]
