@@ -63,7 +63,8 @@ import VoiceButton from '../components/VoiceButton.astro';
       <h2 id="hm-spaces-h" class="hm-sec-title mot-headline">Every Occasion Has a Space</h2>
     </div>
     <div class="hm-spaces-grid">
-      <a href="/restaurant-bar" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_01.webp')">
+      <a href="/restaurant-bar" class="hm-sp-card mot-reveal-img">
+        <img src="/assets/interior/fursat_space_01-720.webp" srcset="/assets/interior/fursat_space_01-720.webp 720w, /assets/interior/fursat_space_01.webp 1920w" sizes="(max-width: 767px) 100vw, 20vw" alt="Restaurant & Bar" class="hm-sp-img" loading="lazy" decoding="async" width="720" height="900" />
         <div class="hm-sp-overlay"></div>
         <div class="hm-sp-body">
           <span class="hm-sp-icon">🍹</span>
@@ -72,7 +73,8 @@ import VoiceButton from '../components/VoiceButton.astro';
           <span class="hm-sp-link">Explore →</span>
         </div>
       </a>
-      <a href="/cafe" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_09.webp')">
+      <a href="/cafe" class="hm-sp-card mot-reveal-img">
+        <img src="/assets/interior/fursat_space_09-720.webp" srcset="/assets/interior/fursat_space_09-720.webp 720w, /assets/interior/fursat_space_09.webp 1920w" sizes="(max-width: 767px) 100vw, 20vw" alt="Café & Coffee" class="hm-sp-img" loading="lazy" decoding="async" width="720" height="900" />
         <div class="hm-sp-overlay"></div>
         <div class="hm-sp-body">
           <span class="hm-sp-icon">☕</span>
@@ -81,7 +83,8 @@ import VoiceButton from '../components/VoiceButton.astro';
           <span class="hm-sp-link">Explore →</span>
         </div>
       </a>
-      <a href="/banquet" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_04.webp')">
+      <a href="/banquet" class="hm-sp-card mot-reveal-img">
+        <img src="/assets/interior/fursat_space_04-720.webp" srcset="/assets/interior/fursat_space_04-720.webp 720w, /assets/interior/fursat_space_04.webp 1920w" sizes="(max-width: 767px) 100vw, 20vw" alt="Banquet Hall" class="hm-sp-img" loading="lazy" decoding="async" width="720" height="900" />
         <div class="hm-sp-overlay"></div>
         <div class="hm-sp-body">
           <span class="hm-sp-icon">🎊</span>
@@ -90,7 +93,8 @@ import VoiceButton from '../components/VoiceButton.astro';
           <span class="hm-sp-link">Explore →</span>
         </div>
       </a>
-      <a href="/events" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_12.webp')">
+      <a href="/events" class="hm-sp-card mot-reveal-img">
+        <img src="/assets/interior/fursat_space_12-720.webp" srcset="/assets/interior/fursat_space_12-720.webp 720w, /assets/interior/fursat_space_12.webp 1920w" sizes="(max-width: 767px) 100vw, 20vw" alt="Events & Parties" class="hm-sp-img" loading="lazy" decoding="async" width="720" height="900" />
         <div class="hm-sp-overlay"></div>
         <div class="hm-sp-body">
           <span class="hm-sp-icon">🎂</span>
@@ -99,7 +103,8 @@ import VoiceButton from '../components/VoiceButton.astro';
           <span class="hm-sp-link">Explore →</span>
         </div>
       </a>
-      <a href="/catering" class="hm-sp-card mot-reveal-img" style="--sp-bg:url('/assets/interior/fursat_space_03.webp')">
+      <a href="/catering" class="hm-sp-card mot-reveal-img">
+        <img src="/assets/interior/fursat_space_03-720.webp" srcset="/assets/interior/fursat_space_03-720.webp 720w, /assets/interior/fursat_space_03.webp 1920w" sizes="(max-width: 767px) 100vw, 20vw" alt="Outdoor Catering" class="hm-sp-img" loading="lazy" decoding="async" width="720" height="900" />
         <div class="hm-sp-overlay"></div>
         <div class="hm-sp-body">
           <span class="hm-sp-icon">🔥</span>
@@ -318,10 +323,21 @@ import VoiceButton from '../components/VoiceButton.astro';
   border-radius: 64px 8px 64px 8px;
   overflow: hidden;
   text-decoration: none;
-  background: var(--sp-bg) center/cover no-repeat;
+  background: #17200F;
   transition: transform 0.35s cubic-bezier(.16,1,.3,1);
 }
 .hm-sp-card:hover { transform: translateY(-6px) scale(1.01); }
+.hm-sp-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.hm-sp-card:hover .hm-sp-img {
+  transform: scale(1.05);
+}
 .hm-sp-overlay {
   position: absolute;
   inset: 0;
