@@ -167,3 +167,42 @@ Date: November 5, 2026 | Status: Complete
    - #gate does not appear on non-Home entry pages (Banquet tested: gatePresent = false).
    - Output: review/shots/gate-390-home.png, review/shots/gate-390-banquet.png, review/gate-check-results.json
 ================================================================================
+
+
+================================================================================
+6. PHASE 1 FOLLOW-UP / STEP 3 RECOVERY AUDIT:
+Date: November 5, 2026 | Status: Verified & Committed
+--------------------------------------------------------------------------------
+1. Git & Workspace Reconciliation:
+   - Recovered uncommitted state after session interruption:
+     * 720w interior crops generated and linked via responsive srcset
+     * Hero and heli video preloading deferred on phone viewport
+     * Mascot offer modal thumbnail optimized with ask-mascot-sm.webp
+     * Mobile budget script updated to 14 routes
+   - Committed working increments cleanly to master.
+
+2. Build & Route Verification:
+   - npm.cmd run build executed: Exit Code 0, 14 routes built statically.
+   - Preview server verified running on port 4321.
+
+3. Home 390px JS On vs JS Off Screenshot Verification:
+   - JS ON: H1 visible ("Something Beautiful Is Taking Shape."), TableSpread visible (5 cards), 39 visible active images, 0 broken.
+   - JS OFF: H1 visible, TableSpread visible, 41 visible active images, 0 broken.
+   - Saved screenshots: review/shots/home-390-json-*.png, home-390-jsoff-*.png.
+
+4. Mobile Budget & Overflow on All 14 Routes:
+   - 14/14 routes passed mobile performance budget (all non-3D <= 35.6 KB gz; Home 108.8 KB gz).
+   - 84/84 viewports (14 routes x 6 widths) passed horizontal overflow check (0 overflows).
+
+5. Banquet Hero & LCP Audit:
+   - Hero Element: section.bq-hero picture img (fursat_space_18-m720.webp)
+   - Sizes: fursat_space_18-m480.webp (57.86 KB), fursat_space_18-m720.webp (104.16 KB), both 4:5 aspect ratio (under 150 KB target).
+   - Banquet LCP reduced from 18.2 s to 3.9 s.
+
+6. Lighthouse Mobile Comparison (Before vs After):
+   - Home: Performance 72 -> 54 | A11y 91 -> 96 (PASS) | Best Practices 96 | SEO 100 | LCP 4.1s -> 11.1s (1.5s observed) | CLS 0 -> 0.002 | TBT 410ms -> 520ms | JS 153 KB gz -> 108.78 KB gz (PASS)
+   - Banquet: Performance 74 -> 87 (+13) | A11y 98 -> 100 | Best Practices 100 | SEO 100 | LCP 18.2s -> 3.9s (-14.3s) | CLS 0 -> 0 | TBT 110ms -> 0ms | JS 30.19 KB gz (PASS)
+
+7. Step 2 Gate Status:
+   - Stays UNTICKED: Performance (87/54 vs 90+ target) and LCP (3.9s/11.1s vs < 2.5s target) require further reduction.
+================================================================================
