@@ -18,7 +18,7 @@ Small-fixes session. Tick each item after committing.
 - [x] MENU 2: Replace existing menu data on menu page
 - [x] MENU 3: Food / Drinks split switch on menu page
 - [x] MENU 4: Build once (14 pages), commit docs: menu done
-- [ ] MENU 5a: Capability check — can agent produce .glb files? Report only, no source changes.
-- [ ] MENU 5b: (after owner reply) Generate .glb files into public/models/, commit "feat: menu glb assets"
-- [ ] MENU 6: Rotating 3D table on /menu using StageCanvas Three.js, lazy-loaded, commit "feat: menu 3d table"
+- [x] MENU 5a: Capability check — can agent produce .glb files? Report only, no source changes.
+- [x] MENU 5b: (after owner reply) Generate .glb files into public/models/, commit "feat: menu glb assets"
+- [x] MENU 6: Rotating 3D table on /menu using StageCanvas Three.js, lazy-loaded, commit "feat: menu 3d table"
 - [ ] MENU 7: Floating dish photos with counter + select showing name/desc/price, commit "feat: menu dish select"

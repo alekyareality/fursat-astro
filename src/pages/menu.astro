@@ -4,6 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import MascotOfferModal from '../components/MascotOfferModal.astro';
+import SplitMenuExperience from '../components/menu/SplitMenuExperience';
 import foodData from '../data/food.json';
 import drinksData from '../data/drinks.json';
 
@@ -60,6 +61,32 @@ const drinksCategories = [
 function slug(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
+
+// ── Adapter: new menu schema → SplitMenuExperience MenuItem schema ────────────
+// SplitMenuExperience expects: { n, p, c, k:'food'|'drink'|'sree', v?, a?, d?, img? }
+const experienceItems = [
+  ...(foodData as {section:string;items:{name:string;price:number|null;description?:string;veg?:boolean;spicy?:boolean;chefSpecial?:boolean;image?:string}[]}[]).flatMap(sec =>
+    sec.items.map(it => ({
+      n: it.name,
+      p: it.price ?? 0,
+      c: sec.section,
+      k: 'food' as const,
+      v: it.veg ? 'veg' : 'nonveg',
+      d: it.description,
+      img: it.image ? `/assets/dishes/${it.image}` : undefined,
+    }))
+  ),
+  ...(drinksData as {section:string;items:{name:string;price?:number|null;description?:string;alc?:boolean}[]}[]).flatMap(sec =>
+    sec.items.map(it => ({
+      n: it.name,
+      p: it.price ?? 0,
+      c: sec.section,
+      k: 'drink' as const,
+      a: it.alc ?? false,
+      d: it.description,
+    }))
+  ),
+];
 ---
 
 <Base
@@ -81,6 +108,17 @@ function slug(s: string) {
         <p class="mn-hero-sub">Café · Bar · Kitchen · Banquet — {allItems.length} dishes &amp; drinks</p>
       </div>
     </header>
+
+    <!-- ── Interactive 3D Menu Experience (lazy-loaded) ──────────────── -->
+    <section class="mn-3d-section" aria-label="Interactive 3D menu experience">
+      <div class="mn-3d-label">
+        <span class="mn-3d-badge">✦ Interactive 3D</span>
+        <p class="mn-3d-hint">3D rotating dining table &amp; bar counter — click to explore, add to cart</p>
+      </div>
+      <div class="mn-3d-stage">
+        <SplitMenuExperience client:visible items={experienceItems} />
+      </div>
+    </section>
 
     <!-- ── Food / Drinks Proportion Switch Bar ────────────────────────── -->
     <nav class="mn-switch-wrap" aria-label="Menu proportion switch">
@@ -384,12 +422,50 @@ function slug(s: string) {
 
   // Initial state: food is bigger
   setView('food');
+
 })();
 </script>
 
 <style is:global>
   /* ── Google Font import ─────────────────────────────────────────────── */
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
+
+  /* ── 3D Experience Section ───────────────────────────────────────────── */
+  .mn-3d-section {
+    border-bottom: 1px solid rgba(224,166,60,0.15);
+  }
+  .mn-3d-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px 8px;
+    background: rgba(23,32,15,0.9);
+    border-bottom: 1px solid rgba(224,166,60,0.1);
+  }
+  .mn-3d-badge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #E0A63C;
+    background: rgba(224,166,60,0.12);
+    border: 1px solid rgba(224,166,60,0.35);
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .mn-3d-hint {
+    font-size: 12px;
+    color: rgba(244,236,218,0.6);
+    margin: 0;
+  }
+  .mn-3d-stage {
+    height: 92vh;
+    min-height: 600px;
+    max-height: 900px;
+    overflow: hidden;
+    position: relative;
+  }
 
   /* ── Page shell ─────────────────────────────────────────────────────── */
   .mn-main {
@@ -901,4 +977,5 @@ function slug(s: string) {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
   }
+
 </style>
