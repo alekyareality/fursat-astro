@@ -9,3 +9,7 @@ Small-fixes session. Tick each item after committing.
 - [x] FIX 4a events.astro
 - [x] FIX 4b reserve.astro scratch card
 - [x] FIX 4c report
+- [x] FIX 5 unconfirmed claims
+- [ ] HERO 1 remove bot
+- [ ] HERO 2 poster img
+- [ ] HERO 3 LCP
