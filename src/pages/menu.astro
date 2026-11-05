@@ -161,6 +161,50 @@ const experienceItems = [
           <span class="mn-pane-expand-hint" id="food-expand-hint">Click to expand (3/4) ↗</span>
         </div>
 
+        <!-- ── Dish Showcase (MENU 7) ──────────────────────────────────── -->
+        <div class="mn-dish-showcase" id="mn-dish-showcase" aria-label="Featured dish showcase">
+          <!-- Data blob — read by dish-showcase script -->
+          <script id="dish-showcase-data" type="application/json" set:html={JSON.stringify(
+            foodItems
+              .filter((it) => it.image)
+              .map((it) => ({
+                img: it.image,
+                name: it.name,
+                desc: it.description ?? '',
+                price: it.price,
+                section: it.section,
+                veg: it.veg ?? false,
+              }))
+          )}></script>
+
+          <div class="mn-ds-photo-wrap">
+            <img id="mn-ds-img" class="mn-ds-img" src="" alt="" width="320" height="240" loading="lazy" />
+            <div class="mn-ds-veg-dot" id="mn-ds-veg-dot" aria-hidden="true"></div>
+          </div>
+
+          <div class="mn-ds-info">
+            <div class="mn-ds-topbar">
+              <span class="mn-ds-section" id="mn-ds-section"></span>
+              <select id="mn-ds-select" class="mn-ds-select" aria-label="Select dish">
+                {foodItems
+                  .filter((it) => it.image)
+                  .map((it, idx) => (
+                    <option value={idx}>{it.name}{it.price ? ` — ₹${it.price}` : ''}</option>
+                  ))}
+              </select>
+            </div>
+            <h3 class="mn-ds-name" id="mn-ds-name"></h3>
+            <p class="mn-ds-desc" id="mn-ds-desc"></p>
+            <span class="mn-ds-price" id="mn-ds-price"></span>
+          </div>
+
+          <div class="mn-ds-controls">
+            <button class="mn-ds-btn" id="mn-ds-prev" type="button" aria-label="Previous dish">‹</button>
+            <span class="mn-ds-counter" id="mn-ds-counter">1 / 1</span>
+            <button class="mn-ds-btn" id="mn-ds-next" type="button" aria-label="Next dish">›</button>
+          </div>
+        </div>
+
         <!-- Sticky Food Category Tabs -->
         <nav class="mn-tabs-wrap mn-tabs-wrap--food" aria-label="Food categories">
           <div class="mn-tabs mn-tabs--food mot-tab-indicator" role="tablist">
@@ -423,6 +467,84 @@ const experienceItems = [
   // Initial state: food is bigger
   setView('food');
 
+  // ── MENU 7: Floating dish photos + select option ────────────────────────
+  (function () {
+    var dataEl = document.getElementById('dish-showcase-data');
+    if (!dataEl) return;
+    var dishes;
+    try { dishes = JSON.parse(dataEl.textContent || '[]'); } catch (e) { return; }
+    if (!dishes.length) return;
+
+    var idx = 0;
+    var imgEl    = document.getElementById('mn-ds-img');
+    var vegDot   = document.getElementById('mn-ds-veg-dot');
+    var secEl    = document.getElementById('mn-ds-section');
+    var nameEl   = document.getElementById('mn-ds-name');
+    var descEl   = document.getElementById('mn-ds-desc');
+    var priceEl  = document.getElementById('mn-ds-price');
+    var ctrEl    = document.getElementById('mn-ds-counter');
+    var prevBtn  = document.getElementById('mn-ds-prev');
+    var nextBtn  = document.getElementById('mn-ds-next');
+    var selectEl = document.getElementById('mn-ds-select');
+
+    function fmt(p) {
+      if (p === null || p === undefined) return '';
+      var s = String(Math.round(Math.abs(p)));
+      var last3 = s.slice(-3), rest = s.slice(0, -3);
+      var g = rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3 : last3;
+      return '\u20B9' + g;
+    }
+
+    function show(i) {
+      var d = dishes[i];
+      if (!d) return;
+      idx = i;
+      imgEl.src = d.img;
+      imgEl.alt = d.name;
+      vegDot.style.background = d.veg ? '#22c55e' : '#ef4444';
+      vegDot.title = d.veg ? 'Veg' : 'Non-Veg';
+      secEl.textContent = d.section;
+      nameEl.textContent = d.name;
+      descEl.textContent = d.desc || '';
+      priceEl.textContent = d.price ? fmt(d.price) : '';
+      ctrEl.textContent = (i + 1) + ' / ' + dishes.length;
+      if (selectEl && selectEl.value != String(i)) {
+        selectEl.value = String(i);
+      }
+    }
+
+    prevBtn && prevBtn.addEventListener('click', function () {
+      show((idx - 1 + dishes.length) % dishes.length);
+    });
+    nextBtn && nextBtn.addEventListener('click', function () {
+      show((idx + 1) % dishes.length);
+    });
+    selectEl && selectEl.addEventListener('change', function () {
+      var val = parseInt(selectEl.value, 10);
+      if (!isNaN(val)) show(val);
+    });
+
+    // Auto-advance every 4.5 seconds when showcase is in viewport
+    var autoTimer = null;
+    var showcase = document.getElementById('mn-dish-showcase');
+    if (showcase && 'IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          if (!autoTimer) {
+            autoTimer = setInterval(function () {
+              show((idx + 1) % dishes.length);
+            }, 4500);
+          }
+        } else {
+          clearInterval(autoTimer);
+          autoTimer = null;
+        }
+      }, { threshold: 0.25 });
+      obs.observe(showcase);
+    }
+
+    show(0);
+  })();
 })();
 </script>
 
@@ -978,4 +1100,139 @@ const experienceItems = [
     }
   }
 
+  /* ── Dish Showcase (MENU 7) ──────────────────────────────────────────── */
+  .mn-dish-showcase {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(23,32,15,0.85);
+    border-bottom: 1px solid rgba(224,166,60,0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .mn-ds-photo-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 104px;
+    height: 78px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(224,166,60,0.35);
+    background: #0d1308;
+  }
+  .mn-ds-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.25s ease;
+  }
+  .mn-ds-veg-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+  .mn-ds-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .mn-ds-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .mn-ds-section {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #E0A63C;
+    white-space: nowrap;
+  }
+  .mn-ds-select {
+    background: rgba(9,13,5,0.9);
+    border: 1px solid rgba(224,166,60,0.3);
+    border-radius: 6px;
+    color: #F4ECDA;
+    font-size: 11px;
+    padding: 2px 6px;
+    max-width: 180px;
+    cursor: pointer;
+  }
+  .mn-ds-select:focus {
+    outline: none;
+    border-color: #E0A63C;
+  }
+  .mn-ds-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #F4ECDA;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .mn-ds-desc {
+    font-size: 11px;
+    color: rgba(244,236,218,0.65);
+    margin: 0 0 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .mn-ds-price {
+    font-size: 13px;
+    font-weight: 800;
+    color: #E0A63C;
+  }
+  .mn-ds-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .mn-ds-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(224,166,60,0.4);
+    background: rgba(224,166,60,0.1);
+    color: #E0A63C;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.15s;
+  }
+  .mn-ds-btn:hover {
+    background: rgba(224,166,60,0.25);
+  }
+  .mn-ds-counter {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(244,236,218,0.5);
+    min-width: 36px;
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    .mn-dish-showcase {
+      flex-wrap: wrap;
+    }
+    .mn-ds-select {
+      max-width: 140px;
+    }
+    .mn-ds-photo-wrap {
+      width: 80px;
+      height: 60px;
+    }
+  }
 </style>
