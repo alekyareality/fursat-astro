@@ -10,6 +10,7 @@ Small-fixes session. Tick each item after committing.
 - [x] FIX 4b reserve.astro scratch card
 - [x] FIX 4c report
 - [x] FIX 5 unconfirmed claims
-- [ ] HERO 1 remove bot
+- HERO 0 Baseline: Median LCP = 10.59s (perf: 62, tbt: 309ms, cls: 0)
+- [x] HERO 1 remove bot
 - [ ] HERO 2 poster img
 - [ ] HERO 3 LCP
