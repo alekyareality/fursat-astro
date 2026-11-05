@@ -25,6 +25,8 @@ const PAGES = [
   '/catering',
   '/terms',
   '/order',
+  '/parties',
+  '/party',
 ];
 
 const WIDTHS = [360, 390, 768, 1024, 1280, 1536];
