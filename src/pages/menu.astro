@@ -46,9 +46,14 @@ const drinksItems: MenuItem[] = (drinksData as MenuSection[]).flatMap((sec) =>
 
 const allItems = [...foodItems, ...drinksItems];
 
-const presentCategories = [
+const foodCategories = [
   'All',
-  ...Array.from(new Set(allItems.map((it) => it.section))),
+  ...Array.from(new Set(foodItems.map((it) => it.section))),
+];
+
+const drinksCategories = [
+  'All',
+  ...Array.from(new Set(drinksItems.map((it) => it.section))),
 ];
 
 // Slug helper for data-cat attributes and tab IDs (safe for HTML attrs)
@@ -77,95 +82,212 @@ function slug(s: string) {
       </div>
     </header>
 
-    <!-- ── Sticky Category Tabs ─────────────────────────────────────────── -->
-    <nav class="mn-tabs-wrap" aria-label="Menu categories">
-      <div class="mn-tabs mot-tab-indicator" role="tablist" id="mn-tabs">
-        {presentCategories.map((cat, i) => (
-          <button
-            class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
-            role="tab"
-            aria-selected={i === 0 ? 'true' : 'false'}
-            data-cat={slug(cat)}
-            id={`tab-${slug(cat)}`}
-            type="button"
-          >
-            {cat}
-          </button>
-        ))}
+    <!-- ── Food / Drinks Proportion Switch Bar ────────────────────────── -->
+    <nav class="mn-switch-wrap" aria-label="Menu proportion switch">
+      <div class="mn-switch-toggle" role="group" aria-label="Menu split toggle">
+        <button
+          class="mn-switch-btn mn-switch-btn--active"
+          id="btn-food-view"
+          data-view="food"
+          type="button"
+          aria-pressed="true"
+        >
+          <span class="mn-switch-icon">🍲</span>
+          <span class="mn-switch-text">Food Menu</span>
+          <span class="mn-switch-prop" id="food-prop-label">3/4 Screen</span>
+        </button>
+        <button
+          class="mn-switch-btn"
+          id="btn-drinks-view"
+          data-view="drinks"
+          type="button"
+          aria-pressed="false"
+        >
+          <span class="mn-switch-icon">🍸</span>
+          <span class="mn-switch-text">Drinks Menu</span>
+          <span class="mn-switch-prop" id="drinks-prop-label">1/4 Screen</span>
+        </button>
       </div>
     </nav>
 
-    <!-- ── Menu Card Grid ────────────────────────────────────────────────── -->
-    <section class="mn-grid-wrap" aria-label="Menu items">
-      <div class="mn-grid" id="mn-grid">
-        {allItems.map((item) => {
-          const cat = item.section;
-          const catSlug = slug(cat);
-          const isVeg = item.veg === true;
-          const isNonVeg = item.veg === false;
-          const isAlc = item.alc === true;
-          const isSpicy = item.spicy === true;
-          const isChef = item.chefSpecial === true;
-          const hasImg = !!item.image;
-          return (
-            <article
-              class="mn-card mot-card-lit"
-              data-cat={catSlug}
-              data-kind={item.kind}
-              aria-label={item.name}
-            >
-              {hasImg && (
-                <div class="mn-card-img-wrap">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    class="mn-card-img"
-                    loading="lazy"
-                    decoding="async"
-                    width="400"
-                    height="220"
-                  />
-                </div>
-              )}
-              <div class="mn-card-body">
-                <div class="mn-card-top">
-                  <span class="mn-cat-badge">{cat}</span>
-                  <div class="mn-badges">
-                    {isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
-                    {isNonVeg && <span class="mn-dot mn-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
-                    {isChef && <span class="mn-badge-pill mn-badge-pill--opt" title="Chef's Special">Chef's Spl</span>}
-                    {isAlc && <span class="mn-badge-pill mn-badge-pill--alc">Alcohol</span>}
-                    {isSpicy && <span class="mn-spicy" title="Spicy" aria-label="Spicy">🌶</span>}
+    <!-- ── Split Menu Container (Food 3/4 & Drinks 1/4 by default) ──────── -->
+    <div class="mn-split-container" id="mn-split-container" data-active="food">
+      
+      <!-- ── FOOD PANE ────────────────────────────────────────────────── -->
+      <section class="mn-pane mn-pane--food" id="pane-food" aria-label="Food menu section">
+        <div class="mn-pane-header">
+          <div class="mn-pane-title-wrap">
+            <h2 class="mn-pane-title">🍲 Food Menu</h2>
+            <span class="mn-pane-count">{foodItems.length} dishes</span>
+          </div>
+          <span class="mn-pane-expand-hint" id="food-expand-hint">Click to expand (3/4) ↗</span>
+        </div>
+
+        <!-- Sticky Food Category Tabs -->
+        <nav class="mn-tabs-wrap mn-tabs-wrap--food" aria-label="Food categories">
+          <div class="mn-tabs mn-tabs--food mot-tab-indicator" role="tablist">
+            {foodCategories.map((cat, i) => (
+              <button
+                class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
+                role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+                data-cat={slug(cat)}
+                type="button"
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        <!-- Food Grid -->
+        <div class="mn-grid mn-grid--food" id="mn-grid-food">
+          {foodItems.map((item) => {
+            const cat = item.section;
+            const catSlug = slug(cat);
+            const isVeg = item.veg === true;
+            const isNonVeg = item.veg === false;
+            const isChef = item.chefSpecial === true;
+            const isSpicy = item.spicy === true;
+            const hasImg = !!item.image;
+            return (
+              <article
+                class="mn-card mot-card-lit"
+                data-cat={catSlug}
+                data-kind="food"
+                aria-label={item.name}
+              >
+                {hasImg && (
+                  <div class="mn-card-img-wrap">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      class="mn-card-img"
+                      loading="lazy"
+                      decoding="async"
+                      width="400"
+                      height="220"
+                    />
+                  </div>
+                )}
+                <div class="mn-card-body">
+                  <div class="mn-card-top">
+                    <span class="mn-cat-badge">{cat}</span>
+                    <div class="mn-badges">
+                      {isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
+                      {isNonVeg && <span class="mn-dot mn-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
+                      {isChef && <span class="mn-badge-pill mn-badge-pill--opt" title="Chef's Special">Chef's Spl</span>}
+                      {isSpicy && <span class="mn-spicy" title="Spicy" aria-label="Spicy">🌶</span>}
+                    </div>
+                  </div>
+                  <h3 class="mn-dish-name">{item.name}</h3>
+                  {item.description && <p class="mn-dish-desc">{item.description}</p>}
+                  <div class="mn-card-footer">
+                    <span class="mn-price">
+                      {item.price != null ? `₹${item.price}` : 'Price on request'}
+                    </span>
                   </div>
                 </div>
-                <h2 class="mn-dish-name">{item.name}</h2>
-                {item.description && <p class="mn-dish-desc">{item.description}</p>}
-                <div class="mn-card-footer">
-                  <span class="mn-price">
-                    {item.price != null ? `₹${item.price}` : (item.priceBottle != null ? `₹${item.priceBottle} (Btl)` : 'Price on request')}
-                  </span>
-                  {item.price30ml != null && item.priceBottle != null && (
-                    <span class="mn-flex-note">30ml: ₹{item.price30ml} · Btl: ₹{item.priceBottle}</span>
-                  )}
-                  {item.priceGlass != null && item.priceBottle != null && (
-                    <span class="mn-flex-note">Glass: ₹{item.priceGlass} · Btl: ₹{item.priceBottle}</span>
-                  )}
-                  {item.priceBucket != null && (
-                    <span class="mn-flex-note">Bucket: ₹{item.priceBucket}</span>
-                  )}
-                  {item.subCategory && (
-                    <span class="mn-flex-note">{item.subCategory}</span>
-                  )}
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
+        <p class="mn-empty" id="mn-empty-food" hidden>No dishes found in this category.</p>
+      </section>
 
-      <!-- Empty state -->
-      <p class="mn-empty" id="mn-empty" hidden>No items in this category yet.</p>
-    </section>
+      <!-- ── DRINKS PANE ──────────────────────────────────────────────── -->
+      <section class="mn-pane mn-pane--drinks" id="pane-drinks" aria-label="Drinks menu section">
+        <div class="mn-pane-header">
+          <div class="mn-pane-title-wrap">
+            <h2 class="mn-pane-title">🍸 Drinks Menu</h2>
+            <span class="mn-pane-count">{drinksItems.length} drinks</span>
+          </div>
+          <span class="mn-pane-expand-hint" id="drinks-expand-hint">Click to expand (3/4) ↗</span>
+        </div>
+
+        <!-- Sticky Drinks Category Tabs -->
+        <nav class="mn-tabs-wrap mn-tabs-wrap--drinks" aria-label="Drinks categories">
+          <div class="mn-tabs mn-tabs--drinks mot-tab-indicator" role="tablist">
+            {drinksCategories.map((cat, i) => (
+              <button
+                class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
+                role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+                data-cat={slug(cat)}
+                type="button"
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        <!-- Drinks Grid -->
+        <div class="mn-grid mn-grid--drinks" id="mn-grid-drinks">
+          {drinksItems.map((item) => {
+            const cat = item.section;
+            const catSlug = slug(cat);
+            const isAlc = item.alc === true;
+            const isChef = item.chefSpecial === true;
+            const isVeg = item.veg === true;
+            const hasImg = !!item.image;
+            return (
+              <article
+                class="mn-card mot-card-lit"
+                data-cat={catSlug}
+                data-kind="drink"
+                aria-label={item.name}
+              >
+                {hasImg && (
+                  <div class="mn-card-img-wrap">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      class="mn-card-img"
+                      loading="lazy"
+                      decoding="async"
+                      width="400"
+                      height="220"
+                    />
+                  </div>
+                )}
+                <div class="mn-card-body">
+                  <div class="mn-card-top">
+                    <span class="mn-cat-badge">{cat}</span>
+                    <div class="mn-badges">
+                      {isAlc && <span class="mn-badge-pill mn-badge-pill--alc">Alcohol</span>}
+                      {isChef && <span class="mn-badge-pill mn-badge-pill--opt" title="Chef's Special">Chef's Spl</span>}
+                      {!isAlc && isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
+                    </div>
+                  </div>
+                  <h3 class="mn-dish-name">{item.name}</h3>
+                  {item.description && <p class="mn-dish-desc">{item.description}</p>}
+                  <div class="mn-card-footer">
+                    <span class="mn-price">
+                      {item.price != null ? `₹${item.price}` : (item.priceBottle != null ? `₹${item.priceBottle} (Btl)` : 'Price on request')}
+                    </span>
+                    {item.price30ml != null && item.priceBottle != null && (
+                      <span class="mn-flex-note">30ml: ₹{item.price30ml} · Btl: ₹{item.priceBottle}</span>
+                    )}
+                    {item.priceGlass != null && item.priceBottle != null && (
+                      <span class="mn-flex-note">Glass: ₹{item.priceGlass} · Btl: ₹{item.priceBottle}</span>
+                    )}
+                    {item.priceBucket != null && (
+                      <span class="mn-flex-note">Bucket: ₹{item.priceBucket}</span>
+                    )}
+                    {item.subCategory && (
+                      <span class="mn-flex-note">{item.subCategory}</span>
+                    )}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+        <p class="mn-empty" id="mn-empty-drinks" hidden>No drinks found in this category.</p>
+      </section>
+
+    </div>
 
     <!-- ── CTA Banner ────────────────────────────────────────────────────── -->
     <section class="mn-cta-wrap" aria-label="Reservation offer">
@@ -191,65 +313,77 @@ function slug(s: string) {
 <script is:inline src="/js/motion-kit.js"></script>
 </Base>
 
-<!-- ── Tab filter script ─────────────────────────────────────────────────── -->
+<!-- ── Split menu interaction script ─────────────────────────────────────── -->
 <script is:inline>
 (function () {
-  var tabs = document.querySelectorAll('.mn-tab');
-  var cards = document.querySelectorAll('.mn-card');
-  var emptyMsg = document.getElementById('mn-empty');
+  // ── View state: 'food' (food=3/4, drinks=1/4) or 'drinks' (drinks=3/4, food=1/4)
+  var container = document.getElementById('mn-split-container');
+  var paneFood = document.getElementById('pane-food');
+  var paneDrinks = document.getElementById('pane-drinks');
+  var btnFood = document.getElementById('btn-food-view');
+  var btnDrinks = document.getElementById('btn-drinks-view');
+  var foodPropLabel = document.getElementById('food-prop-label');
+  var drinksPropLabel = document.getElementById('drinks-prop-label');
+  var foodExpandHint = document.getElementById('food-expand-hint');
+  var drinksExpandHint = document.getElementById('drinks-expand-hint');
 
-  function activate(catSlug) {
-    // Update tab states
-    tabs.forEach(function (t) {
-      var active = t.dataset.cat === catSlug;
-      t.classList.toggle('mn-tab--active', active);
-      t.setAttribute('aria-selected', active ? 'true' : 'false');
-    });
+  function setView(view) {
+    container.dataset.active = view;
+    var isFoodBig = view === 'food';
+    btnFood.classList.toggle('mn-switch-btn--active', isFoodBig);
+    btnFood.setAttribute('aria-pressed', isFoodBig ? 'true' : 'false');
+    btnDrinks.classList.toggle('mn-switch-btn--active', !isFoodBig);
+    btnDrinks.setAttribute('aria-pressed', !isFoodBig ? 'true' : 'false');
+    if (foodPropLabel) foodPropLabel.textContent = isFoodBig ? '3/4 Screen' : '1/4 Screen';
+    if (drinksPropLabel) drinksPropLabel.textContent = isFoodBig ? '1/4 Screen' : '3/4 Screen';
+    if (foodExpandHint) foodExpandHint.style.display = isFoodBig ? 'none' : 'inline';
+    if (drinksExpandHint) drinksExpandHint.style.display = isFoodBig ? 'inline' : 'none';
+  }
 
-    // Show / hide cards
-    var visible = 0;
-    cards.forEach(function (card) {
-      var show = catSlug === 'all' || card.dataset.cat === catSlug;
-      card.hidden = !show;
-      if (show) visible++;
-    });
+  if (btnFood) btnFood.addEventListener('click', function () { setView('food'); });
+  if (btnDrinks) btnDrinks.addEventListener('click', function () { setView('drinks'); });
 
-    if (emptyMsg) emptyMsg.hidden = visible > 0;
+  // Click on the smaller pane header expands it
+  if (paneFood) paneFood.querySelector('.mn-pane-header').addEventListener('click', function (e) {
+    if (container.dataset.active !== 'food') setView('food');
+  });
+  if (paneDrinks) paneDrinks.querySelector('.mn-pane-header').addEventListener('click', function (e) {
+    if (container.dataset.active !== 'drinks') setView('drinks');
+  });
 
-    // Scroll active tab into view (horizontal)
-    var activeTab = document.querySelector('.mn-tab--active');
-    if (activeTab) {
-      activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  // ── Per-pane tab filtering ──────────────────────────────────────────────
+  function bindPaneTabs(tabsSelector, gridId, emptyId) {
+    var paneTabs = document.querySelectorAll(tabsSelector);
+    var paneCards = document.getElementById(gridId) ? document.getElementById(gridId).querySelectorAll('.mn-card') : [];
+    var paneEmpty = document.getElementById(emptyId);
+
+    function activate(catSlug) {
+      paneTabs.forEach(function (t) {
+        var active = t.dataset.cat === catSlug;
+        t.classList.toggle('mn-tab--active', active);
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      var visible = 0;
+      paneCards.forEach(function (card) {
+        var show = catSlug === 'all' || card.dataset.cat === catSlug;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      if (paneEmpty) paneEmpty.hidden = visible > 0;
+      var activeTab = document.querySelector(tabsSelector + '.mn-tab--active');
+      if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
 
-    // Update URL hash without scroll jump
-    var hash = catSlug === 'all' ? '' : '#' + catSlug;
-    history.replaceState(null, '', window.location.pathname + hash);
-  }
-
-  // Bind click events
-  tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      activate(tab.dataset.cat);
+    paneTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () { activate(tab.dataset.cat); });
     });
-  });
-
-  // Keyboard navigation (arrow keys within tablist)
-  document.getElementById('mn-tabs').addEventListener('keydown', function (e) {
-    var tabList = Array.from(tabs);
-    var idx = tabList.indexOf(document.activeElement);
-    if (idx === -1) return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); tabList[(idx + 1) % tabList.length].focus(); }
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); tabList[(idx - 1 + tabList.length) % tabList.length].focus(); }
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(document.activeElement.dataset.cat); }
-  });
-
-  // Restore from URL hash on load
-  var hash = window.location.hash.replace('#', '');
-  if (hash) {
-    var matchTab = Array.from(tabs).find(function (t) { return t.dataset.cat === hash; });
-    if (matchTab) activate(hash);
   }
+
+  bindPaneTabs('.mn-tabs--food .mn-tab', 'mn-grid-food', 'mn-empty-food');
+  bindPaneTabs('.mn-tabs--drinks .mn-tab', 'mn-grid-drinks', 'mn-empty-drinks');
+
+  // Initial state: food is bigger
+  setView('food');
 })();
 </script>
 
@@ -585,5 +719,186 @@ function slug(s: string) {
   }
   @media (min-width: 1400px) {
     .mn-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  }
+
+  /* ── Food / Drinks proportion switch ─────────────────────────────────── */
+  .mn-switch-wrap {
+    padding: 16px 20px 0;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .mn-switch-toggle {
+    display: inline-flex;
+    gap: 8px;
+    background: rgba(244,236,218,0.04);
+    border: 1px solid rgba(224,166,60,0.2);
+    border-radius: 999px;
+    padding: 4px;
+  }
+  .mn-switch-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: rgba(244,236,218,0.55);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+  .mn-switch-btn--active {
+    background: #E0A63C;
+    color: #12190B;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(224,166,60,0.4);
+  }
+  .mn-switch-btn:hover:not(.mn-switch-btn--active) {
+    color: #F4ECDA;
+    background: rgba(224,166,60,0.1);
+  }
+  .mn-switch-prop {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-left: 2px;
+  }
+  .mn-switch-icon { font-size: 1rem; }
+
+  /* ── Split container ─────────────────────────────────────────────────── */
+  .mn-split-container {
+    display: flex;
+    gap: 0;
+    min-height: calc(100vh - 200px);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px 20px 56px;
+    box-sizing: border-box;
+    transition: none;
+  }
+
+  /* Food pane default: 75%, Drinks pane: 25% */
+  .mn-pane--food { flex: 3; min-width: 0; transition: flex 0.4s cubic-bezier(.23,1,.32,1); }
+  .mn-pane--drinks { flex: 1; min-width: 0; transition: flex 0.4s cubic-bezier(.23,1,.32,1); }
+
+  /* When drinks is expanded to 3/4 */
+  #mn-split-container[data-active="drinks"] .mn-pane--food { flex: 1; }
+  #mn-split-container[data-active="drinks"] .mn-pane--drinks { flex: 3; }
+
+  .mn-pane {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+    min-width: 0;
+  }
+  .mn-pane:first-child { padding-left: 0; border-right: 1px solid rgba(224,166,60,0.12); padding-right: 16px; }
+  .mn-pane:last-child { padding-right: 0; padding-left: 16px; }
+
+  /* Pane header */
+  .mn-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .mn-pane-title-wrap { display: flex; align-items: center; gap: 10px; }
+  .mn-pane-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #E0A63C;
+    margin: 0;
+  }
+  .mn-pane-count {
+    font-size: 0.72rem;
+    color: rgba(244,236,218,0.4);
+    background: rgba(224,166,60,0.08);
+    border: 1px solid rgba(224,166,60,0.15);
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
+  .mn-pane-expand-hint {
+    font-size: 0.72rem;
+    color: rgba(224,166,60,0.5);
+    white-space: nowrap;
+    display: none;
+  }
+
+  /* Tabs within panes */
+  .mn-tabs-wrap--food,
+  .mn-tabs-wrap--drinks {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: #17200F;
+    border-bottom: 1px solid rgba(224,166,60,0.12);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    margin-bottom: 12px;
+  }
+
+  /* Grid within panes - compact 2-col default */
+  .mn-grid--food {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  .mn-grid--drinks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  /* When drinks pane is small (1/4), stack single column */
+  #mn-split-container[data-active="food"] .mn-grid--drinks {
+    grid-template-columns: 1fr;
+  }
+  /* When food pane is small (1/4), stack single column */
+  #mn-split-container[data-active="drinks"] .mn-grid--food {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mobile: stack panes vertically */
+  @media (max-width: 768px) {
+    .mn-split-container {
+      flex-direction: column;
+      padding: 12px 16px 56px;
+    }
+    .mn-pane--food,
+    .mn-pane--drinks {
+      flex: unset !important;
+    }
+    #mn-split-container[data-active="food"] .mn-pane--drinks {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    #mn-split-container[data-active="drinks"] .mn-pane--food {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .mn-pane:first-child {
+      border-right: none;
+      border-bottom: 1px solid rgba(224,166,60,0.12);
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .mn-pane:last-child {
+      padding-left: 0;
+    }
+    .mn-grid--food,
+    .mn-grid--drinks {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
   }
 </style>
