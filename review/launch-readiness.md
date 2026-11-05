@@ -141,6 +141,40 @@ form.addEventListener('submit', (e) => {
 1. ✅ **FIX 1 — Offer Modal (MascotOfferModal.astro):** Phone number submit now directly launches WhatsApp to owner's number (+91 90596 70033) with pre-filled coupon claim message. Disclaimer updated to transparently state: *"Your offer opens in WhatsApp. Send the message to claim it."*
 2. ✅ **FIX 2 — Offer Terms (offers.json, MascotOfferModal, index, reserve, terms):** Unconfirmed specifics regarding scope (food vs drinks), timing, slot cap (30), and scratch type have been sanitized and replaced with *"Terms apply, confirm on WhatsApp"*. Confirmed core offer (15% off, code FURSAT15) remains. All `TODO(client)` markers are preserved in `offers.json`.
 3. ✅ **FIX 3 — Takeaway Order Page (/order):** Replaced "COMING SOON" stub with a branded "Order for takeaway" page featuring one primary WhatsApp CTA button to +91 90596 70033 (pre-filled with `"Hi Fursat, I'd like to order:"`), a menu link, and the note *"Online ordering is coming soon"*.
+4. ✅ **FIX 4a — Events Unconfirmed Perks (events.astro):** Replaced unconfirmed perks on line 93 (`Special lunch slot privileges from 12:00 PM to 4:00 PM`) and line 95 (`Complimentary dessert platter for the party host`) with *"Terms apply, confirm on WhatsApp"*.
+5. ✅ **FIX 4b — Reserve Scratch Card (reserve.astro):** Replaced unconfirmed mocktail reveal (`COMPLIMENTARY MOCKTAIL / 1 Free Pitcher of Fursat Rahasyam on tables of 4+`, `CODE: FURVIP`) with *"Reward revealed on WhatsApp. Terms apply, confirm on WhatsApp"*. Neutralized line 123 to *"Every online table booking unlocks a special perk for the table"* without specific promises. Interactive scratch & confetti behavior preserved.
+
+---
+
+## 8. Data Source Audit (FIX 4c)
+
+Audit of specific claims across the site to determine whether they originate from configured JSON sources or are hardcoded:
+
+### 1. FSSAI License Number (`src/pages/story.astro` line 113)
+- **Displayed Value:** `13624013000521 (Central Licensing Authority)`
+- **Data Source:** **100% HARDCODED** in `story.astro` HTML.
+- **In `site.json`:** **NO**. `src/data/site.json` line 27 explicitly reads `"fssai": "TODO(client): FSSAI licence number"`.
+- **Note:** `story.astro` also hardcodes the legal entity as `Alekya Reality / Fursat Hospitality LLP` (line 109), whereas `site.json` line 25 has `"name": "TODO(client): Legal entity name"`. The number `13624013000521` appears to be an unverified placeholder/invented license number.
+
+### 2. Google Reviews & 4.6 Rating (`src/pages/index.astro` lines 130–186)
+- **Displayed Rating:** `4.6 / 5 · Google Reviews` (line 133)
+- **Displayed Reviews:** 4 testimonials:
+  1. *Priya Sharma* ("Google · Verified Diner"): Nalli gosht biryani review (5 stars)
+  2. *Rahul Mehta* ("Google · Corporate Event"): Corporate dinner & banquet review (5 stars)
+  3. *Ananya Reddy* ("Google · Regular Guest"): Mentions the "Ask Fursat" concept and "FURSAT15 code" (4 stars)
+  4. *Sunita Krishnan* ("Google · Banquet Event"): Graduation celebration banquet review (5 stars)
+  5. CTA link: `https://g.page/r/fursat-kitchen-bar/review` (generic placeholder review link)
+- **Data Source:** **100% HARDCODED** in `index.astro` HTML.
+- **In `site.json`:** **NO**. Neither ratings nor review objects exist anywhere in `src/data/site.json` (or any other JSON).
+- **Note:** The review by "Ananya Reddy" references internal product features ("Ask Fursat concept", "FURSAT15 code"), indicating these reviews were authored as marketing mockups rather than fetched from real Google Business Profile data.
+
+### 3. Events Perks Audit (`src/pages/events.astro` Perk Lists)
+Beyond the sanitized kitty party perks (lines 93, 95), the following perk items in `events.astro` contain specific operational promises that are hardcoded and unconfirmed:
+- **Birthday Bashes (lines 52–56):** *"Customized welcome cocktail or mocktail for all guests"* (promises free alcohol/mocktail for every guest), *"Signature cake cutting ceremony with cold-fire pyro sparklers"*.
+- **Corporate Gatherings (lines 72–76):** *"High-speed Wi-Fi, dual 4K laser projectors, and cordless collar mics"* (promises specific technical equipment: dual 4K laser projectors, cordless collar mics).
+- **Bar Bashes 21+ (lines 112–116):** *"Unlimited starter & cocktail packages tailored to your budget"*, *"Flair mixologist show & customized signature drinks menu"*.
+
+---
 
 ### Remaining Pre-Launch Item (Client Confirmation):
-- **Legal / business data:** `site.json` requires client to provide legal entity name, GSTIN, FSSAI licence number, unit number at Capital Park, and Google Maps embed URL.
+- **Legal / business data:** `site.json` requires client to provide official legal entity name, verified GSTIN, verified FSSAI licence number, unit number at Capital Park, and real Google Maps embed URL. Hardcoded legal claims in `story.astro` must be reconciled with official client records.
