@@ -1,0 +1,18 @@
+{
+  "home": {
+    "gatePresent": true,
+    "gateClasses": "on",
+    "gateZ": "80",
+    "gateVisible": true,
+    "barPresent": true,
+    "barZ": "9000",
+    "hitElement": "a.mb-item mb-reserve",
+    "hitInsideBar": true,
+    "hitInsideGate": false
+  },
+  "banquet": {
+    "gatePresent": false,
+    "barPresent": true,
+    "barZ": "9000"
+  }
+}
