@@ -16,3 +16,5 @@ public/**/*.mp4
 # System & logs
 .DS_Store
 *.log
+
+review/lh-*.json
