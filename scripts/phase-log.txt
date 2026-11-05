@@ -125,3 +125,45 @@ Date: November 5, 2026 | Status: All 8 Items Passed
   * .mot-headline & .mot-card-lit applied to menu.astro and ask.astro.
   * Overflow check: 72/72 viewports (12 routes x 6 widths) passed with 0 overflow.
 ================================================================================
+
+
+================================================================================
+5. PHASE 1 DETAILED AUDIT VERIFICATION (ALL 5 ASSIGNED TASKS):
+Date: November 5, 2026 | Status: Complete
+--------------------------------------------------------------------------------
+1. Real Lighthouse Mobile (v13.6.0 via Chrome Headless & Default Mobile Throttling):
+   - Home (/):
+     * Performance: 72 | Accessibility: 91 | Best Practices: 96 | SEO: 100
+     * LCP: 4.1s | CLS: 0 | TBT: 410ms | FCP: 1.6s | Speed Index: 5.1s
+   - Banquet (/banquet):
+     * Performance: 74 | Accessibility: 98 | Best Practices: 100 | SEO: 100
+     * LCP: 18.2s (uncompressed 596 KB hero image without art direction) | CLS: 0 | TBT: 110ms | FCP: 1.5s | Speed Index: 1.8s
+   - Output: review/lighthouse-home.json, review/lighthouse-banquet.json
+
+2. Gzipped JS Size Per Page vs 120 KB Budget:
+   - Banquet (/banquet): 30.19 KB gzip (PASS, under budget). Loads GSAP on-demand.
+   - Menu (/menu): 30.19 KB gzip (PASS, under budget). Loads GSAP on-demand.
+   - Cafe (/cafe): 30.19 KB gzip (PASS, under budget). Loads GSAP on-demand.
+   - Home (/): 153.40 KB gzip (FAIL, exceeds 120 KB by 33.4 KB due to modular legacy scripts 78.5 KB gz + TableSpread 44.8 KB gz).
+   - GSAP isolation verified: only loaded on pages containing .mot-headline or .mot-reveal-img.
+   - Output: review/js-budget-report.json
+
+3. Micro-interactions Usage & Enhancements:
+   - .mot-tab-indicator: events.astro, menu.astro, reserve.astro.
+   - .mot-confetti: reserve.astro (scratch card + wired to #res-submit-btn on booking success).
+   - .mot-skeleton: reserve.astro (date-change slot shimmer), parties.astro (package card placeholders), public/js/ask.js (search result placeholders).
+
+4. Overflow Check on All 14 Routes:
+   - 84 of 84 viewports passed (14 routes x 6 widths: 360, 390, 768, 1024, 1280, 1536px) with 0 overflow.
+   - Extra routes identified:
+     * /parties (legacy vanilla JS packages estimator with /data/packages.json)
+     * /party (modern 3D Three.js PartyStage canvas with src/data/party.json)
+   - Recommendation: Keep /party as canonical and 301 redirect /parties -> /party.
+
+5. #gate vs Mobile Bottom Bar & Non-Home Entry:
+   - #gate z-index is 80; mobile bottom bar (.mb-bar) z-index is 9000.
+   - elementFromPoint at (195, 810) touches .mb-item inside .mb-bar (hitInsideBar: true, hitInsideGate: false).
+   - #gate does not overlay or block mobile bar taps.
+   - #gate does not appear on non-Home entry pages (Banquet tested: gatePresent = false).
+   - Output: review/shots/gate-390-home.png, review/shots/gate-390-banquet.png, review/gate-check-results.json
+================================================================================
