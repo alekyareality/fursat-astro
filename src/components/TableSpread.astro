@@ -102,7 +102,7 @@ const tableItems = [
         <img src={item.img} alt={item.name} class="ts-mob-img" loading="lazy" />
         <div class="ts-mob-info">
           <small>{item.category}</small>
-          <h4>{item.name}</h4>
+          <h3 class="ts-mob-name">{item.name}</h3>
           <b>{item.price}</b>
         </div>
       </div>
@@ -337,6 +337,7 @@ const tableItems = [
     text-transform: uppercase;
     font-weight: 700;
   }
+  .ts-mob-info h3,
   .ts-mob-info h4 {
     margin: 2px 0 4px;
     font-size: 0.95rem;
@@ -374,33 +375,45 @@ const tableItems = [
 </style>
 
 
-<script>
-  // GSAP ScrollTrigger — dishes slide in as user scrolls into the TableSpread section
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!prefersReduced && window.innerWidth >= 768) {
-    const items = Array.from(document.querySelectorAll<HTMLElement>('.ts-item'));
-
-    items.forEach((el, i) => {
-      const side = i % 2 === 0 ? -100 : 100;
-      gsap.fromTo(el,
-        { opacity: 0, y: 50, x: side, scale: 0.75 },
-        {
-          opacity: 1, y: 0, x: 0, scale: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          delay: i * 0.08,
-          scrollTrigger: {
-            trigger: '.ts-table-wrap',
-            start: 'top 78%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-    });
-  }
+<script is:inline>
+  // Lazy-load TableSpread animation on desktop only when scrolled near the section
+  (function() {
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (calm || window.innerWidth < 768) return;
+    var target = document.querySelector('.ts-section');
+    if (!target) return;
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        obs.disconnect();
+        var sc = document.createElement('script');
+        sc.src = '/js/gsap.min.js';
+        sc.onload = function() {
+          var gsap = window.gsap;
+          var ST = window.ScrollTrigger;
+          if (!gsap || !ST) return;
+          gsap.registerPlugin(ST);
+          var items = Array.from(document.querySelectorAll('.ts-item'));
+          items.forEach(function(el, i) {
+            var side = i % 2 === 0 ? -100 : 100;
+            gsap.fromTo(el,
+              { opacity: 0, y: 50, x: side, scale: 0.75 },
+              {
+                opacity: 1, y: 0, x: 0, scale: 1,
+                duration: 1.1,
+                ease: 'power3.out',
+                delay: i * 0.08,
+                scrollTrigger: {
+                  trigger: '.ts-table-container',
+                  start: 'top 78%',
+                  toggleActions: 'play none none reverse',
+                },
+              }
+            );
+          });
+        };
+        document.head.appendChild(sc);
+      }
+    }, { rootMargin: '100px' });
+    obs.observe(target);
+  })();
 </script>

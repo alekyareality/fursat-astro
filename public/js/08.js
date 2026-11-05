@@ -1,6 +1,6 @@
 (function(){
 var $=function(i){return document.getElementById(i)},b=$("vz"),tx=$("vz-t"),A=new Audio("/assets/5fbd3b2fe9.mp3");
-A.preload="auto";A.volume=1;
+A.preload="none";A.volume=1;
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}}
 var want=true,blocked=false,ended=false,hid=false,tm=0;
 function duck(on){var m=window.__fzMu;if(m)m.volume=on?.2:.85}

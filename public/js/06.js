@@ -29,7 +29,7 @@ var tx=0,ty=0,cx0=0,cy0=0,fine=matchMedia("(pointer:fine)").matches;
 if(!calm){if(fine)addEventListener("pointermove",function(e){tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5},{passive:true});
  (function dp(t){if(scrollY<innerHeight*1.05){if(!fine){tx=Math.sin(t/3200)*.28;ty=Math.cos(t/4100)*.12}cx0+=(tx-cx0)*.06;cy0+=(ty-cy0)*.06;hero.style.setProperty("--px",cx0.toFixed(4));hero.style.setProperty("--py",cy0.toFixed(4))}requestAnimationFrame(dp)})(0)}
 var CFG={musicStart:27},mu=new Audio("/assets/611fb91032.mp3"),ac,an,fd,avg=0,last=0,B=0,on=false,sb=$("snd"),bp=.504,ph=0,dance=0;
-mu.loop=true;window.__fzMu=mu;mu.preload="auto";mu.volume=.85;
+mu.loop=true;window.__fzMu=mu;mu.preload="none";mu.volume=.85;
 mu.addEventListener("loadedmetadata",function(){if(mu.duration>CFG.musicStart+3&&mu.currentTime<1)mu.currentTime=CFG.musicStart},{once:true});
 function music(v){if(v){if(!ac&&/^https?:/.test(location.protocol)){try{ac=new(window.AudioContext||window.webkitAudioContext)();var s=ac.createMediaElementSource(mu);an=ac.createAnalyser();an.fftSize=256;fd=new Uint8Array(an.frequencyBinCount);s.connect(an);an.connect(ac.destination)}catch(e){an=null}}
  if(ac&&ac.resume)ac.resume();mu.play().then(function(){on=true;beat()}).catch(function(){on=false;sb.setAttribute("aria-pressed","false");sb.lastElementChild.textContent="Set the mood"})}else{mu.pause();on=false}
