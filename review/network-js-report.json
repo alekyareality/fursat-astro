@@ -1,0 +1,474 @@
+[
+  {
+    "page": "Home",
+    "path": "/",
+    "loadsGsapOverNetwork": true,
+    "networkJsCount": 23,
+    "networkJs": [
+      {
+        "url": "/_astro/TableSpread.astro_astro_type_script_index_0_lang.70yYrQ2K.js",
+        "status": 200,
+        "rawBytes": 115817,
+        "rawKb": "113.10",
+        "gzipBytes": 45820,
+        "gzipKb": "44.75",
+        "isGsap": false
+      },
+      {
+        "url": "/js/01.js",
+        "status": 200,
+        "rawBytes": 85,
+        "rawKb": "0.08",
+        "gzipBytes": 93,
+        "gzipKb": "0.09",
+        "isGsap": false
+      },
+      {
+        "url": "/js/mascot.js",
+        "status": 200,
+        "rawBytes": 7111,
+        "rawKb": "6.94",
+        "gzipBytes": 2691,
+        "gzipKb": "2.63",
+        "isGsap": false
+      },
+      {
+        "url": "/js/02.js",
+        "status": 200,
+        "rawBytes": 1594,
+        "rawKb": "1.56",
+        "gzipBytes": 580,
+        "gzipKb": "0.57",
+        "isGsap": false
+      },
+      {
+        "url": "/js/04.js",
+        "status": 200,
+        "rawBytes": 24659,
+        "rawKb": "24.08",
+        "gzipBytes": 9448,
+        "gzipKb": "9.23",
+        "isGsap": false
+      },
+      {
+        "url": "/js/03.js",
+        "status": 200,
+        "rawBytes": 57143,
+        "rawKb": "55.80",
+        "gzipBytes": 19012,
+        "gzipKb": "18.57",
+        "isGsap": false
+      },
+      {
+        "url": "/js/05.js",
+        "status": 200,
+        "rawBytes": 2779,
+        "rawKb": "2.71",
+        "gzipBytes": 1133,
+        "gzipKb": "1.11",
+        "isGsap": false
+      },
+      {
+        "url": "/js/06.js",
+        "status": 200,
+        "rawBytes": 6491,
+        "rawKb": "6.34",
+        "gzipBytes": 2981,
+        "gzipKb": "2.91",
+        "isGsap": false
+      },
+      {
+        "url": "/js/09.js",
+        "status": 200,
+        "rawBytes": 220,
+        "rawKb": "0.21",
+        "gzipBytes": 165,
+        "gzipKb": "0.16",
+        "isGsap": false
+      },
+      {
+        "url": "/js/07.js",
+        "status": 200,
+        "rawBytes": 3253,
+        "rawKb": "3.18",
+        "gzipBytes": 1510,
+        "gzipKb": "1.47",
+        "isGsap": false
+      },
+      {
+        "url": "/js/11.js",
+        "status": 200,
+        "rawBytes": 650,
+        "rawKb": "0.63",
+        "gzipBytes": 346,
+        "gzipKb": "0.34",
+        "isGsap": false
+      },
+      {
+        "url": "/js/08.js",
+        "status": 200,
+        "rawBytes": 2710,
+        "rawKb": "2.65",
+        "gzipBytes": 1106,
+        "gzipKb": "1.08",
+        "isGsap": false
+      },
+      {
+        "url": "/js/12.js",
+        "status": 200,
+        "rawBytes": 36468,
+        "rawKb": "35.61",
+        "gzipBytes": 13547,
+        "gzipKb": "13.23",
+        "isGsap": false
+      },
+      {
+        "url": "/js/13.js",
+        "status": 200,
+        "rawBytes": 2979,
+        "rawKb": "2.91",
+        "gzipBytes": 1330,
+        "gzipKb": "1.30",
+        "isGsap": false
+      },
+      {
+        "url": "/js/15.js",
+        "status": 200,
+        "rawBytes": 1079,
+        "rawKb": "1.05",
+        "gzipBytes": 596,
+        "gzipKb": "0.58",
+        "isGsap": false
+      },
+      {
+        "url": "/js/10.js",
+        "status": 200,
+        "rawBytes": 58800,
+        "rawKb": "57.42",
+        "gzipBytes": 19795,
+        "gzipKb": "19.33",
+        "isGsap": false
+      },
+      {
+        "url": "/js/16.js",
+        "status": 200,
+        "rawBytes": 6401,
+        "rawKb": "6.25",
+        "gzipBytes": 2336,
+        "gzipKb": "2.28",
+        "isGsap": false
+      },
+      {
+        "url": "/js/motion-kit.js",
+        "status": 200,
+        "rawBytes": 10827,
+        "rawKb": "10.57",
+        "gzipBytes": 2640,
+        "gzipKb": "2.58",
+        "isGsap": false
+      },
+      {
+        "url": "/js/18.js",
+        "status": 200,
+        "rawBytes": 2604,
+        "rawKb": "2.54",
+        "gzipBytes": 1131,
+        "gzipKb": "1.10",
+        "isGsap": false
+      },
+      {
+        "url": "/js/14.js",
+        "status": 200,
+        "rawBytes": 3360,
+        "rawKb": "3.28",
+        "gzipBytes": 1497,
+        "gzipKb": "1.46",
+        "isGsap": false
+      },
+      {
+        "url": "/js/17.js",
+        "status": 200,
+        "rawBytes": 868,
+        "rawKb": "0.85",
+        "gzipBytes": 511,
+        "gzipKb": "0.50",
+        "isGsap": false
+      },
+      {
+        "url": "/js/19.js",
+        "status": 200,
+        "rawBytes": 980,
+        "rawKb": "0.96",
+        "gzipBytes": 541,
+        "gzipKb": "0.53",
+        "isGsap": false
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "status": 200,
+        "rawBytes": 72435,
+        "rawKb": "70.74",
+        "gzipBytes": 28277,
+        "gzipKb": "27.61",
+        "isGsap": true
+      }
+    ],
+    "inlineScriptCount": 3,
+    "inlineScriptDetails": [
+      {
+        "index": 1,
+        "length": 1966,
+        "snippet": "function initHeader() {\n    const burger = document.getEleme"
+      },
+      {
+        "index": 2,
+        "length": 2470,
+        "snippet": "document.addEventListener('DOMContentLoaded', () => {\n    co"
+      },
+      {
+        "index": 3,
+        "length": 2905,
+        "snippet": "document.addEventListener('DOMContentLoaded', () => {\n    co"
+      }
+    ],
+    "totalInlineChars": 7341,
+    "totalNetworkRawKb": "409.49",
+    "totalNetworkGzipKb": "153.40"
+  },
+  {
+    "page": "Banquet",
+    "path": "/banquet",
+    "loadsGsapOverNetwork": true,
+    "networkJsCount": 2,
+    "networkJs": [
+      {
+        "url": "/js/motion-kit.js",
+        "status": 200,
+        "rawBytes": 10827,
+        "rawKb": "10.57",
+        "gzipBytes": 2640,
+        "gzipKb": "2.58",
+        "isGsap": false
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "status": 200,
+        "rawBytes": 72435,
+        "rawKb": "70.74",
+        "gzipBytes": 28277,
+        "gzipKb": "27.61",
+        "isGsap": true
+      }
+    ],
+    "inlineScriptCount": 2,
+    "inlineScriptDetails": [
+      {
+        "index": 1,
+        "length": 1966,
+        "snippet": "function initHeader() {\n    const burger = document.getEleme"
+      },
+      {
+        "index": 2,
+        "length": 2905,
+        "snippet": "document.addEventListener('DOMContentLoaded', () => {\n    co"
+      }
+    ],
+    "totalInlineChars": 4871,
+    "totalNetworkRawKb": "81.31",
+    "totalNetworkGzipKb": "30.19"
+  },
+  {
+    "page": "Menu",
+    "path": "/menu",
+    "loadsGsapOverNetwork": true,
+    "networkJsCount": 2,
+    "networkJs": [
+      {
+        "url": "/js/motion-kit.js",
+        "status": 200,
+        "rawBytes": 10827,
+        "rawKb": "10.57",
+        "gzipBytes": 2640,
+        "gzipKb": "2.58",
+        "isGsap": false
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "status": 200,
+        "rawBytes": 72435,
+        "rawKb": "70.74",
+        "gzipBytes": 28277,
+        "gzipKb": "27.61",
+        "isGsap": true
+      }
+    ],
+    "inlineScriptCount": 3,
+    "inlineScriptDetails": [
+      {
+        "index": 1,
+        "length": 1966,
+        "snippet": "function initHeader() {\n    const burger = document.getEleme"
+      },
+      {
+        "index": 2,
+        "length": 2905,
+        "snippet": "document.addEventListener('DOMContentLoaded', () => {\n    co"
+      },
+      {
+        "index": 3,
+        "length": 2081,
+        "snippet": "(function () {\n  var tabs = document.querySelectorAll('.mn-t"
+      }
+    ],
+    "totalInlineChars": 6952,
+    "totalNetworkRawKb": "81.31",
+    "totalNetworkGzipKb": "30.19"
+  },
+  {
+    "page": "Cafe",
+    "path": "/cafe",
+    "loadsGsapOverNetwork": true,
+    "networkJsCount": 2,
+    "networkJs": [
+      {
+        "url": "/js/motion-kit.js",
+        "status": 200,
+        "rawBytes": 10827,
+        "rawKb": "10.57",
+        "gzipBytes": 2640,
+        "gzipKb": "2.58",
+        "isGsap": false
+      },
+      {
+        "url": "/js/gsap.min.js",
+        "status": 200,
+        "rawBytes": 72435,
+        "rawKb": "70.74",
+        "gzipBytes": 28277,
+        "gzipKb": "27.61",
+        "isGsap": true
+      }
+    ],
+    "inlineScriptCount": 2,
+    "inlineScriptDetails": [
+      {
+        "index": 1,
+        "length": 1966,
+        "snippet": "function initHeader() {\n    const burger = document.getEleme"
+      },
+      {
+        "index": 2,
+        "length": 2905,
+        "snippet": "document.addEventListener('DOMContentLoaded', () => {\n    co"
+      }
+    ],
+    "totalInlineChars": 4871,
+    "totalNetworkRawKb": "81.31",
+    "totalNetworkGzipKb": "30.19"
+  },
+  {
+    "page": "Party",
+    "path": "/party",
+    "loadsGsapOverNetwork": false,
+    "networkJsCount": 9,
+    "networkJs": [
+      {
+        "url": "/js/party.js",
+        "status": 200,
+        "rawBytes": 4126,
+        "rawKb": "4.03",
+        "gzipBytes": 1629,
+        "gzipKb": "1.59",
+        "isGsap": false
+      },
+      {
+        "url": "/js/motion-kit.js",
+        "status": 200,
+        "rawBytes": 10827,
+        "rawKb": "10.57",
+        "gzipBytes": 2640,
+        "gzipKb": "2.58",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/PartyStage.ByjMqhtn.js",
+        "status": 200,
+        "rawBytes": 2749,
+        "rawKb": "2.68",
+        "gzipBytes": 1469,
+        "gzipKb": "1.43",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/jsx-runtime.D_zvdyIk.js",
+        "status": 200,
+        "rawBytes": 725,
+        "rawKb": "0.71",
+        "gzipBytes": 460,
+        "gzipKb": "0.45",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/index.DYn5FPbd.js",
+        "status": 200,
+        "rawBytes": 8332,
+        "rawKb": "8.14",
+        "gzipBytes": 3225,
+        "gzipKb": "3.15",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/client.CtjDF7p6.js",
+        "status": 200,
+        "rawBytes": 211690,
+        "rawKb": "206.73",
+        "gzipBytes": 65791,
+        "gzipKb": "64.25",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/index.Bb8JjhAW.js",
+        "status": 200,
+        "rawBytes": 3851,
+        "rawKb": "3.76",
+        "gzipBytes": 1718,
+        "gzipKb": "1.68",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/store.DCXjfPiJ.js",
+        "status": 200,
+        "rawBytes": 55918,
+        "rawKb": "54.61",
+        "gzipBytes": 20929,
+        "gzipKb": "20.44",
+        "isGsap": false
+      },
+      {
+        "url": "/_astro/StageCanvas.DltwjD1z.js",
+        "status": 200,
+        "rawBytes": 946411,
+        "rawKb": "924.23",
+        "gzipBytes": 256756,
+        "gzipKb": "250.74",
+        "isGsap": false
+      }
+    ],
+    "inlineScriptCount": 2,
+    "inlineScriptDetails": [
+      {
+        "index": 1,
+        "length": 372,
+        "snippet": "(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t="
+      },
+      {
+        "index": 2,
+        "length": 3462,
+        "snippet": "(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,"
+      }
+    ],
+    "totalInlineChars": 3834,
+    "totalNetworkRawKb": "1215.46",
+    "totalNetworkGzipKb": "346.31"
+  }
+]
