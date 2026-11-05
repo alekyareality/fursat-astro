@@ -1,0 +1,2048 @@
+[
+  {
+    "section": "All day breakfast",
+    "items": [
+      {
+        "name": "Spinach & Cheese Omelette",
+        "price": 359,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "All day breakfast",
+        "description": ""
+      },
+      {
+        "name": "Masala Omelette",
+        "price": 329,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "All day breakfast",
+        "description": ""
+      },
+      {
+        "name": "Cheese & Mushroom Omelette",
+        "price": 359,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "All day breakfast",
+        "description": ""
+      },
+      {
+        "name": "OG French Toast",
+        "price": 329,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "All day breakfast",
+        "description": ""
+      },
+      {
+        "name": "Nutella French Toast",
+        "price": 349,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "All day breakfast",
+        "description": ""
+      },
+      {
+        "name": "Scrambled Egg",
+        "price": 219,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "All day breakfast",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Finger bites",
+    "items": [
+      {
+        "name": "Korean bun",
+        "description": "Soft bun filled with rich ream and cheese,Garlic butter.",
+        "price": 429,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Finger bites"
+      },
+      {
+        "name": "Malai Bun",
+        "description": "Toasted bread layered with malai and sugar",
+        "price": 99,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Finger bites"
+      },
+      {
+        "name": "Maska Bun",
+        "description": "Soft bun slathered with dollop of butter",
+        "price": 89,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Finger bites"
+      },
+      {
+        "name": "Loaded Sliders (Chicken Kheema)",
+        "description": "Sliders packed with seasoned shredded chicken",
+        "price": 245,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Finger bites"
+      },
+      {
+        "name": "Loaded Sliders (Cheese)",
+        "description": "Sliders stuffed with creamy cheese stuffing",
+        "price": 215,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Finger bites"
+      }
+    ]
+  },
+  {
+    "section": "Cookies",
+    "items": [
+      {
+        "name": "Choco Chip Cookies",
+        "price": 99,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Cookies",
+        "description": ""
+      },
+      {
+        "name": "Walnut Cookies",
+        "price": 89,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Cookies",
+        "description": ""
+      },
+      {
+        "name": "Biscoff Cookies",
+        "price": 79,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Cookies",
+        "description": ""
+      },
+      {
+        "name": "Caffe Toffe",
+        "price": 69,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Cookies",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Healthy bowls",
+    "items": [
+      {
+        "name": "Veg Healthy Protein Bowl",
+        "description": "Spiced chickpeas,grilled tofu,edamame,avocado,quinoa,seeds,green leaves",
+        "price": 449,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy bowls"
+      },
+      {
+        "name": "Non veg Healthy Protein Bowl",
+        "description": "Grilled chicken,boiled eggs,edamame,quinoa,seeds,green leaves",
+        "price": 499,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy bowls"
+      }
+    ]
+  },
+  {
+    "section": "Sandwiches & burgers",
+    "items": [
+      {
+        "name": "Peri Peri Cottage Cheese Sandwich",
+        "price": 395,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "Chicken & Cheese Sandwich",
+        "price": 445,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "B.B.Q Chicken Grilled Sandwich",
+        "price": 445,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "Mexican Grilled Veggie Fried Burger",
+        "price": 445,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "Grilled Sriracha Paneer Tikka Burger",
+        "price": 456,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "Fried Chicken Patty Burger",
+        "price": 475,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "Pulled Tandoori Chicken Sandwich Burger",
+        "price": 485,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      },
+      {
+        "name": "Lamb Cheese Burger",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Sandwiches & burgers",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Kids menu",
+    "items": [
+      {
+        "name": "Cheesy French Fries",
+        "price": 295,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Kids menu",
+        "description": ""
+      },
+      {
+        "name": "Cheese Garlic Bread",
+        "price": 425,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Kids menu",
+        "description": ""
+      },
+      {
+        "name": "Jalapeno Poppers",
+        "price": 345,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Kids menu",
+        "description": ""
+      },
+      {
+        "name": "Chicken Nuggets",
+        "price": 375,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Kids menu",
+        "description": ""
+      },
+      {
+        "name": "Mini Pizzas (Veg)",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Kids menu",
+        "description": ""
+      },
+      {
+        "name": "Mini Pizzas (Non-veg)",
+        "price": 425,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Kids menu",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Extras/Sides",
+    "items": [
+      {
+        "name": "Extra bread",
+        "price": 65,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Extras/Sides",
+        "description": ""
+      },
+      {
+        "name": "Extra Rice",
+        "price": 155,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Extras/Sides",
+        "description": ""
+      },
+      {
+        "name": "Extra chicken piece",
+        "price": 185,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Extras/Sides",
+        "description": ""
+      },
+      {
+        "name": "Extra mutton piece",
+        "price": 225,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Extras/Sides",
+        "description": ""
+      },
+      {
+        "name": "Extra veggies",
+        "price": 125,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Extras/Sides",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Sreemukhi's special menu",
+    "items": [
+      {
+        "name": "Diet Salad",
+        "description": "Fresh Veggies, Broccoli, Kale, Walnuts, Almonds, Dates, Drizzled with Lemony Ginger Dressing",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu"
+      },
+      {
+        "name": "Healthy Soup",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu",
+        "description": ""
+      },
+      {
+        "name": "Favorite Mushroom",
+        "price": 475,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu",
+        "description": ""
+      },
+      {
+        "name": "Pataas Nethi Mamsam Vepudu",
+        "price": 675,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu",
+        "description": ""
+      },
+      {
+        "name": "Adhurs Vellulli Karam Royyalu",
+        "price": 615,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu",
+        "description": ""
+      },
+      {
+        "name": "Signature Makka Jonna Vada",
+        "price": 455,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu",
+        "description": ""
+      },
+      {
+        "name": "Ramulamma Cosmopolitan",
+        "description": "Vodka, Cranberry Juice, Lime Juice & Triple Sec",
+        "price": 599,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "alc": true,
+        "section": "Sreemukhi's special menu"
+      },
+      {
+        "name": "Sundari",
+        "description": "Rum, Hibiscus Syrup, Sweet & Sour, Egg White",
+        "price": 629,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "alc": true,
+        "section": "Sreemukhi's special menu"
+      },
+      {
+        "name": "B52",
+        "description": "Strawberry, Blue berry infeed syrup, Pineapple Juice",
+        "price": 699,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "alc": true,
+        "section": "Sreemukhi's special menu"
+      },
+      {
+        "name": "One Anchor",
+        "description": "Strawberry, Blue berry infeed syrup, Pineapple Juice",
+        "price": 249,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Sreemukhi's special menu"
+      }
+    ]
+  },
+  {
+    "section": "Healthy Salads",
+    "items": [
+      {
+        "name": "Fresh fruits and roasted nuts salad bowl",
+        "description": "Assorted fresh fruits with oven roasted nuts with a Drizzle of honey and greens",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy Salads"
+      },
+      {
+        "name": "Rocketmelon Feta",
+        "description": "Watermelon, MintLeafs, Rocket Leafs, Feta Mixed with Home made EvooLemon, Pepper Dressing",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Healthy Salads"
+      },
+      {
+        "name": "Caesar Salad (Veg)",
+        "description": "Romain lettuce, Roasted foxnuts, House ceasar dressing",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy Salads"
+      },
+      {
+        "name": "Caesar Salad (Chicken)",
+        "description": "Romain lettuce, Roasted foxnuts, House ceasar dressing, grilled chicken",
+        "price": 475,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy Salads"
+      },
+      {
+        "name": "Caesar Salad (Prawns)",
+        "description": "Romain lettuce, Roasted foxnuts, House ceasar dressing, grilled prawns",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy Salads"
+      },
+      {
+        "name": "Loaded Chicken and Broccoli Salad",
+        "description": "Steamed Broccoli, Bell Pepper, Loaded Nuts",
+        "price": 415,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Healthy Salads"
+      }
+    ]
+  },
+  {
+    "section": "Soups",
+    "items": [
+      {
+        "name": "Tomato and Basil Soup",
+        "price": 255,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Soups",
+        "description": ""
+      },
+      {
+        "name": "Cream of Broccoli Soup",
+        "price": 275,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Soups",
+        "description": ""
+      },
+      {
+        "name": "Cream of Chicken Soup",
+        "price": 275,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Soups",
+        "description": ""
+      },
+      {
+        "name": "Asian Soup (Veg)",
+        "description": "Manchow, Sweet Corn, Hot & Sour",
+        "price": 295,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Soups"
+      },
+      {
+        "name": "Asian Soup (Chicken)",
+        "description": "Manchow, Sweet Corn, Hot & Sour",
+        "price": 375,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Soups"
+      },
+      {
+        "name": "Asian Soup (Prawns)",
+        "description": "Manchow, Sweet Corn, Hot & Sour",
+        "price": 425,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Soups"
+      },
+      {
+        "name": "Mutton Paya Soup",
+        "price": 355,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Soups",
+        "description": ""
+      },
+      {
+        "name": "Mutton Muskin Marag",
+        "price": 385,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Soups",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Quick Bites",
+    "items": [
+      {
+        "name": "French Fries (Plain)",
+        "price": 315,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Quick Bites",
+        "description": ""
+      },
+      {
+        "name": "French Fries (Peri Peri)",
+        "price": 335,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Quick Bites",
+        "description": ""
+      },
+      {
+        "name": "French Fries (Truffle)",
+        "price": 375,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Quick Bites",
+        "description": ""
+      },
+      {
+        "name": "Masala Peanuts",
+        "price": 255,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Quick Bites",
+        "description": ""
+      },
+      {
+        "name": "Naughty Nuts Masala Papad",
+        "price": 175,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Quick Bites",
+        "description": ""
+      },
+      {
+        "name": "Kaju Fry",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Quick Bites",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Regional specials",
+    "items": [
+      {
+        "name": "Pandu Mirchi Paneer Vepudu",
+        "price": 455,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/pandu_mirchi_kodi_kebab.webp",
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Gongura Mushroom Vepudu",
+        "price": 495,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Makka Jonna Vada",
+        "price": 455,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Babycorn Velluli Karam",
+        "price": 415,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Guntur Karam Wings",
+        "price": 525,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": true,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Nalla Karam Kodi Vepudu",
+        "price": 525,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/karvepaku_kodi_vepudu.webp",
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Fursat Spl Coriander Chicken",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Jeedi Pappu Kodi Pakodi",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Karivepaku Kodi Vepudu",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "image": "/assets/dishes/karvepaku_kodi_vepudu.webp",
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Telangana Mutton Fry (with bone)",
+        "price": 675,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc08946.webp",
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Nethi Mamsam Vepudu",
+        "price": 675,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Boti Fry",
+        "price": 455,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Godavari Royyala Vepudu",
+        "price": 615,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc05389.webp",
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Korameenu Chepa Chips",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Regional specials",
+        "description": ""
+      },
+      {
+        "name": "Velluli Karam Kodi Guddulu",
+        "price": 425,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Regional specials",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Appetizers",
+    "items": [
+      {
+        "name": "Malai Cheese Broccoli",
+        "price": 465,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Veg Boti Kebab",
+        "price": 465,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc03321.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Classic paneer tikka",
+        "price": 465,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc03327.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Nawabi Chicken Tangdi Kabab",
+        "price": 475,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc03308.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Chicken Tikka (Angara/ Malai/ Hariyali)",
+        "price": 515,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/angaraa_chicken_tikka_.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Haleem Bomb",
+        "price": 555,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Mutton Ghee Roast with Kerala Paratha",
+        "price": 675,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "image": "/assets/dishes/dsc03317.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Sarso Vali Prawns Tikka",
+        "price": 675,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/tandoori_prawns_.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Lasooni Fish Tikka",
+        "price": 555,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc05154.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Mini Burmese Parcel",
+        "price": 455,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "image": "/assets/dishes/dsc05366.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Mushroom Salt and Pepper",
+        "price": 455,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc03333.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Honey Chilli Lotus Stem",
+        "price": 475,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": true,
+        "image": "/assets/dishes/dsc03331.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Crispy Corn Kernel",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Loose Prawns",
+        "price": 599,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Chilli Garlic Fish",
+        "price": 545,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/dsc05352.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Mozzarella Cheese Sticks",
+        "price": 475,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Loaded Nachos (Avocado and Salsa)",
+        "price": 525,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Chicken Loaded Nachos",
+        "price": 495,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Crispy Chicken with Mayo",
+        "price": 475,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Peri Peri Chicken Wings",
+        "price": 435,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Jamaican Jerk Chicken with Fries",
+        "price": 575,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/jamicon_jerk_chicken_with_fires.webp",
+        "section": "Appetizers",
+        "description": ""
+      },
+      {
+        "name": "Butter Garlic Prawns",
+        "price": 615,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Appetizers",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Pizza",
+    "items": [
+      {
+        "name": "Classic Pizza Margherita",
+        "description": "Classic Tomato Sauce, Mozerella and Fresh Basil on a Thin Crust",
+        "price": 495,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pizza"
+      },
+      {
+        "name": "Peri Peri Chicken Pizza",
+        "description": "PeriPeri Marinated Chicken Supreme on a Spicy Tomato Base with Melted Gooey Cheese",
+        "price": 585,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Pizza"
+      },
+      {
+        "name": "Chicken Pepperoni Pizza",
+        "description": "Chicken Pepperoni Glazed with Spicy Sauce",
+        "price": 595,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Pizza"
+      },
+      {
+        "name": "Minced Lamb Pizza",
+        "description": "Minced Lamb, Spicy Herbs on Rich Tomato Base with Cheese",
+        "price": 695,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Pizza"
+      }
+    ]
+  },
+  {
+    "section": "Mains & Pasta",
+    "items": [
+      {
+        "name": "BBQ Grilled Chicken with Herb Rice",
+        "description": "Grilled Chicken Breast Glazed with BBQ Sauce, Served with Herb Inflamed Rice",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Mains & Pasta"
+      },
+      {
+        "name": "Chicken Stroganoff",
+        "description": "Tender Chicken Strips in Creamy Mushroom Sauce over Herbed Rice",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains & Pasta"
+      }
+    ]
+  },
+  {
+    "section": "Pasta",
+    "items": [
+      {
+        "name": "Alfredo Pasta (Veg)",
+        "price": 485,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Alfredo Pasta (Chicken)",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Alfredo Pasta (Prawns)",
+        "price": 635,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Creamy Pesto Pasta (Veg)",
+        "price": 485,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Creamy Pesto Pasta (Chicken)",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Creamy Pesto Pasta (Prawns)",
+        "price": 635,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Arrabiata Pasta (Veg)",
+        "price": 485,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Arrabiata Pasta (Chicken)",
+        "price": 595,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Arrabiata Pasta (Prawns)",
+        "price": 635,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Spaghetti Aglio (Veg)",
+        "price": 485,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Spaghetti Aglio (Chicken)",
+        "price": 595,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Spaghetti Aglio (Prawns)",
+        "price": 635,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta",
+        "description": ""
+      },
+      {
+        "name": "Chicken Lasagna",
+        "description": "Minced Chicken hearty dish made with layers of pasta and garlic bread",
+        "price": 575,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta"
+      },
+      {
+        "name": "Veggie Lasagna",
+        "description": "Exotic vegetables, layers of pasta, and garlic bread",
+        "price": 495,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Pasta"
+      }
+    ]
+  },
+  {
+    "section": "Momos",
+    "items": [
+      {
+        "name": "Thai Chilli, Basil, Chicken Momos",
+        "price": 435,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Momos",
+        "description": ""
+      },
+      {
+        "name": "ExoticVeg Momos",
+        "price": 355,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Momos",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Asian mains",
+    "items": [
+      {
+        "name": "Schezwan Paneer Wet",
+        "price": 325,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Veg Dumpling and Manchurian",
+        "price": 325,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Tofu and Exotic Vegetables Chow",
+        "price": 325,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Chilli Chicken",
+        "price": 375,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Chilli Fish",
+        "price": 415,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Chilli Prawns",
+        "price": 445,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Schezwan Chicken",
+        "price": 375,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Schezwan Fish",
+        "price": 415,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Schezwan Prawns",
+        "price": 445,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Teriyaki Shitake Mushroom",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains",
+        "description": ""
+      },
+      {
+        "name": "Rice / Noodles (Veg)",
+        "description": "Choice of Schezwan / Burnt Garlic / Spicy Coriander",
+        "price": 325,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains"
+      },
+      {
+        "name": "Rice / Noodles (Egg)",
+        "description": "Choice of Schezwan / Burnt Garlic / Spicy Coriander",
+        "price": 345,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains"
+      },
+      {
+        "name": "Rice / Noodles (Chicken)",
+        "description": "Choice of Schezwan / Burnt Garlic / Spicy Coriander",
+        "price": 385,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains"
+      },
+      {
+        "name": "Rice / Noodles (Mix)",
+        "description": "Choice of Schezwan / Burnt Garlic / Spicy Coriander",
+        "price": 415,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Asian mains"
+      }
+    ]
+  },
+  {
+    "section": "Mains",
+    "items": [
+      {
+        "name": "Paneer Butter Masala",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Kadai Paneer",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Kaju Paneer",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Nizam Wali Handi",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Paneer Burji",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Dal Makhni",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Dal Fry",
+        "price": 315,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Telangana Chicken Curry (Homestyle)",
+        "price": 515,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": true,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Chettinadu Chicken",
+        "price": 515,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Butter Chicken/ Kadai Chicken",
+        "price": 515,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Murg Methi Malaidar",
+        "price": 515,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Telangana Mutton Curry (Homestyle)",
+        "price": 649,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Gongura Mamsam Kura",
+        "price": 649,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": true,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Mutton Kheema Curry",
+        "price": 620,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Mutton Rogan Josh",
+        "price": 649,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      },
+      {
+        "name": "Egg Masala",
+        "price": 335,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Mains",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Indian Breads",
+    "items": [
+      {
+        "name": "Tandoori Roti",
+        "price": 65,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Butter Roti",
+        "price": 75,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Plain Naan",
+        "price": 75,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Butter Naan",
+        "price": 85,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Laccha Paratha",
+        "price": 85,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Aloo Paratha",
+        "price": 95,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Plain Kulcha",
+        "price": 75,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Masala Kulcha",
+        "price": 95,
+        "veg": true,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Cheese Kulcha",
+        "price": 155,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      },
+      {
+        "name": "Phulka (2pcs)",
+        "price": 85,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Indian Breads",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Biryani & rice",
+    "items": [
+      {
+        "name": "Kaju Paneer Pulao",
+        "price": 455,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Paneer Biryani",
+        "price": 415,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Gongura Mushroom Pulao",
+        "price": 455,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Veg Biryani",
+        "price": 375,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Bagara Rice",
+        "price": 315,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Jeera Rice",
+        "price": 315,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Sambar Rice",
+        "price": 315,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Dal Kichidi",
+        "price": 315,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Ragi Sangati",
+        "price": 355,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Plain Rice",
+        "price": 165,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Curd Rice",
+        "price": 195,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Fursat Spl Chicken Pulao",
+        "price": 495,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "image": "/assets/dishes/fursat_.webp",
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Chicken Fry Piece Pulao",
+        "price": 495,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "image": "/assets/dishes/fursat_1_.webp",
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Pachi Mirchi Kodi Pulao",
+        "price": 495,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Ulavacharu Kodi Pulao",
+        "price": 495,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Chicken 65 Biryani",
+        "price": 495,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Chicken Dum Biryani",
+        "price": 495,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Special Boneless Chicken Biryani",
+        "price": 515,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Erra Karam Rambo Biryani",
+        "price": 685,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Mutton Fry Piece Biryani",
+        "price": 599,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Mutton Kheema Kaju Pulao",
+        "price": 645,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Ulavacharu Mutton Pulao",
+        "price": 599,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Gongura Mutton Pulao",
+        "price": 599,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Ustad Special Nalli Gosht Biryani",
+        "description": "Half ₹599 | Full ₹999",
+        "price": 999,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Biryani & rice"
+      },
+      {
+        "name": "Bheemavaram Royyala Pulao",
+        "price": 645,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      },
+      {
+        "name": "Egg Biryani",
+        "price": 415,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Biryani & rice",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "South Indian",
+    "items": [
+      {
+        "name": "Ragi Sangati Natukodi Pulusu",
+        "price": 495,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Ghee Rice with Telangana Chicken Curry",
+        "price": 475,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Coconut Rice with Chettinadu Chicken",
+        "price": 475,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Muddapappu Avakaya Annam with Karimnagar Kodi Vepudu",
+        "price": 465,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Sambar Rice with Buhari Chicken 65",
+        "price": 475,
+        "veg": false,
+        "spicy": true,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Dalcha Mutton with Bagara Rice",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Pachi Pulusu Annam with Nethi Royyala Vepudu",
+        "price": 525,
+        "veg": false,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Ragi Sangati Guttivankaya Palli Chutney",
+        "price": 375,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Muddapappu Avakaya Annam with Aloo Chips",
+        "price": 375,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      },
+      {
+        "name": "Sambar Rice with Aloo Chips",
+        "price": 355,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "South Indian",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "section": "Desserts",
+    "items": [
+      {
+        "name": "Crème Brulee",
+        "price": 355,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Death By Chocolate",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Biscoff Cheesecake",
+        "price": 385,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "image": "/assets/dishes/lotus_biscoff_.webp",
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Bluberry cheese cake",
+        "price": 385,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Strawberry cheese cake",
+        "price": 385,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Viral Kunafa Cheese Cake",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Tiramisu",
+        "price": 375,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Tres leches",
+        "price": 395,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Apricot Delight",
+        "price": 375,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": true,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Chocolate Brownies",
+        "price": 365,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Desserts",
+        "description": ""
+      },
+      {
+        "name": "Honeymoon Jamun",
+        "price": 225,
+        "veg": true,
+        "spicy": false,
+        "chefSpecial": false,
+        "section": "Desserts",
+        "description": ""
+      }
+    ]
+  }
+]

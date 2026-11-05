@@ -1,0 +1,1951 @@
+[
+  {
+    "section": "Mocktails",
+    "items": [
+      {
+        "name": "SAROJA X PRESS",
+        "description": "Litche Juice, Vanilla Ice Cream, Blue Curraco Syrup",
+        "price": 249,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "JYOTHI LAXMI",
+        "description": "Fresh watermelon, Basil Leaves, Passionfruit syrup topped with Ginger Ale",
+        "price": 249,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "FURSAT RAHASYAM",
+        "description": "Barman Specials",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "chefSpecial": true,
+        "section": "Mocktails",
+        "spicy": false
+      },
+      {
+        "name": "JAMU RATRI",
+        "description": "Kiwi, Mint leaves, Orange, Sweet & Sour, Topup with Soda",
+        "price": 269,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ONE MAN ARMY",
+        "description": "Strawberry, Blue berry infeed syrup, Pineapple juice",
+        "price": 249,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "FASAK",
+        "description": "Cucumber Juice, Coconut water, Sweet & Sour",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "JABILI",
+        "description": "Pineapple Juice, Cococnut Syrup, Lemon Juice, Triple Sec",
+        "price": 249,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "Madhu vaani",
+        "description": "Kiwi,pineapple juice, sweet & soup top up soda",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "Chilipi chandra",
+        "description": "Rose syrup, Apple juice & Ice cream",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "Sandya Ragam",
+        "description": "Balck current, soda , sprite , toped with frozen mango",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "VIRGIN MOJITO",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BLUE LAGOON",
+        "price": 249,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "VIRGIN PINACOLADO",
+        "price": 299,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "FRUIT PUNCH",
+        "price": 399,
+        "veg": true,
+        "alc": false,
+        "section": "Mocktails",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      }
+    ]
+  },
+  {
+    "section": "Silly Classic",
+    "items": [
+      {
+        "name": "LIFE FURSAT BHAI",
+        "description": "Vodka, Elderflower syrup, Apple juice, Citric.",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MAYA LOKAM",
+        "description": "Vodka, Cinnamon Syrup, Orange Juice, Coffee.",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "THAGGEDELE",
+        "description": "Rum, Passion Fruit Syrup, Coriander, Cucumber, Tobacco, Pineapple",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SUNDARI",
+        "description": "Rum, Hibiscus Syrup, Sweet & Sour Egg White",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BULLET",
+        "description": "Tequila, Grapefruit Puree, Olive Brine, Cactus Syrup.",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SILK",
+        "description": "Gin, Infeed Syrup, Sweet & Sour, Top up soda",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MONAGADU",
+        "description": "Whisky, Peach Syrup, Bitter, Sweet & Sour",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "JAI BALAYA",
+        "description": "Gin, Watermelon Chunks, Basil leaves, Passionfruit Syrup",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "3 IDIOTS",
+        "description": "White rum, Malai Coconut Water, Garnish with White Umbrella",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "RAAJASAM",
+        "description": "Whisky with orange infused with cinnamon & rosemary",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BEER RAIGNI",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MAMIDI MAYA",
+        "description": "Raw mango and gin with Sprite top-up",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "GONGURA MUCHATLU",
+        "description": "Soreal leaf with green chillis and vodka",
+        "price": 629,
+        "alc": true,
+        "section": "Silly Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "The Classic",
+    "items": [
+      {
+        "name": "MOSCOW MULE",
+        "description": "VODKA, GINGER BEER, LIME",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MANHATTAN",
+        "description": "BORBAN WHISKEY, RED VERMOUTH, Angostura bitters",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "COSMOPOLITAN",
+        "description": "Vodka, cranberry juice, lime juice, and Triple sec.",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "OLD FASHION",
+        "description": "Bourbon whiskey, orange bitters, sugar cube",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "NIGRONI",
+        "description": "Gin, Sweet vermouth and Campari.",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "CLASSIC MARTINI",
+        "description": "Gin, Vermouth Blanco and Olives.",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MOJITO",
+        "description": "Rum, Fresh mint and Sweet and sour.",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MARGARITA",
+        "description": "Tequila, Lime Juice and Triple sec.",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "DAIQUIRI",
+        "description": "Rum, Lime and Triple sec.",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "GIMLET",
+        "description": "Gin, sugar syrup, lime juice",
+        "price": 549,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SANGRIA [Red/White]",
+        "description": "Red wine and White wine",
+        "price": 849,
+        "alc": true,
+        "section": "The Classic",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SMOKEY TEQUILA",
+        "price": 999,
+        "alc": true,
+        "section": "The Classic",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Long Island Iced Tea",
+    "items": [
+      {
+        "name": "LONG ISLAND ICED TEA (classic)",
+        "price": 799,
+        "alc": true,
+        "section": "Long Island Iced Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "ELECTRIC ICED TEA (GINGER ALE)",
+        "price": 799,
+        "alc": true,
+        "section": "Long Island Iced Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "VILLAGE RIVER",
+        "price": 799,
+        "alc": true,
+        "section": "Long Island Iced Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BULLFROG (Red bull)",
+        "price": 799,
+        "alc": true,
+        "section": "Long Island Iced Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "LIIT - 500ml",
+        "price": 1199,
+        "alc": true,
+        "section": "Long Island Iced Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "LIIT - 1 Ltr",
+        "price": 1699,
+        "alc": true,
+        "section": "Long Island Iced Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Shooters",
+    "items": [
+      {
+        "name": "KAMIKAZE (Vodka)",
+        "price": 329,
+        "alc": true,
+        "section": "Shooters",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "LIP KISS (Tequila)",
+        "price": 369,
+        "alc": true,
+        "section": "Shooters",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "LONG DRIVE (Rum)",
+        "price": 329,
+        "alc": true,
+        "section": "Shooters",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "JAGER BOMB",
+        "price": 749,
+        "alc": true,
+        "section": "Shooters",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "B52",
+        "price": 699,
+        "alc": true,
+        "section": "Shooters",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "LAMBORGHINI",
+        "price": 1699,
+        "alc": true,
+        "section": "Shooters",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Whisky",
+    "items": [
+      {
+        "name": "GLENLIVET 12 Yrs.",
+        "price": 859,
+        "price30ml": 859,
+        "priceBottle": 18299,
+        "alc": true,
+        "subCategory": "Single Malt",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "GLENFIDDICH 12 Yrs.",
+        "price": 849,
+        "price30ml": 849,
+        "priceBottle": 17899,
+        "alc": true,
+        "subCategory": "Single Malt",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "TALISKER 10 Yrs",
+        "price": 829,
+        "price30ml": 829,
+        "priceBottle": 17499,
+        "alc": true,
+        "subCategory": "Single Malt",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MONKEY SHOLDER",
+        "price": 699,
+        "price30ml": 699,
+        "priceBottle": 14999,
+        "alc": true,
+        "subCategory": "Single Malt",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "INDIRI",
+        "price": 599,
+        "price30ml": 599,
+        "priceBottle": 12999,
+        "alc": true,
+        "subCategory": "Single Malt",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "JACK DANIEL'S No 7",
+        "price": 499,
+        "price30ml": 499,
+        "priceBottle": 11699,
+        "alc": true,
+        "subCategory": "American and Irish",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "JAMESON",
+        "price": 429,
+        "price30ml": 429,
+        "priceBottle": 9199,
+        "alc": true,
+        "subCategory": "American and Irish",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "JIM BEAM",
+        "price": 329,
+        "price30ml": 329,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "American and Irish",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "TOKI SUNTORY WHISKEY",
+        "price": 749,
+        "price30ml": 749,
+        "priceBottle": 14999,
+        "alc": true,
+        "subCategory": "Japanese Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "ROYAL SALUTE 21 Yrs.",
+        "price": 2999,
+        "price30ml": 2999,
+        "priceBottle": 63499,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "CHIVAS REGAL 12 Yrs.",
+        "price": 599,
+        "price30ml": 599,
+        "priceBottle": 12599,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "J.W BLACK LABEL",
+        "price": 599,
+        "price30ml": 599,
+        "priceBottle": 12599,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "J.W RED LABEL",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "TEACHER'S 50",
+        "price": 399,
+        "price30ml": 399,
+        "priceBottle": 8199,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "TEACHER'S HIGHLAND",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BALLANTINE'S FINEST",
+        "price": 399,
+        "price30ml": 399,
+        "priceBottle": 8199,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "DEWAR'S WHITE LABEL",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BLACK DOG REGULAR",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "100 PIPERS REGULAR",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BLACK & WHITE",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "subCategory": "Blended Scotch Whiskey",
+        "section": "Whisky",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Vodka",
+    "items": [
+      {
+        "name": "GREY GOOSE",
+        "price": 499,
+        "price30ml": 499,
+        "priceBottle": 10599,
+        "alc": true,
+        "section": "Vodka",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "KETEL ONE",
+        "price": 399,
+        "price30ml": 399,
+        "priceBottle": 7299,
+        "alc": true,
+        "section": "Vodka",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "ABSOLUT",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 7399,
+        "alc": true,
+        "section": "Vodka",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SMIRNOFF",
+        "price": 249,
+        "price30ml": 249,
+        "priceBottle": 4199,
+        "alc": true,
+        "section": "Vodka",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Gin",
+    "items": [
+      {
+        "name": "BOMBAY SAPPHIRE",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 6999,
+        "alc": true,
+        "section": "Gin",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BEEFEATER",
+        "price": 319,
+        "price30ml": 319,
+        "priceBottle": 5999,
+        "alc": true,
+        "section": "Gin",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "GREATER THAN",
+        "price": 249,
+        "price30ml": 249,
+        "priceBottle": 4999,
+        "alc": true,
+        "section": "Gin",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "ROKU THE JAPANESE CRAFT",
+        "price": 629,
+        "price30ml": 629,
+        "priceBottle": 11999,
+        "alc": true,
+        "section": "Gin",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Rum",
+    "items": [
+      {
+        "name": "BACARDI WHITE",
+        "price": 249,
+        "price30ml": 249,
+        "priceBottle": 3999,
+        "alc": true,
+        "section": "Rum",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "OLD MONK XXX",
+        "price": 199,
+        "price30ml": 199,
+        "priceBottle": 2999,
+        "alc": true,
+        "section": "Rum",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "OLD MONK LEGEND",
+        "price": 249,
+        "price30ml": 249,
+        "priceBottle": 3599,
+        "alc": true,
+        "section": "Rum",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Brandy",
+    "items": [
+      {
+        "name": "HENNESSY - VSOP",
+        "price": 739,
+        "price30ml": 739,
+        "priceBottle": 17599,
+        "alc": true,
+        "section": "Brandy",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MORPHUS",
+        "price": 249,
+        "price30ml": 249,
+        "priceBottle": 3999,
+        "alc": true,
+        "section": "Brandy",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "MANSION HOUSE XO",
+        "price": 199,
+        "price30ml": 199,
+        "priceBottle": 2999,
+        "alc": true,
+        "section": "Brandy",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Tequila",
+    "items": [
+      {
+        "name": "JOSE CUERVO",
+        "price": 469,
+        "price30ml": 469,
+        "priceBottle": 9999,
+        "alc": true,
+        "section": "Tequila",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "DON ANGLE",
+        "price": 499,
+        "price30ml": 499,
+        "priceBottle": 10499,
+        "alc": true,
+        "section": "Tequila",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "DESMONDJI 51 AGAVE",
+        "price": 279,
+        "price30ml": 279,
+        "priceBottle": 5999,
+        "alc": true,
+        "section": "Tequila",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Liqueur",
+    "items": [
+      {
+        "name": "JAGERMEISTER",
+        "price": 649,
+        "price30ml": 649,
+        "priceBottle": 12899,
+        "alc": true,
+        "section": "Liqueur",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BAILEYS IRISH CREAM",
+        "price": 499,
+        "price30ml": 499,
+        "priceBottle": 10899,
+        "alc": true,
+        "section": "Liqueur",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "KAHLUA",
+        "price": 349,
+        "price30ml": 349,
+        "priceBottle": 7499,
+        "alc": true,
+        "section": "Liqueur",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Wines",
+    "items": [
+      {
+        "name": "JACOB'S CREEK CHARDONNAY",
+        "price": 1499,
+        "priceGlass": 1499,
+        "priceBottle": 5999,
+        "alc": true,
+        "subCategory": "Wines White",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SULA DINDORI CHARDONNAY",
+        "price": 799,
+        "priceGlass": 799,
+        "priceBottle": 3499,
+        "alc": true,
+        "subCategory": "Wines White",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SULA CHINEN BLANC",
+        "price": 799,
+        "priceGlass": 799,
+        "priceBottle": 3499,
+        "alc": true,
+        "subCategory": "Wines White",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "JACOB'S CREEK - CABERNET SHIRAZ",
+        "price": 1499,
+        "priceGlass": 1499,
+        "priceBottle": 5999,
+        "alc": true,
+        "subCategory": "Wines Red",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SULA SATORY",
+        "price": 799,
+        "priceGlass": 799,
+        "priceBottle": 3499,
+        "alc": true,
+        "subCategory": "Wines Red",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SULA CABERNET SHIRAZ",
+        "price": 799,
+        "priceGlass": 799,
+        "priceBottle": 3499,
+        "alc": true,
+        "subCategory": "Wines Red",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "SULA BRUT",
+        "price": 4999,
+        "priceGlass": null,
+        "priceBottle": 4999,
+        "alc": true,
+        "subCategory": "Sparkling Wine",
+        "note": "TODO(client): Bottle only on menu; glass served as null",
+        "section": "Wines",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Beer",
+    "items": [
+      {
+        "name": "AVAILABLE FLAVOURS (BREZZER)",
+        "price": 399,
+        "priceBottle": 399,
+        "priceBucket": 2199,
+        "alc": true,
+        "subCategory": "Brezzer",
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "HOEGAARDEN",
+        "price": 749,
+        "priceBottle": 749,
+        "priceBucket": 4199,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "CORONA",
+        "price": 699,
+        "priceBottle": 699,
+        "priceBucket": 3899,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "HEINIKEN",
+        "price": 549,
+        "priceBottle": 549,
+        "priceBucket": 2699,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BUDWEISER MAGNUM",
+        "price": 459,
+        "priceBottle": 459,
+        "priceBucket": 2399,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "BUDWEISER",
+        "price": 419,
+        "priceBottle": 419,
+        "priceBucket": 2299,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "KINGFISHER ULTRA",
+        "price": 419,
+        "priceBottle": 419,
+        "priceBucket": 2299,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "KINGFISHER ULTRA MAX",
+        "price": 459,
+        "priceBottle": 459,
+        "priceBucket": 2399,
+        "alc": true,
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "KF DRAUGHT",
+        "price": 419,
+        "price500ml": 419,
+        "pricePitcher": 1199,
+        "priceTower": 2299,
+        "alc": true,
+        "subCategory": "Draught Beer",
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      },
+      {
+        "name": "GEIST (Witty Wit/ James Bond)",
+        "price": 399,
+        "price330ml": 399,
+        "price500ml": 579,
+        "pricePitcher": 1599,
+        "alc": true,
+        "subCategory": "Draught Beer",
+        "section": "Beer",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false,
+        "veg": true
+      }
+    ]
+  },
+  {
+    "section": "Soft Drinks",
+    "items": [
+      {
+        "name": "RED BULL",
+        "price": 249,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "FRESH JUICE",
+        "price": 149,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "GINGER ALE",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "TONIC WATER",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "FRESH LIME SODA",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CANNED JUICE",
+        "price": 99,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "SPRITE",
+        "price": 99,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "THUMS UP",
+        "price": 99,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "DIET COKE",
+        "price": 99,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "SODA DECANTER",
+        "price": 49,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BOTTLE WATER",
+        "price": 30,
+        "alc": false,
+        "veg": true,
+        "section": "Soft Drinks",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      }
+    ]
+  },
+  {
+    "section": "Milk Shakes",
+    "items": [
+      {
+        "name": "OREO CHEESE SHAKE",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CHOCOLATE & BANANA SHAKE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CREAMY BISCOFF SHAKE",
+        "price": 329,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BROWNIE CHOCOLATE SHAKE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CARAMEL & PEANUT BUTTER SHAKE",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "TENDER COCONUT SHAKE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "STRAWBERRY SHAKE",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BLACK CURRENT SHAKE",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "section": "Milk Shakes",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      }
+    ]
+  },
+  {
+    "section": "Smoothies",
+    "items": [
+      {
+        "name": "CREAMY MANGO SMOOTHIE",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "section": "Smoothies",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "AVOCADO & SPANISH SMOOTHIE",
+        "price": 349,
+        "alc": false,
+        "veg": true,
+        "section": "Smoothies",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BLUE BERRY & COOKIE SMOOTHIE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "section": "Smoothies",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "MIX BERRY SMOOTHIE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "section": "Smoothies",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      }
+    ]
+  },
+  {
+    "section": "Coffee",
+    "items": [
+      {
+        "name": "ESPRESSO",
+        "price": 139,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "AMERICANO",
+        "price": 199,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CAPPUCCINO",
+        "price": 219,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CAFE LATTE",
+        "price": 229,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CAFE MOCHA",
+        "price": 239,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "AFFAGATO",
+        "price": 249,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "FLAT WHITE",
+        "price": 229,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "VANILLA LATTE",
+        "price": 239,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "HAZALNUT LATTE",
+        "price": 239,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CARAMEL LATTE",
+        "price": 239,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "VIETNAMESE",
+        "price": 229,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CARTADO",
+        "price": 229,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "MACCHIATO",
+        "price": 249,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "HOT CHOCOLATE",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Hot Coffees",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CLASSIC COLD COFFEE",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "HAZELNUT & CHOCOLATE FRAPPE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CARAMEL & NUTS FRAPPE",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BISCOFF FRAPPE",
+        "price": 349,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BROWNIE TOASTED NUTS FRAPPE",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CHOCOLATE FRAPPE",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "BANANA PEANUT MOCHA",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CHOCOLATE MOCHA FRAPPE",
+        "price": 299,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Frappes & Cold Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ICED AMERICANO",
+        "price": 239,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Iced Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ICED LATTE",
+        "price": 249,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Iced Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ICED MOCHA",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Iced Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ICED HAZELNUT",
+        "price": 269,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Iced Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ICED VIETNAMESE",
+        "price": 279,
+        "alc": false,
+        "veg": true,
+        "subCategory": "Iced Coffee",
+        "section": "Coffee",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      }
+    ]
+  },
+  {
+    "section": "Tea",
+    "items": [
+      {
+        "name": "CHAI",
+        "price": 99,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "GINGER HONEY TEA",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "GREEN TEA",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "ASSAM BLACK TEA",
+        "price": 119,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "LEMON TEA",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "MASALA TEA",
+        "price": 129,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "GOLD MILK",
+        "price": 189,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "CANNED JUICE",
+        "price": 119,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "SOFT DRINK",
+        "price": 99,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      },
+      {
+        "name": "WATER BOTTEL",
+        "price": 30,
+        "alc": false,
+        "veg": true,
+        "section": "Tea",
+        "description": "",
+        "spicy": false,
+        "chefSpecial": false
+      }
+    ]
+  }
+]
