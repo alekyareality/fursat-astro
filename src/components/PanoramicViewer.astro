@@ -744,6 +744,112 @@ const tourSpaces = [
           openModalForIndex(targetIndex);
         });
 
+        // ── Camera Fly-To on Space Selection ──────────────────────────────
+        // When a space is focused, ease camera slightly forward (z: -50) for drama,
+        // then spring back to center. Avoids clipping into panels.
+        var flyToCamZ = 0.0;         // current z offset for fly-to
+        var flyToTargetZ = 0.0;      // target z offset
+
+        function triggerFlyTo() {
+          flyToTargetZ = -55.0;
+          // Schedule spring back after 650ms
+          setTimeout(function () { flyToTargetZ = 0.0; }, 650);
+        }
+
+        // Trigger fly-to when active space changes from chip/button click
+        var prevActiveForFlyTo = -1;
+        function maybeFireFlyTo(idx: number) {
+          if (idx !== prevActiveForFlyTo) {
+            prevActiveForFlyTo = idx;
+            triggerFlyTo();
+          }
+        }
+
+        // ── Gyroscope Look-Around ─────────────────────────────────────────
+        // Camera yaw/pitch offset driven by device orientation
+        var gyroYaw = 0.0;
+        var gyroPitch = 0.0;
+        var gyroEnabled = false;
+
+        function applyOrientation(e: DeviceOrientationEvent) {
+          if (e.gamma == null || e.beta == null) return;
+          var gx = Math.max(-20, Math.min(20, e.gamma as number)) / 20; // -1..1
+          var gy = Math.max(20, Math.min(60, (e.beta as number))) - 40; // center ~40°
+          gyroYaw   = gx * 0.18;    // radians, clamped
+          gyroPitch = -gy * 0.004;  // radians
+        }
+
+        function enableGyro() {
+          gyroEnabled = true;
+          window.addEventListener('deviceorientation', applyOrientation, { passive: true });
+          if (gyroBtn) gyroBtn.style.display = 'none';
+        }
+
+        // iOS 13+: needs user gesture to call requestPermission
+        var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+          // iOS 13+: show the pill
+          if (gyroBtn) {
+            gyroBtn.style.display = '';
+            gyroBtn.addEventListener('click', function () {
+              (DeviceOrientationEvent as any).requestPermission().then(function (state: string) {
+                if (state === 'granted') enableGyro();
+              }).catch(function () {});
+            });
+          }
+        } else if (window.DeviceOrientationEvent && !isIOS) {
+          // Android / desktop — passive listener, no prompt needed
+          enableGyro();
+        }
+
+        // ── public/panos/ Equirectangular Skybox Detection ────────────────
+        // Panos are named pano-{name}.webp. Probe HEAD for the first candidate.
+        // If found, attach a "Full 360°" button to the drawer for future use.
+        var panosToProbe = ['/panos/pano-entrance.webp', '/panos/pano-bar.webp', '/panos/pano.webp'];
+        var skyboxAvailable = false;
+        var skyboxTexture: any = null;
+        var skyboxMesh: any = null;
+
+        (function probePanos() {
+          var checked = 0;
+          panosToProbe.forEach(function (url) {
+            fetch(url, { method: 'HEAD' }).then(function (r) {
+              if (r.ok && !skyboxAvailable) {
+                skyboxAvailable = true;
+                // Lazy-load texture only if pano exists
+                var panoTex = textureLoader.load(url);
+                panoTex.colorSpace = THREE.SRGBColorSpace;
+                panoTex.mapping = THREE.EquirectangularReflectionMapping;
+                // Build interior sphere (inverted normals)
+                var sphereGeo = new THREE.SphereGeometry(900, 60, 40);
+                sphereGeo.scale(-1, 1, 1);
+                var sphereMat = new THREE.MeshBasicMaterial({ map: panoTex });
+                skyboxMesh = new THREE.Mesh(sphereGeo, sphereMat);
+                skyboxMesh.visible = false;
+                scene.add(skyboxMesh);
+                // Expose a toggle on the modal CTA area (future-ready)
+                var cta = document.querySelector('.tour-modal-cta');
+                if (cta && cta.parentElement) {
+                  var panoBtn = document.createElement('button');
+                  panoBtn.type = 'button';
+                  panoBtn.textContent = '360° View';
+                  panoBtn.className = 'tour-modal-cta';
+                  panoBtn.style.cssText = 'background:#17200F;color:#E0A63C;border:1px solid rgba(224,166,60,0.5);';
+                  panoBtn.addEventListener('click', function () {
+                    if (skyboxMesh) {
+                      skyboxMesh.visible = !skyboxMesh.visible;
+                      rotundaGroup.visible = !skyboxMesh.visible;
+                    }
+                  });
+                  cta.parentElement.appendChild(panoBtn);
+                }
+              }
+            }).catch(function () {});
+          });
+        })();
+
         // ── Resize Handler ─────────────────────────────────────────────────
         function onResize() {
           if (!webglWrap) return;
@@ -803,7 +909,26 @@ const tourSpaces = [
           var normIndex = ((computedIndex % N) + N) % N;
           if (normIndex !== activeIndex && !isDragging) {
             updateActiveUI(normIndex);
+            maybeFireFlyTo(normIndex);
           }
+
+          // Camera fly-to z spring (ease forward on space focus, spring back)
+          flyToCamZ += (flyToTargetZ - flyToCamZ) * 0.07;
+
+          // Camera gyro offset: apply as quaternion rotation around scene center
+          var basePos = centerCamPos.clone();
+          if (gyroEnabled) {
+            // Rotate camera position on gyro pitch (X axis) and yaw (Y axis)
+            basePos.applyEuler(new THREE.Euler(gyroPitch, gyroYaw, 0, 'YXZ'));
+          }
+          // Apply fly-to z only when stepped inside
+          if (hasSteppedInside) {
+            var flyInComplete = (now - flyinStartTime) >= flyinDuration;
+            if (flyInComplete) {
+              camera.position.set(basePos.x, basePos.y, basePos.z + flyToCamZ);
+            }
+          }
+          camera.lookAt(0, 0, 0);
 
           // Update shader uniforms per panel
           // Decay velocity smoothly toward zero
