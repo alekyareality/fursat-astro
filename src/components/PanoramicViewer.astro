@@ -1,14 +1,14 @@
 ---
 // PanoramicViewer.astro - "Step inside Fursat" Panoramic Tour
-// Curved panoramic 3D ring (CSS 3D, perspective, cards on a cylinder)
-// No Three.js, no new libraries. Real photography only.
+// WebGL 3D Curved Cylindrical Rotunda with Three.js & Resilient CSS 3D Fallback
+// Real photography only from raw_assets/interior_named/
 
 const tourSpaces = [
   {
     id: 'entrance',
-    title: 'Grand Entrance & Elephant Mural',
-    kicker: 'The Arrival',
-    desc: 'Handcrafted elephant mural, ambient heritage warm lighting, and an unforgettable royal welcome into Fursat.',
+    title: 'Entrance & Elephant Mural',
+    kicker: 'Arrival Area',
+    desc: 'Handcrafted elephant wall mural, warm wall sconce lighting, and carved wooden doors.',
     img: '/assets/interior/tour-entrance.webp',
     width: 1050,
     height: 1400,
@@ -16,53 +16,53 @@ const tourSpaces = [
   },
   {
     id: 'bar',
-    title: 'The Illuminated Bar Counter',
-    kicker: 'Craft Mixology',
-    desc: 'Backlit geometric bottle displays, glowing neon logo, and mirrored ceiling reflections overlooking craft cocktails.',
+    title: 'The Bar Counter',
+    kicker: 'Bar Counter',
+    desc: 'Backlit liquor bottle shelving, illuminated circular Fursat wall sign, and dark bar counter top.',
     img: '/assets/interior/tour-bar.webp',
     width: 1050,
     height: 1400,
-    tag: 'Bar (21+)',
+    tag: 'Bar',
   },
   {
     id: 'high-tables',
-    title: 'High-Top Social Stools & Tables',
-    kicker: 'Lounge Vibes',
-    desc: 'Communal high seating with warm brass accents, designed for lively evening conversations and draught beers.',
+    title: 'High-Top Tables & Stools',
+    kicker: 'Lounge Seating',
+    desc: 'High-top wooden tables with black-frame high bar stools and overhead pendant lights.',
     img: '/assets/interior/tour-high-tables.webp',
     width: 1050,
     height: 1400,
-    tag: 'Social Lounge',
+    tag: 'High tables',
   },
   {
     id: 'lounge',
-    title: 'Velvet Sofa & Marble Dining',
-    kicker: 'Unhurried Luxury',
-    desc: 'Plush velvet seating, custom green marble tabletops, and intimate acoustic warmth for grand family meals.',
+    title: 'Sofa & Table Dining',
+    kicker: 'Dining Room',
+    desc: 'Green patterned sofa seating, dark square dining tables, indoor potted plants, and partition screens.',
     img: '/assets/interior/tour-lounge.webp',
     width: 1050,
     height: 1400,
-    tag: 'Dining',
+    tag: 'Lounge',
   },
   {
     id: 'cafe',
-    title: 'Sunlit Daylight Café Wall',
-    kicker: 'Café & Bakes',
-    desc: 'Natural daylight, minimalist typography wall art, specialty single-origin coffees, and leisurely afternoons.',
+    title: 'Café Logo Wall',
+    kicker: 'Café Area',
+    desc: 'White wall with black Fursat lettering, track lighting, and dining tables.',
     img: '/assets/interior/tour-cafe.webp',
     width: 1050,
     height: 1400,
-    tag: 'Café',
+    tag: 'Cafe',
   },
   {
     id: 'booth',
-    title: 'Red Velvet Booths & Retro Posters',
-    kicker: 'Retro Energy',
-    desc: 'Curated Bollywood & pop art prints, intimate booth banquettes, and a vibrant backdrop for celebrations.',
+    title: 'Red Booth Seating & Wall Posters',
+    kicker: 'Booth Seating',
+    desc: 'Red banquette booth seating with framed wall posters and hanging warm lamps.',
     img: '/assets/interior/tour-booth.webp',
     width: 1050,
     height: 1400,
-    tag: 'Private Booths',
+    tag: 'Booth',
   },
 ];
 ---
@@ -74,18 +74,53 @@ const tourSpaces = [
       <span class="tour-kicker">STEP INSIDE FURSAT</span>
       <h2 class="tour-title mot-headline" id="tour-heading">A Panoramic Walkthrough</h2>
       <p class="tour-sub">
-        Drag or swipe to rotate the 3D panoramic ring. Tap any space to explore details.
+        Drag or swipe to rotate. Tap any space to explore details.
       </p>
     </div>
 
-    <!-- 3D Panoramic Stage -->
+    <!-- Space-Name Navigation Chips -->
+    <nav class="tour-chips-bar" id="tour-chips" aria-label="Interior spaces quick select">
+      {tourSpaces.map((item, index) => (
+        <button
+          type="button"
+          class={`tour-chip${index === 0 ? ' is-active' : ''}`}
+          data-index={index}
+          role="tab"
+          aria-selected={index === 0 ? 'true' : 'false'}
+        >
+          {item.tag}
+        </button>
+      ))}
+    </nav>
+
+    <!-- 3D Panoramic Stage Wrapper -->
     <div
       class="tour-stage-wrapper"
       id="tour-stage-wrapper"
       role="region"
-      aria-label="3D Panoramic tour ring"
+      aria-label="3D Panoramic tour"
       tabindex="0"
     >
+      <!-- WebGL Canvas Container -->
+      <div class="tour-webgl-wrap" id="tour-webgl-wrap">
+        <canvas id="tour-webgl-canvas" class="tour-webgl-canvas"></canvas>
+
+        <!-- "Step Inside" Fly-In Button Overlay -->
+        <div class="tour-flyin-overlay" id="tour-flyin-overlay">
+          <button type="button" class="tour-flyin-btn" id="tour-flyin-btn" aria-label="Step inside Fursat 3D Rotunda">
+            <span class="tour-flyin-icon" aria-hidden="true">✦</span>
+            <span class="tour-flyin-text">Step Inside Fursat</span>
+          </button>
+        </div>
+
+        <!-- iOS Gyroscope Permission Prompt Pill -->
+        <button type="button" class="tour-gyro-btn" id="tour-gyro-btn" aria-label="Enable motion look-around" style="display: none;">
+          <span class="tour-gyro-icon">⟳</span>
+          <span>Enable Motion Look-Around</span>
+        </button>
+      </div>
+
+      <!-- CSS 3D Ring (Fallback for No-WebGL / Reduced Motion) -->
       <div class="tour-stage" id="tour-stage">
         <div class="tour-ring" id="tour-ring">
           {tourSpaces.map((item, index) => {
@@ -176,12 +211,12 @@ const tourSpaces = [
 
       <!-- Drag & Keyboard Hint -->
       <div class="tour-hint" aria-hidden="true">
-        <span>↔ Drag to spin · Arrow keys to navigate · Tap to expand</span>
+        <span>↔ Drag to spin · Arrow keys to navigate · Tap to explore</span>
       </div>
     </div>
   </div>
 
-  <!-- Expand Lightbox Modal -->
+  <!-- Expand Lightbox Modal / Drawer -->
   <dialog class="tour-modal" id="tour-modal" aria-labelledby="tour-modal-title">
     <div class="tour-modal-backdrop" id="tour-modal-backdrop"></div>
     <div class="tour-modal-box">
@@ -189,7 +224,7 @@ const tourSpaces = [
         type="button"
         class="tour-modal-close"
         id="tour-modal-close"
-        aria-label="Close expanded view"
+        aria-label="Close details"
       >
         ✕
       </button>
@@ -201,58 +236,141 @@ const tourSpaces = [
         <h3 class="tour-modal-title" id="tour-modal-title"></h3>
         <p class="tour-modal-desc" id="tour-modal-desc"></p>
         <div class="tour-modal-actions">
-          <a href="/reserve" class="tour-modal-cta">Reserve a Table in this Space →</a>
+          <a href="/reserve" class="tour-modal-cta">Reserve a Table →</a>
         </div>
       </div>
     </div>
   </dialog>
 </section>
 
-<!-- ── Tour Interactivity Script ─────────────────────────────────────────── -->
-<script is:inline>
-(function () {
-  var wrapper = document.getElementById('tour-stage-wrapper');
-  var stage = document.getElementById('tour-stage');
-  var ring = document.getElementById('tour-ring');
-  if (!wrapper || !stage || !ring) return;
+<!-- ── Tour Interactivity Script (Bundled by Astro/Vite) ─────────────────────── -->
+<script>
+  (function () {
+    var section = document.getElementById('tour');
+    var wrapper = document.getElementById('tour-stage-wrapper');
+    var stage = document.getElementById('tour-stage');
+    var ring = document.getElementById('tour-ring');
+    var webglWrap = document.getElementById('tour-webgl-wrap');
+    var canvas = document.getElementById('tour-webgl-canvas') as HTMLCanvasElement;
+    var flyinOverlay = document.getElementById('tour-flyin-overlay');
+    var flyinBtn = document.getElementById('tour-flyin-btn');
+    var gyroBtn = document.getElementById('tour-gyro-btn');
+    var prevBtn = document.getElementById('tour-prev');
+    var nextBtn = document.getElementById('tour-next');
+    var chips = Array.from(document.querySelectorAll('.tour-chip'));
+    var dots = Array.from(document.querySelectorAll('.tour-dot'));
+    var cards = Array.from(document.querySelectorAll('.tour-card'));
 
-  var cards = Array.from(ring.querySelectorAll('.tour-card'));
-  var dots = Array.from(wrapper.querySelectorAll('.tour-dot'));
-  var prevBtn = document.getElementById('tour-prev');
-  var nextBtn = document.getElementById('tour-next');
-  var modal = document.getElementById('tour-modal');
-  var modalClose = document.getElementById('tour-modal-close');
-  var modalBackdrop = document.getElementById('tour-modal-backdrop');
-  var modalImg = document.getElementById('tour-modal-img');
-  var modalTitle = document.getElementById('tour-modal-title');
-  var modalKicker = document.getElementById('tour-modal-kicker');
-  var modalDesc = document.getElementById('tour-modal-desc');
+    var modal = document.getElementById('tour-modal') as HTMLDialogElement;
+    var modalClose = document.getElementById('tour-modal-close');
+    var modalBackdrop = document.getElementById('tour-modal-backdrop');
+    var modalImg = document.getElementById('tour-modal-img') as HTMLImageElement;
+    var modalTitle = document.getElementById('tour-modal-title');
+    var modalKicker = document.getElementById('tour-modal-kicker');
+    var modalDesc = document.getElementById('tour-modal-desc');
 
-  var N = cards.length; // 6
-  var stepAngle = 360 / N; // 60 deg
-  var currentAngle = 0;
-  var targetAngle = 0;
-  var isDragging = false;
-  var startX = 0;
-  var lastX = 0;
-  var lastTime = 0;
-  var velocity = 0;
-  var isPaused = false;
-  var activeIndex = 0;
+    if (!section || !wrapper) return;
 
-  var isReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var spacesData = [
+      {
+        id: 'entrance',
+        title: 'Entrance & Elephant Mural',
+        kicker: 'Arrival Area',
+        desc: 'Handcrafted elephant wall mural, warm wall sconce lighting, and carved wooden doors.',
+        img: '/assets/interior/tour-entrance.webp'
+      },
+      {
+        id: 'bar',
+        title: 'The Bar Counter',
+        kicker: 'Bar Counter',
+        desc: 'Backlit liquor bottle shelving, illuminated circular Fursat wall sign, and dark bar counter top.',
+        img: '/assets/interior/tour-bar.webp'
+      },
+      {
+        id: 'high-tables',
+        title: 'High-Top Tables & Stools',
+        kicker: 'Lounge Seating',
+        desc: 'High-top wooden tables with black-frame high bar stools and overhead pendant lights.',
+        img: '/assets/interior/tour-high-tables.webp'
+      },
+      {
+        id: 'lounge',
+        title: 'Sofa & Table Dining',
+        kicker: 'Dining Room',
+        desc: 'Green patterned sofa seating, dark square dining tables, indoor potted plants, and partition screens.',
+        img: '/assets/interior/tour-lounge.webp'
+      },
+      {
+        id: 'cafe',
+        title: 'Café Logo Wall',
+        kicker: 'Café Area',
+        desc: 'White wall with black Fursat lettering, track lighting, and dining tables.',
+        img: '/assets/interior/tour-cafe.webp'
+      },
+      {
+        id: 'booth',
+        title: 'Red Booth Seating & Wall Posters',
+        kicker: 'Booth Seating',
+        desc: 'Red banquette booth seating with framed wall posters and hanging warm lamps.',
+        img: '/assets/interior/tour-booth.webp'
+      }
+    ];
 
-  // Sync active card and dots
-  function updateActiveState(angle) {
-    var rawIndex = Math.round(-angle / stepAngle);
-    var normIndex = ((rawIndex % N) + N) % N;
-    if (normIndex !== activeIndex) {
-      activeIndex = normIndex;
-      cards.forEach(function (c, i) {
+    var N = spacesData.length; // 6
+    var stepAngle = (Math.PI * 2) / N; // 60 deg in radians
+    var activeIndex = 0;
+    var targetIndex = 0;
+
+    var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Lightbox Modal
+    function openModalForIndex(idx: number) {
+      if (!modal) return;
+      var d = spacesData[idx];
+      if (!d) return;
+      if (modalImg) { modalImg.src = d.img; modalImg.alt = d.title; }
+      if (modalTitle) modalTitle.textContent = d.title;
+      if (modalKicker) modalKicker.textContent = d.kicker;
+      if (modalDesc) modalDesc.textContent = d.desc;
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.setAttribute('open', '');
+      }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      if (typeof modal.close === 'function') {
+        modal.close();
+      } else {
+        modal.removeAttribute('open');
+      }
+      document.body.style.overflow = '';
+    }
+
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
+      modal.addEventListener('cancel', function (e) {
+        e.preventDefault();
+        closeModal();
+      });
+    }
+
+    function updateActiveUI(idx: number) {
+      activeIndex = idx;
+      chips.forEach(function (c, i) {
         if (i === activeIndex) {
           c.classList.add('is-active');
+          c.setAttribute('aria-selected', 'true');
         } else {
           c.classList.remove('is-active');
+          c.setAttribute('aria-selected', 'false');
         }
       });
       dots.forEach(function (d, i) {
@@ -264,192 +382,422 @@ const tourSpaces = [
           d.setAttribute('aria-selected', 'false');
         }
       });
-    }
-  }
-
-  // Render loop
-  function tick() {
-    if (!isDragging) {
-      var diff = targetAngle - currentAngle;
-      if (Math.abs(diff) > 0.05) {
-        currentAngle += diff * 0.12;
-      } else {
-        currentAngle = targetAngle;
-        if (!isPaused && !isReduced) {
-          targetAngle -= 0.04;
-          currentAngle -= 0.04;
+      cards.forEach(function (card, i) {
+        if (i === activeIndex) {
+          card.classList.add('is-active');
+        } else {
+          card.classList.remove('is-active');
         }
+      });
+    }
+
+    // ── Check WebGL Support ───────────────────────────────────────────
+    function hasWebGLSupport() {
+      try {
+        var testCanvas = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (testCanvas.getContext('webgl2') || testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
+      } catch (e) {
+        return false;
       }
     }
 
-    ring.style.transform = 'rotateY(' + currentAngle.toFixed(2) + 'deg)';
-    updateActiveState(currentAngle);
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+    var webglAvailable = !prefersReduced && hasWebGLSupport();
 
-  function snapTo(index) {
-    var rawIndex = Math.round(-currentAngle / stepAngle);
-    var currentNorm = ((rawIndex % N) + N) % N;
-    var delta = index - currentNorm;
-    if (delta > N / 2) delta -= N;
-    if (delta < -N / 2) delta += N;
-    targetAngle = (rawIndex - delta) * -stepAngle;
-  }
-
-  // Pointer drag & swipe
-  wrapper.addEventListener('pointerdown', function (e) {
-    if (e.target.closest('button, a, dialog')) return;
-    isDragging = true;
-    startX = e.clientX;
-    lastX = e.clientX;
-    lastTime = performance.now();
-    velocity = 0;
-    try { wrapper.setPointerCapture(e.pointerId); } catch (err) {}
-  });
-
-  wrapper.addEventListener('pointermove', function (e) {
-    if (!isDragging) return;
-    var now = performance.now();
-    var dx = e.clientX - lastX;
-    var dt = Math.max(1, now - lastTime);
-    velocity = dx / dt;
-    currentAngle += dx * 0.45;
-    targetAngle = currentAngle;
-    lastX = e.clientX;
-    lastTime = now;
-  });
-
-  function endDrag() {
-    if (!isDragging) return;
-    isDragging = false;
-    var projected = currentAngle + velocity * 160;
-    var snappedIndex = Math.round(-projected / stepAngle);
-    targetAngle = snappedIndex * -stepAngle;
-  }
-
-  wrapper.addEventListener('pointerup', endDrag);
-  wrapper.addEventListener('pointercancel', endDrag);
-
-  // Pause on hover, touch, or focus
-  wrapper.addEventListener('pointerenter', function () { isPaused = true; });
-  wrapper.addEventListener('pointerleave', function () {
-    if (!isDragging) isPaused = false;
-  });
-  wrapper.addEventListener('focusin', function () { isPaused = true; });
-  wrapper.addEventListener('focusout', function () { isPaused = false; });
-
-  // Navigation buttons
-  if (prevBtn) {
-    prevBtn.addEventListener('click', function () {
-      var currentSnap = Math.round(-targetAngle / stepAngle);
-      targetAngle = (currentSnap - 1) * -stepAngle;
-    });
-  }
-  if (nextBtn) {
-    nextBtn.addEventListener('click', function () {
-      var currentSnap = Math.round(-targetAngle / stepAngle);
-      targetAngle = (currentSnap + 1) * -stepAngle;
-    });
-  }
-
-  // Dots click
-  dots.forEach(function (dot) {
-    dot.addEventListener('click', function () {
-      var idx = parseInt(dot.dataset.index, 10);
-      snapTo(idx);
-    });
-  });
-
-  // Keyboard navigation
-  wrapper.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      var currentSnap = Math.round(-targetAngle / stepAngle);
-      targetAngle = (currentSnap - 1) * -stepAngle;
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      var currentSnap = Math.round(-targetAngle / stepAngle);
-      targetAngle = (currentSnap + 1) * -stepAngle;
+    if (!webglAvailable) {
+      // Use CSS 3D fallback
+      initCSS3DFallback();
+      return;
     }
-  });
 
-  // Pointer tilt (desktop) & Device orientation tilt (mobile)
-  if (!isReduced) {
-    wrapper.addEventListener('pointermove', function (e) {
-      if (isDragging) return;
-      var rect = wrapper.getBoundingClientRect();
-      var nx = (e.clientX - rect.left) / rect.width - 0.5;
-      var ny = (e.clientY - rect.top) / rect.height - 0.5;
-      var tiltX = Math.max(-6, Math.min(6, -ny * 10));
-      var tiltY = Math.max(-8, Math.min(8, nx * 12));
-      stage.style.transform = 'rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)';
-    });
+    // ── WebGL Engine Initializer (Lazy Loaded) ─────────────────────────
+    var webglInitialized = false;
 
-    wrapper.addEventListener('pointerleave', function () {
-      stage.style.transform = 'rotateX(0deg) rotateY(0deg)';
-    });
+    var observer = new IntersectionObserver(
+      function (entries) {
+        if (entries[0].isIntersecting && !webglInitialized) {
+          webglInitialized = true;
+          observer.disconnect();
+          startWebGLTour();
+        }
+      },
+      { rootMargin: '300px 0px' }
+    );
 
-    // Mobile device orientation (clamped, silent skip if iOS requires permission)
-    if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission !== 'function') {
-      window.addEventListener('deviceorientation', function (e) {
-        if (e.gamma == null || e.beta == null) return;
-        var gx = Math.max(-20, Math.min(20, e.gamma)) / 20;
-        var gy = Math.max(20, Math.min(60, e.beta) - 40) / 20;
-        stage.style.transform = 'rotateX(' + (-gy * 6).toFixed(2) + 'deg) rotateY(' + (gx * 8).toFixed(2) + 'deg)';
-      }, { passive: true });
+    observer.observe(section);
+
+    function startWebGLTour() {
+      import('three').then(function (THREE) {
+        if (!canvas || !webglWrap) return;
+
+        // Mark as WebGL active
+        wrapper?.classList.add('has-webgl');
+
+        var width = webglWrap.clientWidth || 1000;
+        var height = webglWrap.clientHeight || 520;
+
+        var scene = new THREE.Scene();
+        // Cheap atmospheric fog (matching #0d1308 background)
+        scene.fog = new THREE.FogExp2(0x0d1308, 0.0012);
+
+        var camera = new THREE.PerspectiveCamera(54, width / height, 1, 3000);
+        // Start camera at outside fly-in position
+        var startCamPos = new THREE.Vector3(0, 48, 820);
+        var centerCamPos = new THREE.Vector3(0, 0, 0);
+        camera.position.copy(startCamPos);
+
+        var renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: false,
+          powerPreference: 'high-performance'
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+        renderer.setSize(width, height);
+        renderer.setClearColor(0x0d1308, 1);
+
+        // Cylindrical amphitheater setup
+        var rotundaGroup = new THREE.Group();
+        scene.add(rotundaGroup);
+
+        var radius = 430;
+        var panelHeight = 350;
+        var thetaLength = 0.62; // ~35.5 degrees per panel arc
+
+        var cylinderGeo = new THREE.CylinderGeometry(
+          radius,
+          radius,
+          panelHeight,
+          32,
+          4,
+          true,
+          -thetaLength / 2,
+          thetaLength
+        );
+        cylinderGeo.scale(-1, 1, 1); // inside faces camera
+
+        var textureLoader = new THREE.TextureLoader();
+        var panelMeshes: any[] = [];
+
+        spacesData.forEach(function (space, index) {
+          var texture = textureLoader.load(space.img);
+          texture.colorSpace = THREE.SRGBColorSpace;
+          texture.generateMipmaps = true;
+          texture.minFilter = THREE.LinearMipmapLinearFilter;
+
+          var material = new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.DoubleSide
+          });
+
+          var mesh = new THREE.Mesh(cylinderGeo, material);
+          mesh.userData = { index: index, space: space };
+
+          // Position around circle
+          var angle = index * stepAngle + Math.PI;
+          mesh.rotation.y = angle;
+
+          rotundaGroup.add(mesh);
+          panelMeshes.push(mesh);
+        });
+
+        // ── Camera Fly-In Logic ───────────────────────────────────────────
+        var hasSteppedInside = false;
+        var flyinStartTime = 0;
+        var flyinDuration = 1600; // 1.6s
+
+        function stepInside() {
+          if (hasSteppedInside) return;
+          hasSteppedInside = true;
+          flyinStartTime = performance.now();
+          if (flyinOverlay) {
+            flyinOverlay.style.opacity = '0';
+            flyinOverlay.style.pointerEvents = 'none';
+          }
+        }
+
+        if (flyinBtn) {
+          flyinBtn.addEventListener('click', stepInside);
+        }
+
+        // ── Drag & Inertia Physics ─────────────────────────────────────────
+        var isDragging = false;
+        var pointerStartX = 0;
+        var lastPointerX = 0;
+        var lastTime = 0;
+        var angularVelocity = 0;
+        var targetRotY = 0;
+        var currentRotY = 0;
+        var isPointerOver = false;
+
+        // Interaction intent thresholds for scroll safety
+        var startClientY = 0;
+        var dragThresholdMet = false;
+
+        canvas.addEventListener('pointerdown', function (e) {
+          isDragging = true;
+          dragThresholdMet = false;
+          pointerStartX = e.clientX;
+          lastPointerX = e.clientX;
+          startClientY = e.clientY;
+          lastTime = performance.now();
+          angularVelocity = 0;
+          try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+          if (!hasSteppedInside) stepInside();
+        });
+
+        canvas.addEventListener('pointermove', function (e) {
+          if (!isDragging) return;
+          var dx = e.clientX - lastPointerX;
+          var dy = e.clientY - startClientY;
+
+          // Check if horizontal intent is clear before trapping
+          if (!dragThresholdMet) {
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) {
+              dragThresholdMet = true;
+            } else if (Math.abs(dy) > 10) {
+              // User intended vertical scroll; release
+              isDragging = false;
+              return;
+            }
+          }
+
+          var now = performance.now();
+          var dt = Math.max(1, now - lastTime);
+          angularVelocity = (dx / dt) * 0.003;
+          currentRotY -= dx * 0.0038;
+          targetRotY = currentRotY;
+          lastPointerX = e.clientX;
+          lastTime = now;
+        });
+
+        function endDrag(e?: PointerEvent) {
+          if (!isDragging) return;
+          isDragging = false;
+
+          // Project momentum
+          var projectedRot = currentRotY - angularVelocity * 80;
+          var rawIndex = Math.round(projectedRot / stepAngle);
+          targetIndex = ((rawIndex % N) + N) % N;
+          targetRotY = rawIndex * stepAngle;
+          updateActiveUI(targetIndex);
+        }
+
+        canvas.addEventListener('pointerup', endDrag);
+        canvas.addEventListener('pointercancel', endDrag);
+
+        canvas.addEventListener('pointerenter', function () { isPointerOver = true; });
+        canvas.addEventListener('pointerleave', function () {
+          isPointerOver = false;
+          if (isDragging) endDrag();
+        });
+
+        // ── Navigation Buttons & Chips ─────────────────────────────────────
+        function snapToIndex(idx: number) {
+          if (!hasSteppedInside) stepInside();
+          var rawIndex = Math.round(currentRotY / stepAngle);
+          var currentNorm = ((rawIndex % N) + N) % N;
+          var delta = idx - currentNorm;
+          if (delta > N / 2) delta -= N;
+          if (delta < -N / 2) delta += N;
+          targetRotY = (rawIndex + delta) * stepAngle;
+          targetIndex = idx;
+          updateActiveUI(targetIndex);
+        }
+
+        chips.forEach(function (chip) {
+          chip.addEventListener('click', function () {
+            var idx = parseInt((chip as HTMLElement).dataset.index || '0', 10);
+            snapToIndex(idx);
+          });
+        });
+
+        dots.forEach(function (dot) {
+          dot.addEventListener('click', function () {
+            var idx = parseInt((dot as HTMLElement).dataset.index || '0', 10);
+            snapToIndex(idx);
+          });
+        });
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', function () {
+            var cur = Math.round(targetRotY / stepAngle);
+            targetRotY = (cur - 1) * stepAngle;
+            var norm = (((cur - 1) % N) + N) % N;
+            updateActiveUI(norm);
+          });
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function () {
+            var cur = Math.round(targetRotY / stepAngle);
+            targetRotY = (cur + 1) * stepAngle;
+            var norm = (((cur + 1) % N) + N) % N;
+            updateActiveUI(norm);
+          });
+        }
+
+        // Keyboard navigation
+        wrapper?.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            var cur = Math.round(targetRotY / stepAngle);
+            targetRotY = (cur - 1) * stepAngle;
+            updateActiveUI((((cur - 1) % N) + N) % N);
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            var cur2 = Math.round(targetRotY / stepAngle);
+            targetRotY = (cur2 + 1) * stepAngle;
+            updateActiveUI((((cur2 + 1) % N) + N) % N);
+          }
+        });
+
+        // Click on Canvas to Expand details of focused panel
+        canvas.addEventListener('click', function (e) {
+          if (Math.abs(lastPointerX - pointerStartX) > 8) return; // was a drag
+          openModalForIndex(targetIndex);
+        });
+
+        // ── Resize Handler ─────────────────────────────────────────────────
+        function onResize() {
+          if (!webglWrap) return;
+          var w = webglWrap.clientWidth;
+          var h = webglWrap.clientHeight;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
+        window.addEventListener('resize', onResize, { passive: true });
+
+        // ── Render Loop ───────────────────────────────────────────────────
+        var isSectionVisible = true;
+        var visibilityObserver = new IntersectionObserver(function (entries) {
+          isSectionVisible = entries[0].isIntersecting;
+        });
+        visibilityObserver.observe(section);
+
+        function animate(now: number) {
+          requestAnimationFrame(animate);
+          if (!isSectionVisible) return;
+
+          // Camera Fly-In Tween (~1.6s)
+          if (hasSteppedInside) {
+            var elapsed = now - flyinStartTime;
+            if (elapsed < flyinDuration) {
+              var p = Math.min(1, elapsed / flyinDuration);
+              // easeOutCubic
+              var eased = 1 - Math.pow(1 - p, 3);
+              camera.position.lerpVectors(startCamPos, centerCamPos, eased);
+            } else {
+              camera.position.copy(centerCamPos);
+            }
+          }
+
+          // Smooth rotunda rotation
+          if (!isDragging) {
+            var diff = targetRotY - currentRotY;
+            if (Math.abs(diff) > 0.0005) {
+              currentRotY += diff * 0.12;
+            } else {
+              currentRotY = targetRotY;
+              // Very subtle ambient idle drift when untouched
+              if (!isPointerOver && hasSteppedInside) {
+                targetRotY += 0.0003;
+                currentRotY += 0.0003;
+              }
+            }
+          }
+
+          rotundaGroup.rotation.y = currentRotY;
+
+          // Sync active space index from current angle
+          var computedIndex = Math.round(currentRotY / stepAngle);
+          var normIndex = ((computedIndex % N) + N) % N;
+          if (normIndex !== activeIndex && !isDragging) {
+            updateActiveUI(normIndex);
+          }
+
+          renderer.render(scene, camera);
+        }
+
+        requestAnimationFrame(animate);
+      });
     }
-  }
 
-  // Lightbox Modal Expansion
-  function openModal(card) {
-    if (!modal) return;
-    var d = card.dataset;
-    if (modalImg) { modalImg.src = d.img || ''; modalImg.alt = d.title || ''; }
-    if (modalTitle) modalTitle.textContent = d.title || '';
-    if (modalKicker) modalKicker.textContent = d.kicker || '';
-    if (modalDesc) modalDesc.textContent = d.desc || '';
-    if (typeof modal.showModal === 'function') {
-      modal.showModal();
-    } else {
-      modal.setAttribute('open', '');
-    }
-    document.body.style.overflow = 'hidden';
-  }
+    // ── CSS 3D Fallback implementation ─────────────────────────────────
+    function initCSS3DFallback() {
+      if (!stage || !ring) return;
+      var currentAngle = 0;
+      var targetAngle = 0;
+      var isDragging = false;
+      var lastX = 0;
+      var lastTime = 0;
+      var velocity = 0;
+      var stepDeg = 360 / N;
 
-  function closeModal() {
-    if (!modal) return;
-    if (typeof modal.close === 'function') {
-      modal.close();
-    } else {
-      modal.removeAttribute('open');
-    }
-    document.body.style.overflow = '';
-  }
-
-  if (modalClose) modalClose.addEventListener('click', closeModal);
-  if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
-  if (modal) {
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) closeModal();
-    });
-    modal.addEventListener('cancel', function (e) {
-      e.preventDefault();
-      closeModal();
-    });
-  }
-
-  // Card click: if already active -> expand; if not -> snap to center
-  cards.forEach(function (card, idx) {
-    card.addEventListener('click', function (e) {
-      if (card.classList.contains('is-active') || e.target.closest('.tour-card-expand-btn')) {
-        openModal(card);
-      } else {
-        snapTo(idx);
+      function tickCSS() {
+        if (!isDragging) {
+          var diff = targetAngle - currentAngle;
+          if (Math.abs(diff) > 0.05) {
+            currentAngle += diff * 0.12;
+          } else {
+            currentAngle = targetAngle;
+          }
+        }
+        ring.style.transform = 'rotateY(' + currentAngle.toFixed(2) + 'deg)';
+        var rawIdx = Math.round(-currentAngle / stepDeg);
+        var norm = ((rawIdx % N) + N) % N;
+        updateActiveUI(norm);
+        requestAnimationFrame(tickCSS);
       }
-    });
-  });
-})();
+      requestAnimationFrame(tickCSS);
+
+      wrapper?.addEventListener('pointerdown', function (e) {
+        if ((e.target as HTMLElement).closest('button, a, dialog')) return;
+        isDragging = true;
+        lastX = e.clientX;
+        lastTime = performance.now();
+        velocity = 0;
+      });
+
+      wrapper?.addEventListener('pointermove', function (e) {
+        if (!isDragging) return;
+        var dx = e.clientX - lastX;
+        var now = performance.now();
+        var dt = Math.max(1, now - lastTime);
+        velocity = dx / dt;
+        currentAngle += dx * 0.45;
+        targetAngle = currentAngle;
+        lastX = e.clientX;
+        lastTime = now;
+      });
+
+      function endCSSDrag() {
+        if (!isDragging) return;
+        isDragging = false;
+        var projected = currentAngle + velocity * 160;
+        var snappedIdx = Math.round(-projected / stepDeg);
+        targetAngle = snappedIdx * -stepDeg;
+      }
+
+      wrapper?.addEventListener('pointerup', endCSSDrag);
+      wrapper?.addEventListener('pointercancel', endCSSDrag);
+
+      cards.forEach(function (card, idx) {
+        card.addEventListener('click', function () {
+          if (card.classList.contains('is-active')) {
+            openModalForIndex(idx);
+          } else {
+            var raw = Math.round(-currentAngle / stepDeg);
+            var curNorm = ((raw % N) + N) % N;
+            var delta = idx - curNorm;
+            if (delta > N / 2) delta -= N;
+            if (delta < -N / 2) delta += N;
+            targetAngle = (raw - delta) * -stepDeg;
+          }
+        });
+      });
+    }
+  })();
 </script>
 
 <style is:global>
@@ -474,7 +822,7 @@ const tourSpaces = [
   .tour-header {
     text-align: center;
     max-width: 720px;
-    margin: 0 auto 40px;
+    margin: 0 auto 28px;
   }
   .tour-kicker {
     font-size: 0.8125rem;
@@ -504,11 +852,47 @@ const tourSpaces = [
     line-height: 1.5;
   }
 
+  /* Space-Name Quick Chips Bar */
+  .tour-chips-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin: 0 auto 32px;
+    max-width: 800px;
+  }
+  .tour-chip {
+    background: rgba(23, 32, 15, 0.8);
+    border: 1px solid rgba(224, 166, 60, 0.3);
+    color: rgba(244, 236, 218, 0.75);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+  .tour-chip:hover {
+    border-color: #E0A63C;
+    color: #F4ECDA;
+    background: rgba(224, 166, 60, 0.12);
+  }
+  .tour-chip.is-active {
+    background: #E0A63C;
+    border-color: #E0A63C;
+    color: #12190B;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(224, 166, 60, 0.3);
+  }
+
   /* 3D Stage Wrapper */
   .tour-stage-wrapper {
     position: relative;
     width: 100%;
-    min-height: 560px;
+    min-height: 540px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -519,6 +903,103 @@ const tourSpaces = [
     outline: none;
   }
 
+  /* WebGL Canvas Wrap */
+  .tour-webgl-wrap {
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 500px;
+    max-width: 1200px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #0d1308;
+    border: 1px solid rgba(224, 166, 60, 0.2);
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.7);
+  }
+
+  .tour-stage-wrapper.has-webgl .tour-webgl-wrap {
+    display: block;
+  }
+  .tour-stage-wrapper.has-webgl #tour-stage {
+    display: none !important;
+  }
+
+  .tour-webgl-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+  .tour-webgl-canvas:active {
+    cursor: grabbing;
+  }
+
+  /* "Step Inside" Fly-In Button Overlay */
+  .tour-flyin-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(13, 19, 8, 0.3) 0%, rgba(13, 19, 8, 0.85) 85%);
+    transition: opacity 0.5s ease;
+    z-index: 10;
+    pointer-events: auto;
+  }
+  .tour-flyin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    background: #E0A63C;
+    color: #12190B;
+    border: 2px solid #F4ECDA;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(224, 166, 60, 0.4), 0 0 20px rgba(224, 166, 60, 0.2);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  }
+  .tour-flyin-btn:hover {
+    background: #F4ECDA;
+    color: #12190B;
+    transform: scale(1.05);
+    box-shadow: 0 12px 36px rgba(244, 236, 218, 0.45);
+  }
+  .tour-flyin-icon {
+    font-size: 1.15rem;
+  }
+
+  /* iOS Gyro Button */
+  .tour-gyro-btn {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(23, 32, 15, 0.85);
+    border: 1px solid rgba(224, 166, 60, 0.5);
+    color: #F4ECDA;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    z-index: 15;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+  }
+  .tour-gyro-btn:hover {
+    background: #E0A63C;
+    color: #12190B;
+  }
+
+  /* CSS 3D Stage (Fallback) */
   .tour-stage {
     perspective: 1200px;
     perspective-origin: 50% 50%;
@@ -531,7 +1012,6 @@ const tourSpaces = [
     transition: transform 0.15s ease-out;
   }
 
-  /* Cylindrical 3D Ring */
   .tour-ring {
     position: relative;
     width: 320px;
@@ -540,7 +1020,6 @@ const tourSpaces = [
     will-change: transform;
   }
 
-  /* Tour Card */
   .tour-card {
     position: absolute;
     inset: 0;
@@ -548,7 +1027,6 @@ const tourSpaces = [
     height: 440px;
     cursor: pointer;
     transform-origin: 50% 50%;
-    /* Cylindrical placement: rotated around Y, then translated out along Z radius */
     transform: rotateY(var(--card-angle)) translateZ(440px);
     transition: filter 0.4s ease, opacity 0.4s ease;
     filter: brightness(0.7) blur(0.5px);
@@ -556,7 +1034,6 @@ const tourSpaces = [
     border-radius: 18px;
     overflow: hidden;
   }
-
   .tour-card.is-active {
     filter: brightness(1) blur(0);
     opacity: 1;
@@ -574,15 +1051,12 @@ const tourSpaces = [
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
-
   .tour-card.is-active .tour-card-inner {
     border-color: #E0A63C;
     box-shadow: 0 20px 50px rgba(224, 166, 60, 0.25), 0 0 20px rgba(224, 166, 60, 0.15);
   }
 
-  /* Image Wrap & Drift */
   .tour-card-img-wrap {
     position: relative;
     flex: 1;
@@ -596,34 +1070,13 @@ const tourSpaces = [
     object-fit: cover;
     object-position: center;
     display: block;
-    will-change: transform;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-
-  /* Slow cinematic drift on center photo */
-  .tour-card.is-active .tour-card-img {
-    animation: tour-drift 12s ease-in-out infinite alternate;
-  }
-
-  @keyframes tour-drift {
-    0% {
-      transform: scale(1.02) translate(0, 0);
-    }
-    50% {
-      transform: scale(1.08) translate(-1.2%, -1%);
-    }
-    100% {
-      transform: scale(1.04) translate(1%, -0.6%);
-    }
-  }
-
   .tour-card-dimmer {
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(13,19,8,0.75) 100%);
     pointer-events: none;
   }
-
   .tour-card-badge {
     position: absolute;
     top: 14px;
@@ -637,10 +1090,7 @@ const tourSpaces = [
     letter-spacing: 0.1em;
     padding: 3px 10px;
     border-radius: 999px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
   }
-
   .tour-card-expand-btn {
     position: absolute;
     top: 14px;
@@ -655,19 +1105,12 @@ const tourSpaces = [
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
   }
   .tour-card-expand-btn svg {
     width: 15px;
     height: 15px;
   }
-  .tour-card-expand-btn:hover {
-    background: #E0A63C;
-    color: #1A1608;
-    transform: scale(1.08);
-  }
 
-  /* Card Meta */
   .tour-card-info {
     padding: 14px 18px 16px;
     background: #17200F;
@@ -714,7 +1157,6 @@ const tourSpaces = [
     position: relative;
     z-index: 20;
   }
-
   .tour-nav-btn {
     width: 44px;
     height: 44px;
@@ -768,7 +1210,7 @@ const tourSpaces = [
     margin-top: 14px;
   }
 
-  /* ── Lightbox Modal ─────────────────────────────────────────────────── */
+  /* ── Lightbox Modal / Drawer ────────────────────────────────────────── */
   .tour-modal {
     position: fixed;
     inset: 0;
@@ -788,13 +1230,11 @@ const tourSpaces = [
     pointer-events: none;
     transition: opacity 0.3s ease;
   }
-
   .tour-modal[open],
   .tour-modal:modal {
     opacity: 1;
     pointer-events: auto;
   }
-
   .tour-modal-backdrop {
     position: fixed;
     inset: 0;
@@ -802,7 +1242,6 @@ const tourSpaces = [
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
-
   .tour-modal-box {
     position: relative;
     z-index: 10;
@@ -817,7 +1256,6 @@ const tourSpaces = [
     display: flex;
     flex-direction: column;
   }
-
   .tour-modal-close {
     position: absolute;
     top: 16px;
@@ -840,7 +1278,6 @@ const tourSpaces = [
     color: #1A1608;
     transform: scale(1.08);
   }
-
   .tour-modal-img-wrap {
     width: 100%;
     height: 52vh;
@@ -855,7 +1292,6 @@ const tourSpaces = [
     object-position: center;
     display: block;
   }
-
   .tour-modal-meta {
     padding: 22px 28px 24px;
     background: #17200F;
@@ -905,6 +1341,20 @@ const tourSpaces = [
 
   /* ── Responsive scaling ─────────────────────────────────────────────── */
   @media (max-width: 768px) {
+    .tour-webgl-wrap {
+      height: 420px;
+    }
+    .tour-flyin-btn {
+      padding: 12px 24px;
+      font-size: 0.875rem;
+    }
+    .tour-chips-bar {
+      gap: 6px 8px;
+    }
+    .tour-chip {
+      padding: 5px 12px;
+      font-size: 0.75rem;
+    }
     .tour-stage {
       perspective: 850px;
       height: 400px;
@@ -931,8 +1381,11 @@ const tourSpaces = [
 
   /* ── Reduced motion ─────────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .tour-card.is-active .tour-card-img {
-      animation: none !important;
+    .tour-stage-wrapper.has-webgl .tour-webgl-wrap {
+      display: none !important;
+    }
+    .tour-stage-wrapper.has-webgl #tour-stage {
+      display: flex !important;
     }
     .tour-card,
     .tour-stage,
