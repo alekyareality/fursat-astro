@@ -24,4 +24,4 @@ Small-fixes session. Tick each item after committing.
 - [x] MENU 7: Floating dish photos with counter + select showing name/desc/price, commit "feat: menu dish select"
 - [x] TASK E: /menu Drinks side = "Fursat bar counter" scene, commit "feat: menu drinks bar counter scene"
 - [x] TASK F0: Housekeeping — delete FURSAT_HANDOFF_v9.md, create AGENTS.md, commit "docs: agent rules and remove v9 handoff"
-- [ ] TASK F: Home panoramic tour "Step inside Fursat", commit "feat: home panoramic tour"
+- [x] TASK F: Home panoramic tour "Step inside Fursat", commit "feat: home panoramic tour"

@@ -1,550 +1,943 @@
 ---
-// PanoramicViewer.astro - Interactive 3D Panoramic Space Explorer
-// Uses authentic Fursat interior photography with drag-to-pan perspective & interactive hotspots
-const spaces = [
+// PanoramicViewer.astro - "Step inside Fursat" Panoramic Tour
+// Curved panoramic 3D ring (CSS 3D, perspective, cards on a cylinder)
+// No Three.js, no new libraries. Real photography only.
+
+const tourSpaces = [
   {
-    id: 'bar-lounge',
-    title: 'The Grand Bar & Mixology Lounge',
-    tagline: 'Artisanal cocktails, mood lighting & high-energy conversations.',
-    image: '/assets/interior/fursat_space_08.webp',
-    badge: 'Bar (21+)',
-    capacity: '120 Guests',
-    hotspots: [
-      { x: '28%', y: '48%', title: 'Artisanal Cocktail Bar', desc: 'Curated mixology, barrel-aged spirits & craft beers on tap.' },
-      { x: '72%', y: '52%', title: 'High-Top Social Tables', desc: 'Spacious communal seating ideal for bar bashes and groups.' }
-    ]
+    id: 'entrance',
+    title: 'Grand Entrance & Elephant Mural',
+    kicker: 'The Arrival',
+    desc: 'Handcrafted elephant mural, ambient heritage warm lighting, and an unforgettable royal welcome into Fursat.',
+    img: '/assets/interior/tour-entrance.webp',
+    width: 1050,
+    height: 1400,
+    tag: 'Entrance',
   },
   {
-    id: 'cafe-veranda',
-    title: 'The Sunlit Café & Coffee Bar',
-    tagline: 'Bespoke brews, calm morning light and handcrafted shakes.',
-    image: '/assets/interior/fursat_space_11.webp',
-    badge: 'Café',
-    capacity: '60 Guests',
-    hotspots: [
-      { x: '35%', y: '58%', title: 'Specialty Espresso Bar', desc: 'Single-origin beans, matcha rituals & freshly whipped shakes.' },
-      { x: '78%', y: '42%', title: 'Private Window Booths', desc: 'Natural sunlight, comfortable velvet upholstery & charging docks.' }
-    ]
+    id: 'bar',
+    title: 'The Illuminated Bar Counter',
+    kicker: 'Craft Mixology',
+    desc: 'Backlit geometric bottle displays, glowing neon logo, and mirrored ceiling reflections overlooking craft cocktails.',
+    img: '/assets/interior/tour-bar.webp',
+    width: 1050,
+    height: 1400,
+    tag: 'Bar (21+)',
   },
   {
-    id: 'dining-hall',
-    title: 'The Royal Family Dining Hall',
-    tagline: 'Expansive marble tables, warm brass finishes and unhurried feasts.',
-    image: '/assets/interior/fursat_space_02.webp',
-    badge: 'Fine Dining',
-    capacity: '180 Guests',
-    hotspots: [
-      { x: '45%', y: '65%', title: 'Grand Dining Tables', desc: 'Generous 8-to-12 seater tables engineered for shared thalis & platters.' },
-      { x: '82%', y: '35%', title: 'Ambient Acoustic Lighting', desc: 'Custom warmth balance tuned for comfortable dinner conversations.' }
-    ]
+    id: 'high-tables',
+    title: 'High-Top Social Stools & Tables',
+    kicker: 'Lounge Vibes',
+    desc: 'Communal high seating with warm brass accents, designed for lively evening conversations and draught beers.',
+    img: '/assets/interior/tour-high-tables.webp',
+    width: 1050,
+    height: 1400,
+    tag: 'Social Lounge',
   },
   {
-    id: 'banquet-hall',
-    title: 'The Royal Banquet & Celebrations',
-    tagline: 'A seamless hall for birthdays, anniversaries, corporate galas & weddings.',
-    image: '/assets/interior/fursat_space_18.webp',
-    badge: 'Banquet Hall',
-    capacity: '50 – 350 Guests',
-    hotspots: [
-      { x: '50%', y: '38%', title: 'Dedicated Event Stage & AV', desc: 'High-definition projection, pro audio and customized decor backdrops.' },
-      { x: '22%', y: '62%', title: 'Custom Buffet Spread Counter', desc: 'Live chaat counters, tandoor stations and gourmet dessert islands.' }
-    ]
-  }
+    id: 'lounge',
+    title: 'Velvet Sofa & Marble Dining',
+    kicker: 'Unhurried Luxury',
+    desc: 'Plush velvet seating, custom green marble tabletops, and intimate acoustic warmth for grand family meals.',
+    img: '/assets/interior/tour-lounge.webp',
+    width: 1050,
+    height: 1400,
+    tag: 'Dining',
+  },
+  {
+    id: 'cafe',
+    title: 'Sunlit Daylight Café Wall',
+    kicker: 'Café & Bakes',
+    desc: 'Natural daylight, minimalist typography wall art, specialty single-origin coffees, and leisurely afternoons.',
+    img: '/assets/interior/tour-cafe.webp',
+    width: 1050,
+    height: 1400,
+    tag: 'Café',
+  },
+  {
+    id: 'booth',
+    title: 'Red Velvet Booths & Retro Posters',
+    kicker: 'Retro Energy',
+    desc: 'Curated Bollywood & pop art prints, intimate booth banquettes, and a vibrant backdrop for celebrations.',
+    img: '/assets/interior/tour-booth.webp',
+    width: 1050,
+    height: 1400,
+    tag: 'Private Booths',
+  },
 ];
 ---
 
-<section class="pv-section" id="spaces" aria-labelledby="pv-heading">
-  <div class="pv-container">
-    <!-- Section Header -->
-    <div class="pv-head">
-      <div class="pv-head-text">
-        <span class="pv-kicker">STEP INSIDE FURSAT</span>
-        <h2 class="pv-title" id="pv-heading">Immerse Yourself in Our Spaces</h2>
-        <p class="pv-desc">Drag or move your mouse to explore the 3D panoramic ambiance of Capital Park, Madhapur.</p>
-      </div>
-
-      <!-- Space Switcher Tabs -->
-      <div class="pv-tabs" role="tablist" aria-label="Fursat Spaces">
-        {spaces.map((sp, idx) => (
-          <button 
-            type="button" 
-            role="tab" 
-            class:list={["pv-tab", { active: idx === 0 }]} 
-            data-space-id={sp.id}
-            aria-selected={idx === 0 ? "true" : "false"}
-            aria-controls={`pv-pane-${sp.id}`}
-          >
-            <span>{sp.title.split('&')[0].trim()}</span>
-            <small>{sp.badge}</small>
-          </button>
-        ))}
-      </div>
+<section class="tour-section" id="tour" aria-labelledby="tour-heading">
+  <div class="tour-container">
+    <!-- Header -->
+    <div class="tour-header">
+      <span class="tour-kicker">STEP INSIDE FURSAT</span>
+      <h2 class="tour-title mot-headline" id="tour-heading">A Panoramic Walkthrough</h2>
+      <p class="tour-sub">
+        Drag or swipe to rotate the 3D panoramic ring. Tap any space to explore details.
+      </p>
     </div>
 
-    <!-- 3D Panoramic Viewer Canvas -->
-    <div class="pv-stage-wrapper">
-      <div class="pv-hint" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
-        <span>Drag or hover to pan 360°</span>
-      </div>
-
-      <div class="pv-viewport" id="pv-viewport">
-        {spaces.map((sp, idx) => (
-          <div 
-            class:list={["pv-space-canvas", { active: idx === 0 }]} 
-            id={`pv-pane-${sp.id}`} 
-            role="tabpanel"
-            data-bg={sp.image}
-            style={`--bg-img: url('${sp.image}')`}
-          >
-            <!-- High-Res Panoramic Layer -->
-            <div class="pv-pan-layer" id={`pv-pan-${sp.id}`}>
-              <img src={sp.image} alt={sp.title} class="pv-pan-img" loading="lazy" />
-              
-              <!-- Interactive Hotspots -->
-              {sp.hotspots.map((hs) => (
-                <div class="pv-hotspot" style={`left: ${hs.x}; top: ${hs.y};`}>
-                  <button type="button" class="pv-hs-pin" aria-label={`View detail: ${hs.title}`}>
-                    <span class="pv-hs-pulse"></span>
-                    <span class="pv-hs-dot"></span>
-                  </button>
-                  <div class="pv-hs-card">
-                    <b>{hs.title}</b>
-                    <p>{hs.desc}</p>
+    <!-- 3D Panoramic Stage -->
+    <div
+      class="tour-stage-wrapper"
+      id="tour-stage-wrapper"
+      role="region"
+      aria-label="3D Panoramic tour ring"
+      tabindex="0"
+    >
+      <div class="tour-stage" id="tour-stage">
+        <div class="tour-ring" id="tour-ring">
+          {tourSpaces.map((item, index) => {
+            const theta = index * 60; // 360 / 6 = 60 deg
+            return (
+              <article
+                class={`tour-card${index === 0 ? ' is-active' : ''}`}
+                data-index={index}
+                data-id={item.id}
+                data-title={item.title}
+                data-kicker={item.kicker}
+                data-desc={item.desc}
+                data-img={item.img}
+                style={`--card-angle: ${theta}deg;`}
+                aria-label={item.title}
+              >
+                <div class="tour-card-inner">
+                  <div class="tour-card-img-wrap">
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      class="tour-card-img"
+                      loading="lazy"
+                      decoding="async"
+                      width={item.width}
+                      height={item.height}
+                    />
+                    <div class="tour-card-dimmer" aria-hidden="true"></div>
+                    <span class="tour-card-badge">{item.tag}</span>
+                    <button
+                      type="button"
+                      class="tour-card-expand-btn"
+                      aria-label={`Expand view of ${item.title}`}
+                      title="Expand View"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="tour-card-info">
+                    <span class="tour-card-kicker">{item.kicker}</span>
+                    <h3 class="tour-card-name">{item.title}</h3>
+                    <p class="tour-card-desc">{item.desc}</p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
 
-            <!-- Foreground Ambient Card Overlay -->
-            <div class="pv-info-card">
-              <span class="pv-ic-badge">{sp.badge} · {sp.capacity}</span>
-              <h3 class="pv-ic-title">{sp.title}</h3>
-              <p class="pv-ic-text">{sp.tagline}</p>
-              <div class="pv-ic-actions">
-                <a href="/reserve" class="pv-ic-btn" data-open="book">Book a Table Here</a>
-                <a href={`/${sp.id === 'banquet-hall' ? 'banquet' : sp.id === 'cafe-veranda' ? 'cafe' : 'restaurant-bar'}`} class="pv-ic-link">
-                  <span>Explore Details</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        ))}
+      <!-- Controls Overlay -->
+      <div class="tour-controls">
+        <button
+          type="button"
+          class="tour-nav-btn tour-nav-btn--prev"
+          id="tour-prev"
+          aria-label="Rotate to previous space"
+          title="Previous space"
+        >
+          ‹
+        </button>
+
+        <div class="tour-dots" role="tablist" aria-label="Spaces list">
+          {tourSpaces.map((sp, i) => (
+            <button
+              type="button"
+              role="tab"
+              class={`tour-dot${i === 0 ? ' is-active' : ''}`}
+              data-index={i}
+              aria-label={`Go to ${sp.title}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          class="tour-nav-btn tour-nav-btn--next"
+          id="tour-next"
+          aria-label="Rotate to next space"
+          title="Next space"
+        >
+          ›
+        </button>
+      </div>
+
+      <!-- Drag & Keyboard Hint -->
+      <div class="tour-hint" aria-hidden="true">
+        <span>↔ Drag to spin · Arrow keys to navigate · Tap to expand</span>
       </div>
     </div>
   </div>
+
+  <!-- Expand Lightbox Modal -->
+  <dialog class="tour-modal" id="tour-modal" aria-labelledby="tour-modal-title">
+    <div class="tour-modal-backdrop" id="tour-modal-backdrop"></div>
+    <div class="tour-modal-box">
+      <button
+        type="button"
+        class="tour-modal-close"
+        id="tour-modal-close"
+        aria-label="Close expanded view"
+      >
+        ✕
+      </button>
+      <div class="tour-modal-img-wrap">
+        <img id="tour-modal-img" src="" alt="" class="tour-modal-img" />
+      </div>
+      <div class="tour-modal-meta">
+        <span class="tour-modal-kicker" id="tour-modal-kicker"></span>
+        <h3 class="tour-modal-title" id="tour-modal-title"></h3>
+        <p class="tour-modal-desc" id="tour-modal-desc"></p>
+        <div class="tour-modal-actions">
+          <a href="/reserve" class="tour-modal-cta">Reserve a Table in this Space →</a>
+        </div>
+      </div>
+    </div>
+  </dialog>
 </section>
 
+<!-- ── Tour Interactivity Script ─────────────────────────────────────────── -->
+<script is:inline>
+(function () {
+  var wrapper = document.getElementById('tour-stage-wrapper');
+  var stage = document.getElementById('tour-stage');
+  var ring = document.getElementById('tour-ring');
+  if (!wrapper || !stage || !ring) return;
+
+  var cards = Array.from(ring.querySelectorAll('.tour-card'));
+  var dots = Array.from(wrapper.querySelectorAll('.tour-dot'));
+  var prevBtn = document.getElementById('tour-prev');
+  var nextBtn = document.getElementById('tour-next');
+  var modal = document.getElementById('tour-modal');
+  var modalClose = document.getElementById('tour-modal-close');
+  var modalBackdrop = document.getElementById('tour-modal-backdrop');
+  var modalImg = document.getElementById('tour-modal-img');
+  var modalTitle = document.getElementById('tour-modal-title');
+  var modalKicker = document.getElementById('tour-modal-kicker');
+  var modalDesc = document.getElementById('tour-modal-desc');
+
+  var N = cards.length; // 6
+  var stepAngle = 360 / N; // 60 deg
+  var currentAngle = 0;
+  var targetAngle = 0;
+  var isDragging = false;
+  var startX = 0;
+  var lastX = 0;
+  var lastTime = 0;
+  var velocity = 0;
+  var isPaused = false;
+  var activeIndex = 0;
+
+  var isReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Sync active card and dots
+  function updateActiveState(angle) {
+    var rawIndex = Math.round(-angle / stepAngle);
+    var normIndex = ((rawIndex % N) + N) % N;
+    if (normIndex !== activeIndex) {
+      activeIndex = normIndex;
+      cards.forEach(function (c, i) {
+        if (i === activeIndex) {
+          c.classList.add('is-active');
+        } else {
+          c.classList.remove('is-active');
+        }
+      });
+      dots.forEach(function (d, i) {
+        if (i === activeIndex) {
+          d.classList.add('is-active');
+          d.setAttribute('aria-selected', 'true');
+        } else {
+          d.classList.remove('is-active');
+          d.setAttribute('aria-selected', 'false');
+        }
+      });
+    }
+  }
+
+  // Render loop
+  function tick() {
+    if (!isDragging) {
+      var diff = targetAngle - currentAngle;
+      if (Math.abs(diff) > 0.05) {
+        currentAngle += diff * 0.12;
+      } else {
+        currentAngle = targetAngle;
+        if (!isPaused && !isReduced) {
+          targetAngle -= 0.04;
+          currentAngle -= 0.04;
+        }
+      }
+    }
+
+    ring.style.transform = 'rotateY(' + currentAngle.toFixed(2) + 'deg)';
+    updateActiveState(currentAngle);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function snapTo(index) {
+    var rawIndex = Math.round(-currentAngle / stepAngle);
+    var currentNorm = ((rawIndex % N) + N) % N;
+    var delta = index - currentNorm;
+    if (delta > N / 2) delta -= N;
+    if (delta < -N / 2) delta += N;
+    targetAngle = (rawIndex - delta) * -stepAngle;
+  }
+
+  // Pointer drag & swipe
+  wrapper.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('button, a, dialog')) return;
+    isDragging = true;
+    startX = e.clientX;
+    lastX = e.clientX;
+    lastTime = performance.now();
+    velocity = 0;
+    try { wrapper.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+
+  wrapper.addEventListener('pointermove', function (e) {
+    if (!isDragging) return;
+    var now = performance.now();
+    var dx = e.clientX - lastX;
+    var dt = Math.max(1, now - lastTime);
+    velocity = dx / dt;
+    currentAngle += dx * 0.45;
+    targetAngle = currentAngle;
+    lastX = e.clientX;
+    lastTime = now;
+  });
+
+  function endDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+    var projected = currentAngle + velocity * 160;
+    var snappedIndex = Math.round(-projected / stepAngle);
+    targetAngle = snappedIndex * -stepAngle;
+  }
+
+  wrapper.addEventListener('pointerup', endDrag);
+  wrapper.addEventListener('pointercancel', endDrag);
+
+  // Pause on hover, touch, or focus
+  wrapper.addEventListener('pointerenter', function () { isPaused = true; });
+  wrapper.addEventListener('pointerleave', function () {
+    if (!isDragging) isPaused = false;
+  });
+  wrapper.addEventListener('focusin', function () { isPaused = true; });
+  wrapper.addEventListener('focusout', function () { isPaused = false; });
+
+  // Navigation buttons
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function () {
+      var currentSnap = Math.round(-targetAngle / stepAngle);
+      targetAngle = (currentSnap - 1) * -stepAngle;
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function () {
+      var currentSnap = Math.round(-targetAngle / stepAngle);
+      targetAngle = (currentSnap + 1) * -stepAngle;
+    });
+  }
+
+  // Dots click
+  dots.forEach(function (dot) {
+    dot.addEventListener('click', function () {
+      var idx = parseInt(dot.dataset.index, 10);
+      snapTo(idx);
+    });
+  });
+
+  // Keyboard navigation
+  wrapper.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      var currentSnap = Math.round(-targetAngle / stepAngle);
+      targetAngle = (currentSnap - 1) * -stepAngle;
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      var currentSnap = Math.round(-targetAngle / stepAngle);
+      targetAngle = (currentSnap + 1) * -stepAngle;
+    }
+  });
+
+  // Pointer tilt (desktop) & Device orientation tilt (mobile)
+  if (!isReduced) {
+    wrapper.addEventListener('pointermove', function (e) {
+      if (isDragging) return;
+      var rect = wrapper.getBoundingClientRect();
+      var nx = (e.clientX - rect.left) / rect.width - 0.5;
+      var ny = (e.clientY - rect.top) / rect.height - 0.5;
+      var tiltX = Math.max(-6, Math.min(6, -ny * 10));
+      var tiltY = Math.max(-8, Math.min(8, nx * 12));
+      stage.style.transform = 'rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)';
+    });
+
+    wrapper.addEventListener('pointerleave', function () {
+      stage.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+
+    // Mobile device orientation (clamped, silent skip if iOS requires permission)
+    if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission !== 'function') {
+      window.addEventListener('deviceorientation', function (e) {
+        if (e.gamma == null || e.beta == null) return;
+        var gx = Math.max(-20, Math.min(20, e.gamma)) / 20;
+        var gy = Math.max(20, Math.min(60, e.beta) - 40) / 20;
+        stage.style.transform = 'rotateX(' + (-gy * 6).toFixed(2) + 'deg) rotateY(' + (gx * 8).toFixed(2) + 'deg)';
+      }, { passive: true });
+    }
+  }
+
+  // Lightbox Modal Expansion
+  function openModal(card) {
+    if (!modal) return;
+    var d = card.dataset;
+    if (modalImg) { modalImg.src = d.img || ''; modalImg.alt = d.title || ''; }
+    if (modalTitle) modalTitle.textContent = d.title || '';
+    if (modalKicker) modalKicker.textContent = d.kicker || '';
+    if (modalDesc) modalDesc.textContent = d.desc || '';
+    if (typeof modal.showModal === 'function') {
+      modal.showModal();
+    } else {
+      modal.setAttribute('open', '');
+    }
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    if (typeof modal.close === 'function') {
+      modal.close();
+    } else {
+      modal.removeAttribute('open');
+    }
+    document.body.style.overflow = '';
+  }
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+  if (modal) {
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    modal.addEventListener('cancel', function (e) {
+      e.preventDefault();
+      closeModal();
+    });
+  }
+
+  // Card click: if already active -> expand; if not -> snap to center
+  cards.forEach(function (card, idx) {
+    card.addEventListener('click', function (e) {
+      if (card.classList.contains('is-active') || e.target.closest('.tour-card-expand-btn')) {
+        openModal(card);
+      } else {
+        snapTo(idx);
+      }
+    });
+  });
+})();
+</script>
+
 <style is:global>
-  .pv-section {
-    background: #12190B;
+  /* ── Tour Section Shell ─────────────────────────────────────────────── */
+  .tour-section {
+    background: #0d1308;
     color: #F4ECDA;
-    padding: clamp(64px, 8vw, 120px) 0;
+    padding: clamp(70px, 9vw, 130px) 0 clamp(60px, 8vw, 110px);
     position: relative;
     overflow: hidden;
+    border-top: 1px solid rgba(224, 166, 60, 0.2);
+    border-bottom: 1px solid rgba(224, 166, 60, 0.2);
   }
-  .pv-container {
+
+  .tour-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 clamp(16px, 4vw, 40px);
   }
-  .pv-head {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-bottom: 32px;
+
+  /* Header */
+  .tour-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 40px;
   }
-  @media (min-width: 900px) {
-    .pv-head {
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-  }
-  .pv-kicker {
+  .tour-kicker {
     font-size: 0.8125rem;
     font-weight: 800;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: #E0A63C;
-    display: block;
-    margin-bottom: 8px;
+    display: inline-block;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    background: rgba(224, 166, 60, 0.1);
+    border: 1px solid rgba(224, 166, 60, 0.35);
+    padding: 4px 14px;
+    border-radius: 999px;
   }
-  .pv-title {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
-    font-size: clamp(2rem, 4.5vw, 3.2rem);
-    font-weight: 600;
+  .tour-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    font-weight: 700;
     color: #F4ECDA;
-    margin: 0;
+    margin: 0 0 12px;
     line-height: 1.15;
   }
-  .pv-desc {
-    font-family: var(--sans, "Manrope", system-ui, sans-serif);
-    font-size: 1rem;
+  .tour-sub {
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
     color: rgba(244, 236, 218, 0.7);
-    margin: 8px 0 0;
-    max-width: 540px;
+    margin: 0;
+    line-height: 1.5;
   }
-  .pv-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    scrollbar-width: none;
-  }
-  .pv-tabs::-webkit-scrollbar { display: none; }
-  .pv-tab {
-    all: unset;
-    cursor: pointer;
+
+  /* 3D Stage Wrapper */
+  .tour-stage-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 560px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 10px 18px;
-    border-radius: 12px;
-    background: rgba(244, 236, 218, 0.05);
-    border: 1px solid rgba(244, 236, 218, 0.15);
-    color: rgba(244, 236, 218, 0.8);
-    font-family: var(--sans, "Manrope", system-ui, sans-serif);
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
-  .pv-tab span {
-    font-size: 0.9375rem;
-    font-weight: 700;
-  }
-  .pv-tab small {
-    font-size: 0.75rem;
-    color: rgba(224, 166, 60, 0.8);
-  }
-  .pv-tab:hover {
-    background: rgba(224, 166, 60, 0.12);
-    border-color: rgba(224, 166, 60, 0.4);
-    color: #F4ECDA;
-  }
-  .pv-tab.active {
-    background: #E0A63C;
-    border-color: #E0A63C;
-    color: #1A1608;
-    box-shadow: 0 4px 16px rgba(224, 166, 60, 0.35);
-  }
-  .pv-tab.active small {
-    color: #4A3508;
-    font-weight: 800;
-  }
-
-  /* 3D Stage Viewport */
-  .pv-stage-wrapper {
-    position: relative;
-    border-radius: 28px;
-    overflow: hidden;
-    background: #090D05;
-    border: 2px solid rgba(224, 166, 60, 0.3);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
-  }
-  .pv-hint {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
-    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(13, 19, 8, 0.75);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(224, 166, 60, 0.3);
-    border-radius: 999px;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #E0A63C;
-    pointer-events: none;
-  }
-  .pv-hint svg {
-    width: 16px;
-    height: 16px;
-    animation: pv-pan-hint 2.5s infinite ease-in-out;
-  }
-  @keyframes pv-pan-hint {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(4px); }
-  }
-
-  .pv-viewport {
-    position: relative;
-    height: clamp(440px, 65vh, 680px);
-    cursor: grab;
+    justify-content: center;
     user-select: none;
     -webkit-user-select: none;
+    touch-action: pan-y;
+    outline: none;
   }
-  .pv-viewport:active {
-    cursor: grabbing;
+
+  .tour-stage {
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+    width: 100%;
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+    transition: transform 0.15s ease-out;
   }
-  .pv-space-canvas {
+
+  /* Cylindrical 3D Ring */
+  .tour-ring {
+    position: relative;
+    width: 320px;
+    height: 440px;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  /* Tour Card */
+  .tour-card {
     position: absolute;
     inset: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease-out;
+    width: 320px;
+    height: 440px;
+    cursor: pointer;
+    transform-origin: 50% 50%;
+    /* Cylindrical placement: rotated around Y, then translated out along Z radius */
+    transform: rotateY(var(--card-angle)) translateZ(440px);
+    transition: filter 0.4s ease, opacity 0.4s ease;
+    filter: brightness(0.7) blur(0.5px);
+    opacity: 0.72;
+    border-radius: 18px;
     overflow: hidden;
   }
-  .pv-space-canvas.active {
+
+  .tour-card.is-active {
+    filter: brightness(1) blur(0);
     opacity: 1;
-    pointer-events: auto;
+    z-index: 10;
   }
-  .pv-pan-layer {
-    position: absolute;
-    top: -5%;
-    left: -15%;
-    width: 130%;
-    height: 110%;
-    will-change: transform;
-    transition: transform 0.12s ease-out;
+
+  .tour-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #17200F;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1.5px solid rgba(224, 166, 60, 0.3);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
-  .pv-pan-img {
+
+  .tour-card.is-active .tour-card-inner {
+    border-color: #E0A63C;
+    box-shadow: 0 20px 50px rgba(224, 166, 60, 0.25), 0 0 20px rgba(224, 166, 60, 0.15);
+  }
+
+  /* Image Wrap & Drift */
+  .tour-card-img-wrap {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    background: #090d05;
+  }
+  .tour-card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.92) contrast(1.05);
+    object-position: center;
+    display: block;
+    will-change: transform;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Hotspot Pins */
-  .pv-hotspot {
-    position: absolute;
-    z-index: 5;
-    transform: translate(-50%, -50%);
+  /* Slow cinematic drift on center photo */
+  .tour-card.is-active .tour-card-img {
+    animation: tour-drift 12s ease-in-out infinite alternate;
   }
-  .pv-hs-pin {
-    all: unset;
-    cursor: pointer;
-    position: relative;
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
+
+  @keyframes tour-drift {
+    0% {
+      transform: scale(1.02) translate(0, 0);
+    }
+    50% {
+      transform: scale(1.08) translate(-1.2%, -1%);
+    }
+    100% {
+      transform: scale(1.04) translate(1%, -0.6%);
+    }
   }
-  .pv-hs-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #E0A63C;
-    box-shadow: 0 0 10px #E0A63C;
-    position: relative;
-    z-index: 2;
-    transition: transform 0.2s ease;
-  }
-  .pv-hs-pulse {
+
+  .tour-card-dimmer {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    border: 2px solid #E0A63C;
-    animation: pv-pulse 2s infinite ease-out;
-  }
-  @keyframes pv-pulse {
-    0% { transform: scale(0.6); opacity: 1; }
-    100% { transform: scale(1.6); opacity: 0; }
-  }
-  .pv-hs-card {
-    position: absolute;
-    bottom: calc(100% + 12px);
-    left: 50%;
-    transform: translateX(-50%) translateY(8px);
-    min-width: 220px;
-    background: rgba(13, 19, 8, 0.94);
-    border: 1.5px solid #E0A63C;
-    border-radius: 12px;
-    padding: 12px 14px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-    opacity: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(13,19,8,0.75) 100%);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 8;
-  }
-  .pv-hs-pin:hover ~ .pv-hs-card,
-  .pv-hotspot:focus-within .pv-hs-card {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-  }
-  .pv-hs-card b {
-    display: block;
-    color: #E0A63C;
-    font-size: 0.9375rem;
-    margin-bottom: 4px;
-  }
-  .pv-hs-card p {
-    font-size: 0.8125rem;
-    color: rgba(244, 236, 218, 0.85);
-    margin: 0;
-    line-height: 1.35;
   }
 
-  /* Info Card Overlay */
-  .pv-info-card {
+  .tour-card-badge {
     position: absolute;
-    left: clamp(16px, 3.5vw, 40px);
-    bottom: clamp(16px, 3.5vw, 40px);
-    z-index: 6;
-    max-width: 440px;
-    background: rgba(13, 19, 8, 0.88);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(224, 166, 60, 0.4);
-    border-radius: 20px;
-    padding: clamp(20px, 3vw, 28px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-  }
-  .pv-ic-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: rgba(224, 166, 60, 0.15);
-    border: 1px solid rgba(224, 166, 60, 0.4);
+    top: 14px;
+    left: 14px;
+    background: rgba(18, 25, 11, 0.85);
+    border: 1px solid rgba(224, 166, 60, 0.5);
     color: #E0A63C;
-    font-size: 0.75rem;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
-  .pv-ic-title {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
+
+  .tour-card-expand-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(244, 236, 218, 0.3);
+    background: rgba(18, 25, 11, 0.8);
+    color: #F4ECDA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tour-card-expand-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+  .tour-card-expand-btn:hover {
+    background: #E0A63C;
+    color: #1A1608;
+    transform: scale(1.08);
+  }
+
+  /* Card Meta */
+  .tour-card-info {
+    padding: 14px 18px 16px;
+    background: #17200F;
+    border-top: 1px solid rgba(224, 166, 60, 0.15);
+  }
+  .tour-card-kicker {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .tour-card-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #F4ECDA;
+    margin: 0 0 4px;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tour-card-desc {
+    font-size: 11px;
+    color: rgba(244, 236, 218, 0.65);
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Controls Overlay */
+  .tour-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 24px;
+    position: relative;
+    z-index: 20;
+  }
+
+  .tour-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    background: rgba(23, 32, 15, 0.9);
+    color: #E0A63C;
+    font-size: 24px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+  .tour-nav-btn:hover {
+    background: #E0A63C;
+    color: #1A1608;
+    transform: scale(1.08);
+  }
+
+  .tour-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tour-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(224, 166, 60, 0.5);
+    background: rgba(244, 236, 218, 0.15);
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .tour-dot.is-active {
+    width: 24px;
+    border-radius: 999px;
+    background: #E0A63C;
+    border-color: #E0A63C;
+    box-shadow: 0 0 10px rgba(224, 166, 60, 0.5);
+  }
+
+  .tour-hint {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(244, 236, 218, 0.45);
+    margin-top: 14px;
+  }
+
+  /* ── Lightbox Modal ─────────────────────────────────────────────────── */
+  .tour-modal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .tour-modal[open],
+  .tour-modal:modal {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .tour-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 13, 5, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .tour-modal-box {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    width: 90vw;
+    max-height: 88vh;
+    background: #17200F;
+    border: 1.5px solid rgba(224, 166, 60, 0.4);
+    border-radius: 22px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tour-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    background: rgba(18, 25, 11, 0.85);
+    color: #F4ECDA;
+    font-size: 18px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    z-index: 20;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tour-modal-close:hover {
+    background: #E0A63C;
+    color: #1A1608;
+    transform: scale(1.08);
+  }
+
+  .tour-modal-img-wrap {
+    width: 100%;
+    height: 52vh;
+    min-height: 280px;
+    background: #090d05;
+    overflow: hidden;
+  }
+  .tour-modal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .tour-modal-meta {
+    padding: 22px 28px 24px;
+    background: #17200F;
+  }
+  .tour-modal-kicker {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .tour-modal-title {
+    font-family: 'Playfair Display', Georgia, serif;
     font-size: clamp(1.3rem, 2.8vw, 1.8rem);
     font-weight: 700;
     color: #F4ECDA;
-    margin: 0 0 6px;
-    line-height: 1.2;
+    margin: 0 0 8px;
   }
-  .pv-ic-text {
-    font-size: 0.9rem;
+  .tour-modal-desc {
+    font-size: 13px;
     color: rgba(244, 236, 218, 0.75);
-    margin: 0 0 18px;
-    line-height: 1.4;
+    margin: 0 0 16px;
+    line-height: 1.5;
   }
-  .pv-ic-actions {
+  .tour-modal-actions {
     display: flex;
     align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
+    gap: 12px;
   }
-  .pv-ic-btn {
-    padding: 10px 20px;
-    border-radius: 999px;
+  .tour-modal-cta {
+    display: inline-block;
+    padding: 10px 22px;
     background: #E0A63C;
     color: #1A1608;
+    font-size: 12px;
     font-weight: 800;
-    font-size: 0.875rem;
+    border-radius: 999px;
     text-decoration: none;
-    transition: transform 0.15s ease, background 0.15s ease;
+    transition: background 0.2s, transform 0.2s;
   }
-  .pv-ic-btn:hover {
+  .tour-modal-cta:hover {
     background: #F4ECDA;
-    transform: scale(1.03);
+    transform: translateY(-1px);
   }
-  .pv-ic-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #F4ECDA;
-    font-size: 0.875rem;
-    font-weight: 700;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(244, 236, 218, 0.3);
-    padding-bottom: 2px;
+
+  /* ── Responsive scaling ─────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .tour-stage {
+      perspective: 850px;
+      height: 400px;
+    }
+    .tour-ring {
+      width: 250px;
+      height: 360px;
+    }
+    .tour-card {
+      width: 250px;
+      height: 360px;
+      transform: rotateY(var(--card-angle)) translateZ(320px);
+    }
+    .tour-modal-box {
+      width: 95vw;
+    }
+    .tour-modal-img-wrap {
+      height: 40vh;
+    }
+    .tour-modal-meta {
+      padding: 16px 18px 20px;
+    }
   }
-  .pv-ic-link svg {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.2s ease;
-  }
-  .pv-ic-link:hover svg {
-    transform: translateX(4px);
-  }
-  /* ── Reduced motion safety ───────────────────────────────────── */
+
+  /* ── Reduced motion ─────────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .pv-tab,
-    .pv-ic-btn,
-    .pv-ic-link svg,
-    .pv-pan-layer,
-    .pv-pin-pulse,
-    .pv-pin-tooltip {
-      transition: none !important;
+    .tour-card.is-active .tour-card-img {
       animation: none !important;
     }
-    .pv-pin-pulse {
-      display: none;
+    .tour-card,
+    .tour-stage,
+    .tour-ring {
+      transition: none !important;
     }
   }
 </style>
-
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.pv-tab');
-    const canvases = document.querySelectorAll('.pv-space-canvas');
-    const viewport = document.getElementById('pv-viewport');
-
-    // Tab Switching
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const targetId = tab.getAttribute('data-space-id');
-        tabs.forEach(t => {
-          t.classList.remove('active');
-          t.setAttribute('aria-selected', 'false');
-        });
-        canvases.forEach(c => c.classList.remove('active'));
-
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected', 'true');
-        const activeCanvas = document.getElementById(`pv-pane-${targetId}`);
-        if (activeCanvas) activeCanvas.classList.add('active');
-      });
-    });
-
-    // Skip pan animation if reduced motion is preferred
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // 3D Panoramic Pan Effect on Mouse Move / Touch Drag
-    let isDragging = false;
-    let startX = 0;
-
-    const updatePan = (pct) => {
-      if (prefersReducedMotion) return; // skip all pan transforms
-      // pct is -1 to 1
-      const maxOffset = 60; // px
-      const activeLayer = document.querySelector('.pv-space-canvas.active .pv-pan-layer');
-      if (activeLayer) {
-        activeLayer.style.transform = `translate3d(${pct * maxOffset}px, ${Math.abs(pct) * 8}px, 0) scale(${1.02 + Math.abs(pct) * 0.02})`;
-      }
-    };
-
-    if (viewport) {
-      // Desktop mouse pan
-      viewport.addEventListener('mousemove', (e) => {
-        const rect = viewport.getBoundingClientRect();
-        const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1; // -1 to 1
-        updatePan(-normX);
-      });
-
-      viewport.addEventListener('mouseleave', () => {
-        updatePan(0);
-      });
-
-      // Mobile Touch pan
-      viewport.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startX = e.touches[0].clientX;
-      }, { passive: true });
-
-      viewport.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const diffX = e.touches[0].clientX - startX;
-        const normX = Math.max(-1, Math.min(1, diffX / 150));
-        updatePan(normX);
-      }, { passive: true });
-
-      viewport.addEventListener('touchend', () => {
-        isDragging = false;
-        setTimeout(() => updatePan(0), 400);
-      });
-    }
-  });
-</script>
