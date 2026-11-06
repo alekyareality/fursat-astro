@@ -4,7 +4,6 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import MascotOfferModal from '../components/MascotOfferModal.astro';
-import SplitMenuExperience from '../components/menu/SplitMenuExperience';
 import foodData from '../data/food.json';
 import drinksData from '../data/drinks.json';
 
@@ -61,32 +60,6 @@ const drinksCategories = [
 function slug(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
-
-// ── Adapter: new menu schema → SplitMenuExperience MenuItem schema ────────────
-// SplitMenuExperience expects: { n, p, c, k:'food'|'drink'|'sree', v?, a?, d?, img? }
-const experienceItems = [
-  ...(foodData as {section:string;items:{name:string;price:number|null;description?:string;veg?:boolean;spicy?:boolean;chefSpecial?:boolean;image?:string}[]}[]).flatMap(sec =>
-    sec.items.map(it => ({
-      n: it.name,
-      p: it.price ?? 0,
-      c: sec.section,
-      k: 'food' as const,
-      v: it.veg ? 'veg' : 'nonveg',
-      d: it.description,
-      img: it.image ? `/assets/dishes/${it.image}` : undefined,
-    }))
-  ),
-  ...(drinksData as {section:string;items:{name:string;price?:number|null;description?:string;alc?:boolean}[]}[]).flatMap(sec =>
-    sec.items.map(it => ({
-      n: it.name,
-      p: it.price ?? 0,
-      c: sec.section,
-      k: 'drink' as const,
-      a: it.alc ?? false,
-      d: it.description,
-    }))
-  ),
-];
 ---
 
 <Base
@@ -108,17 +81,6 @@ const experienceItems = [
         <p class="mn-hero-sub">Café · Bar · Kitchen · Banquet — {allItems.length} dishes &amp; drinks</p>
       </div>
     </header>
-
-    <!-- ── Interactive 3D Menu Experience (lazy-loaded) ──────────────── -->
-    <section class="mn-3d-section" aria-label="Interactive 3D menu experience">
-      <div class="mn-3d-label">
-        <span class="mn-3d-badge">✦ Interactive 3D</span>
-        <p class="mn-3d-hint">3D rotating dining table &amp; bar counter — click to explore, add to cart</p>
-      </div>
-      <div class="mn-3d-stage">
-        <SplitMenuExperience client:visible items={experienceItems} />
-      </div>
-    </section>
 
     <!-- ── Food / Drinks Proportion Switch Bar ────────────────────────── -->
     <nav class="mn-switch-wrap" aria-label="Menu proportion switch">
@@ -266,7 +228,7 @@ const experienceItems = [
                   {item.description && <p class="mn-dish-desc">{item.description}</p>}
                   <div class="mn-card-footer">
                     <span class="mn-price">
-                      {item.price != null ? `₹${item.price}` : 'Price on request'}
+                      {item.price != null ? `₹${item.price}` : '—'}
                     </span>
                   </div>
                 </div>
@@ -279,30 +241,82 @@ const experienceItems = [
 
       <!-- ── DRINKS PANE ──────────────────────────────────────────────── -->
       <section class="mn-pane mn-pane--drinks" id="pane-drinks" aria-label="Drinks menu section">
-        <div class="mn-pane-header">
-          <div class="mn-pane-title-wrap">
-            <h2 class="mn-pane-title">🍸 Drinks Menu</h2>
-            <span class="mn-pane-count">{drinksItems.length} drinks</span>
+        
+        <!-- ── Fursat Bar Counter Scene (TASK E) ───────────────────────── -->
+        <div class="mn-bar-scene" id="mn-bar-scene" aria-label="Fursat Bar Counter Scene">
+          <!-- Layer 1: Bar Back (full photo with bar shelves & ceiling reflection) -->
+          <div class="mn-bar-layer mn-bar-layer--back" id="mn-bar-back" aria-hidden="true">
+            <img
+              src="/assets/interior/bar-back.webp"
+              alt=""
+              class="mn-bar-img mn-bar-img--back"
+              width="1200"
+              height="1600"
+              loading="eager"
+            />
           </div>
-          <span class="mn-pane-expand-hint" id="drinks-expand-hint">Click to expand (3/4) ↗</span>
-        </div>
 
-        <!-- Sticky Drinks Category Tabs -->
-        <nav class="mn-tabs-wrap mn-tabs-wrap--drinks" aria-label="Drinks categories">
-          <div class="mn-tabs mn-tabs--drinks mot-tab-indicator" role="tablist">
-            {drinksCategories.map((cat, i) => (
-              <button
-                class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
-                role="tab"
-                aria-selected={i === 0 ? 'true' : 'false'}
-                data-cat={slug(cat)}
-                type="button"
-              >
-                {cat}
-              </button>
-            ))}
+          <!-- Layer 2: Glowing round logo + CSS radial glow + Neon FURSAT wordmark -->
+          <div class="mn-bar-layer mn-bar-layer--logo" id="mn-bar-logo" aria-hidden="true">
+            <div class="mn-bar-logo-unit">
+              <div class="mn-bar-logo-glow" aria-hidden="true"></div>
+              <img
+                src="/assets/interior/bar-logo.webp"
+                alt="Fursat Bar Logo"
+                class="mn-bar-logo-img"
+                width="130"
+                height="165"
+                loading="eager"
+              />
+              <span class="mn-bar-neon-text">FURSAT</span>
+            </div>
           </div>
-        </nav>
+
+          <!-- Optional 3D Hook: Lazy-loaded Three.js canvas if fursat-bar.glb exists -->
+          <div class="mn-bar-3d-hook" id="mn-bar-3d-hook" aria-hidden="true"></div>
+
+          <!-- Layer 3: Foreground bar counter strip cropped from same photo, same scale -->
+          <div class="mn-bar-layer mn-bar-layer--front" id="mn-bar-front" aria-hidden="true">
+            <img
+              src="/assets/interior/bar-front.webp"
+              alt=""
+              class="mn-bar-img mn-bar-img--front"
+              width="1200"
+              height="420"
+              loading="eager"
+            />
+          </div>
+
+          <!-- Dark gradient overlay for text contrast -->
+          <div class="mn-bar-overlay" aria-hidden="true"></div>
+
+          <!-- Bar Scene Header Content -->
+          <div class="mn-bar-header">
+            <div class="mn-pane-title-wrap">
+              <span class="mn-bar-badge">🍸 Fursat Bar Counter</span>
+              <h2 class="mn-pane-title mn-bar-title">Craft Bar &amp; Cellar</h2>
+              <span class="mn-pane-count">{drinksItems.length} drinks · Cocktails, Spirits &amp; Brews</span>
+            </div>
+            <span class="mn-pane-expand-hint" id="drinks-expand-hint">Click to expand (3/4) ↗</span>
+          </div>
+
+          <!-- Category tabs sit on the counter top -->
+          <nav class="mn-tabs-wrap mn-tabs-wrap--drinks mn-bar-tabs-wrap" aria-label="Drinks categories">
+            <div class="mn-tabs mn-tabs--drinks mot-tab-indicator" role="tablist">
+              {drinksCategories.map((cat, i) => (
+                <button
+                  class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
+                  role="tab"
+                  aria-selected={i === 0 ? 'true' : 'false'}
+                  data-cat={slug(cat)}
+                  type="button"
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
 
         <!-- Drinks Grid -->
         <div class="mn-grid mn-grid--drinks" id="mn-grid-drinks">
@@ -313,6 +327,8 @@ const experienceItems = [
             const isChef = item.chefSpecial === true;
             const isVeg = item.veg === true;
             const hasImg = !!item.image;
+            const isSpirit = item.price30ml != null || (item.priceBottle != null && cat !== 'Wines' && cat !== 'Beer');
+            const isWine = cat === 'Wines' || item.priceGlass != null;
             return (
               <article
                 class="mn-card mot-card-lit"
@@ -345,14 +361,22 @@ const experienceItems = [
                   <h3 class="mn-dish-name">{item.name}</h3>
                   {item.description && <p class="mn-dish-desc">{item.description}</p>}
                   <div class="mn-card-footer">
-                    <span class="mn-price">
-                      {item.price != null ? `₹${item.price}` : (item.priceBottle != null ? `₹${item.priceBottle} (Btl)` : 'Price on request')}
-                    </span>
-                    {item.price30ml != null && item.priceBottle != null && (
-                      <span class="mn-flex-note">30ml: ₹{item.price30ml} · Btl: ₹{item.priceBottle}</span>
-                    )}
-                    {item.priceGlass != null && item.priceBottle != null && (
-                      <span class="mn-flex-note">Glass: ₹{item.priceGlass} · Btl: ₹{item.priceBottle}</span>
+                    {isSpirit ? (
+                      <div class="mn-price-portions">
+                        <span class="mn-price-tag">30 ml: {item.price30ml != null ? `₹${item.price30ml}` : '—'}</span>
+                        <span class="mn-price-sep">·</span>
+                        <span class="mn-price-tag">Bottle: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
+                      </div>
+                    ) : isWine ? (
+                      <div class="mn-price-portions">
+                        <span class="mn-price-tag">Glass: {item.priceGlass != null ? `₹${item.priceGlass}` : '—'}</span>
+                        <span class="mn-price-sep">·</span>
+                        <span class="mn-price-tag">Bottle: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
+                      </div>
+                    ) : (
+                      <span class="mn-price">
+                        {item.price != null ? `₹${item.price}` : (item.priceBottle != null ? `₹${item.priceBottle} (Btl)` : '—')}
+                      </span>
                     )}
                     {item.priceBucket != null && (
                       <span class="mn-flex-note">Bucket: ₹{item.priceBucket}</span>
@@ -506,7 +530,7 @@ const experienceItems = [
       secEl.textContent = d.section;
       nameEl.textContent = d.name;
       descEl.textContent = d.desc || '';
-      priceEl.textContent = d.price ? fmt(d.price) : '';
+      priceEl.textContent = d.price != null ? fmt(d.price) : '—';
       ctrEl.textContent = (i + 1) + ' / ' + dishes.length;
       if (selectEl && selectEl.value != String(i)) {
         selectEl.value = String(i);
@@ -545,49 +569,118 @@ const experienceItems = [
 
     show(0);
   })();
+
+  // ── TASK E: Bar Counter Parallax & 3D Hook ───────────────────────────────
+  (function () {
+    var scene = document.getElementById('mn-bar-scene');
+    if (!scene) return;
+
+    var isReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var back = document.getElementById('mn-bar-back');
+    var logo = document.getElementById('mn-bar-logo');
+    var front = document.getElementById('mn-bar-front');
+
+    if (!isReduced && back && logo && front) {
+      var targetX = 0, targetY = 0;
+      var curX = 0, curY = 0;
+      var running = false;
+
+      function renderParallax() {
+        if (!running) return;
+        curX += (targetX - curX) * 0.08;
+        curY += (targetY - curY) * 0.08;
+
+        // Smooth, transform-only, different speeds
+        back.style.transform = 'translate3d(' + (-curX * 10).toFixed(2) + 'px, ' + (-curY * 8).toFixed(2) + 'px, 0)';
+        logo.style.transform = 'translate3d(calc(-50% + ' + (curX * 14).toFixed(2) + 'px), ' + (curY * 10).toFixed(2) + 'px, 0)';
+        front.style.transform = 'translate3d(' + (curX * 24).toFixed(2) + 'px, ' + (curY * 12).toFixed(2) + 'px, 0)';
+
+        requestAnimationFrame(renderParallax);
+      }
+
+      // Pointermove handler on scene
+      scene.addEventListener('pointermove', function (e) {
+        var rect = scene.getBoundingClientRect();
+        var nx = (e.clientX - rect.left) / rect.width - 0.5;
+        var ny = (e.clientY - rect.top) / rect.height - 0.5;
+        targetX = Math.max(-0.5, Math.min(0.5, nx));
+        targetY = Math.max(-0.5, Math.min(0.5, ny));
+        if (!running) {
+          running = true;
+          requestAnimationFrame(renderParallax);
+        }
+      });
+
+      scene.addEventListener('pointerleave', function () {
+        targetX = 0;
+        targetY = 0;
+      });
+
+      // Device orientation handler for mobile
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', function (e) {
+          if (e.gamma == null || e.beta == null) return;
+          var gx = Math.max(-30, Math.min(30, e.gamma)) / 60;
+          var gy = Math.max(15, Math.min(65, e.beta) - 40) / 50;
+          targetX = gx;
+          targetY = gy;
+          if (!running) {
+            running = true;
+            requestAnimationFrame(renderParallax);
+          }
+        }, { passive: true });
+      }
+    }
+
+    // ── Optional Hook: fursat-bar.glb ─────────────────────────────────────
+    // If public/models/fursat-bar.glb exists, lazy-load with GLTFLoader on Drinks panel only
+    fetch('/models/fursat-bar.glb', { method: 'HEAD' })
+      .then(function (res) {
+        if (res.ok && res.status === 200) {
+          import('three').then(function (THREE) {
+            import('three/examples/jsm/loaders/GLTFLoader.js').then(function (gltfMod) {
+              var hook = document.getElementById('mn-bar-3d-hook');
+              if (!hook) return;
+              hook.style.display = 'block';
+              var scene3d = new THREE.Scene();
+              var camera = new THREE.PerspectiveCamera(40, hook.clientWidth / hook.clientHeight, 0.1, 100);
+              camera.position.set(0, 1.2, 3.2);
+              var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+              renderer.setSize(hook.clientWidth, hook.clientHeight);
+              renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+              hook.appendChild(renderer.domElement);
+
+              var amb = new THREE.AmbientLight(0xffffff, 1.2);
+              scene3d.add(amb);
+              var dir = new THREE.DirectionalLight(0xe0a63c, 2.2);
+              dir.position.set(2, 4, 2);
+              scene3d.add(dir);
+
+              var loader = new gltfMod.GLTFLoader();
+              loader.load('/models/fursat-bar.glb', function (gltf) {
+                scene3d.add(gltf.scene);
+                var clock = new THREE.Clock();
+                function animate3d() {
+                  requestAnimationFrame(animate3d);
+                  var t = clock.getElapsedTime();
+                  gltf.scene.rotation.y = Math.sin(t * 0.35) * 0.18; // limited orbit
+                  renderer.render(scene3d, camera);
+                }
+                animate3d();
+              });
+            }).catch(function () {});
+          }).catch(function () {});
+        }
+      })
+      .catch(function () {});
+  })();
 })();
 </script>
 
 <style is:global>
   /* ── Google Font import ─────────────────────────────────────────────── */
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
-
-  /* ── 3D Experience Section ───────────────────────────────────────────── */
-  .mn-3d-section {
-    border-bottom: 1px solid rgba(224,166,60,0.15);
-  }
-  .mn-3d-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 24px 8px;
-    background: rgba(23,32,15,0.9);
-    border-bottom: 1px solid rgba(224,166,60,0.1);
-  }
-  .mn-3d-badge {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #E0A63C;
-    background: rgba(224,166,60,0.12);
-    border: 1px solid rgba(224,166,60,0.35);
-    padding: 3px 10px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .mn-3d-hint {
-    font-size: 12px;
-    color: rgba(244,236,218,0.6);
-    margin: 0;
-  }
-  .mn-3d-stage {
-    height: 92vh;
-    min-height: 600px;
-    max-height: 900px;
-    overflow: hidden;
-    position: relative;
-  }
 
   /* ── Page shell ─────────────────────────────────────────────────────── */
   .mn-main {
@@ -1233,6 +1326,249 @@ const experienceItems = [
     .mn-ds-photo-wrap {
       width: 80px;
       height: 60px;
+    }
+  }
+
+  /* ── Fursat Bar Counter Scene (TASK E) ───────────────────────────────── */
+  .mn-bar-scene {
+    position: relative;
+    min-height: 380px;
+    height: 48vh;
+    max-height: 520px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #0d1308;
+    border-bottom: 2px solid rgba(224, 166, 60, 0.3);
+  }
+
+  /* Parallax layers */
+  .mn-bar-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    will-change: transform;
+    transition: transform 0.1s cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  .mn-bar-layer--back {
+    inset: -20px;
+    z-index: 1;
+  }
+  .mn-bar-img--back {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+    filter: brightness(1.08) contrast(1.05);
+  }
+
+  .mn-bar-layer--logo {
+    z-index: 2;
+    top: 14%;
+    left: 50%;
+    width: 220px;
+    height: 240px;
+    transform: translate(-50%, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mn-bar-logo-unit {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .mn-bar-logo-img {
+    width: 110px;
+    height: auto;
+    display: block;
+    border-radius: 50%;
+    box-shadow: 0 0 25px rgba(255, 60, 60, 0.45);
+    position: relative;
+    z-index: 2;
+  }
+  .mn-bar-logo-glow {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 70, 70, 0.7) 0%, rgba(224, 166, 60, 0.4) 40%, rgba(255, 120, 0, 0.15) 60%, transparent 75%);
+    mix-blend-mode: screen;
+    z-index: 1;
+    pointer-events: none;
+    animation: mn-logo-pulse 4s ease-in-out infinite;
+  }
+  .mn-bar-neon-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: 0.26em;
+    color: #ffffff;
+    margin-top: 8px;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 10px #ff3333,
+      0 0 22px #ff1a40,
+      0 0 38px #e0a63c;
+    position: relative;
+    z-index: 2;
+    animation: mn-neon-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes mn-logo-pulse {
+    0%, 100% {
+      opacity: 0.65;
+      transform: translateX(-50%) scale(0.96);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(-50%) scale(1.08);
+    }
+  }
+
+  @keyframes mn-neon-glow {
+    0%, 100% {
+      text-shadow: 0 0 4px #fff, 0 0 10px #ff3333, 0 0 20px #ff1a40, 0 0 35px #e0a63c;
+    }
+    50% {
+      text-shadow: 0 0 6px #fff, 0 0 16px #ff4444, 0 0 32px #ff1a40, 0 0 50px #ffaa00;
+    }
+  }
+
+  /* Optional 3D Hook */
+  .mn-bar-3d-hook {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: auto;
+    display: none;
+  }
+
+  /* Front counter strip */
+  .mn-bar-layer--front {
+    inset: auto -15px -8px -15px;
+    height: 140px;
+    z-index: 4;
+  }
+  .mn-bar-img--front {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    filter: brightness(1.1) contrast(1.08);
+  }
+
+  /* Dark gradient overlay for text contrast */
+  .mn-bar-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: linear-gradient(
+      180deg,
+      rgba(13, 19, 8, 0.45) 0%,
+      rgba(13, 19, 8, 0.15) 30%,
+      rgba(13, 19, 8, 0.6) 70%,
+      rgba(13, 19, 8, 0.94) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Header inside bar scene */
+  .mn-bar-header {
+    position: relative;
+    z-index: 6;
+    padding: 20px 24px 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .mn-bar-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #e0a63c;
+    background: rgba(23, 32, 15, 0.85);
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .mn-bar-title {
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Category tabs on the counter top */
+  .mn-bar-tabs-wrap {
+    position: relative;
+    z-index: 6;
+    margin-top: auto;
+    padding: 8px 16px 14px;
+    background: rgba(13, 19, 8, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(224, 166, 60, 0.25);
+  }
+
+  /* Price portion layout for spirits and wines */
+  .mn-price-portions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #e0a63c;
+  }
+  .mn-price-portions .mn-price-sep {
+    opacity: 0.4;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .mn-bar-layer,
+    .mn-bar-layer--back,
+    .mn-bar-layer--logo,
+    .mn-bar-layer--front {
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    .mn-bar-logo-glow,
+    .mn-bar-neon-text {
+      animation: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .mn-bar-scene {
+      min-height: 320px;
+      height: 40vh;
+    }
+    .mn-bar-layer--logo {
+      top: 10%;
+    }
+    .mn-bar-logo-img {
+      width: 85px;
+    }
+    .mn-bar-neon-text {
+      font-size: 16px;
+    }
+    .mn-bar-layer--front {
+      height: 110px;
     }
   }
 </style>

@@ -22,3 +22,4 @@ Small-fixes session. Tick each item after committing.
 - [x] MENU 5b: (after owner reply) Generate .glb files into public/models/, commit "feat: menu glb assets"
 - [x] MENU 6: Rotating 3D table on /menu using StageCanvas Three.js, lazy-loaded, commit "feat: menu 3d table"
 - [x] MENU 7: Floating dish photos with counter + select showing name/desc/price, commit "feat: menu dish select"
+- [x] TASK E: /menu Drinks side = "Fursat bar counter" scene, commit "feat: menu drinks bar counter scene"
