@@ -101,6 +101,19 @@ const tourSpaces = [
       aria-label="3D Panoramic tour"
       tabindex="0"
     >
+      <!-- Ambience Audio Toggle Button (Web Audio Synthesis, OFF by default) -->
+      <button
+        type="button"
+        class="tour-ambience-btn"
+        id="tour-ambience-btn"
+        aria-label="Toggle lounge ambience sound"
+        aria-pressed="false"
+        title="Toggle lounge ambience"
+      >
+        <span class="tour-ambience-icon" aria-hidden="true">♫</span>
+        <span class="tour-ambience-label">Ambience</span>
+      </button>
+
       <!-- WebGL Canvas Container -->
       <div class="tour-webgl-wrap" id="tour-webgl-wrap">
         <canvas id="tour-webgl-canvas" class="tour-webgl-canvas"></canvas>
@@ -353,6 +366,174 @@ const tourSpaces = [
       if (!focusDrawer) return;
       focusDrawer.classList.remove('is-open');
       focusDrawer.setAttribute('aria-hidden', 'true');
+    }
+
+    // ── BATCH 2.3: Tour Ambience Toggle (Web Audio synthesis only, no audio files) ──
+    var ambienceBtn = document.getElementById('tour-ambience-btn');
+    var isAmbienceOn = false;
+    var audioCtx: AudioContext | null = null;
+    var masterGain: GainNode | null = null;
+    var chimeTimeout: number | null = null;
+    var isTourInView = false;
+
+    // Observe tour section to suspend audio offscreen
+    var tourObserver = new IntersectionObserver(
+      function (entries) {
+        isTourInView = entries[0].isIntersecting;
+        if (!isTourInView && audioCtx && audioCtx.state === 'running') {
+          audioCtx.suspend();
+        } else if (isTourInView && isAmbienceOn && !document.hidden && audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    tourObserver.observe(section);
+
+    // Suspend audio on tab hide
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && audioCtx && audioCtx.state === 'running') {
+        audioCtx.suspend();
+      } else if (!document.hidden && isAmbienceOn && isTourInView && audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    });
+
+    // Suspend audio on page unload
+    window.addEventListener('pagehide', function () {
+      if (audioCtx && audioCtx.state === 'running') {
+        audioCtx.suspend();
+      }
+    });
+
+    function initWebAudioAmbience() {
+      if (audioCtx) return;
+      var AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtxClass) return;
+
+      audioCtx = new AudioCtxClass();
+
+      // Master Gain for smooth crossfades
+      masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+
+      // 1. Soft room tone (warm pink noise through lowpass filter)
+      var bufferSize = audioCtx.sampleRate * 2;
+      var noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      var out = noiseBuffer.getChannelData(0);
+      var b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (var i = 0; i < bufferSize; i++) {
+        var white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        out[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.09;
+        b6 = white * 0.115926;
+      }
+
+      var roomToneSource = audioCtx.createBufferSource();
+      roomToneSource.buffer = noiseBuffer;
+      roomToneSource.loop = true;
+
+      var lowpass = audioCtx.createBiquadFilter();
+      lowpass.type = 'lowpass';
+      lowpass.frequency.setValueAtTime(320, audioCtx.currentTime);
+      lowpass.Q.setValueAtTime(0.8, audioCtx.currentTime);
+
+      var roomToneGain = audioCtx.createGain();
+      roomToneGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+      roomToneSource.connect(lowpass);
+      lowpass.connect(roomToneGain);
+      roomToneGain.connect(masterGain);
+      roomToneSource.start(0);
+
+      scheduleNextChime();
+    }
+
+    // Pentatonic scale frequencies for gentle, peaceful chimes (C D E G A C E)
+    var chimeScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 659.25];
+
+    function scheduleNextChime() {
+      if (!isAmbienceOn) return;
+      var delay = 4500 + Math.random() * 4500; // random interval between 4.5s and 9s
+      chimeTimeout = window.setTimeout(function () {
+        if (!isAmbienceOn || !audioCtx || audioCtx.state !== 'running') {
+          scheduleNextChime();
+          return;
+        }
+        playGentleChime();
+        scheduleNextChime();
+      }, delay);
+    }
+
+    function playGentleChime() {
+      if (!audioCtx || !masterGain || audioCtx.state !== 'running') return;
+      var t = audioCtx.currentTime;
+      var freq = chimeScale[Math.floor(Math.random() * chimeScale.length)];
+
+      var osc = audioCtx.createOscillator();
+      var chimeGain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+
+      // Low volume, soft linear attack and exponential decay
+      chimeGain.gain.setValueAtTime(0.0001, t);
+      chimeGain.gain.linearRampToValueAtTime(0.024, t + 0.03);
+      chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
+
+      osc.connect(chimeGain);
+      chimeGain.connect(masterGain);
+      osc.start(t);
+      osc.stop(t + 2.5);
+    }
+
+    function toggleAmbience() {
+      if (!isAmbienceOn) {
+        // Turn ON
+        initWebAudioAmbience();
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        if (masterGain && audioCtx) {
+          masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+          masterGain.gain.linearRampToValueAtTime(1.0, audioCtx.currentTime + 0.4);
+        }
+        isAmbienceOn = true;
+        if (ambienceBtn) {
+          ambienceBtn.classList.add('is-active');
+          ambienceBtn.setAttribute('aria-pressed', 'true');
+        }
+        scheduleNextChime();
+      } else {
+        // Turn OFF
+        if (masterGain && audioCtx) {
+          masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+          masterGain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+          window.setTimeout(function () {
+            if (!isAmbienceOn && audioCtx && audioCtx.state === 'running') {
+              audioCtx.suspend();
+            }
+          }, 320);
+        }
+        if (chimeTimeout) {
+          clearTimeout(chimeTimeout);
+          chimeTimeout = null;
+        }
+        isAmbienceOn = false;
+        if (ambienceBtn) {
+          ambienceBtn.classList.remove('is-active');
+          ambienceBtn.setAttribute('aria-pressed', 'false');
+        }
+      }
+    }
+
+    if (ambienceBtn) {
+      ambienceBtn.addEventListener('click', toggleAmbience);
     }
 
     // ── Fallback Handler with Logging ─────────────────────────────────
@@ -1076,6 +1257,53 @@ const tourSpaces = [
     -webkit-user-select: none;
     touch-action: pan-y;
     outline: none;
+  }
+
+  /* Ambience Sound Toggle Button */
+  .tour-ambience-btn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    z-index: 25;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(23, 32, 15, 0.88);
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    color: #F4ECDA;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+  .tour-ambience-btn:hover {
+    border-color: #E0A63C;
+    background: rgba(30, 42, 20, 0.95);
+    color: #E0A63C;
+    transform: translateY(-1px);
+  }
+  .tour-ambience-btn.is-active {
+    background: #E0A63C;
+    border-color: #E0A63C;
+    color: #17200F;
+    box-shadow: 0 0 16px rgba(224, 166, 60, 0.45);
+  }
+  .tour-ambience-icon {
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+  @media (max-width: 640px) {
+    .tour-ambience-btn {
+      top: 10px;
+      right: 10px;
+      padding: 6px 11px;
+      font-size: 0.75rem;
+    }
   }
 
   /* WebGL Canvas Wrap */

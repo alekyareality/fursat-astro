@@ -33,4 +33,4 @@ Small-fixes session. Tick each item after committing.
 - [x] TASK H: Tour visibility fix, in-scene zoom, remove lightbox, scroll-snap fallback (`fix: tour 3-panel visibility and in-scene zoom`)
 - [x] BATCH 2.1: Magnetic platters (.ts-item) with spring easing and separate transform shadow
 - [x] BATCH 2.2: Marble ripple canvas behind plates with low-end and reduced-motion guards
-- [ ] BATCH 2.3: Tour Web Audio Ambience toggle in PanoramicViewer with viewport and page-hide suspension
+- [x] BATCH 2.3: Tour Web Audio Ambience toggle in PanoramicViewer with viewport and page-hide suspension
