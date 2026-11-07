@@ -34,3 +34,6 @@ Small-fixes session. Tick each item after committing.
 - [x] BATCH 2.1: Magnetic platters (.ts-item) with spring easing and separate transform shadow
 - [x] BATCH 2.2: Marble ripple canvas behind plates with low-end and reduced-motion guards
 - [x] BATCH 2.3: Tour Web Audio Ambience toggle in PanoramicViewer with viewport and page-hide suspension
+- [x] BATCH 1.1: Velocity-skewed marquee on MarqueeStrip.astro
+- [ ] BATCH 1.2: Gold foil tilt on Mascot 15% offer card (MascotOfferModal.astro)
+- [ ] BATCH 1.3: Day/Evening curtain slider on index.astro between Tour and Reels

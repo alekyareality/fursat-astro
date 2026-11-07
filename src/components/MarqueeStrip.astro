@@ -36,21 +36,23 @@ const animDir = direction === 'right' ? 'mq-scroll-right' : 'mq-scroll-left';
 ---
 
 <div class="mq-strip mot-marquee" aria-hidden="true">
-  <!-- Two copies of items for seamless loop -->
-  <div class:list={['mq-track', animDir]} style={`--mq-speed:${speed}s`}>
-    {items.map(item => (
-      <span class="mq-item">
-        <span class="mq-dot" aria-hidden="true">✦</span>
-        {item}
-      </span>
-    ))}
-    {/* Duplicate for seamless wrap */}
-    {items.map(item => (
-      <span class="mq-item" aria-hidden="true">
-        <span class="mq-dot">✦</span>
-        {item}
-      </span>
-    ))}
+  <div class="mq-skew-wrap">
+    <!-- Two copies of items for seamless loop -->
+    <div class:list={['mq-track', animDir]} style={`--mq-speed:${speed}s`}>
+      {items.map(item => (
+        <span class="mq-item">
+          <span class="mq-dot" aria-hidden="true">✦</span>
+          {item}
+        </span>
+      ))}
+      {/* Duplicate for seamless wrap */}
+      {items.map(item => (
+        <span class="mq-item" aria-hidden="true">
+          <span class="mq-dot">✦</span>
+          {item}
+        </span>
+      ))}
+    </div>
   </div>
 </div>
 
@@ -78,6 +80,15 @@ const animDir = direction === 'right' ? 'mq-scroll-right' : 'mq-scroll-left';
   .mq-strip:hover .mq-track,
   .mq-strip:focus-within .mq-track {
     animation-play-state: paused;
+  }
+
+  /* ── Skew Wrapper (Driven by scroll velocity) ─────────────────────────── */
+  .mq-skew-wrap {
+    display: block;
+    width: 100%;
+    transform: skewX(var(--mq-skew, 0deg));
+    transform-origin: 50% 50%;
+    will-change: transform;
   }
 
   /* ── Scrolling Track ───────────────────────────────────────────────────── */
@@ -117,6 +128,9 @@ const animDir = direction === 'right' ? 'mq-scroll-right' : 'mq-scroll-left';
 
   /* ── Reduced Motion: Stop animation ───────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
+    .mq-skew-wrap {
+      transform: none !important;
+    }
     .mq-track {
       animation: none !important;
     }
@@ -132,3 +146,71 @@ const animDir = direction === 'right' ? 'mq-scroll-right' : 'mq-scroll-left';
     }
   }
 </style>
+
+<script is:inline>
+  // ── BATCH 1.1: Velocity-skewed kinetic marquee ─────────────────────────
+  (function initVelocityMarquee() {
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (calm) return;
+
+    var strip = document.querySelector('.mq-strip');
+    if (!strip) return;
+
+    var inView = false;
+    var lastY = window.scrollY || window.pageYOffset;
+    var currentSkew = 0;
+    var targetSkew = 0;
+    var rAFId = null;
+
+    // Pause off-screen via IntersectionObserver
+    var obs = new IntersectionObserver(function (entries) {
+      inView = entries[0].isIntersecting;
+      if (inView) {
+        lastY = window.scrollY || window.pageYOffset;
+      } else if (rAFId) {
+        cancelAnimationFrame(rAFId);
+        rAFId = null;
+        currentSkew = 0;
+        targetSkew = 0;
+        strip.style.setProperty('--mq-skew', '0deg');
+      }
+    }, { threshold: 0.05 });
+    obs.observe(strip);
+
+    function onScroll() {
+      if (!inView) return;
+      var curY = window.scrollY || window.pageYOffset;
+      var delta = curY - lastY;
+      lastY = curY;
+
+      // Clamped skewX between -8deg and +8deg
+      targetSkew = Math.max(-8, Math.min(8, delta * -0.18));
+
+      if (!rAFId) {
+        rAFId = requestAnimationFrame(tick);
+      }
+    }
+
+    function tick() {
+      rAFId = null;
+      if (!inView) return;
+
+      // Smooth ease back
+      currentSkew += (targetSkew - currentSkew) * 0.12;
+      // Decay targetSkew towards 0 on every tick
+      targetSkew *= 0.85;
+
+      if (Math.abs(currentSkew) < 0.02 && Math.abs(targetSkew) < 0.02) {
+        currentSkew = 0;
+        targetSkew = 0;
+        strip.style.setProperty('--mq-skew', '0deg');
+        return;
+      }
+
+      strip.style.setProperty('--mq-skew', currentSkew.toFixed(2) + 'deg');
+      rAFId = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
