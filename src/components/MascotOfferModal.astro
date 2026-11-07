@@ -412,6 +412,9 @@
   }
 
   /* Step 2 Reward Ticket */
+  .fom-step-reward {
+    perspective: 900px;
+  }
   .fom-ticket {
     position: relative;
     background: #6B1E12;
@@ -421,6 +424,35 @@
     margin: 20px 0;
     text-align: center;
     box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform-style: preserve-3d;
+    transform: perspective(900px) rotateX(var(--fom-tilt-x, 0deg)) rotateY(var(--fom-tilt-y, 0deg));
+    will-change: transform;
+    transition: transform 0.16s ease-out;
+  }
+  .fom-ticket::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at var(--foil-x, 50%) var(--foil-y, 50%),
+      rgba(255, 235, 175, 0.45) 0%,
+      rgba(224, 166, 60, 0.22) 30%,
+      rgba(224, 166, 60, 0) 65%
+    );
+    mix-blend-mode: overlay;
+    opacity: var(--foil-opacity, 0);
+    transition: opacity 0.25s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fom-ticket {
+      transform: none !important;
+      transition: none !important;
+    }
+    .fom-ticket::after {
+      display: none !important;
+    }
   }
   .fom-ticket-notch {
     position: absolute;
@@ -637,6 +669,66 @@
       bookNow.addEventListener('click', () => {
         closeModal();
       });
+    }
+
+    // ── BATCH 1.2: Gold Foil Tilt on Mascot 15% Offer Card (.fom-ticket) ──
+    const ticket = document.querySelector('.fom-ticket');
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (ticket && !calm) {
+      let isHovered = false;
+
+      const handlePointerMove = (e) => {
+        const rect = ticket.getBoundingClientRect();
+        const pointerX = e.clientX - rect.left;
+        const pointerY = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        // Pointer tilt clamped about 8 degrees
+        const tiltX = Math.max(-8, Math.min(8, ((centerY - pointerY) / centerY) * 8));
+        const tiltY = Math.max(-8, Math.min(8, ((pointerX - centerX) / centerX) * 8));
+
+        const foilX = Math.max(0, Math.min(100, (pointerX / rect.width) * 100));
+        const foilY = Math.max(0, Math.min(100, (pointerY / rect.height) * 100));
+
+        ticket.style.setProperty('--fom-tilt-x', tiltX.toFixed(2) + 'deg');
+        ticket.style.setProperty('--fom-tilt-y', tiltY.toFixed(2) + 'deg');
+        ticket.style.setProperty('--foil-x', foilX.toFixed(1) + '%');
+        ticket.style.setProperty('--foil-y', foilY.toFixed(1) + '%');
+        ticket.style.setProperty('--foil-opacity', '1');
+      };
+
+      const handlePointerLeave = () => {
+        ticket.style.setProperty('--fom-tilt-x', '0deg');
+        ticket.style.setProperty('--fom-tilt-y', '0deg');
+        ticket.style.setProperty('--foil-opacity', '0');
+      };
+
+      ticket.addEventListener('pointerenter', () => { isHovered = true; });
+      ticket.addEventListener('pointermove', handlePointerMove);
+      ticket.addEventListener('pointerleave', () => {
+        isHovered = false;
+        handlePointerLeave();
+      });
+
+      // Gyroscope tilt on phone: ONLY if no permission is needed
+      if (typeof window !== 'undefined' && window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission !== 'function') {
+        window.addEventListener('deviceorientation', (e) => {
+          if (isHovered || !step2 || step2.hidden) return;
+          if (e.gamma == null || e.beta == null) return;
+          // Clamp gamma (-30 to +30 deg) and beta (20 to 60 deg) to ~8 degrees tilt
+          const tiltY = Math.max(-8, Math.min(8, (e.gamma / 30) * 8));
+          const tiltX = Math.max(-8, Math.min(8, -((e.beta - 40) / 30) * 8));
+          const foilX = 50 + (tiltY / 8) * 35;
+          const foilY = 50 + (-tiltX / 8) * 35;
+
+          ticket.style.setProperty('--fom-tilt-x', tiltX.toFixed(2) + 'deg');
+          ticket.style.setProperty('--fom-tilt-y', tiltY.toFixed(2) + 'deg');
+          ticket.style.setProperty('--foil-x', foilX.toFixed(1) + '%');
+          ticket.style.setProperty('--foil-y', foilY.toFixed(1) + '%');
+          ticket.style.setProperty('--foil-opacity', '0.75');
+        }, { passive: true });
+      }
     }
   });
 </script>
