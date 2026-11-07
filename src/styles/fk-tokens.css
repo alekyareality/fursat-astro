@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Fursat Design Tokens (fk-*) — Extended from Reference Design Measurements
+   Loaded without preflight so existing site CSS is untouched.
+   ========================================================================== */
+
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) important;
+
+@theme {
+  /* --- Colors from Sharp Pixel Samples & Existing fk-* Tokens --- */
+  --color-fk-cream: #F2EEE4;       /* Base warm cream canvas */
+  --color-fk-cream-light: #EEE9D5; /* Sampled light cream background */
+  --color-fk-paper: #F4EDDD;       /* Sampled elevated card paper surface */
+  --color-fk-paper-light: #F7F4E3; /* Sampled bright card surface */
+  --color-fk-ink: #34311E;         /* Sampled dark forest ink headline text */
+  --color-fk-muted: #5C644E;       /* Muted body / captions */
+  --color-fk-olive: #393D1A;       /* Sampled olive buttons & active tabs */
+  --color-fk-olive-dark: #242E1B;  /* Deep olive hover state */
+  --color-fk-green: #19331A;       /* Sampled deep forest green backdrop */
+  --color-fk-quote: #4A4527;       /* Sampled dark olive quote card */
+  --color-fk-gold: #E0A63C;        /* Existing Fursat brand gold accent */
+  --color-fk-terra: #C8824E;       /* Sampled terracotta/ochre accent button */
+  --color-fk-line: #DCD5C3;        /* Sampled card border line */
+  --color-fk-line-subtle: #D6CFBD; /* Sampled step connecting line */
+  --color-fk-wa: #303F2A;          /* Sampled dark green WhatsApp CTA button */
+  --color-fk-deep: #1A1608;        /* Deep charcoal shadow/base */
+
+  /* --- Fonts (Using Existing Project Fonts) --- */
+  --font-fk-serif: "Playfair Display", Georgia, serif;
+  --font-fk-sans: "Manrope", system-ui, sans-serif;
+  --font-fk-script: "Sacramento", cursive;
+
+  /* --- Radii --- */
+  --radius-fk-pill: 9999px;
+  --radius-fk-sm: 12px;
+  --radius-fk-md: 20px;
+  --radius-fk-lg: 28px;
+  --radius-fk-xl: 36px;
+  --radius-fk-organic: 42% 58% 70% 30% / 45% 45% 55% 55%;
+}
