@@ -36,4 +36,4 @@ Small-fixes session. Tick each item after committing.
 - [x] BATCH 2.3: Tour Web Audio Ambience toggle in PanoramicViewer with viewport and page-hide suspension
 - [x] BATCH 1.1: Velocity-skewed marquee on MarqueeStrip.astro
 - [x] BATCH 1.2: Gold foil tilt on Mascot 15% offer card (MascotOfferModal.astro)
-- [ ] BATCH 1.3: Day/Evening curtain slider on index.astro between Tour and Reels
+- [x] BATCH 1.3: Day/Evening curtain slider on index.astro between Tour and Reels
