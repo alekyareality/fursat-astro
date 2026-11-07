@@ -66,6 +66,7 @@ const tableItems = [
   <div class="ts-table-container">
     <div class="ts-table-surface" id="ts-surface">
       <div class="ts-marble-texture" aria-hidden="true"></div>
+      <canvas id="ts-ripple-canvas" class="ts-ripple-canvas" aria-hidden="true"></canvas>
 
       <!-- Center Ambient Brand Platter -->
       <div class="ts-centerpiece" aria-hidden="true">
@@ -183,6 +184,14 @@ const tableItems = [
     background-image: radial-gradient(rgba(244, 236, 218, 0.25) 1px, transparent 1px);
     background-size: 24px 24px;
     pointer-events: none;
+  }
+  .ts-ripple-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
   }
   .ts-centerpiece {
     position: absolute;
@@ -602,5 +611,151 @@ const tableItems = [
         rAFId = requestAnimationFrame(tick);
       }
     }
+  })();
+
+  // ── BATCH 2.2: Marble ripple expanding rings on 2D canvas behind plates ──
+  (function initMarbleRipple() {
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isLowEnd = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
+    var canvas = document.getElementById('ts-ripple-canvas');
+    if (calm || isLowEnd || !canvas) {
+      if (canvas) canvas.style.display = 'none';
+      return;
+    }
+
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var surface = document.getElementById('ts-surface');
+    var section = document.querySelector('.ts-section');
+    if (!surface || !section) return;
+
+    var canvasW = 480;
+    var canvasH = 240;
+    var scaleX = 1;
+    var scaleY = 1;
+
+    // Cap canvas to low resolution (max 540x280)
+    function resizeCanvas() {
+      var rect = surface.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      canvasW = Math.min(540, Math.max(320, Math.floor(rect.width * 0.45)));
+      canvasH = Math.min(280, Math.max(180, Math.floor(rect.height * 0.45)));
+      canvas.width = canvasW;
+      canvas.height = canvasH;
+      scaleX = canvasW / rect.width;
+      scaleY = canvasH / rect.height;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    var rings = [];
+    var lastRingTime = 0;
+    var lastX = -999;
+    var lastY = -999;
+    var isLooping = false;
+    var inView = false;
+
+    // Pause off-screen via IntersectionObserver
+    var obs = new IntersectionObserver(function(entries) {
+      inView = entries[0].isIntersecting;
+      if (inView && rings.length > 0) {
+        startRippleLoop();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(section);
+
+    function addRipple(clientX, clientY) {
+      if (!inView) return;
+      var now = performance.now();
+      if (now - lastRingTime < 65) return; // throttle
+
+      var rect = surface.getBoundingClientRect();
+      var x = (clientX - rect.left) * scaleX;
+      var y = (clientY - rect.top) * scaleY;
+
+      if (Math.hypot(x - lastX, y - lastY) < 16) return;
+
+      lastRingTime = now;
+      lastX = x;
+      lastY = y;
+
+      rings.push({
+        x: x,
+        y: y,
+        r: 3,
+        maxR: Math.min(canvasW * 0.35, 95),
+        alpha: 0.55,
+        speed: 1.6
+      });
+
+      if (rings.length > 10) {
+        rings.shift();
+      }
+
+      startRippleLoop();
+    }
+
+    function startRippleLoop() {
+      if (!isLooping && inView) {
+        isLooping = true;
+        requestAnimationFrame(renderRipples);
+      }
+    }
+
+    function renderRipples() {
+      if (!inView || rings.length === 0) {
+        if (rings.length === 0 && ctx) {
+          ctx.clearRect(0, 0, canvasW, canvasH);
+        }
+        isLooping = false;
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvasW, canvasH);
+
+      for (var i = rings.length - 1; i >= 0; i--) {
+        var ring = rings[i];
+        ring.r += ring.speed;
+        ring.alpha *= 0.955; // exponential damping
+
+        if (ring.alpha < 0.015 || ring.r >= ring.maxR) {
+          rings.splice(i, 1);
+          continue;
+        }
+
+        // Outer warm gold caustic ring
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(224, 166, 60, ' + (ring.alpha * 0.45).toFixed(3) + ')';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        // Inner secondary cream condensation ring
+        if (ring.r > 10) {
+          ctx.beginPath();
+          ctx.arc(ring.x, ring.y, ring.r - 8, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(244, 236, 218, ' + (ring.alpha * 0.22).toFixed(3) + ')';
+          ctx.lineWidth = 1.0;
+          ctx.stroke();
+        }
+      }
+
+      if (rings.length > 0) {
+        requestAnimationFrame(renderRipples);
+      } else {
+        isLooping = false;
+      }
+    }
+
+    surface.addEventListener('mousemove', function(e) {
+      addRipple(e.clientX, e.clientY);
+    }, { passive: true });
+
+    surface.addEventListener('touchmove', function(e) {
+      if (e.touches && e.touches[0]) {
+        addRipple(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
   })();
 </script>
