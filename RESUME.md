@@ -30,3 +30,4 @@ Small-fixes session. Tick each item after committing.
 - [x] TASK F3: Camera fly-to, space drawer, gyro & panos (`feat: tour camera fly to, space drawer and panos`)
 - [x] TASK F4: Fallback & a11y hardening (`feat: tour fallback and a11y hardening`)
 - [x] TASK F5: Documentation & verification (`docs: tour 3d rotunda completed`)
+- [x] TASK H: Tour visibility fix, in-scene zoom, remove lightbox, scroll-snap fallback (`fix: tour 3-panel visibility and in-scene zoom`)

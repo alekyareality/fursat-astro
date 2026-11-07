@@ -1,6 +1,6 @@
 ---
 // PanoramicViewer.astro - "Step inside Fursat" Panoramic Tour
-// WebGL 3D Curved Cylindrical Rotunda with Three.js & Resilient CSS 3D Fallback
+// WebGL 3D Curved Cylindrical Rotunda with Three.js & Resilient Scroll-Snap Fallback
 // Real photography only from raw_assets/interior_named/
 
 const tourSpaces = [
@@ -74,7 +74,7 @@ const tourSpaces = [
       <span class="tour-kicker">STEP INSIDE FURSAT</span>
       <h2 class="tour-title mot-headline" id="tour-heading">A Panoramic Walkthrough</h2>
       <p class="tour-sub">
-        Drag or swipe to rotate. Tap any space to explore details.
+        Drag or swipe to rotate. Tap any space to fly in and explore details.
       </p>
     </div>
 
@@ -113,6 +113,26 @@ const tourSpaces = [
           </button>
         </div>
 
+        <!-- In-Scene Focus Details Drawer (No full-screen modal) -->
+        <div class="tour-focus-drawer" id="tour-focus-drawer" aria-hidden="true">
+          <button
+            type="button"
+            class="tour-focus-close"
+            id="tour-focus-close"
+            aria-label="Close details and fly back out (or press Esc)"
+            title="Fly back out (Esc)"
+          >
+            ✕
+          </button>
+          <span class="tour-focus-kicker" id="tour-focus-kicker"></span>
+          <h3 class="tour-focus-title" id="tour-focus-title"></h3>
+          <p class="tour-focus-desc" id="tour-focus-desc"></p>
+          <div class="tour-focus-actions">
+            <a href="/reserve" class="tour-focus-cta">Reserve a Table →</a>
+            <button type="button" class="tour-focus-back-btn" id="tour-focus-back-btn">← Back to Overview</button>
+          </div>
+        </div>
+
         <!-- iOS Gyroscope Permission Prompt Pill -->
         <button type="button" class="tour-gyro-btn" id="tour-gyro-btn" aria-label="Enable motion look-around" style="display: none;">
           <span class="tour-gyro-icon">⟳</span>
@@ -120,56 +140,31 @@ const tourSpaces = [
         </button>
       </div>
 
-      <!-- CSS 3D Ring (Fallback for No-WebGL / Reduced Motion) -->
-      <div class="tour-stage" id="tour-stage">
-        <div class="tour-ring" id="tour-ring">
-          {tourSpaces.map((item, index) => {
-            const theta = index * 60; // 360 / 6 = 60 deg
-            return (
-              <article
-                class={`tour-card${index === 0 ? ' is-active' : ''}`}
-                data-index={index}
-                data-id={item.id}
-                data-title={item.title}
-                data-kicker={item.kicker}
-                data-desc={item.desc}
-                data-img={item.img}
-                style={`--card-angle: ${theta}deg;`}
-                aria-label={item.title}
-              >
-                <div class="tour-card-inner">
-                  <div class="tour-card-img-wrap">
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      class="tour-card-img"
-                      loading="lazy"
-                      decoding="async"
-                      width={item.width}
-                      height={item.height}
-                    />
-                    <div class="tour-card-dimmer" aria-hidden="true"></div>
-                    <span class="tour-card-badge">{item.tag}</span>
-                    <button
-                      type="button"
-                      class="tour-card-expand-btn"
-                      aria-label={`Expand view of ${item.title}`}
-                      title="Expand View"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="tour-card-info">
-                    <span class="tour-card-kicker">{item.kicker}</span>
-                    <h3 class="tour-card-name">{item.title}</h3>
-                    <p class="tour-card-desc">{item.desc}</p>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+      <!-- Resilient Fallback: Clean Horizontal Scroll-Snap Gallery (No-WebGL / Reduced Motion) -->
+      <div class="tour-fallback-gallery" id="tour-fallback-gallery" role="region" aria-label="Interior spaces gallery">
+        <div class="tour-fallback-track" id="tour-fallback-track">
+          {tourSpaces.map((item, index) => (
+            <article class={`tour-fallback-card${index === 0 ? ' is-active' : ''}`} data-index={index}>
+              <div class="tour-fallback-img-wrap">
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  class="tour-fallback-img"
+                  loading="lazy"
+                  decoding="async"
+                  width={item.width}
+                  height={item.height}
+                />
+                <span class="tour-fallback-badge">{item.tag}</span>
+              </div>
+              <div class="tour-fallback-info">
+                <span class="tour-fallback-kicker">{item.kicker}</span>
+                <h3 class="tour-fallback-name">{item.title}</h3>
+                <p class="tour-fallback-desc">{item.desc}</p>
+                <a href="/reserve" class="tour-fallback-cta">Reserve a Table →</a>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
 
@@ -211,39 +206,13 @@ const tourSpaces = [
 
       <!-- Drag & Keyboard Hint -->
       <div class="tour-hint" aria-hidden="true">
-        <span>↔ Drag to spin · Arrow keys to navigate · Tap to explore</span>
+        <span>↔ Drag to spin · Tap panel to zoom in · Esc to zoom out · Arrow keys to navigate</span>
       </div>
     </div>
   </div>
 
   <!-- ARIA live region for screen-reader announcements -->
   <div id="tour-live" aria-live="polite" aria-atomic="true" class="tour-sr-only"></div>
-
-  <!-- Expand Lightbox Modal / Drawer -->
-  <dialog class="tour-modal" id="tour-modal" aria-labelledby="tour-modal-title">
-    <div class="tour-modal-backdrop" id="tour-modal-backdrop"></div>
-    <div class="tour-modal-box">
-      <button
-        type="button"
-        class="tour-modal-close"
-        id="tour-modal-close"
-        aria-label="Close details"
-      >
-        ✕
-      </button>
-      <div class="tour-modal-img-wrap">
-        <img id="tour-modal-img" src="" alt="" class="tour-modal-img" />
-      </div>
-      <div class="tour-modal-meta">
-        <span class="tour-modal-kicker" id="tour-modal-kicker"></span>
-        <h3 class="tour-modal-title" id="tour-modal-title"></h3>
-        <p class="tour-modal-desc" id="tour-modal-desc"></p>
-        <div class="tour-modal-actions">
-          <a href="/reserve" class="tour-modal-cta">Reserve a Table →</a>
-        </div>
-      </div>
-    </div>
-  </dialog>
 </section>
 
 <!-- ── Tour Interactivity Script (Bundled by Astro/Vite) ─────────────────────── -->
@@ -251,8 +220,9 @@ const tourSpaces = [
   (function () {
     var section = document.getElementById('tour');
     var wrapper = document.getElementById('tour-stage-wrapper');
-    var stage = document.getElementById('tour-stage');
-    var ring = document.getElementById('tour-ring');
+    var fallbackGallery = document.getElementById('tour-fallback-gallery');
+    var fallbackTrack = document.getElementById('tour-fallback-track');
+    var fallbackCards = Array.from(document.querySelectorAll('.tour-fallback-card'));
     var webglWrap = document.getElementById('tour-webgl-wrap');
     var canvas = document.getElementById('tour-webgl-canvas') as HTMLCanvasElement;
     var flyinOverlay = document.getElementById('tour-flyin-overlay');
@@ -262,15 +232,15 @@ const tourSpaces = [
     var nextBtn = document.getElementById('tour-next');
     var chips = Array.from(document.querySelectorAll('.tour-chip'));
     var dots = Array.from(document.querySelectorAll('.tour-dot'));
-    var cards = Array.from(document.querySelectorAll('.tour-card'));
 
-    var modal = document.getElementById('tour-modal') as HTMLDialogElement;
-    var modalClose = document.getElementById('tour-modal-close');
-    var modalBackdrop = document.getElementById('tour-modal-backdrop');
-    var modalImg = document.getElementById('tour-modal-img') as HTMLImageElement;
-    var modalTitle = document.getElementById('tour-modal-title');
-    var modalKicker = document.getElementById('tour-modal-kicker');
-    var modalDesc = document.getElementById('tour-modal-desc');
+    // In-Scene Focus Drawer Elements
+    var focusDrawer = document.getElementById('tour-focus-drawer');
+    var focusClose = document.getElementById('tour-focus-close');
+    var focusBackBtn = document.getElementById('tour-focus-back-btn');
+    var focusTitle = document.getElementById('tour-focus-title');
+    var focusKicker = document.getElementById('tour-focus-kicker');
+    var focusDesc = document.getElementById('tour-focus-desc');
+    var liveRegion = document.getElementById('tour-live');
 
     if (!section || !wrapper) return;
 
@@ -326,43 +296,14 @@ const tourSpaces = [
 
     var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Lightbox Modal
-    function openModalForIndex(idx: number) {
-      if (!modal) return;
-      var d = spacesData[idx];
-      if (!d) return;
-      if (modalImg) { modalImg.src = d.img; modalImg.alt = d.title; }
-      if (modalTitle) modalTitle.textContent = d.title;
-      if (modalKicker) modalKicker.textContent = d.kicker;
-      if (modalDesc) modalDesc.textContent = d.desc;
-      if (typeof modal.showModal === 'function') {
-        modal.showModal();
-      } else {
-        modal.setAttribute('open', '');
+    // Check WebGL Support
+    function hasWebGLSupport() {
+      try {
+        var testCanvas = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (testCanvas.getContext('webgl2') || testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
+      } catch (e) {
+        return false;
       }
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      if (!modal) return;
-      if (typeof modal.close === 'function') {
-        modal.close();
-      } else {
-        modal.removeAttribute('open');
-      }
-      document.body.style.overflow = '';
-    }
-
-    if (modalClose) modalClose.addEventListener('click', closeModal);
-    if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
-    if (modal) {
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
-      });
-      modal.addEventListener('cancel', function (e) {
-        e.preventDefault();
-        closeModal();
-      });
     }
 
     function updateActiveUI(idx: number) {
@@ -385,35 +326,47 @@ const tourSpaces = [
           d.setAttribute('aria-selected', 'false');
         }
       });
-      cards.forEach(function (card, i) {
+      fallbackCards.forEach(function (card, i) {
         if (i === activeIndex) {
           card.classList.add('is-active');
         } else {
           card.classList.remove('is-active');
         }
       });
-      // Announce space name to screen readers
-      var liveRegion = document.getElementById('tour-live');
       if (liveRegion && spacesData[idx]) {
         liveRegion.textContent = 'Viewing: ' + spacesData[idx].title;
       }
     }
 
-    // ── Check WebGL Support ───────────────────────────────────────────
-    function hasWebGLSupport() {
-      try {
-        var testCanvas = document.createElement('canvas');
-        return !!(window.WebGLRenderingContext && (testCanvas.getContext('webgl2') || testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
-      } catch (e) {
-        return false;
-      }
+    // In-Scene Focus Drawer UI Handler
+    function showFocusDrawer(idx: number) {
+      var d = spacesData[idx];
+      if (!d || !focusDrawer) return;
+      if (focusTitle) focusTitle.textContent = d.title;
+      if (focusKicker) focusKicker.textContent = d.kicker;
+      if (focusDesc) focusDesc.textContent = d.desc;
+      focusDrawer.classList.add('is-open');
+      focusDrawer.setAttribute('aria-hidden', 'false');
+    }
+
+    function hideFocusDrawer() {
+      if (!focusDrawer) return;
+      focusDrawer.classList.remove('is-open');
+      focusDrawer.setAttribute('aria-hidden', 'true');
+    }
+
+    // ── Fallback Handler with Logging ─────────────────────────────────
+    function enableFallback(reason: string) {
+      console.warn('[Tour] Fallback chosen: ' + reason);
+      wrapper?.classList.remove('has-webgl');
+      wrapper?.classList.add('is-fallback');
+      initFallbackGallery();
     }
 
     var webglAvailable = !prefersReduced && hasWebGLSupport();
 
     if (!webglAvailable) {
-      // Use CSS 3D fallback
-      initCSS3DFallback();
+      enableFallback(prefersReduced ? 'prefers-reduced-motion is active' : 'WebGL is not supported by browser/device');
       return;
     }
 
@@ -435,43 +388,65 @@ const tourSpaces = [
 
     function startWebGLTour() {
       import('three').then(function (THREE) {
-        if (!canvas || !webglWrap) return;
+        if (!canvas || !webglWrap) {
+          enableFallback('Canvas or webglWrap element missing');
+          return;
+        }
 
         // Mark as WebGL active
         wrapper?.classList.add('has-webgl');
+        wrapper?.classList.remove('is-fallback');
 
-        var width = webglWrap.clientWidth || 1000;
+        var width = webglWrap.clientWidth || window.innerWidth;
         var height = webglWrap.clientHeight || 520;
 
         var scene = new THREE.Scene();
-        // Cheap atmospheric fog (matching #0d1308 background)
-        scene.fog = new THREE.FogExp2(0x0d1308, 0.0012);
+        // Light linear atmospheric fog starting far beyond panel distance (no panel goes dark)
+        scene.fog = new THREE.Fog(0x0d1308, 650, 1800);
 
+        // Responsive camera with wide horizontal FOV so at least 3 panels are always visible
         var camera = new THREE.PerspectiveCamera(54, width / height, 1, 3000);
-        // Start camera at outside fly-in position
-        var startCamPos = new THREE.Vector3(0, 48, 820);
-        var centerCamPos = new THREE.Vector3(0, 0, 0);
+
+        function updateCameraFOV() {
+          var aspect = camera.aspect;
+          // Target ~92° horizontal FOV so center + both side neighbors fit comfortably
+          var targetHFOV = 92 * (Math.PI / 180);
+          var vfovRad = 2 * Math.atan(Math.tan(targetHFOV / 2) / Math.max(0.6, aspect));
+          camera.fov = Math.min(105, Math.max(48, vfovRad * (180 / Math.PI)));
+          camera.updateProjectionMatrix();
+        }
+        updateCameraFOV();
+
+        // Camera positions: rest position allows 3 panels on screen; zoom position moves close for inspection
+        var startCamPos = new THREE.Vector3(0, 30, 480);
+        var restCamPos = new THREE.Vector3(0, 0, 160);
+        var zoomCamPos = new THREE.Vector3(0, 0, -110);
+        var targetCamPos = startCamPos.clone();
         camera.position.copy(startCamPos);
 
-        var renderer = new THREE.WebGLRenderer({
-          canvas: canvas,
-          antialias: true,
-          alpha: false,
-          powerPreference: 'high-performance'
-        });
+        var renderer: any;
+        try {
+          renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            alpha: false,
+            powerPreference: 'high-performance'
+          });
+        } catch (err: any) {
+          enableFallback('WebGLRenderer instantiation error: ' + (err && err.message));
+          return;
+        }
+
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
         renderer.setSize(width, height);
         renderer.setClearColor(0x0d1308, 1);
 
-        // ── WebGL Context Loss: graceful fallback to CSS 3D ───────────────
+        // WebGL Context Loss Handler
         canvas.addEventListener('webglcontextlost', function (e) {
           e.preventDefault();
-          // Switch back to CSS 3D ring
-          wrapper?.classList.remove('has-webgl');
-          initCSS3DFallback();
+          enableFallback('WebGL context lost');
         }, false);
 
-        // ── Dispose renderer on page navigation ───────────────────────────
         window.addEventListener('beforeunload', function () {
           renderer.dispose();
         }, { once: true });
@@ -480,9 +455,9 @@ const tourSpaces = [
         var rotundaGroup = new THREE.Group();
         scene.add(rotundaGroup);
 
-        var radius = 430;
+        var radius = 350;
         var panelHeight = 350;
-        var thetaLength = 0.62; // ~35.5 degrees per panel arc
+        var thetaLength = 0.58; // ~33.2° per panel arc
 
         var cylinderGeo = new THREE.CylinderGeometry(
           radius,
@@ -496,7 +471,7 @@ const tourSpaces = [
         );
         cylinderGeo.scale(-1, 1, 1); // inside faces camera
 
-        // ── Custom Panel ShaderMaterial (RGB split + ripple + Ken Burns) ──
+        // Panel ShaderMaterial: velocity RGB split + ripple + 85% to 100% brightness (NO dark boxes)
         var panelVertexShader = `
           varying vec2 vUv;
           void main() {
@@ -507,34 +482,31 @@ const tourSpaces = [
 
         var panelFragmentShader = `
           uniform sampler2D uMap;
-          uniform float uVelocity;   // signed angular velocity for RGB split direction
-          uniform float uTime;       // seconds since scene start
-          uniform float uActive;     // 1.0 when this panel is centered
+          uniform float uVelocity;
+          uniform float uTime;
+          uniform float uActive;
           varying vec2 vUv;
 
           void main() {
             vec2 uv = vUv;
 
-            // ── Ken Burns: slow UV pan/zoom on active panel ──────────────
-            // Ramps from 0 to 1 over 1.5s to avoid snapping
+            // Ken Burns slow pan/zoom on active panel
             float kb = uActive * 0.05;
-            // Oscillate scale factor between 1.0 and 1.05
             float kbScale = 1.0 + kb * (0.5 + 0.5 * sin(uTime * 0.18));
-            // Translate center slowly
             vec2 kbOffset = vec2(
               kb * sin(uTime * 0.09) * 0.6,
               kb * cos(uTime * 0.12) * 0.4
             );
             uv = (uv - 0.5) / kbScale + 0.5 + kbOffset;
 
-            // ── Ripple / bend distortion (scales with |velocity|) ────────
+            // Ripple distortion proportional to angular velocity
             float speed = abs(uVelocity);
-            float rippleAmp = clamp(speed * 0.0012, 0.0, 0.025);
+            float rippleAmp = clamp(speed * 0.0012, 0.0, 0.022);
             uv.y += rippleAmp * sin(uv.x * 14.0 + uTime * 6.0);
             uv.x += rippleAmp * 0.5 * sin(uv.y * 10.0 + uTime * 5.0);
 
-            // ── RGB chromatic aberration (scales with velocity) ──────────
-            float rgbSplit = clamp(abs(uVelocity) * 0.0018, 0.0, 0.028);
+            // RGB chromatic aberration
+            float rgbSplit = clamp(abs(uVelocity) * 0.0018, 0.0, 0.025);
             float dir = sign(uVelocity);
             vec2 rOffset = vec2(rgbSplit * dir, 0.0);
             vec2 bOffset = vec2(-rgbSplit * dir, 0.0);
@@ -543,7 +515,9 @@ const tourSpaces = [
             float g = texture2D(uMap, clamp(uv,           0.001, 0.999)).g;
             float b = texture2D(uMap, clamp(uv + bOffset, 0.001, 0.999)).b;
 
-            gl_FragColor = vec4(r, g, b, 1.0);
+            // Side panels at 85% brightness, active at 100% brightness (never dark)
+            float brightness = mix(0.85, 1.0, uActive);
+            gl_FragColor = vec4(r * brightness, g * brightness, b * brightness, 1.0);
           }
         `;
 
@@ -572,7 +546,7 @@ const tourSpaces = [
           var mesh = new THREE.Mesh(cylinderGeo, material);
           mesh.userData = { index: index, space: space };
 
-          // Position around circle
+          // Position around circle: index 0 centered at (0, 0, -350)
           var angle = index * stepAngle + Math.PI;
           mesh.rotation.y = angle;
 
@@ -581,51 +555,64 @@ const tourSpaces = [
           panelMaterials.push(material);
         });
 
-        // ── Ambient Gold Bokeh Dust Motes ─────────────────────────────────
-        var moteCount = 48;
+        // Ambient Gold Bokeh Dust Motes
+        var moteCount = 40;
         var motePositions = new Float32Array(moteCount * 3);
         for (var mi = 0; mi < moteCount; mi++) {
           var moteAngle = Math.random() * Math.PI * 2;
-          var moteR = 60 + Math.random() * 320;
+          var moteR = 50 + Math.random() * 280;
           motePositions[mi * 3]     = Math.cos(moteAngle) * moteR;
-          motePositions[mi * 3 + 1] = (Math.random() - 0.5) * panelHeight * 1.3;
+          motePositions[mi * 3 + 1] = (Math.random() - 0.5) * panelHeight * 1.2;
           motePositions[mi * 3 + 2] = Math.sin(moteAngle) * moteR;
         }
         var moteBufGeo = new THREE.BufferGeometry();
         moteBufGeo.setAttribute('position', new THREE.BufferAttribute(motePositions.slice(), 3));
         var moteMat = new THREE.PointsMaterial({
           color: 0xE0A63C,
-          size: 2.8,
+          size: 2.6,
           transparent: true,
-          opacity: 0.55,
+          opacity: 0.5,
           blending: THREE.AdditiveBlending,
           depthWrite: false,
           sizeAttenuation: true
         });
         var motePoints = new THREE.Points(moteBufGeo, moteMat);
         scene.add(motePoints);
-
-        // Store mote original positions for drift animation
         var moteOrigPos = motePositions.slice();
 
-        // ── Camera Fly-In Logic ───────────────────────────────────────────
+        // ── Camera States: Overview vs In-Scene Zoom ──────────────────────
         var hasSteppedInside = false;
-        var flyinStartTime = 0;
-        var flyinDuration = 1600; // 1.6s
+        var isZoomed = false;
 
         function stepInside() {
           if (hasSteppedInside) return;
           hasSteppedInside = true;
-          flyinStartTime = performance.now();
+          targetCamPos.copy(restCamPos);
           if (flyinOverlay) {
             flyinOverlay.style.opacity = '0';
             flyinOverlay.style.pointerEvents = 'none';
+            setTimeout(function () {
+              if (flyinOverlay) flyinOverlay.style.display = 'none';
+            }, 500);
           }
         }
 
-        if (flyinBtn) {
-          flyinBtn.addEventListener('click', stepInside);
+        function zoomInToSpace(idx: number) {
+          stepInside();
+          isZoomed = true;
+          targetCamPos.copy(zoomCamPos);
+          showFocusDrawer(idx);
         }
+
+        function zoomOutToOverview() {
+          isZoomed = false;
+          targetCamPos.copy(restCamPos);
+          hideFocusDrawer();
+        }
+
+        if (flyinBtn) flyinBtn.addEventListener('click', stepInside);
+        if (focusClose) focusClose.addEventListener('click', zoomOutToOverview);
+        if (focusBackBtn) focusBackBtn.addEventListener('click', zoomOutToOverview);
 
         // ── Drag & Inertia Physics ─────────────────────────────────────────
         var isDragging = false;
@@ -636,8 +623,6 @@ const tourSpaces = [
         var targetRotY = 0;
         var currentRotY = 0;
         var isPointerOver = false;
-
-        // Interaction intent thresholds for scroll safety
         var startClientY = 0;
         var dragThresholdMet = false;
 
@@ -658,12 +643,11 @@ const tourSpaces = [
           var dx = e.clientX - lastPointerX;
           var dy = e.clientY - startClientY;
 
-          // Check if horizontal intent is clear before trapping
+          // Non-blocking vertical scroll check
           if (!dragThresholdMet) {
             if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) {
               dragThresholdMet = true;
             } else if (Math.abs(dy) > 10) {
-              // User intended vertical scroll; release
               isDragging = false;
               return;
             }
@@ -672,27 +656,27 @@ const tourSpaces = [
           var now = performance.now();
           var dt = Math.max(1, now - lastTime);
           angularVelocity = (dx / dt) * 0.003;
-          currentRotY -= dx * 0.0038;
+          currentRotY -= dx * 0.0036;
           targetRotY = currentRotY;
           lastPointerX = e.clientX;
           lastTime = now;
         });
 
-        function endDrag(e?: PointerEvent) {
+        function endDrag() {
           if (!isDragging) return;
           isDragging = false;
-
-          // Project momentum
           var projectedRot = currentRotY - angularVelocity * 80;
           var rawIndex = Math.round(projectedRot / stepAngle);
           targetIndex = ((rawIndex % N) + N) % N;
           targetRotY = rawIndex * stepAngle;
           updateActiveUI(targetIndex);
+          if (isZoomed) {
+            showFocusDrawer(targetIndex);
+          }
         }
 
         canvas.addEventListener('pointerup', endDrag);
         canvas.addEventListener('pointercancel', endDrag);
-
         canvas.addEventListener('pointerenter', function () { isPointerOver = true; });
         canvas.addEventListener('pointerleave', function () {
           isPointerOver = false;
@@ -700,8 +684,8 @@ const tourSpaces = [
         });
 
         // ── Navigation Buttons & Chips ─────────────────────────────────────
-        function snapToIndex(idx: number) {
-          if (!hasSteppedInside) stepInside();
+        function snapToIndex(idx: number, autoZoom: boolean) {
+          stepInside();
           var rawIndex = Math.round(currentRotY / stepAngle);
           var currentNorm = ((rawIndex % N) + N) % N;
           var delta = idx - currentNorm;
@@ -710,19 +694,24 @@ const tourSpaces = [
           targetRotY = (rawIndex + delta) * stepAngle;
           targetIndex = idx;
           updateActiveUI(targetIndex);
+          if (autoZoom) {
+            zoomInToSpace(idx);
+          } else if (isZoomed) {
+            showFocusDrawer(idx);
+          }
         }
 
         chips.forEach(function (chip) {
           chip.addEventListener('click', function () {
             var idx = parseInt((chip as HTMLElement).dataset.index || '0', 10);
-            snapToIndex(idx);
+            snapToIndex(idx, false);
           });
         });
 
         dots.forEach(function (dot) {
           dot.addEventListener('click', function () {
             var idx = parseInt((dot as HTMLElement).dataset.index || '0', 10);
-            snapToIndex(idx);
+            snapToIndex(idx, false);
           });
         });
 
@@ -732,6 +721,7 @@ const tourSpaces = [
             targetRotY = (cur - 1) * stepAngle;
             var norm = (((cur - 1) % N) + N) % N;
             updateActiveUI(norm);
+            if (isZoomed) showFocusDrawer(norm);
           });
         }
 
@@ -741,74 +731,74 @@ const tourSpaces = [
             targetRotY = (cur + 1) * stepAngle;
             var norm = (((cur + 1) % N) + N) % N;
             updateActiveUI(norm);
+            if (isZoomed) showFocusDrawer(norm);
           });
         }
 
         // Keyboard navigation
         wrapper?.addEventListener('keydown', function (e) {
-          if (e.key === 'ArrowLeft') {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            zoomOutToOverview();
+          } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             var cur = Math.round(targetRotY / stepAngle);
             targetRotY = (cur - 1) * stepAngle;
-            updateActiveUI((((cur - 1) % N) + N) % N);
+            var normL = (((cur - 1) % N) + N) % N;
+            updateActiveUI(normL);
+            if (isZoomed) showFocusDrawer(normL);
           } else if (e.key === 'ArrowRight') {
             e.preventDefault();
             var cur2 = Math.round(targetRotY / stepAngle);
             targetRotY = (cur2 + 1) * stepAngle;
-            updateActiveUI((((cur2 + 1) % N) + N) % N);
+            var normR = (((cur2 + 1) % N) + N) % N;
+            updateActiveUI(normR);
+            if (isZoomed) showFocusDrawer(normR);
           } else if (e.key === 'Home') {
             e.preventDefault();
             targetRotY = 0;
             updateActiveUI(0);
+            if (isZoomed) showFocusDrawer(0);
           } else if (e.key === 'End') {
             e.preventDefault();
             targetRotY = (N - 1) * stepAngle;
             updateActiveUI(N - 1);
+            if (isZoomed) showFocusDrawer(N - 1);
           } else if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            openModalForIndex(targetIndex);
+            if (isZoomed) {
+              zoomOutToOverview();
+            } else {
+              zoomInToSpace(targetIndex);
+            }
           }
         });
 
-        // Click on Canvas to Expand details of focused panel
-        canvas.addEventListener('click', function (e) {
-          if (Math.abs(lastPointerX - pointerStartX) > 8) return; // was a drag
-          openModalForIndex(targetIndex);
+        // Click on Canvas: Zoom In if at rest, or Zoom Out if already zoomed
+        canvas.addEventListener('click', function () {
+          if (Math.abs(lastPointerX - pointerStartX) > 8) return; // ignore drags
+          if (!hasSteppedInside) {
+            stepInside();
+            return;
+          }
+          if (isZoomed) {
+            zoomOutToOverview();
+          } else {
+            zoomInToSpace(targetIndex);
+          }
         });
 
-        // ── Camera Fly-To on Space Selection ──────────────────────────────
-        // When a space is focused, ease camera slightly forward (z: -50) for drama,
-        // then spring back to center. Avoids clipping into panels.
-        var flyToCamZ = 0.0;         // current z offset for fly-to
-        var flyToTargetZ = 0.0;      // target z offset
-
-        function triggerFlyTo() {
-          flyToTargetZ = -55.0;
-          // Schedule spring back after 650ms
-          setTimeout(function () { flyToTargetZ = 0.0; }, 650);
-        }
-
-        // Trigger fly-to when active space changes from chip/button click
-        var prevActiveForFlyTo = -1;
-        function maybeFireFlyTo(idx: number) {
-          if (idx !== prevActiveForFlyTo) {
-            prevActiveForFlyTo = idx;
-            triggerFlyTo();
-          }
-        }
-
-        // ── Gyroscope Look-Around ─────────────────────────────────────────
-        // Camera yaw/pitch offset driven by device orientation
+        // Gyroscope Look-Around
         var gyroYaw = 0.0;
         var gyroPitch = 0.0;
         var gyroEnabled = false;
 
         function applyOrientation(e: DeviceOrientationEvent) {
           if (e.gamma == null || e.beta == null) return;
-          var gx = Math.max(-20, Math.min(20, e.gamma as number)) / 20; // -1..1
-          var gy = Math.max(20, Math.min(60, (e.beta as number))) - 40; // center ~40°
-          gyroYaw   = gx * 0.18;    // radians, clamped
-          gyroPitch = -gy * 0.004;  // radians
+          var gx = Math.max(-20, Math.min(20, e.gamma as number)) / 20;
+          var gy = Math.max(20, Math.min(60, (e.beta as number))) - 40;
+          gyroYaw = gx * 0.12;
+          gyroPitch = -gy * 0.003;
         }
 
         function enableGyro() {
@@ -817,12 +807,10 @@ const tourSpaces = [
           if (gyroBtn) gyroBtn.style.display = 'none';
         }
 
-        // iOS 13+: needs user gesture to call requestPermission
         var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
         if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-          // iOS 13+: show the pill
           if (gyroBtn) {
             gyroBtn.style.display = '';
             gyroBtn.addEventListener('click', function () {
@@ -832,55 +820,8 @@ const tourSpaces = [
             });
           }
         } else if (window.DeviceOrientationEvent && !isIOS) {
-          // Android / desktop — passive listener, no prompt needed
           enableGyro();
         }
-
-        // ── public/panos/ Equirectangular Skybox Detection ────────────────
-        // Panos are named pano-{name}.webp. Probe HEAD for the first candidate.
-        // If found, attach a "Full 360°" button to the drawer for future use.
-        var panosToProbe = ['/panos/pano-entrance.webp', '/panos/pano-bar.webp', '/panos/pano.webp'];
-        var skyboxAvailable = false;
-        var skyboxTexture: any = null;
-        var skyboxMesh: any = null;
-
-        (function probePanos() {
-          var checked = 0;
-          panosToProbe.forEach(function (url) {
-            fetch(url, { method: 'HEAD' }).then(function (r) {
-              if (r.ok && !skyboxAvailable) {
-                skyboxAvailable = true;
-                // Lazy-load texture only if pano exists
-                var panoTex = textureLoader.load(url);
-                panoTex.colorSpace = THREE.SRGBColorSpace;
-                panoTex.mapping = THREE.EquirectangularReflectionMapping;
-                // Build interior sphere (inverted normals)
-                var sphereGeo = new THREE.SphereGeometry(900, 60, 40);
-                sphereGeo.scale(-1, 1, 1);
-                var sphereMat = new THREE.MeshBasicMaterial({ map: panoTex });
-                skyboxMesh = new THREE.Mesh(sphereGeo, sphereMat);
-                skyboxMesh.visible = false;
-                scene.add(skyboxMesh);
-                // Expose a toggle on the modal CTA area (future-ready)
-                var cta = document.querySelector('.tour-modal-cta');
-                if (cta && cta.parentElement) {
-                  var panoBtn = document.createElement('button');
-                  panoBtn.type = 'button';
-                  panoBtn.textContent = '360° View';
-                  panoBtn.className = 'tour-modal-cta';
-                  panoBtn.style.cssText = 'background:#17200F;color:#E0A63C;border:1px solid rgba(224,166,60,0.5);';
-                  panoBtn.addEventListener('click', function () {
-                    if (skyboxMesh) {
-                      skyboxMesh.visible = !skyboxMesh.visible;
-                      rotundaGroup.visible = !skyboxMesh.visible;
-                    }
-                  });
-                  cta.parentElement.appendChild(panoBtn);
-                }
-              }
-            }).catch(function () {});
-          });
-        })();
 
         // ── Resize Handler ─────────────────────────────────────────────────
         function onResize() {
@@ -888,7 +829,7 @@ const tourSpaces = [
           var w = webglWrap.clientWidth;
           var h = webglWrap.clientHeight;
           camera.aspect = w / h;
-          camera.updateProjectionMatrix();
+          updateCameraFOV();
           renderer.setSize(w, h);
         }
         window.addEventListener('resize', onResize, { passive: true });
@@ -904,20 +845,19 @@ const tourSpaces = [
           requestAnimationFrame(animate);
           if (!isSectionVisible) return;
 
-          var t = now * 0.001; // seconds
+          var t = now * 0.001;
 
-          // Camera Fly-In Tween (~1.6s)
-          if (hasSteppedInside) {
-            var elapsed = now - flyinStartTime;
-            if (elapsed < flyinDuration) {
-              var p = Math.min(1, elapsed / flyinDuration);
-              // easeOutCubic
-              var eased = 1 - Math.pow(1 - p, 3);
-              camera.position.lerpVectors(startCamPos, centerCamPos, eased);
-            } else {
-              camera.position.copy(centerCamPos);
-            }
+          // Smooth Camera position interpolation (rest vs zoom)
+          camera.position.lerp(targetCamPos, 0.08);
+
+          // Apply subtle gyro pitch & yaw offset
+          if (gyroEnabled) {
+            camera.position.x += gyroYaw * 20;
+            camera.position.y += gyroPitch * 15;
           }
+
+          // Camera looks directly towards the active panel area along -Z
+          camera.lookAt(0, 0, -350);
 
           // Smooth rotunda rotation
           if (!isDragging) {
@@ -926,10 +866,10 @@ const tourSpaces = [
               currentRotY += diff * 0.12;
             } else {
               currentRotY = targetRotY;
-              // Very subtle ambient idle drift when untouched
-              if (!isPointerOver && hasSteppedInside) {
-                targetRotY += 0.0003;
-                currentRotY += 0.0003;
+              // Very subtle ambient idle drift when untouched and not zoomed in
+              if (!isPointerOver && hasSteppedInside && !isZoomed) {
+                targetRotY += 0.00025;
+                currentRotY += 0.00025;
               }
             }
           }
@@ -941,42 +881,21 @@ const tourSpaces = [
           var normIndex = ((computedIndex % N) + N) % N;
           if (normIndex !== activeIndex && !isDragging) {
             updateActiveUI(normIndex);
-            maybeFireFlyTo(normIndex);
           }
-
-          // Camera fly-to z spring (ease forward on space focus, spring back)
-          flyToCamZ += (flyToTargetZ - flyToCamZ) * 0.07;
-
-          // Camera gyro offset: apply as quaternion rotation around scene center
-          var basePos = centerCamPos.clone();
-          if (gyroEnabled) {
-            // Rotate camera position on gyro pitch (X axis) and yaw (Y axis)
-            basePos.applyEuler(new THREE.Euler(gyroPitch, gyroYaw, 0, 'YXZ'));
-          }
-          // Apply fly-to z only when stepped inside
-          if (hasSteppedInside) {
-            var flyInComplete = (now - flyinStartTime) >= flyinDuration;
-            if (flyInComplete) {
-              camera.position.set(basePos.x, basePos.y, basePos.z + flyToCamZ);
-            }
-          }
-          camera.lookAt(0, 0, 0);
 
           // Update shader uniforms per panel
-          // Decay velocity smoothly toward zero
           angularVelocity *= 0.88;
           panelMaterials.forEach(function (mat, i) {
             mat.uniforms.uVelocity.value = angularVelocity * 60.0;
             mat.uniforms.uTime.value = t;
-            // Smooth active fade: ramp uActive toward target
             var targetActive = (i === normIndex) ? 1.0 : 0.0;
-            mat.uniforms.uActive.value += (targetActive - mat.uniforms.uActive.value) * 0.06;
+            mat.uniforms.uActive.value += (targetActive - mat.uniforms.uActive.value) * 0.08;
           });
 
           // Drift ambient gold motes gently
           var posArr = moteBufGeo.attributes.position.array as Float32Array;
           for (var mi2 = 0; mi2 < moteCount; mi2++) {
-            posArr[mi2 * 3 + 1] = moteOrigPos[mi2 * 3 + 1] + Math.sin(t * 0.4 + mi2 * 0.7) * 18;
+            posArr[mi2 * 3 + 1] = moteOrigPos[mi2 * 3 + 1] + Math.sin(t * 0.4 + mi2 * 0.7) * 16;
           }
           moteBufGeo.attributes.position.needsUpdate = true;
 
@@ -984,82 +903,61 @@ const tourSpaces = [
         }
 
         requestAnimationFrame(animate);
+      }).catch(function (err) {
+        enableFallback('Three.js failed to load: ' + (err && err.message));
       });
     }
 
-    // ── CSS 3D Fallback implementation ─────────────────────────────────
-    function initCSS3DFallback() {
-      if (!stage || !ring) return;
-      var currentAngle = 0;
-      var targetAngle = 0;
-      var isDragging = false;
-      var lastX = 0;
-      var lastTime = 0;
-      var velocity = 0;
-      var stepDeg = 360 / N;
+    // ── Fallback Gallery implementation (Clean Horizontal Scroll-Snap) ─
+    function initFallbackGallery() {
+      if (!fallbackTrack) return;
 
-      function tickCSS() {
-        if (!isDragging) {
-          var diff = targetAngle - currentAngle;
-          if (Math.abs(diff) > 0.05) {
-            currentAngle += diff * 0.12;
-          } else {
-            currentAngle = targetAngle;
-          }
+      fallbackTrack.addEventListener('scroll', function () {
+        var cardW = (fallbackCards[0] as HTMLElement)?.offsetWidth || 300;
+        var scrollLeft = fallbackTrack.scrollLeft;
+        var idx = Math.min(N - 1, Math.max(0, Math.round(scrollLeft / (cardW + 16))));
+        if (idx !== activeIndex) {
+          updateActiveUI(idx);
         }
-        ring.style.transform = 'rotateY(' + currentAngle.toFixed(2) + 'deg)';
-        var rawIdx = Math.round(-currentAngle / stepDeg);
-        var norm = ((rawIdx % N) + N) % N;
-        updateActiveUI(norm);
-        requestAnimationFrame(tickCSS);
-      }
-      requestAnimationFrame(tickCSS);
+      }, { passive: true });
 
-      wrapper?.addEventListener('pointerdown', function (e) {
-        if ((e.target as HTMLElement).closest('button, a, dialog')) return;
-        isDragging = true;
-        lastX = e.clientX;
-        lastTime = performance.now();
-        velocity = 0;
-      });
-
-      wrapper?.addEventListener('pointermove', function (e) {
-        if (!isDragging) return;
-        var dx = e.clientX - lastX;
-        var now = performance.now();
-        var dt = Math.max(1, now - lastTime);
-        velocity = dx / dt;
-        currentAngle += dx * 0.45;
-        targetAngle = currentAngle;
-        lastX = e.clientX;
-        lastTime = now;
-      });
-
-      function endCSSDrag() {
-        if (!isDragging) return;
-        isDragging = false;
-        var projected = currentAngle + velocity * 160;
-        var snappedIdx = Math.round(-projected / stepDeg);
-        targetAngle = snappedIdx * -stepDeg;
+      function scrollFallbackTo(idx: number) {
+        var card = fallbackCards[idx] as HTMLElement;
+        if (!card || !fallbackTrack) return;
+        fallbackTrack.scrollTo({
+          left: card.offsetLeft - 16,
+          behavior: prefersReduced ? 'auto' : 'smooth'
+        });
+        updateActiveUI(idx);
       }
 
-      wrapper?.addEventListener('pointerup', endCSSDrag);
-      wrapper?.addEventListener('pointercancel', endCSSDrag);
-
-      cards.forEach(function (card, idx) {
-        card.addEventListener('click', function () {
-          if (card.classList.contains('is-active')) {
-            openModalForIndex(idx);
-          } else {
-            var raw = Math.round(-currentAngle / stepDeg);
-            var curNorm = ((raw % N) + N) % N;
-            var delta = idx - curNorm;
-            if (delta > N / 2) delta -= N;
-            if (delta < -N / 2) delta += N;
-            targetAngle = (raw - delta) * -stepDeg;
-          }
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var idx = parseInt((chip as HTMLElement).dataset.index || '0', 10);
+          scrollFallbackTo(idx);
         });
       });
+
+      dots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          var idx = parseInt((dot as HTMLElement).dataset.index || '0', 10);
+          scrollFallbackTo(idx);
+        });
+      });
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+          var prevIdx = Math.max(0, activeIndex - 1);
+          scrollFallbackTo(prevIdx);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          var nextIdx = Math.min(N - 1, activeIndex + 1);
+          scrollFallbackTo(nextIdx);
+        });
+      }
     }
   })();
 </script>
@@ -1082,7 +980,7 @@ const tourSpaces = [
   .tour-section {
     background: #0d1308;
     color: #F4ECDA;
-    padding: clamp(70px, 9vw, 130px) 0 clamp(60px, 8vw, 110px);
+    padding: clamp(60px, 8vw, 110px) 0 clamp(50px, 7vw, 90px);
     position: relative;
     overflow: hidden;
     border-top: 1px solid rgba(224, 166, 60, 0.2);
@@ -1099,7 +997,7 @@ const tourSpaces = [
   .tour-header {
     text-align: center;
     max-width: 720px;
-    margin: 0 auto 28px;
+    margin: 0 auto 24px;
   }
   .tour-kicker {
     font-size: 0.8125rem;
@@ -1119,7 +1017,7 @@ const tourSpaces = [
     font-size: clamp(2rem, 4.5vw, 3.4rem);
     font-weight: 700;
     color: #F4ECDA;
-    margin: 0 0 12px;
+    margin: 0 0 10px;
     line-height: 1.15;
   }
   .tour-sub {
@@ -1136,11 +1034,11 @@ const tourSpaces = [
     justify-content: center;
     flex-wrap: wrap;
     gap: 8px 10px;
-    margin: 0 auto 32px;
+    margin: 0 auto 28px;
     max-width: 800px;
   }
   .tour-chip {
-    background: rgba(23, 32, 15, 0.8);
+    background: rgba(23, 32, 15, 0.85);
     border: 1px solid rgba(224, 166, 60, 0.3);
     color: rgba(244, 236, 218, 0.75);
     font-size: 0.8125rem;
@@ -1155,7 +1053,7 @@ const tourSpaces = [
   .tour-chip:hover {
     border-color: #E0A63C;
     color: #F4ECDA;
-    background: rgba(224, 166, 60, 0.12);
+    background: rgba(224, 166, 60, 0.15);
   }
   .tour-chip.is-active {
     background: #E0A63C;
@@ -1169,7 +1067,7 @@ const tourSpaces = [
   .tour-stage-wrapper {
     position: relative;
     width: 100%;
-    min-height: 540px;
+    min-height: 520px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1185,19 +1083,19 @@ const tourSpaces = [
     display: none;
     position: relative;
     width: 100%;
-    height: 500px;
-    max-width: 1200px;
+    height: 520px;
+    max-width: 1260px;
     border-radius: 20px;
     overflow: hidden;
     background: #0d1308;
-    border: 1px solid rgba(224, 166, 60, 0.2);
-    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(224, 166, 60, 0.25);
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6);
   }
 
   .tour-stage-wrapper.has-webgl .tour-webgl-wrap {
     display: block;
   }
-  .tour-stage-wrapper.has-webgl #tour-stage {
+  .tour-stage-wrapper.has-webgl .tour-fallback-gallery {
     display: none !important;
   }
 
@@ -1219,16 +1117,17 @@ const tourSpaces = [
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at center, rgba(13, 19, 8, 0.3) 0%, rgba(13, 19, 8, 0.85) 85%);
+    background: radial-gradient(circle at center, rgba(13, 19, 8, 0.25) 0%, rgba(13, 19, 8, 0.75) 85%);
     transition: opacity 0.5s ease;
     z-index: 10;
-    pointer-events: auto;
+    pointer-events: none;
   }
   .tour-flyin-btn {
+    pointer-events: auto;
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 32px;
+    padding: 14px 34px;
     background: #E0A63C;
     color: #12190B;
     border: 2px solid #F4ECDA;
@@ -1249,6 +1148,114 @@ const tourSpaces = [
   }
   .tour-flyin-icon {
     font-size: 1.15rem;
+  }
+
+  /* In-Scene Focus Details Drawer (No full-screen modal) */
+  .tour-focus-drawer {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    width: calc(100% - 36px);
+    max-width: 620px;
+    background: rgba(23, 32, 15, 0.94);
+    border: 1.5px solid rgba(224, 166, 60, 0.5);
+    border-radius: 18px;
+    padding: 18px 22px 18px 22px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(224, 166, 60, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 25;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tour-focus-drawer.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+
+  .tour-focus-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    background: rgba(18, 25, 11, 0.9);
+    color: #F4ECDA;
+    font-size: 15px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tour-focus-close:hover {
+    background: #E0A63C;
+    color: #12190B;
+    transform: scale(1.08);
+  }
+
+  .tour-focus-kicker {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #E0A63C;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .tour-focus-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+    font-weight: 700;
+    color: #F4ECDA;
+    margin: 0 0 6px;
+    padding-right: 36px;
+  }
+  .tour-focus-desc {
+    font-size: 0.8125rem;
+    color: rgba(244, 236, 218, 0.8);
+    margin: 0 0 14px;
+    line-height: 1.45;
+  }
+  .tour-focus-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tour-focus-cta {
+    display: inline-block;
+    padding: 8px 20px;
+    background: #E0A63C;
+    color: #12190B;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tour-focus-cta:hover {
+    background: #F4ECDA;
+    transform: translateY(-1px);
+  }
+  .tour-focus-back-btn {
+    background: transparent;
+    border: 1px solid rgba(224, 166, 60, 0.4);
+    color: rgba(244, 236, 218, 0.8);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tour-focus-back-btn:hover {
+    color: #F4ECDA;
+    border-color: #E0A63C;
   }
 
   /* iOS Gyro Button */
@@ -1276,89 +1283,71 @@ const tourSpaces = [
     color: #12190B;
   }
 
-  /* CSS 3D Stage (Fallback) */
-  .tour-stage {
-    perspective: 1200px;
-    perspective-origin: 50% 50%;
+  /* ── Fallback Scroll-Snap Gallery (No-WebGL / Reduced Motion) ───────── */
+  .tour-fallback-gallery {
     width: 100%;
-    height: 480px;
+    max-width: 1260px;
+    display: block;
+  }
+  .tour-stage-wrapper.has-webgl .tour-fallback-gallery {
+    display: none !important;
+  }
+
+  .tour-fallback-track {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    will-change: transform;
-    transition: transform 0.15s ease-out;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 12px 16px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #E0A63C rgba(23, 32, 15, 0.5);
+    -webkit-overflow-scrolling: touch;
+  }
+  .tour-fallback-track::-webkit-scrollbar {
+    height: 6px;
+  }
+  .tour-fallback-track::-webkit-scrollbar-thumb {
+    background: #E0A63C;
+    border-radius: 999px;
   }
 
-  .tour-ring {
-    position: relative;
-    width: 320px;
-    height: 440px;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-
-  .tour-card {
-    position: absolute;
-    inset: 0;
-    width: 320px;
-    height: 440px;
-    cursor: pointer;
-    transform-origin: 50% 50%;
-    transform: rotateY(var(--card-angle)) translateZ(440px);
-    transition: filter 0.4s ease, opacity 0.4s ease;
-    filter: brightness(0.7) blur(0.5px);
-    opacity: 0.72;
-    border-radius: 18px;
-    overflow: hidden;
-  }
-  .tour-card.is-active {
-    filter: brightness(1) blur(0);
-    opacity: 1;
-    z-index: 10;
-  }
-
-  .tour-card-inner {
-    width: 100%;
-    height: 100%;
-    position: relative;
+  .tour-fallback-card {
+    flex: 0 0 clamp(280px, 32vw, 360px);
+    scroll-snap-align: center;
     background: #17200F;
+    border: 1.5px solid rgba(224, 166, 60, 0.35);
     border-radius: 18px;
     overflow: hidden;
-    border: 1.5px solid rgba(224, 166, 60, 0.3);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
+    transition: border-color 0.3s ease;
   }
-  .tour-card.is-active .tour-card-inner {
+  .tour-fallback-card.is-active {
     border-color: #E0A63C;
-    box-shadow: 0 20px 50px rgba(224, 166, 60, 0.25), 0 0 20px rgba(224, 166, 60, 0.15);
+    box-shadow: 0 14px 40px rgba(224, 166, 60, 0.2);
   }
 
-  .tour-card-img-wrap {
+  .tour-fallback-img-wrap {
     position: relative;
-    flex: 1;
     width: 100%;
-    overflow: hidden;
+    height: 260px;
     background: #090d05;
+    overflow: hidden;
   }
-  .tour-card-img {
+  .tour-fallback-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
     display: block;
+    /* Clean 100% brightness, NO dark boxes or overlays */
+    filter: brightness(1);
   }
-  .tour-card-dimmer {
+  .tour-fallback-badge {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(13,19,8,0.75) 100%);
-    pointer-events: none;
-  }
-  .tour-card-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    background: rgba(18, 25, 11, 0.85);
+    top: 12px;
+    left: 12px;
+    background: rgba(18, 25, 11, 0.88);
     border: 1px solid rgba(224, 166, 60, 0.5);
     color: #E0A63C;
     font-size: 10px;
@@ -1368,60 +1357,52 @@ const tourSpaces = [
     padding: 3px 10px;
     border-radius: 999px;
   }
-  .tour-card-expand-btn {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgba(244, 236, 218, 0.3);
-    background: rgba(18, 25, 11, 0.8);
-    color: #F4ECDA;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .tour-card-expand-btn svg {
-    width: 15px;
-    height: 15px;
-  }
 
-  .tour-card-info {
-    padding: 14px 18px 16px;
-    background: #17200F;
-    border-top: 1px solid rgba(224, 166, 60, 0.15);
+  .tour-fallback-info {
+    padding: 16px 18px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-  .tour-card-kicker {
+  .tour-fallback-kicker {
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #E0A63C;
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
-  .tour-card-name {
+  .tour-fallback-name {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 16px;
+    font-size: 1.15rem;
     font-weight: 700;
     color: #F4ECDA;
-    margin: 0 0 4px;
+    margin: 0 0 6px;
     line-height: 1.25;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
-  .tour-card-desc {
-    font-size: 11px;
-    color: rgba(244, 236, 218, 0.65);
-    margin: 0;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .tour-fallback-desc {
+    font-size: 0.8125rem;
+    color: rgba(244, 236, 218, 0.75);
+    margin: 0 0 14px;
+    line-height: 1.45;
+    flex: 1;
+  }
+  .tour-fallback-cta {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 7px 18px;
+    background: #E0A63C;
+    color: #12190B;
+    font-size: 0.75rem;
+    font-weight: 800;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tour-fallback-cta:hover {
+    background: #F4ECDA;
+    transform: translateY(-1px);
   }
 
   /* Controls Overlay */
@@ -1430,7 +1411,7 @@ const tourSpaces = [
     align-items: center;
     justify-content: center;
     gap: 18px;
-    margin-top: 24px;
+    margin-top: 20px;
     position: relative;
     z-index: 20;
   }
@@ -1483,143 +1464,14 @@ const tourSpaces = [
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.06em;
-    color: rgba(244, 236, 218, 0.45);
-    margin-top: 14px;
-  }
-
-  /* ── Lightbox Modal / Drawer ────────────────────────────────────────── */
-  .tour-modal {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    border: none;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .tour-modal[open],
-  .tour-modal:modal {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .tour-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(9, 13, 5, 0.88);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  .tour-modal-box {
-    position: relative;
-    z-index: 10;
-    max-width: 800px;
-    width: 90vw;
-    max-height: 88vh;
-    background: #17200F;
-    border: 1.5px solid rgba(224, 166, 60, 0.4);
-    border-radius: 22px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .tour-modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 1px solid rgba(224, 166, 60, 0.4);
-    background: rgba(18, 25, 11, 0.85);
-    color: #F4ECDA;
-    font-size: 18px;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    z-index: 20;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .tour-modal-close:hover {
-    background: #E0A63C;
-    color: #1A1608;
-    transform: scale(1.08);
-  }
-  .tour-modal-img-wrap {
-    width: 100%;
-    height: 52vh;
-    min-height: 280px;
-    background: #090d05;
-    overflow: hidden;
-  }
-  .tour-modal-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
-  .tour-modal-meta {
-    padding: 22px 28px 24px;
-    background: #17200F;
-  }
-  .tour-modal-kicker {
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #E0A63C;
-    display: block;
-    margin-bottom: 4px;
-  }
-  .tour-modal-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(1.3rem, 2.8vw, 1.8rem);
-    font-weight: 700;
-    color: #F4ECDA;
-    margin: 0 0 8px;
-  }
-  .tour-modal-desc {
-    font-size: 13px;
-    color: rgba(244, 236, 218, 0.75);
-    margin: 0 0 16px;
-    line-height: 1.5;
-  }
-  .tour-modal-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .tour-modal-cta {
-    display: inline-block;
-    padding: 10px 22px;
-    background: #E0A63C;
-    color: #1A1608;
-    font-size: 12px;
-    font-weight: 800;
-    border-radius: 999px;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .tour-modal-cta:hover {
-    background: #F4ECDA;
-    transform: translateY(-1px);
+    color: rgba(244, 236, 218, 0.5);
+    margin-top: 12px;
   }
 
   /* ── Responsive scaling ─────────────────────────────────────────────── */
   @media (max-width: 768px) {
     .tour-webgl-wrap {
-      height: 420px;
+      height: 440px;
     }
     .tour-flyin-btn {
       padding: 12px 24px;
@@ -1632,27 +1484,20 @@ const tourSpaces = [
       padding: 5px 12px;
       font-size: 0.75rem;
     }
-    .tour-stage {
-      perspective: 850px;
-      height: 400px;
+    .tour-focus-drawer {
+      bottom: 14px;
+      padding: 14px 16px;
+      width: calc(100% - 24px);
     }
-    .tour-ring {
-      width: 250px;
-      height: 360px;
+    .tour-focus-title {
+      font-size: 1.15rem;
     }
-    .tour-card {
-      width: 250px;
-      height: 360px;
-      transform: rotateY(var(--card-angle)) translateZ(320px);
+    .tour-focus-desc {
+      font-size: 0.75rem;
+      margin-bottom: 10px;
     }
-    .tour-modal-box {
-      width: 95vw;
-    }
-    .tour-modal-img-wrap {
-      height: 40vh;
-    }
-    .tour-modal-meta {
-      padding: 16px 18px 20px;
+    .tour-fallback-img-wrap {
+      height: 220px;
     }
   }
 
@@ -1661,13 +1506,8 @@ const tourSpaces = [
     .tour-stage-wrapper.has-webgl .tour-webgl-wrap {
       display: none !important;
     }
-    .tour-stage-wrapper.has-webgl #tour-stage {
-      display: flex !important;
-    }
-    .tour-card,
-    .tour-stage,
-    .tour-ring {
-      transition: none !important;
+    .tour-stage-wrapper.has-webgl .tour-fallback-gallery {
+      display: block !important;
     }
   }
 </style>
