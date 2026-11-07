@@ -31,3 +31,6 @@ Small-fixes session. Tick each item after committing.
 - [x] TASK F4: Fallback & a11y hardening (`feat: tour fallback and a11y hardening`)
 - [x] TASK F5: Documentation & verification (`docs: tour 3d rotunda completed`)
 - [x] TASK H: Tour visibility fix, in-scene zoom, remove lightbox, scroll-snap fallback (`fix: tour 3-panel visibility and in-scene zoom`)
+- [x] BATCH 2.1: Magnetic platters (.ts-item) with spring easing and separate transform shadow
+- [ ] BATCH 2.2: Marble ripple canvas behind plates with low-end and reduced-motion guards
+- [ ] BATCH 2.3: Tour Web Audio Ambience toggle in PanoramicViewer with viewport and page-hide suspension
