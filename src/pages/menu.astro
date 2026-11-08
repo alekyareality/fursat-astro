@@ -2,12 +2,11 @@
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import MobileBar from '../components/MobileBar.astro';
-import MascotOfferModal from '../components/MascotOfferModal.astro';
+import PicksTray from '../components/PicksTray.astro';
 import foodData from '../data/food.json';
 import drinksData from '../data/drinks.json';
 
-// ── Build-time data processing ──────────────────────────────────────────────
+// ── Types ────────────────────────────────────────────────────────────────────
 type MenuItem = {
   name: string;
   section: string;
@@ -36,1539 +35,1489 @@ type MenuSection = {
   items: MenuItem[];
 };
 
-const foodItems: MenuItem[] = (foodData as MenuSection[]).flatMap((sec) =>
-  sec.items.map((it) => ({ ...it, kind: 'food' as const }))
-);
+// ── Strict Photo Exclusion List (Per AGENTS.md rule) ──────────────────────────
+// Never show these files as dishes: fursat_.webp, fursat_1_.webp, dsc08946.webp, dsc05389.webp, pandu_mirchi_kodi_kebab.webp
+const excludedDishImages = new Set([
+  'fursat_.webp',
+  'fursat_1_.webp',
+  'dsc08946.webp',
+  'dsc05389.webp',
+  'pandu_mirchi_kodi_kebab.webp',
+]);
 
-const drinksItems: MenuItem[] = (drinksData as MenuSection[]).flatMap((sec) =>
-  sec.items.map((it) => ({ ...it, kind: 'drink' as const }))
-);
+function getValidDishImage(img?: string): string | null {
+  if (!img) return null;
+  const basename = img.split('/').pop() || '';
+  if (excludedDishImages.has(basename)) return null;
+  return img;
+}
 
-const allItems = [...foodItems, ...drinksItems];
-
-const foodCategories = [
-  'All',
-  ...Array.from(new Set(foodItems.map((it) => it.section))),
-];
-
-const drinksCategories = [
-  'All',
-  ...Array.from(new Set(drinksItems.map((it) => it.section))),
-];
-
-// Slug helper for data-cat attributes and tab IDs (safe for HTML attrs)
-function slug(s: string) {
+function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
+
+// ── Process Food and Drinks Server-Side ───────────────────────────────────────
+const foodSections = (foodData as MenuSection[]).map((sec) => {
+  const items = sec.items.map((it) => ({
+    ...it,
+    kind: 'food' as const,
+    validImage: getValidDishImage(it.image),
+  }));
+  const leadImage = items.map((it) => it.validImage).find(Boolean) || null;
+  return {
+    title: sec.section,
+    slug: slugify(sec.section),
+    items,
+    leadImage,
+  };
+});
+
+const drinksSections = (drinksData as MenuSection[]).map((sec) => {
+  const items = sec.items.map((it) => ({
+    ...it,
+    kind: 'drink' as const,
+    validImage: getValidDishImage(it.image),
+  }));
+  const leadImage = items.map((it) => it.validImage).find(Boolean) || null;
+  return {
+    title: sec.section,
+    slug: slugify(sec.section),
+    items,
+    leadImage,
+  };
+});
+
+const totalFoodCount = foodSections.reduce((sum, s) => sum + s.items.length, 0);
+const totalDrinksCount = drinksSections.reduce((sum, s) => sum + s.items.length, 0);
+const totalItemsCount = totalFoodCount + totalDrinksCount;
 ---
 
 <Base
-  title="Full Menu — Fursat Kitchen | Bar | Madhapur, Hyderabad"
-  description="Explore our full menu: signature dishes, cocktails, mocktails, bites and desserts. 150+ items across Indian kitchen & craft bar. Order online or dine in."
+  title="The Fursat Menu Book — Kitchen & Craft Bar | Madhapur, Hyderabad"
+  description="Explore The Fursat Menu Book: 150+ authentic kitchen dishes and craft bar cocktails. Full server-rendered menu, dietary filters, and WhatsApp picks."
   canonical="https://fursatind.in/menu/"
   ogImage="https://fursatind.in/assets/fursat_space_07.webp"
-  ogImageAlt="Fursat menu — signature dishes and cocktails"
+  ogImageAlt="The Fursat Menu Book — Kitchen & Craft Bar"
 >
   <SiteHeader active="menu" />
 
-  <main class="mn-main" id="main">
-
-    <!-- ── Hero Header ─────────────────────────────────────────────────── -->
-    <header class="mn-hero">
-      <div class="mn-hero-inner">
-        <p class="mn-hero-eyebrow">Fursat Kitchen | Bar · Madhapur, Hyderabad</p>
-        <h1 class="mn-hero-title mot-headline">Our Menu</h1>
-        <p class="mn-hero-sub">Café · Bar · Kitchen · Banquet — {allItems.length} dishes &amp; drinks</p>
+  <main class="mb-main" id="main">
+    <!-- ── Full-Screen Split Entry (Drinks | Food) ────────────────────────── -->
+    <section class="mb-split-entry" id="mb-split-entry" aria-label="Menu selection">
+      <div class="mb-split-half mb-split-half--drinks" id="half-drinks" role="button" tabindex="0" aria-label="Open Drinks Menu">
+        <div class="mb-split-bg" style="background-image: url('/assets/interior/bar-back.webp')"></div>
+        <div class="mb-split-overlay mb-split-overlay--drinks"></div>
+        <div class="mb-split-content">
+          <span class="mb-split-kicker">✦ CRAFT BAR &amp; CELLAR ✦</span>
+          <h2 class="mb-split-title">Drinks &amp; Spirits</h2>
+          <p class="mb-split-sub">Craft Cocktails, Single Malts, Draught Brews &amp; Mocktails ({totalDrinksCount} pours)</p>
+          <div class="mb-split-btn">
+            <span>Explore Bar Book →</span>
+          </div>
+        </div>
       </div>
-    </header>
 
-    <!-- ── Food / Drinks Proportion Switch Bar ────────────────────────── -->
-    <nav class="mn-switch-wrap" aria-label="Menu proportion switch">
-      <div class="mn-switch-toggle" role="group" aria-label="Menu split toggle">
-        <button
-          class="mn-switch-btn mn-switch-btn--active"
-          id="btn-food-view"
-          data-view="food"
-          type="button"
-          aria-pressed="true"
-        >
-          <span class="mn-switch-icon">🍲</span>
-          <span class="mn-switch-text">Food Menu</span>
-          <span class="mn-switch-prop" id="food-prop-label">3/4 Screen</span>
-        </button>
-        <button
-          class="mn-switch-btn"
-          id="btn-drinks-view"
-          data-view="drinks"
-          type="button"
-          aria-pressed="false"
-        >
-          <span class="mn-switch-icon">🍸</span>
-          <span class="mn-switch-text">Drinks Menu</span>
-          <span class="mn-switch-prop" id="drinks-prop-label">1/4 Screen</span>
-        </button>
-      </div>
-    </nav>
-
-    <!-- ── Split Menu Container (Food 3/4 & Drinks 1/4 by default) ──────── -->
-    <div class="mn-split-container" id="mn-split-container" data-active="food">
-      
-      <!-- ── FOOD PANE ────────────────────────────────────────────────── -->
-      <section class="mn-pane mn-pane--food" id="pane-food" aria-label="Food menu section">
-        <div class="mn-pane-header">
-          <div class="mn-pane-title-wrap">
-            <h2 class="mn-pane-title">🍲 Food Menu</h2>
-            <span class="mn-pane-count">{foodItems.length} dishes</span>
-          </div>
-          <span class="mn-pane-expand-hint" id="food-expand-hint">Click to expand (3/4) ↗</span>
-        </div>
-
-        <!-- ── Dish Showcase (MENU 7) ──────────────────────────────────── -->
-        <div class="mn-dish-showcase" id="mn-dish-showcase" aria-label="Featured dish showcase">
-          <!-- Data blob — read by dish-showcase script -->
-          <script id="dish-showcase-data" type="application/json" set:html={JSON.stringify(
-            foodItems
-              .filter((it) => it.image)
-              .map((it) => ({
-                img: it.image,
-                name: it.name,
-                desc: it.description ?? '',
-                price: it.price,
-                section: it.section,
-                veg: it.veg ?? false,
-              }))
-          )}></script>
-
-          <div class="mn-ds-photo-wrap">
-            <img id="mn-ds-img" class="mn-ds-img" src="" alt="" width="320" height="240" loading="lazy" />
-            <div class="mn-ds-veg-dot" id="mn-ds-veg-dot" aria-hidden="true"></div>
-          </div>
-
-          <div class="mn-ds-info">
-            <div class="mn-ds-topbar">
-              <span class="mn-ds-section" id="mn-ds-section"></span>
-              <select id="mn-ds-select" class="mn-ds-select" aria-label="Select dish">
-                {foodItems
-                  .filter((it) => it.image)
-                  .map((it, idx) => (
-                    <option value={idx}>{it.name}{it.price ? ` — ₹${it.price}` : ''}</option>
-                  ))}
-              </select>
-            </div>
-            <h3 class="mn-ds-name" id="mn-ds-name"></h3>
-            <p class="mn-ds-desc" id="mn-ds-desc"></p>
-            <span class="mn-ds-price" id="mn-ds-price"></span>
-          </div>
-
-          <div class="mn-ds-controls">
-            <button class="mn-ds-btn" id="mn-ds-prev" type="button" aria-label="Previous dish">‹</button>
-            <span class="mn-ds-counter" id="mn-ds-counter">1 / 1</span>
-            <button class="mn-ds-btn" id="mn-ds-next" type="button" aria-label="Next dish">›</button>
+      <div class="mb-split-half mb-split-half--food" id="half-food" role="button" tabindex="0" aria-label="Open Food Menu">
+        <div class="mb-split-bg" style="background-image: url('/assets/interior/tour-lounge.webp')"></div>
+        <div class="mb-split-overlay mb-split-overlay--food"></div>
+        <div class="mb-split-content">
+          <span class="mb-split-kicker">✦ KITCHEN &amp; DINING ✦</span>
+          <h2 class="mb-split-title">Kitchen Dishes</h2>
+          <p class="mb-split-sub">Hyderabadi Biryanis, Regional Tandoor, Appetizers &amp; Desserts ({totalFoodCount} recipes)</p>
+          <div class="mb-split-btn">
+            <span>Explore Food Book →</span>
           </div>
         </div>
-
-        <!-- Sticky Food Category Tabs -->
-        <nav class="mn-tabs-wrap mn-tabs-wrap--food" aria-label="Food categories">
-          <div class="mn-tabs mn-tabs--food mot-tab-indicator" role="tablist">
-            {foodCategories.map((cat, i) => (
-              <button
-                class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
-                role="tab"
-                aria-selected={i === 0 ? 'true' : 'false'}
-                data-cat={slug(cat)}
-                type="button"
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </nav>
-
-        <!-- Food Grid -->
-        <div class="mn-grid mn-grid--food" id="mn-grid-food">
-          {foodItems.map((item) => {
-            const cat = item.section;
-            const catSlug = slug(cat);
-            const isVeg = item.veg === true;
-            const isNonVeg = item.veg === false;
-            const isChef = item.chefSpecial === true;
-            const isSpicy = item.spicy === true;
-            const hasImg = !!item.image;
-            return (
-              <article
-                class="mn-card mot-card-lit"
-                data-cat={catSlug}
-                data-kind="food"
-                aria-label={item.name}
-              >
-                {hasImg && (
-                  <div class="mn-card-img-wrap">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      class="mn-card-img"
-                      loading="lazy"
-                      decoding="async"
-                      width="400"
-                      height="220"
-                    />
-                  </div>
-                )}
-                <div class="mn-card-body">
-                  <div class="mn-card-top">
-                    <span class="mn-cat-badge">{cat}</span>
-                    <div class="mn-badges">
-                      {isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
-                      {isNonVeg && <span class="mn-dot mn-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
-                      {isChef && <span class="mn-badge-pill mn-badge-pill--opt" title="Chef's Special">Chef's Spl</span>}
-                      {isSpicy && <span class="mn-spicy" title="Spicy" aria-label="Spicy">🌶</span>}
-                    </div>
-                  </div>
-                  <h3 class="mn-dish-name">{item.name}</h3>
-                  {item.description && <p class="mn-dish-desc">{item.description}</p>}
-                  <div class="mn-card-footer">
-                    <span class="mn-price">
-                      {item.price != null ? `₹${item.price}` : '—'}
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-        <p class="mn-empty" id="mn-empty-food" hidden>No dishes found in this category.</p>
-      </section>
-
-      <!-- ── DRINKS PANE ──────────────────────────────────────────────── -->
-      <section class="mn-pane mn-pane--drinks" id="pane-drinks" aria-label="Drinks menu section">
-        
-        <!-- ── Fursat Bar Counter Scene (TASK E) ───────────────────────── -->
-        <div class="mn-bar-scene" id="mn-bar-scene" aria-label="Fursat Bar Counter Scene">
-          <!-- Layer 1: Bar Back (full photo with bar shelves & ceiling reflection) -->
-          <div class="mn-bar-layer mn-bar-layer--back" id="mn-bar-back" aria-hidden="true">
-            <img
-              src="/assets/interior/bar-back.webp"
-              alt=""
-              class="mn-bar-img mn-bar-img--back"
-              width="1200"
-              height="1600"
-              loading="eager"
-            />
-          </div>
-
-          <!-- Layer 2: Glowing round logo + CSS radial glow + Neon FURSAT wordmark -->
-          <div class="mn-bar-layer mn-bar-layer--logo" id="mn-bar-logo" aria-hidden="true">
-            <div class="mn-bar-logo-unit">
-              <div class="mn-bar-logo-glow" aria-hidden="true"></div>
-              <img
-                src="/assets/interior/bar-logo.webp"
-                alt="Fursat Bar Logo"
-                class="mn-bar-logo-img"
-                width="130"
-                height="165"
-                loading="eager"
-              />
-              <span class="mn-bar-neon-text">FURSAT</span>
-            </div>
-          </div>
-
-          <!-- Optional 3D Hook: Lazy-loaded Three.js canvas if fursat-bar.glb exists -->
-          <div class="mn-bar-3d-hook" id="mn-bar-3d-hook" aria-hidden="true"></div>
-
-          <!-- Layer 3: Foreground bar counter strip cropped from same photo, same scale -->
-          <div class="mn-bar-layer mn-bar-layer--front" id="mn-bar-front" aria-hidden="true">
-            <img
-              src="/assets/interior/bar-front.webp"
-              alt=""
-              class="mn-bar-img mn-bar-img--front"
-              width="1200"
-              height="420"
-              loading="eager"
-            />
-          </div>
-
-          <!-- Dark gradient overlay for text contrast -->
-          <div class="mn-bar-overlay" aria-hidden="true"></div>
-
-          <!-- Bar Scene Header Content -->
-          <div class="mn-bar-header">
-            <div class="mn-pane-title-wrap">
-              <span class="mn-bar-badge">🍸 Fursat Bar Counter</span>
-              <h2 class="mn-pane-title mn-bar-title">Craft Bar &amp; Cellar</h2>
-              <span class="mn-pane-count">{drinksItems.length} drinks · Cocktails, Spirits &amp; Brews</span>
-            </div>
-            <span class="mn-pane-expand-hint" id="drinks-expand-hint">Click to expand (3/4) ↗</span>
-          </div>
-
-          <!-- Category tabs sit on the counter top -->
-          <nav class="mn-tabs-wrap mn-tabs-wrap--drinks mn-bar-tabs-wrap" aria-label="Drinks categories">
-            <div class="mn-tabs mn-tabs--drinks mot-tab-indicator" role="tablist">
-              {drinksCategories.map((cat, i) => (
-                <button
-                  class={`mn-tab${i === 0 ? ' mn-tab--active' : ''}`}
-                  role="tab"
-                  aria-selected={i === 0 ? 'true' : 'false'}
-                  data-cat={slug(cat)}
-                  type="button"
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </nav>
-        </div>
-
-        <!-- Drinks Grid -->
-        <div class="mn-grid mn-grid--drinks" id="mn-grid-drinks">
-          {drinksItems.map((item) => {
-            const cat = item.section;
-            const catSlug = slug(cat);
-            const isAlc = item.alc === true;
-            const isChef = item.chefSpecial === true;
-            const isVeg = item.veg === true;
-            const hasImg = !!item.image;
-            const isSpirit = item.price30ml != null || (item.priceBottle != null && cat !== 'Wines' && cat !== 'Beer');
-            const isWine = cat === 'Wines' || item.priceGlass != null;
-            return (
-              <article
-                class="mn-card mot-card-lit"
-                data-cat={catSlug}
-                data-kind="drink"
-                aria-label={item.name}
-              >
-                {hasImg && (
-                  <div class="mn-card-img-wrap">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      class="mn-card-img"
-                      loading="lazy"
-                      decoding="async"
-                      width="400"
-                      height="220"
-                    />
-                  </div>
-                )}
-                <div class="mn-card-body">
-                  <div class="mn-card-top">
-                    <span class="mn-cat-badge">{cat}</span>
-                    <div class="mn-badges">
-                      {isAlc && <span class="mn-badge-pill mn-badge-pill--alc">Alcohol</span>}
-                      {isChef && <span class="mn-badge-pill mn-badge-pill--opt" title="Chef's Special">Chef's Spl</span>}
-                      {!isAlc && isVeg && <span class="mn-dot mn-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
-                    </div>
-                  </div>
-                  <h3 class="mn-dish-name">{item.name}</h3>
-                  {item.description && <p class="mn-dish-desc">{item.description}</p>}
-                  <div class="mn-card-footer">
-                    {isSpirit ? (
-                      <div class="mn-price-portions">
-                        <span class="mn-price-tag">30 ml: {item.price30ml != null ? `₹${item.price30ml}` : '—'}</span>
-                        <span class="mn-price-sep">·</span>
-                        <span class="mn-price-tag">Bottle: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
-                      </div>
-                    ) : isWine ? (
-                      <div class="mn-price-portions">
-                        <span class="mn-price-tag">Glass: {item.priceGlass != null ? `₹${item.priceGlass}` : '—'}</span>
-                        <span class="mn-price-sep">·</span>
-                        <span class="mn-price-tag">Bottle: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
-                      </div>
-                    ) : (
-                      <span class="mn-price">
-                        {item.price != null ? `₹${item.price}` : (item.priceBottle != null ? `₹${item.priceBottle} (Btl)` : '—')}
-                      </span>
-                    )}
-                    {item.priceBucket != null && (
-                      <span class="mn-flex-note">Bucket: ₹{item.priceBucket}</span>
-                    )}
-                    {item.subCategory && (
-                      <span class="mn-flex-note">{item.subCategory}</span>
-                    )}
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-        <p class="mn-empty" id="mn-empty-drinks" hidden>No drinks found in this category.</p>
-      </section>
-
-    </div>
-
-    <!-- ── CTA Banner ────────────────────────────────────────────────────── -->
-    <section class="mn-cta-wrap" aria-label="Reservation offer">
-      <div class="mn-cta">
-        <p class="mn-cta-label">Ready to dine?</p>
-        <h2 class="mn-cta-heading">Reserve Your Table &amp; Get <span class="mn-cta-gold">15% OFF</span></h2>
-        <p class="mn-cta-sub">Call us or walk in. Available for parties, banquets &amp; café seating.</p>
-        <a
-          href="tel:+918008009966"
-          class="mn-cta-btn"
-          aria-label="Call to reserve and get 15% off"
-        >
-          📞 Reserve &amp; Save 15%
-        </a>
       </div>
     </section>
 
+    <!-- ── Floating Top Switcher Bar (Always accessible once menu is open) ── -->
+    <header class="mb-top-bar" id="mb-top-bar" aria-label="Menu controls">
+      <div class="mb-top-bar-inner">
+        <div class="mb-switch-pill" role="tablist" aria-label="Menu view switch">
+          <button
+            type="button"
+            class="mb-switch-tab mb-switch-tab--food is-active"
+            id="tab-switch-food"
+            role="tab"
+            aria-selected="true"
+            data-target="food"
+          >
+            <span class="mb-switch-icon">🍲</span>
+            <span class="mb-switch-label">Food Book</span>
+            <span class="mb-switch-count">{totalFoodCount}</span>
+          </button>
+          <button
+            type="button"
+            class="mb-switch-tab mb-switch-tab--drinks"
+            id="tab-switch-drinks"
+            role="tab"
+            aria-selected="false"
+            data-target="drinks"
+          >
+            <span class="mb-switch-icon">🍸</span>
+            <span class="mb-switch-label">Drinks Book</span>
+            <span class="mb-switch-count">{totalDrinksCount}</span>
+          </button>
+        </div>
+
+        <button type="button" class="mb-split-return-btn" id="mb-return-split" title="Return to split entry">
+          ⤢ Split View
+        </button>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="mb-toolbar">
+        <div class="mb-search-wrap">
+          <svg class="mb-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="search"
+            id="mb-search-input"
+            class="mb-search-input"
+            placeholder="Search dishes, drinks, ingredients…"
+            aria-label="Search menu"
+          />
+          <button type="button" id="mb-search-clear" class="mb-search-clear" aria-label="Clear search" hidden>✕</button>
+        </div>
+
+        <div class="mb-filter-chips" role="group" aria-label="Dietary filters">
+          <button type="button" class="mb-filter-chip is-active" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="mb-filter-chip mb-filter-chip--veg" data-filter="veg" aria-pressed="false">
+            <span class="mb-dot mb-dot--veg" aria-hidden="true"></span>
+            <span>Veg</span>
+          </button>
+          <button type="button" class="mb-filter-chip mb-filter-chip--nonveg" data-filter="nonveg" aria-pressed="false">
+            <span class="mb-dot mb-dot--nonveg" aria-hidden="true"></span>
+            <span>Non-Veg</span>
+          </button>
+          <button type="button" class="mb-filter-chip mb-filter-chip--spicy" data-filter="spicy" aria-pressed="false">
+            <span aria-hidden="true">🌶️</span>
+            <span>Spicy</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Menu Book Shell: Sidebar Rail + Scroll Content ───────────────── -->
+    <div class="mb-book-shell" id="mb-book-shell" data-active-pane="food">
+      
+      <!-- ── FOOD PANE ──────────────────────────────────────────────────── -->
+      <div class="mb-pane mb-pane--food is-active" id="pane-food" role="region" aria-label="Food Menu Book">
+        <div class="mb-pane-layout">
+          <!-- Desktop Category Rail (Left column) -->
+          <aside class="mb-cat-rail mb-cat-rail--desktop" aria-label="Food category index">
+            <div class="mb-cat-rail-header">
+              <span class="mb-cat-rail-title">CATEGORIES</span>
+              <span class="mb-cat-rail-counter">{foodSections.length}</span>
+            </div>
+            <nav class="mb-cat-rail-list">
+              {foodSections.map((sec, idx) => (
+                <a
+                  href={`#cat-food-${sec.slug}`}
+                  class={`mb-cat-link${idx === 0 ? ' is-active' : ''}`}
+                  data-cat-slug={`cat-food-${sec.slug}`}
+                >
+                  <span class="mb-cat-name">{sec.title}</span>
+                  <span class="mb-cat-count">{sec.items.length}</span>
+                </a>
+              ))}
+            </nav>
+          </aside>
+
+          <!-- Main Server-Rendered Food List -->
+          <div class="mb-book-content">
+            <div class="mb-book-header">
+              <h1 class="mb-book-headline">The Kitchen Book</h1>
+              <p class="mb-book-lead">
+                Every dish crafted fresh with Telangana spices, slow-cooked gravies, and coastal recipes.
+              </p>
+            </div>
+
+            {foodSections.map((sec) => (
+              <section class="mb-category-spread" id={`cat-food-${sec.slug}`} data-section-slug={sec.slug}>
+                <header class="mb-spread-header">
+                  <div class="mb-spread-title-wrap">
+                    <span class="mb-spread-kicker">Section</span>
+                    <h2 class="mb-spread-title">{sec.title}</h2>
+                  </div>
+                  <span class="mb-spread-count">{sec.items.length} dishes</span>
+                </header>
+
+                <div class="mb-dishes-grid">
+                  {sec.items.map((item) => {
+                    const isVeg = item.veg === true;
+                    const isNonVeg = item.veg === false;
+                    const isSpicy = item.spicy === true;
+                    const isChef = item.chefSpecial === true;
+                    const hasValidImg = !!item.validImage;
+
+                    return (
+                      <article
+                        class="mb-dish-card"
+                        data-dish-name={item.name}
+                        data-dish-price={item.price != null ? item.price : ''}
+                        data-dish-img={hasValidImg ? item.validImage : ''}
+                        data-veg={isVeg ? 'true' : isNonVeg ? 'false' : ''}
+                        data-spicy={isSpicy ? 'true' : 'false'}
+                        data-chef={isChef ? 'true' : 'false'}
+                      >
+                        <div class="mb-dish-card-main">
+                          <div class="mb-dish-header">
+                            <div class="mb-dish-badges">
+                              {isVeg && <span class="mb-dot mb-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
+                              {isNonVeg && <span class="mb-dot mb-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
+                              {isSpicy && <span class="mb-badge-spicy" title="Spicy">🌶️</span>}
+                              {isChef && <span class="mb-badge-chef">Chef's Special</span>}
+                            </div>
+                            <span class="mb-dish-price">
+                              {item.price != null ? `₹${item.price}` : '—'}
+                            </span>
+                          </div>
+
+                          <h3 class="mb-dish-title">{item.name}</h3>
+                          {item.description && <p class="mb-dish-desc">{item.description}</p>}
+                        </div>
+
+                        <div class="mb-dish-footer">
+                          {hasValidImg ? (
+                            <span class="mb-photo-pill" title="Has dish photograph">✦ Real Photo</span>
+                          ) : (
+                            <span></span>
+                          )}
+                          <button
+                            type="button"
+                            class="mb-add-pick-btn fx-add"
+                            data-name={item.name}
+                            data-price={item.price != null ? `₹${item.price}` : ''}
+                            aria-label={`Add ${item.name} to picks`}
+                            aria-pressed="false"
+                          >
+                            <span class="mb-add-icon">+</span>
+                            <span>Pick</span>
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+
+            <p class="mb-empty-alert" id="mb-empty-food" hidden>
+              No dishes match your active filter. Try resetting dietary toggles or search keyword.
+            </p>
+          </div>
+        </div>
+
+        <!-- Phone Sticky Category Rail (Bottom thumb zone) -->
+        <nav class="mb-cat-rail mb-cat-rail--mobile" aria-label="Mobile food category selector">
+          <div class="mb-cat-scroll-track" id="track-food">
+            {foodSections.map((sec, idx) => (
+              <a
+                href={`#cat-food-${sec.slug}`}
+                class={`mb-cat-pill${idx === 0 ? ' is-active' : ''}`}
+                data-cat-slug={`cat-food-${sec.slug}`}
+              >
+                {sec.title}
+              </a>
+            ))}
+          </div>
+        </nav>
+      </div>
+
+      <!-- ── DRINKS PANE ────────────────────────────────────────────────── -->
+      <div class="mb-pane mb-pane--drinks" id="pane-drinks" role="region" aria-label="Drinks Menu Book">
+        <div class="mb-pane-layout">
+          <!-- Desktop Category Rail (Left column) -->
+          <aside class="mb-cat-rail mb-cat-rail--desktop mb-cat-rail--bar" aria-label="Drinks category index">
+            <div class="mb-cat-rail-header">
+              <span class="mb-cat-rail-title">BAR SECTIONS</span>
+              <span class="mb-cat-rail-counter">{drinksSections.length}</span>
+            </div>
+            <nav class="mb-cat-rail-list">
+              {drinksSections.map((sec, idx) => (
+                <a
+                  href={`#cat-drinks-${sec.slug}`}
+                  class={`mb-cat-link${idx === 0 ? ' is-active' : ''}`}
+                  data-cat-slug={`cat-drinks-${sec.slug}`}
+                >
+                  <span class="mb-cat-name">{sec.title}</span>
+                  <span class="mb-cat-count">{sec.items.length}</span>
+                </a>
+              ))}
+            </nav>
+          </aside>
+
+          <!-- Main Server-Rendered Drinks List -->
+          <div class="mb-book-content mb-book-content--bar">
+            <div class="mb-book-header mb-book-header--bar">
+              <span class="mb-bar-gate-badge">21+ Craft Cellar</span>
+              <h1 class="mb-book-headline">The Bar &amp; Cellar Book</h1>
+              <p class="mb-book-lead">
+                Curated cocktails, rare single malts, aged rums, chilled beer buckets, and fresh artisanal brews.
+              </p>
+            </div>
+
+            {drinksSections.map((sec) => (
+              <section class="mb-category-spread mb-category-spread--bar" id={`cat-drinks-${sec.slug}`} data-section-slug={sec.slug}>
+                <header class="mb-spread-header mb-spread-header--bar">
+                  <div class="mb-spread-title-wrap">
+                    <span class="mb-spread-kicker mb-spread-kicker--bar">Bar Collection</span>
+                    <h2 class="mb-spread-title">{sec.title}</h2>
+                  </div>
+                  <span class="mb-spread-count">{sec.items.length} pours</span>
+                </header>
+
+                <div class="mb-dishes-grid mb-dishes-grid--bar">
+                  {sec.items.map((item) => {
+                    const isAlc = item.alc === true;
+                    const isVeg = item.veg === true;
+                    const isSpirit = item.price30ml != null || (item.priceBottle != null && sec.title !== 'Wines' && sec.title !== 'Beer');
+                    const isWine = sec.title === 'Wines' || item.priceGlass != null;
+
+                    return (
+                      <article
+                        class="mb-dish-card mb-dish-card--bar"
+                        data-dish-name={item.name}
+                        data-dish-price={item.price != null ? item.price : item.priceBottle != null ? item.priceBottle : ''}
+                        data-dish-img=""
+                        data-alc={isAlc ? 'true' : 'false'}
+                        data-veg={isVeg ? 'true' : ''}
+                      >
+                        <div class="mb-dish-card-main">
+                          <div class="mb-dish-header">
+                            <div class="mb-dish-badges">
+                              {isAlc && <span class="mb-badge-alc">Alcohol</span>}
+                              {!isAlc && isVeg && <span class="mb-dot mb-dot--veg" title="Vegetarian Mocktail" />}
+                              {item.subCategory && <span class="mb-badge-sub">{item.subCategory}</span>}
+                            </div>
+                            <div class="mb-dish-price-wrap">
+                              {isSpirit ? (
+                                <div class="mb-spirit-prices">
+                                  <span>30ml: {item.price30ml != null ? `₹${item.price30ml}` : '—'}</span>
+                                  <span class="mb-price-bullet">·</span>
+                                  <span>Btl: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
+                                </div>
+                              ) : isWine ? (
+                                <div class="mb-spirit-prices">
+                                  <span>Glass: {item.priceGlass != null ? `₹${item.priceGlass}` : '—'}</span>
+                                  <span class="mb-price-bullet">·</span>
+                                  <span>Btl: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
+                                </div>
+                              ) : (
+                                <span class="mb-dish-price">
+                                  {item.price != null ? `₹${item.price}` : item.priceBottle != null ? `₹${item.priceBottle}` : '—'}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <h3 class="mb-dish-title mb-dish-title--bar">{item.name}</h3>
+                          {item.description && <p class="mb-dish-desc mb-dish-desc--bar">{item.description}</p>}
+                        </div>
+
+                        <div class="mb-dish-footer mb-dish-footer--bar">
+                          {item.priceBucket != null ? (
+                            <span class="mb-bucket-pill">Bucket: ₹{item.priceBucket}</span>
+                          ) : (
+                            <span></span>
+                          )}
+                          <button
+                            type="button"
+                            class="mb-add-pick-btn mb-add-pick-btn--bar fx-add"
+                            data-name={item.name}
+                            data-price={item.price != null ? `₹${item.price}` : item.priceBottle != null ? `₹${item.priceBottle}` : ''}
+                            aria-label={`Add ${item.name} to picks`}
+                            aria-pressed="false"
+                          >
+                            <span class="mb-add-icon">+</span>
+                            <span>Pick</span>
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+
+            <p class="mb-empty-alert mb-empty-alert--bar" id="mb-empty-drinks" hidden>
+              No drinks match your search or filter.
+            </p>
+          </div>
+        </div>
+
+        <!-- Phone Sticky Category Rail (Bottom thumb zone) -->
+        <nav class="mb-cat-rail mb-cat-rail--mobile mb-cat-rail--mobile-bar" aria-label="Mobile drinks category selector">
+          <div class="mb-cat-scroll-track" id="track-drinks">
+            {drinksSections.map((sec, idx) => (
+              <a
+                href={`#cat-drinks-${sec.slug}`}
+                class={`mb-cat-pill mb-cat-pill--bar${idx === 0 ? ' is-active' : ''}`}
+                data-cat-slug={`cat-drinks-${sec.slug}`}
+              >
+                {sec.title}
+              </a>
+            ))}
+          </div>
+        </nav>
+      </div>
+
+    </div>
+
+    <!-- ── Picks Tray Component ─────────────────────────────────────────── -->
+    <PicksTray />
   </main>
 
-  <MascotOfferModal />
   <SiteFooter />
-<MobileBar active="menu" />
-<script is:inline src="/js/motion-kit.js"></script>
 </Base>
 
-<!-- ── Split menu interaction script ─────────────────────────────────────── -->
-<script is:inline>
-(function () {
-  // ── View state: 'food' (food=3/4, drinks=1/4) or 'drinks' (drinks=3/4, food=1/4)
-  var container = document.getElementById('mn-split-container');
-  var paneFood = document.getElementById('pane-food');
-  var paneDrinks = document.getElementById('pane-drinks');
-  var btnFood = document.getElementById('btn-food-view');
-  var btnDrinks = document.getElementById('btn-drinks-view');
-  var foodPropLabel = document.getElementById('food-prop-label');
-  var drinksPropLabel = document.getElementById('drinks-prop-label');
-  var foodExpandHint = document.getElementById('food-expand-hint');
-  var drinksExpandHint = document.getElementById('drinks-expand-hint');
-
-  function setView(view) {
-    container.dataset.active = view;
-    var isFoodBig = view === 'food';
-    btnFood.classList.toggle('mn-switch-btn--active', isFoodBig);
-    btnFood.setAttribute('aria-pressed', isFoodBig ? 'true' : 'false');
-    btnDrinks.classList.toggle('mn-switch-btn--active', !isFoodBig);
-    btnDrinks.setAttribute('aria-pressed', !isFoodBig ? 'true' : 'false');
-    if (foodPropLabel) foodPropLabel.textContent = isFoodBig ? '3/4 Screen' : '1/4 Screen';
-    if (drinksPropLabel) drinksPropLabel.textContent = isFoodBig ? '1/4 Screen' : '3/4 Screen';
-    if (foodExpandHint) foodExpandHint.style.display = isFoodBig ? 'none' : 'inline';
-    if (drinksExpandHint) drinksExpandHint.style.display = isFoodBig ? 'inline' : 'none';
-  }
-
-  if (btnFood) btnFood.addEventListener('click', function () { setView('food'); });
-  if (btnDrinks) btnDrinks.addEventListener('click', function () { setView('drinks'); });
-
-  // Click on the smaller pane header expands it
-  if (paneFood) paneFood.querySelector('.mn-pane-header').addEventListener('click', function (e) {
-    if (container.dataset.active !== 'food') setView('food');
-  });
-  if (paneDrinks) paneDrinks.querySelector('.mn-pane-header').addEventListener('click', function (e) {
-    if (container.dataset.active !== 'drinks') setView('drinks');
-  });
-
-  // ── Per-pane tab filtering ──────────────────────────────────────────────
-  function bindPaneTabs(tabsSelector, gridId, emptyId) {
-    var paneTabs = document.querySelectorAll(tabsSelector);
-    var paneCards = document.getElementById(gridId) ? document.getElementById(gridId).querySelectorAll('.mn-card') : [];
-    var paneEmpty = document.getElementById(emptyId);
-
-    function activate(catSlug) {
-      paneTabs.forEach(function (t) {
-        var active = t.dataset.cat === catSlug;
-        t.classList.toggle('mn-tab--active', active);
-        t.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
-      var visible = 0;
-      paneCards.forEach(function (card) {
-        var show = catSlug === 'all' || card.dataset.cat === catSlug;
-        card.hidden = !show;
-        if (show) visible++;
-      });
-      if (paneEmpty) paneEmpty.hidden = visible > 0;
-      var activeTab = document.querySelector(tabsSelector + '.mn-tab--active');
-      if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
-
-    paneTabs.forEach(function (tab) {
-      tab.addEventListener('click', function () { activate(tab.dataset.cat); });
-    });
-  }
-
-  bindPaneTabs('.mn-tabs--food .mn-tab', 'mn-grid-food', 'mn-empty-food');
-  bindPaneTabs('.mn-tabs--drinks .mn-tab', 'mn-grid-drinks', 'mn-empty-drinks');
-
-  // Initial state: food is bigger
-  setView('food');
-
-  // ── MENU 7: Floating dish photos + select option ────────────────────────
+<!-- ── Client Interactivity: Split expand, Scroll-spy, Search & Filter ─────── -->
+<script>
   (function () {
-    var dataEl = document.getElementById('dish-showcase-data');
-    if (!dataEl) return;
-    var dishes;
-    try { dishes = JSON.parse(dataEl.textContent || '[]'); } catch (e) { return; }
-    if (!dishes.length) return;
+    var splitEntry = document.getElementById('mb-split-entry');
+    var halfDrinks = document.getElementById('half-drinks');
+    var halfFood = document.getElementById('half-food');
+    var topBar = document.getElementById('mb-top-bar');
+    var bookShell = document.getElementById('mb-book-shell');
+    var tabFood = document.getElementById('tab-switch-food');
+    var tabDrinks = document.getElementById('tab-switch-drinks');
+    var returnSplit = document.getElementById('mb-return-split');
 
-    var idx = 0;
-    var imgEl    = document.getElementById('mn-ds-img');
-    var vegDot   = document.getElementById('mn-ds-veg-dot');
-    var secEl    = document.getElementById('mn-ds-section');
-    var nameEl   = document.getElementById('mn-ds-name');
-    var descEl   = document.getElementById('mn-ds-desc');
-    var priceEl  = document.getElementById('mn-ds-price');
-    var ctrEl    = document.getElementById('mn-ds-counter');
-    var prevBtn  = document.getElementById('mn-ds-prev');
-    var nextBtn  = document.getElementById('mn-ds-next');
-    var selectEl = document.getElementById('mn-ds-select');
+    var paneFood = document.getElementById('pane-food');
+    var paneDrinks = document.getElementById('pane-drinks');
 
-    function fmt(p) {
-      if (p === null || p === undefined) return '';
-      var s = String(Math.round(Math.abs(p)));
-      var last3 = s.slice(-3), rest = s.slice(0, -3);
-      var g = rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3 : last3;
-      return '\u20B9' + g;
-    }
+    var searchInput = document.getElementById('mb-search-input') as HTMLInputElement | null;
+    var searchClear = document.getElementById('mb-search-clear');
+    var filterChips = Array.from(document.querySelectorAll('.mb-filter-chip'));
 
-    function show(i) {
-      var d = dishes[i];
-      if (!d) return;
-      idx = i;
-      imgEl.src = d.img;
-      imgEl.alt = d.name;
-      vegDot.style.background = d.veg ? '#22c55e' : '#ef4444';
-      vegDot.title = d.veg ? 'Veg' : 'Non-Veg';
-      secEl.textContent = d.section;
-      nameEl.textContent = d.name;
-      descEl.textContent = d.desc || '';
-      priceEl.textContent = d.price != null ? fmt(d.price) : '—';
-      ctrEl.textContent = (i + 1) + ' / ' + dishes.length;
-      if (selectEl && selectEl.value != String(i)) {
-        selectEl.value = String(i);
+    var currentView: 'split' | 'food' | 'drinks' = 'split';
+    var activeDietFilter: 'all' | 'veg' | 'nonveg' | 'spicy' = 'all';
+    var currentQuery = '';
+
+    // ── Switch View Function (Supports View Transition API) ─────────────
+    function setView(view: 'split' | 'food' | 'drinks') {
+      if (view === currentView) return;
+
+      function updateDOM() {
+        currentView = view;
+        if (view === 'split') {
+          splitEntry?.classList.remove('is-hidden');
+          topBar?.classList.remove('is-visible');
+          bookShell?.classList.remove('is-open');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (view === 'food') {
+          splitEntry?.classList.add('is-hidden');
+          topBar?.classList.add('is-visible');
+          bookShell?.classList.add('is-open');
+          bookShell?.setAttribute('data-active-pane', 'food');
+
+          tabFood?.classList.add('is-active');
+          tabFood?.setAttribute('aria-selected', 'true');
+          tabDrinks?.classList.remove('is-active');
+          tabDrinks?.setAttribute('aria-selected', 'false');
+
+          paneFood?.classList.add('is-active');
+          paneDrinks?.classList.remove('is-active');
+          document.body.classList.remove('theme-bar-dark');
+          applyFilters();
+        } else if (view === 'drinks') {
+          splitEntry?.classList.add('is-hidden');
+          topBar?.classList.add('is-visible');
+          bookShell?.classList.add('is-open');
+          bookShell?.setAttribute('data-active-pane', 'drinks');
+
+          tabDrinks?.classList.add('is-active');
+          tabDrinks?.setAttribute('aria-selected', 'true');
+          tabFood?.classList.remove('is-active');
+          tabFood?.setAttribute('aria-selected', 'false');
+
+          paneDrinks?.classList.add('is-active');
+          paneFood?.classList.remove('is-active');
+          document.body.classList.add('theme-bar-dark');
+          applyFilters();
+        }
+      }
+
+      if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.startViewTransition(updateDOM);
+      } else {
+        updateDOM();
       }
     }
 
-    prevBtn && prevBtn.addEventListener('click', function () {
-      show((idx - 1 + dishes.length) % dishes.length);
+    if (halfFood) halfFood.addEventListener('click', function () { setView('food'); });
+    if (halfDrinks) halfDrinks.addEventListener('click', function () { setView('drinks'); });
+    if (tabFood) tabFood.addEventListener('click', function () { setView('food'); });
+    if (tabDrinks) tabDrinks.addEventListener('click', function () { setView('drinks'); });
+    if (returnSplit) returnSplit.addEventListener('click', function () { setView('split'); });
+
+    // Keyboard support on split entry
+    halfFood?.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setView('food'); }
     });
-    nextBtn && nextBtn.addEventListener('click', function () {
-      show((idx + 1) % dishes.length);
-    });
-    selectEl && selectEl.addEventListener('change', function () {
-      var val = parseInt(selectEl.value, 10);
-      if (!isNaN(val)) show(val);
+    halfDrinks?.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setView('drinks'); }
     });
 
-    // Auto-advance every 4.5 seconds when showcase is in viewport
-    var autoTimer = null;
-    var showcase = document.getElementById('mn-dish-showcase');
-    if (showcase && 'IntersectionObserver' in window) {
-      var obs = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) {
-          if (!autoTimer) {
-            autoTimer = setInterval(function () {
-              show((idx + 1) % dishes.length);
-            }, 4500);
-          }
+    // ── Instant Filter & Search ────────────────────────────────────────
+    function applyFilters() {
+      var activePane = currentView === 'drinks' ? paneDrinks : paneFood;
+      if (!activePane) return;
+
+      var q = currentQuery.trim().toLowerCase();
+      var articles = Array.from(activePane.querySelectorAll('.mb-dish-card'));
+      var matchCount = 0;
+
+      articles.forEach(function (el) {
+        var card = el as HTMLElement;
+        var name = (card.dataset.dishName || '').toLowerCase();
+        var desc = (card.querySelector('.mb-dish-desc')?.textContent || '').toLowerCase();
+        var isVeg = card.dataset.veg === 'true';
+        var isNonVeg = card.dataset.veg === 'false';
+        var isSpicy = card.dataset.spicy === 'true';
+
+        // Dietary check
+        var dietMatch = true;
+        if (activeDietFilter === 'veg') dietMatch = isVeg;
+        else if (activeDietFilter === 'nonveg') dietMatch = isNonVeg;
+        else if (activeDietFilter === 'spicy') dietMatch = isSpicy;
+
+        // Query check
+        var queryMatch = !q || name.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
+
+        if (dietMatch && queryMatch) {
+          card.style.display = '';
+          matchCount++;
         } else {
-          clearInterval(autoTimer);
-          autoTimer = null;
+          card.style.display = 'none';
         }
-      }, { threshold: 0.25 });
-      obs.observe(showcase);
+      });
+
+      // Hide category sections that have no visible cards
+      var sections = Array.from(activePane.querySelectorAll('.mb-category-spread'));
+      sections.forEach(function (sec) {
+        var visibleCards = sec.querySelectorAll('.mb-dish-card:not([style*="display: none"])');
+        (sec as HTMLElement).style.display = visibleCards.length > 0 ? '' : 'none';
+      });
+
+      // Show/hide empty state
+      var emptyEl = document.getElementById(currentView === 'drinks' ? 'mb-empty-drinks' : 'mb-empty-food');
+      if (emptyEl) {
+        emptyEl.hidden = matchCount > 0;
+      }
     }
 
-    show(0);
-  })();
-
-  // ── TASK E: Bar Counter Parallax & 3D Hook ───────────────────────────────
-  (function () {
-    var scene = document.getElementById('mn-bar-scene');
-    if (!scene) return;
-
-    var isReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    var back = document.getElementById('mn-bar-back');
-    var logo = document.getElementById('mn-bar-logo');
-    var front = document.getElementById('mn-bar-front');
-
-    if (!isReduced && back && logo && front) {
-      var targetX = 0, targetY = 0;
-      var curX = 0, curY = 0;
-      var running = false;
-
-      function renderParallax() {
-        if (!running) return;
-        curX += (targetX - curX) * 0.08;
-        curY += (targetY - curY) * 0.08;
-
-        // Smooth, transform-only, different speeds
-        back.style.transform = 'translate3d(' + (-curX * 10).toFixed(2) + 'px, ' + (-curY * 8).toFixed(2) + 'px, 0)';
-        logo.style.transform = 'translate3d(calc(-50% + ' + (curX * 14).toFixed(2) + 'px), ' + (curY * 10).toFixed(2) + 'px, 0)';
-        front.style.transform = 'translate3d(' + (curX * 24).toFixed(2) + 'px, ' + (curY * 12).toFixed(2) + 'px, 0)';
-
-        requestAnimationFrame(renderParallax);
-      }
-
-      // Pointermove handler on scene
-      scene.addEventListener('pointermove', function (e) {
-        var rect = scene.getBoundingClientRect();
-        var nx = (e.clientX - rect.left) / rect.width - 0.5;
-        var ny = (e.clientY - rect.top) / rect.height - 0.5;
-        targetX = Math.max(-0.5, Math.min(0.5, nx));
-        targetY = Math.max(-0.5, Math.min(0.5, ny));
-        if (!running) {
-          running = true;
-          requestAnimationFrame(renderParallax);
-        }
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        currentQuery = searchInput.value;
+        if (searchClear) searchClear.hidden = !currentQuery;
+        applyFilters();
       });
+    }
 
-      scene.addEventListener('pointerleave', function () {
-        targetX = 0;
-        targetY = 0;
+    if (searchClear && searchInput) {
+      searchClear.addEventListener('click', function () {
+        searchInput.value = '';
+        currentQuery = '';
+        searchClear.hidden = true;
+        searchInput.focus();
+        applyFilters();
       });
+    }
 
-      // Device orientation handler for mobile
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', function (e) {
-          if (e.gamma == null || e.beta == null) return;
-          var gx = Math.max(-30, Math.min(30, e.gamma)) / 60;
-          var gy = Math.max(15, Math.min(65, e.beta) - 40) / 50;
-          targetX = gx;
-          targetY = gy;
-          if (!running) {
-            running = true;
-            requestAnimationFrame(renderParallax);
+    filterChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        filterChips.forEach(function (c) {
+          c.classList.remove('is-active');
+          c.setAttribute('aria-pressed', 'false');
+        });
+        chip.classList.add('is-active');
+        chip.setAttribute('aria-pressed', 'true');
+        activeDietFilter = (chip.getAttribute('data-filter') as any) || 'all';
+        applyFilters();
+      });
+    });
+
+    // ── Category Rail Scroll-Spy ───────────────────────────────────────
+    function initScrollSpy() {
+      var options = {
+        root: null,
+        rootMargin: '-15% 0px -70% 0px',
+        threshold: 0
+      };
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var id = entry.target.id;
+            // Highlight matching desktop link and mobile pill
+            var links = Array.from(document.querySelectorAll(`.mb-cat-link[data-cat-slug="${id}"], .mb-cat-pill[data-cat-slug="${id}"]`));
+            if (links.length > 0) {
+              var parentPane = entry.target.closest('.mb-pane');
+              if (parentPane) {
+                parentPane.querySelectorAll('.mb-cat-link.is-active, .mb-cat-pill.is-active').forEach(function (el) {
+                  el.classList.remove('is-active');
+                });
+                links.forEach(function (el) {
+                  el.classList.add('is-active');
+                  // Keep mobile pill in view
+                  if (el.classList.contains('mb-cat-pill')) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                  }
+                });
+              }
+            }
           }
-        }, { passive: true });
-      }
+        });
+      }, options);
+
+      document.querySelectorAll('.mb-category-spread').forEach(function (sec) {
+        observer.observe(sec);
+      });
     }
 
-    // ── Optional Hook: fursat-bar.glb ─────────────────────────────────────
-    // If public/models/fursat-bar.glb exists, lazy-load with GLTFLoader on Drinks panel only
-    fetch('/models/fursat-bar.glb', { method: 'HEAD' })
-      .then(function (res) {
-        if (res.ok && res.status === 200) {
-          import('three').then(function (THREE) {
-            import('three/examples/jsm/loaders/GLTFLoader.js').then(function (gltfMod) {
-              var hook = document.getElementById('mn-bar-3d-hook');
-              if (!hook) return;
-              hook.style.display = 'block';
-              var scene3d = new THREE.Scene();
-              var camera = new THREE.PerspectiveCamera(40, hook.clientWidth / hook.clientHeight, 0.1, 100);
-              camera.position.set(0, 1.2, 3.2);
-              var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-              renderer.setSize(hook.clientWidth, hook.clientHeight);
-              renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-              hook.appendChild(renderer.domElement);
-
-              var amb = new THREE.AmbientLight(0xffffff, 1.2);
-              scene3d.add(amb);
-              var dir = new THREE.DirectionalLight(0xe0a63c, 2.2);
-              dir.position.set(2, 4, 2);
-              scene3d.add(dir);
-
-              var loader = new gltfMod.GLTFLoader();
-              loader.load('/models/fursat-bar.glb', function (gltf) {
-                scene3d.add(gltf.scene);
-                var clock = new THREE.Clock();
-                function animate3d() {
-                  requestAnimationFrame(animate3d);
-                  var t = clock.getElapsedTime();
-                  gltf.scene.rotation.y = Math.sin(t * 0.35) * 0.18; // limited orbit
-                  renderer.render(scene3d, camera);
-                }
-                animate3d();
-              });
-            }).catch(function () {});
-          }).catch(function () {});
-        }
-      })
-      .catch(function () {});
+    initScrollSpy();
   })();
-})();
 </script>
 
 <style is:global>
-  /* ── Google Font import ─────────────────────────────────────────────── */
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
+  /* ==========================================================================
+     The Fursat Menu Book Styling Tokens (fk-*)
+     Terracotta #CF4B37 | Forest #2E4E21 | Sand #ECDEC8 | Camel #B9946B
+     ========================================================================== */
 
-  /* ── Page shell ─────────────────────────────────────────────────────── */
-  .mn-main {
-    background: #12190B;
-    min-height: 100vh;
-    color: #F4ECDA;
-    font-family: system-ui, -apple-system, sans-serif;
+  :root {
+    --fk-terracotta: #CF4B37;
+    --fk-forest: #2E4E21;
+    --fk-sand: #ECDEC8;
+    --fk-camel: #B9946B;
+    --fk-cream: #F2EEE4;
+    --fk-paper: #F8F5EE;
+    --fk-ink: #22251D;
+    --fk-muted: #646B56;
+    --fk-line: #E1DAC7;
+    --fk-bar-dark: #0D140B;
+    --fk-bar-surface: #141E11;
+    --fk-bar-border: rgba(224, 166, 60, 0.28);
+    --fk-gold: #E0A63C;
   }
 
-  /* ── Hero ───────────────────────────────────────────────────────────── */
-  .mn-hero {
-    background: url('/assets/interior/fursat_space_07.webp') center/cover no-repeat;
-    padding: 80px 24px 56px;
-    text-align: center;
-    border-bottom: 1px solid rgba(224,166,60,0.15);
+  .mb-main {
+    background: var(--fk-cream);
+    color: var(--fk-ink);
+    min-height: 100vh;
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+
+  /* ── 1. Full-Screen Split Entry ─────────────────────────────────────── */
+  .mb-split-entry {
+    display: flex;
+    flex-direction: row;
+    min-height: calc(100vh - 72px);
+    width: 100%;
     position: relative;
     overflow: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  .mn-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(10,15,5,0.72) 0%, rgba(18,25,11,0.9) 100%);
-    pointer-events: none;
-  }
-  .mn-hero-inner { position: relative; z-index: 1; }
-  .mn-hero-eyebrow {
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(224,166,60,0.7);
-    margin: 0 0 12px;
-  }
-  .mn-hero-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(2.4rem, 7vw, 4.5rem);
-    font-weight: 700;
-    color: #F4ECDA;
-    margin: 0 0 14px;
-    line-height: 1.1;
-  }
-  .mn-hero-sub {
-    font-size: 1rem;
-    color: rgba(244,236,218,0.55);
-    margin: 0;
+  .mb-split-entry.is-hidden {
+    display: none !important;
   }
 
-  /* ── Sticky tab bar ─────────────────────────────────────────────────── */
-  .mn-tabs-wrap {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #17200F;
-    border-bottom: 1px solid rgba(224,166,60,0.15);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  }
-  .mn-tabs {
-    display: flex;
-    gap: 4px;
-    padding: 10px 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .mn-tabs::-webkit-scrollbar { display: none; }
-  .mn-tab {
-    flex-shrink: 0;
-    padding: 7px 16px;
-    border-radius: 999px;
-    border: 1px solid rgba(224,166,60,0.2);
-    background: transparent;
-    color: rgba(244,236,218,0.6);
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
-    white-space: nowrap;
-    letter-spacing: 0.01em;
-  }
-  .mn-tab:hover {
-    color: #F4ECDA;
-    border-color: rgba(224,166,60,0.5);
-    background: rgba(224,166,60,0.07);
-  }
-  .mn-tab--active {
-    background: #E0A63C;
-    color: #12190B;
-    border-color: #E0A63C;
-    font-weight: 700;
-    box-shadow: 0 0 14px rgba(224,166,60,0.45);
-  }
-  .mn-tab:focus-visible {
-    outline: 2px solid #E0A63C;
-    outline-offset: 2px;
-  }
-
-  /* ── Grid ───────────────────────────────────────────────────────────── */
-  .mn-grid-wrap {
-    padding: 36px 20px 56px;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .mn-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-    align-items: start;
-  }
-
-  /* ── Card ───────────────────────────────────────────────────────────── */
-  .mn-card {
-    background: rgba(244,236,218,0.04);
-    border: 1px solid rgba(224,166,60,0.25);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: transform 0.22s cubic-bezier(.23,1,.32,1), box-shadow 0.22s, border-color 0.22s;
-  }
-  .mn-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(224,166,60,0.55);
-    box-shadow: 0 12px 36px rgba(0,0,0,0.5), 0 0 0 1px rgba(224,166,60,0.15);
-  }
-
-  /* Card image */
-  .mn-card-img-wrap {
-    width: 100%;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    background: #0d1408;
-  }
-  .mn-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
-  }
-  .mn-card:hover .mn-card-img { transform: scale(1.05); }
-
-  /* Card body */
-  .mn-card-body { padding: 16px 18px 18px; }
-  .mn-card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .mn-cat-badge {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(224,166,60,0.8);
-    background: rgba(224,166,60,0.1);
-    border: 1px solid rgba(224,166,60,0.2);
-    border-radius: 6px;
-    padding: 2px 7px;
-    white-space: nowrap;
-    max-width: 55%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .mn-badges {
+  .mb-split-half {
+    flex: 1;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 5px;
-    flex-shrink: 0;
-  }
-
-  /* Veg / non-veg dots */
-  .mn-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .mn-dot--veg    { background: #22c55e; box-shadow: 0 0 5px rgba(34,197,94,0.5); }
-  .mn-dot--nonveg { background: #ef4444; box-shadow: 0 0 5px rgba(239,68,68,0.5); }
-
-  /* Pill badges */
-  .mn-badge-pill {
-    font-size: 0.6rem;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 999px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .mn-badge-pill--opt {
-    background: rgba(234,179,8,0.15);
-    color: #eab308;
-    border: 1px solid rgba(234,179,8,0.3);
-  }
-  .mn-badge-pill--alc {
-    background: rgba(168,85,247,0.15);
-    color: #c084fc;
-    border: 1px solid rgba(168,85,247,0.3);
-  }
-  .mn-spicy { font-size: 0.85rem; }
-
-  /* Dish name */
-  .mn-dish-name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.08rem;
-    font-weight: 600;
-    color: #F4ECDA;
-    margin: 0 0 7px;
-    line-height: 1.35;
-  }
-
-  /* Description */
-  .mn-dish-desc {
-    font-size: 0.9rem;
-    color: rgba(244,236,218,0.7);
-    margin: 0 0 12px;
-    line-height: 1.5;
-  }
-
-  /* Card footer: price */
-  .mn-card-footer {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-top: auto;
-  }
-  .mn-price {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #E0A63C;
-    letter-spacing: -0.01em;
-  }
-  .mn-flex-note {
-    font-size: 0.72rem;
-    color: rgba(244,236,218,0.4);
-    font-style: italic;
-  }
-
-  /* Empty state */
-  .mn-empty {
-    text-align: center;
-    color: rgba(244,236,218,0.4);
-    padding: 60px 24px;
-    font-size: 1rem;
-  }
-
-  /* ── CTA Section ─────────────────────────────────────────────────────── */
-  .mn-cta-wrap {
-    padding: 24px 24px 72px;
-    display: flex;
     justify-content: center;
-  }
-  .mn-cta {
-    background: linear-gradient(135deg, rgba(224,166,60,0.07) 0%, rgba(224,166,60,0.03) 100%);
-    border: 1px solid rgba(224,166,60,0.3);
-    border-radius: 28px;
-    padding: 48px 40px;
-    text-align: center;
-    max-width: 640px;
-    width: 100%;
-    position: relative;
+    cursor: pointer;
     overflow: hidden;
+    padding: 60px 40px;
+    outline: none;
+    transition: flex 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .mn-cta::before {
-    content: '';
+  .mb-split-half:hover {
+    flex: 1.15;
+  }
+  .mb-split-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(224,166,60,0.12) 0%, transparent 65%);
-    pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(1.02);
   }
-  .mn-cta > * { position: relative; z-index: 1; }
-  .mn-cta-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(224,166,60,0.65);
-    margin: 0 0 10px;
+  .mb-split-half:hover .mb-split-bg {
+    transform: scale(1.08);
   }
-  .mn-cta-heading {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(1.5rem, 4vw, 2.4rem);
-    font-weight: 700;
+
+  .mb-split-overlay--drinks {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(13, 20, 11, 0.88) 0%, rgba(13, 20, 11, 0.94) 100%);
+  }
+  .mb-split-overlay--food {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(207, 75, 55, 0.84) 0%, rgba(46, 78, 33, 0.92) 100%);
+  }
+
+  .mb-split-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 480px;
     color: #F4ECDA;
+  }
+  .mb-split-kicker {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: var(--fk-gold);
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  .mb-split-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.1;
     margin: 0 0 14px;
-    line-height: 1.2;
+    color: #FFF;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
   }
-  .mn-cta-gold {
-    color: #E0A63C;
-    text-shadow: 0 0 24px rgba(224,166,60,0.5);
-  }
-  .mn-cta-sub {
-    font-size: 0.95rem;
-    color: rgba(244,236,218,0.6);
+  .mb-split-sub {
+    font-size: 0.9375rem;
+    color: rgba(244, 236, 218, 0.88);
+    line-height: 1.5;
     margin: 0 0 28px;
   }
-  .mn-cta-btn {
-    display: inline-block;
-    padding: 15px 36px;
-    background: linear-gradient(135deg, #E0A63C 0%, #c8882c 100%);
-    color: #12190B;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.03em;
-    border-radius: 999px;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(224,166,60,0.4), 0 0 0 0 rgba(224,166,60,0);
-    animation: mn-glow-pulse 2.8s ease-in-out infinite;
-  }
-  .mn-cta-btn:hover {
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 8px 30px rgba(224,166,60,0.6);
-    animation: none;
-  }
-
-  @keyframes mn-glow-pulse {
-    0%, 100% { box-shadow: 0 4px 20px rgba(224,166,60,0.4), 0 0 0 0 rgba(224,166,60,0.2); }
-    50%       { box-shadow: 0 4px 28px rgba(224,166,60,0.55), 0 0 0 10px rgba(224,166,60,0); }
-  }
-
-  /* ── Responsive tweaks ───────────────────────────────────────────────── */
-  @media (max-width: 600px) {
-    .mn-hero { padding: 60px 20px 40px; }
-    .mn-grid { grid-template-columns: 1fr; }
-    .mn-cta   { padding: 36px 24px; }
-  }
-  @media (min-width: 1400px) {
-    .mn-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-  }
-
-  /* ── Food / Drinks proportion switch ─────────────────────────────────── */
-  .mn-switch-wrap {
-    padding: 16px 20px 0;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .mn-switch-toggle {
+  .mb-split-btn {
     display: inline-flex;
+    align-items: center;
     gap: 8px;
-    background: rgba(244,236,218,0.04);
-    border: 1px solid rgba(224,166,60,0.2);
+    padding: 12px 30px;
+    border-radius: 999px;
+    background: #FFF;
+    color: var(--fk-ink);
+    font-size: 0.875rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .mb-split-half--drinks .mb-split-btn {
+    background: var(--fk-gold);
+    color: #12190B;
+  }
+  .mb-split-half:hover .mb-split-btn {
+    transform: translateY(-3px) scale(1.04);
+  }
+
+  @media (max-width: 768px) {
+    .mb-split-entry {
+      flex-direction: column;
+      min-height: calc(100vh - 64px);
+    }
+    .mb-split-half {
+      padding: 40px 24px;
+    }
+  }
+
+  /* ── 2. Floating Top Switcher Bar ───────────────────────────────────── */
+  .mb-top-bar {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(242, 238, 228, 0.95);
+    border-bottom: 1px solid var(--fk-line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 12px 24px 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  .mb-top-bar.is-visible {
+    display: block;
+  }
+  body.theme-bar-dark .mb-top-bar {
+    background: rgba(13, 20, 11, 0.96);
+    border-bottom: 1px solid var(--fk-bar-border);
+  }
+
+  .mb-top-bar-inner {
+    max-width: 1360px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .mb-switch-pill {
+    display: inline-flex;
+    background: rgba(46, 78, 33, 0.08);
+    border: 1px solid var(--fk-line);
     border-radius: 999px;
     padding: 4px;
   }
-  .mn-switch-btn {
-    display: flex;
+  body.theme-bar-dark .mb-switch-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(224, 166, 60, 0.3);
+  }
+
+  .mb-switch-tab {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     padding: 8px 20px;
     border-radius: 999px;
     border: none;
     background: transparent;
-    color: rgba(244,236,218,0.55);
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    white-space: nowrap;
-  }
-  .mn-switch-btn--active {
-    background: #E0A63C;
-    color: #12190B;
-    font-weight: 700;
-    box-shadow: 0 2px 10px rgba(224,166,60,0.4);
-  }
-  .mn-switch-btn:hover:not(.mn-switch-btn--active) {
-    color: #F4ECDA;
-    background: rgba(224,166,60,0.1);
-  }
-  .mn-switch-prop {
-    font-size: 0.65rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    color: var(--fk-muted);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  body.theme-bar-dark .mb-switch-tab {
+    color: rgba(244, 236, 218, 0.7);
+  }
+  .mb-switch-tab.is-active {
+    background: var(--fk-forest);
+    color: #FFF;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(46, 78, 33, 0.3);
+  }
+  body.theme-bar-dark .mb-switch-tab.is-active {
+    background: var(--fk-gold);
+    color: #12190B;
+    box-shadow: 0 4px 14px rgba(224, 166, 60, 0.4);
+  }
+  .mb-switch-count {
+    font-size: 0.75rem;
     opacity: 0.75;
-    margin-left: 2px;
-  }
-  .mn-switch-icon { font-size: 1rem; }
-
-  /* ── Split container ─────────────────────────────────────────────────── */
-  .mn-split-container {
-    display: flex;
-    gap: 0;
-    min-height: calc(100vh - 200px);
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 20px 20px 56px;
-    box-sizing: border-box;
-    transition: none;
-  }
-
-  /* Food pane default: 75%, Drinks pane: 25% */
-  .mn-pane--food { flex: 3; min-width: 0; transition: flex 0.4s cubic-bezier(.23,1,.32,1); }
-  .mn-pane--drinks { flex: 1; min-width: 0; transition: flex 0.4s cubic-bezier(.23,1,.32,1); }
-
-  /* When drinks is expanded to 3/4 */
-  #mn-split-container[data-active="drinks"] .mn-pane--food { flex: 1; }
-  #mn-split-container[data-active="drinks"] .mn-pane--drinks { flex: 3; }
-
-  .mn-pane {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px;
-    min-width: 0;
-  }
-  .mn-pane:first-child { padding-left: 0; border-right: 1px solid rgba(224,166,60,0.12); padding-right: 16px; }
-  .mn-pane:last-child { padding-right: 0; padding-left: 16px; }
-
-  /* Pane header */
-  .mn-pane-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0 8px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .mn-pane-title-wrap { display: flex; align-items: center; gap: 10px; }
-  .mn-pane-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #E0A63C;
-    margin: 0;
-  }
-  .mn-pane-count {
-    font-size: 0.72rem;
-    color: rgba(244,236,218,0.4);
-    background: rgba(224,166,60,0.08);
-    border: 1px solid rgba(224,166,60,0.15);
+    background: rgba(0, 0, 0, 0.15);
+    padding: 2px 7px;
     border-radius: 999px;
-    padding: 2px 8px;
-  }
-  .mn-pane-expand-hint {
-    font-size: 0.72rem;
-    color: rgba(224,166,60,0.5);
-    white-space: nowrap;
-    display: none;
   }
 
-  /* Tabs within panes */
-  .mn-tabs-wrap--food,
-  .mn-tabs-wrap--drinks {
-    position: sticky;
-    top: 0;
-    z-index: 90;
-    background: #17200F;
-    border-bottom: 1px solid rgba(224,166,60,0.12);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-    margin-bottom: 12px;
+  .mb-split-return-btn {
+    border: 1px solid var(--fk-line);
+    background: transparent;
+    color: var(--fk-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mb-split-return-btn:hover {
+    border-color: var(--fk-forest);
+    color: var(--fk-forest);
+  }
+  body.theme-bar-dark .mb-split-return-btn {
+    border-color: var(--fk-bar-border);
+    color: var(--fk-gold);
   }
 
-  /* Grid within panes - compact 2-col default */
-  .mn-grid--food {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 14px;
-    align-items: start;
-  }
-  .mn-grid--drinks {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 14px;
-    align-items: start;
-  }
-
-  /* When drinks pane is small (1/4), stack single column */
-  #mn-split-container[data-active="food"] .mn-grid--drinks {
-    grid-template-columns: 1fr;
-  }
-  /* When food pane is small (1/4), stack single column */
-  #mn-split-container[data-active="drinks"] .mn-grid--food {
-    grid-template-columns: 1fr;
-  }
-
-  /* Mobile: stack panes vertically */
-  @media (max-width: 768px) {
-    .mn-split-container {
-      flex-direction: column;
-      padding: 12px 16px 56px;
-    }
-    .mn-pane--food,
-    .mn-pane--drinks {
-      flex: unset !important;
-    }
-    #mn-split-container[data-active="food"] .mn-pane--drinks {
-      max-height: 320px;
-      overflow-y: auto;
-    }
-    #mn-split-container[data-active="drinks"] .mn-pane--food {
-      max-height: 320px;
-      overflow-y: auto;
-    }
-    .mn-pane:first-child {
-      border-right: none;
-      border-bottom: 1px solid rgba(224,166,60,0.12);
-      padding-left: 0;
-      padding-right: 0;
-      padding-bottom: 16px;
-      margin-bottom: 16px;
-    }
-    .mn-pane:last-child {
-      padding-left: 0;
-    }
-    .mn-grid--food,
-    .mn-grid--drinks {
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-  }
-
-  /* ── Dish Showcase (MENU 7) ──────────────────────────────────────────── */
-  .mn-dish-showcase {
+  /* Toolbar: Search + Dietary Filters */
+  .mb-toolbar {
+    max-width: 1360px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    padding: 16px 20px;
-    background: rgba(23,32,15,0.85);
-    border-bottom: 1px solid rgba(224,166,60,0.2);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    flex-wrap: wrap;
   }
-  .mn-ds-photo-wrap {
+
+  .mb-search-wrap {
     position: relative;
-    flex-shrink: 0;
-    width: 104px;
-    height: 78px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid rgba(224,166,60,0.35);
-    background: #0d1308;
-  }
-  .mn-ds-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.25s ease;
-  }
-  .mn-ds-veg-dot {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.6);
-  }
-  .mn-ds-info {
     flex: 1;
+    min-width: 220px;
+    max-width: 440px;
+  }
+  .mb-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--fk-muted);
+    pointer-events: none;
+  }
+  .mb-search-input {
+    width: 100%;
+    padding: 8px 36px 8px 36px;
+    border-radius: 999px;
+    border: 1px solid var(--fk-line);
+    background: #FFF;
+    font-size: 0.875rem;
+    color: var(--fk-ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .mb-search-input:focus {
+    border-color: var(--fk-forest);
+    box-shadow: 0 0 0 3px rgba(46, 78, 33, 0.12);
+  }
+  body.theme-bar-dark .mb-search-input {
+    background: var(--fk-bar-surface);
+    border-color: var(--fk-bar-border);
+    color: #F4ECDA;
+  }
+  body.theme-bar-dark .mb-search-input:focus {
+    border-color: var(--fk-gold);
+    box-shadow: 0 0 0 3px rgba(224, 166, 60, 0.2);
+  }
+  .mb-search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--fk-muted);
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .mb-filter-chips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mb-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--fk-line);
+    background: #FFF;
+    color: var(--fk-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .mb-filter-chip:hover {
+    border-color: var(--fk-forest);
+    color: var(--fk-forest);
+  }
+  .mb-filter-chip.is-active {
+    background: var(--fk-terracotta);
+    border-color: var(--fk-terracotta);
+    color: #FFF;
+    font-weight: 700;
+  }
+  body.theme-bar-dark .mb-filter-chip {
+    background: var(--fk-bar-surface);
+    border-color: var(--fk-bar-border);
+    color: rgba(244, 236, 218, 0.8);
+  }
+  body.theme-bar-dark .mb-filter-chip.is-active {
+    background: var(--fk-gold);
+    border-color: var(--fk-gold);
+    color: #12190B;
+  }
+
+  /* ── 3. Menu Book Shell & Category Rails ────────────────────────────── */
+  .mb-book-shell {
+    display: none;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px clamp(16px, 4vw, 40px) 80px;
+  }
+  .mb-book-shell.is-open {
+    display: block;
+  }
+
+  .mb-pane {
+    display: none;
+  }
+  .mb-pane.is-active {
+    display: block;
+  }
+
+  .mb-pane-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .mb-pane-layout {
+      grid-template-columns: 1fr;
+    }
+    .mb-cat-rail--desktop {
+      display: none !important;
+    }
+  }
+
+  /* Desktop Sticky Rail (Left Column) */
+  .mb-cat-rail--desktop {
+    position: sticky;
+    top: 130px;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    padding-right: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--fk-camel) transparent;
+  }
+  .mb-cat-rail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1.5px solid var(--fk-line);
+  }
+  .mb-cat-rail-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--fk-forest);
+  }
+  .mb-cat-rail--bar .mb-cat-rail-title {
+    color: var(--fk-gold);
+  }
+  .mb-cat-rail-counter {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--fk-muted);
+  }
+
+  .mb-cat-rail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mb-cat-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--fk-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .mb-cat-link:hover {
+    background: rgba(46, 78, 33, 0.06);
+    color: var(--fk-forest);
+  }
+  .mb-cat-link.is-active {
+    background: var(--fk-forest);
+    color: #FFF;
+    font-weight: 700;
+  }
+  .mb-cat-rail--bar .mb-cat-link:hover {
+    background: rgba(224, 166, 60, 0.1);
+    color: var(--fk-gold);
+  }
+  .mb-cat-rail--bar .mb-cat-link.is-active {
+    background: var(--fk-gold);
+    color: #12190B;
+  }
+  .mb-cat-count {
+    font-size: 0.75rem;
+    opacity: 0.75;
+  }
+
+  /* Phone Sticky Category Rail (Bottom Thumb-Zone) */
+  .mb-cat-rail--mobile {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .mb-cat-rail--mobile {
+      display: block;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 45;
+      background: rgba(242, 238, 228, 0.96);
+      border-top: 1.5px solid var(--fk-line);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 12px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    }
+    .mb-cat-rail--mobile-bar {
+      background: rgba(13, 20, 11, 0.98);
+      border-top-color: var(--fk-bar-border);
+    }
+    .mb-cat-scroll-track {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .mb-cat-scroll-track::-webkit-scrollbar {
+      display: none;
+    }
+    .mb-cat-pill {
+      flex: 0 0 auto;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #FFF;
+      border: 1px solid var(--fk-line);
+      color: var(--fk-muted);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .mb-cat-pill.is-active {
+      background: var(--fk-forest);
+      border-color: var(--fk-forest);
+      color: #FFF;
+      font-weight: 700;
+    }
+    .mb-cat-pill--bar {
+      background: var(--fk-bar-surface);
+      border-color: var(--fk-bar-border);
+      color: rgba(244, 236, 218, 0.8);
+    }
+    .mb-cat-pill--bar.is-active {
+      background: var(--fk-gold);
+      border-color: var(--fk-gold);
+      color: #12190B;
+    }
+  }
+
+  /* ── 4. Main Menu Content & Dishes Grid ─────────────────────────────── */
+  .mb-book-content {
     min-width: 0;
   }
-  .mn-ds-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 4px;
+  .mb-book-header {
+    margin-bottom: 36px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--fk-line);
   }
-  .mn-ds-section {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #E0A63C;
-    white-space: nowrap;
-  }
-  .mn-ds-select {
-    background: rgba(9,13,5,0.9);
-    border: 1px solid rgba(224,166,60,0.3);
-    border-radius: 6px;
-    color: #F4ECDA;
-    font-size: 11px;
-    padding: 2px 6px;
-    max-width: 180px;
-    cursor: pointer;
-  }
-  .mn-ds-select:focus {
-    outline: none;
-    border-color: #E0A63C;
-  }
-  .mn-ds-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #F4ECDA;
-    margin: 0 0 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .mb-book-headline {
     font-family: 'Playfair Display', Georgia, serif;
-  }
-  .mn-ds-desc {
-    font-size: 11px;
-    color: rgba(244,236,218,0.65);
-    margin: 0 0 4px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .mn-ds-price {
-    font-size: 13px;
-    font-weight: 800;
-    color: #E0A63C;
-  }
-  .mn-ds-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .mn-ds-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgba(224,166,60,0.4);
-    background: rgba(224,166,60,0.1);
-    color: #E0A63C;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: background 0.15s;
-  }
-  .mn-ds-btn:hover {
-    background: rgba(224,166,60,0.25);
-  }
-  .mn-ds-counter {
-    font-size: 11px;
+    font-style: italic;
+    font-size: clamp(2rem, 3.8vw, 3rem);
     font-weight: 700;
-    color: rgba(244,236,218,0.5);
-    min-width: 36px;
-    text-align: center;
+    color: var(--fk-forest);
+    margin: 0 0 8px;
+    line-height: 1.15;
   }
-  @media (max-width: 600px) {
-    .mn-dish-showcase {
-      flex-wrap: wrap;
-    }
-    .mn-ds-select {
-      max-width: 140px;
-    }
-    .mn-ds-photo-wrap {
-      width: 80px;
-      height: 60px;
-    }
+  .mb-book-lead {
+    font-size: 1rem;
+    color: var(--fk-muted);
+    margin: 0;
+    line-height: 1.5;
   }
-
-  /* ── Fursat Bar Counter Scene (TASK E) ───────────────────────────────── */
-  .mn-bar-scene {
-    position: relative;
-    min-height: 380px;
-    height: 48vh;
-    max-height: 520px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: #0d1308;
-    border-bottom: 2px solid rgba(224, 166, 60, 0.3);
+  .mb-book-content--bar .mb-book-headline {
+    color: var(--fk-gold);
   }
-
-  /* Parallax layers */
-  .mn-bar-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    will-change: transform;
-    transition: transform 0.1s cubic-bezier(0.2, 0, 0.2, 1);
+  .mb-book-content--bar .mb-book-lead {
+    color: rgba(244, 236, 218, 0.8);
   }
-
-  .mn-bar-layer--back {
-    inset: -20px;
-    z-index: 1;
-  }
-  .mn-bar-img--back {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 35%;
-    display: block;
-    filter: brightness(1.08) contrast(1.05);
-  }
-
-  .mn-bar-layer--logo {
-    z-index: 2;
-    top: 14%;
-    left: 50%;
-    width: 220px;
-    height: 240px;
-    transform: translate(-50%, 0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .mn-bar-logo-unit {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .mn-bar-logo-img {
-    width: 110px;
-    height: auto;
-    display: block;
-    border-radius: 50%;
-    box-shadow: 0 0 25px rgba(255, 60, 60, 0.45);
-    position: relative;
-    z-index: 2;
-  }
-  .mn-bar-logo-glow {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 70, 70, 0.7) 0%, rgba(224, 166, 60, 0.4) 40%, rgba(255, 120, 0, 0.15) 60%, transparent 75%);
-    mix-blend-mode: screen;
-    z-index: 1;
-    pointer-events: none;
-    animation: mn-logo-pulse 4s ease-in-out infinite;
-  }
-  .mn-bar-neon-text {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 800;
-    font-size: 19px;
-    letter-spacing: 0.26em;
-    color: #ffffff;
-    margin-top: 8px;
-    text-shadow:
-      0 0 4px #fff,
-      0 0 10px #ff3333,
-      0 0 22px #ff1a40,
-      0 0 38px #e0a63c;
-    position: relative;
-    z-index: 2;
-    animation: mn-neon-glow 4s ease-in-out infinite;
-  }
-
-  @keyframes mn-logo-pulse {
-    0%, 100% {
-      opacity: 0.65;
-      transform: translateX(-50%) scale(0.96);
-    }
-    50% {
-      opacity: 1;
-      transform: translateX(-50%) scale(1.08);
-    }
-  }
-
-  @keyframes mn-neon-glow {
-    0%, 100% {
-      text-shadow: 0 0 4px #fff, 0 0 10px #ff3333, 0 0 20px #ff1a40, 0 0 35px #e0a63c;
-    }
-    50% {
-      text-shadow: 0 0 6px #fff, 0 0 16px #ff4444, 0 0 32px #ff1a40, 0 0 50px #ffaa00;
-    }
-  }
-
-  /* Optional 3D Hook */
-  .mn-bar-3d-hook {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: auto;
-    display: none;
-  }
-
-  /* Front counter strip */
-  .mn-bar-layer--front {
-    inset: auto -15px -8px -15px;
-    height: 140px;
-    z-index: 4;
-  }
-  .mn-bar-img--front {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    display: block;
-    filter: brightness(1.1) contrast(1.08);
-  }
-
-  /* Dark gradient overlay for text contrast */
-  .mn-bar-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    background: linear-gradient(
-      180deg,
-      rgba(13, 19, 8, 0.45) 0%,
-      rgba(13, 19, 8, 0.15) 30%,
-      rgba(13, 19, 8, 0.6) 70%,
-      rgba(13, 19, 8, 0.94) 100%
-    );
-    pointer-events: none;
-  }
-
-  /* Header inside bar scene */
-  .mn-bar-header {
-    position: relative;
-    z-index: 6;
-    padding: 20px 24px 12px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .mn-bar-badge {
-    display: inline-block;
-    font-size: 10px;
+  .mb-bar-gate-badge {
+    font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #e0a63c;
-    background: rgba(23, 32, 15, 0.85);
-    border: 1px solid rgba(224, 166, 60, 0.4);
-    padding: 3px 10px;
-    border-radius: 999px;
+    color: var(--fk-gold);
+    display: inline-block;
     margin-bottom: 6px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
   }
-  .mn-bar-title {
+
+  /* Category Section */
+  .mb-category-spread {
+    margin-bottom: 52px;
+    scroll-margin-top: 140px;
+  }
+  .mb-spread-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--fk-forest);
+  }
+  .mb-spread-header--bar {
+    border-bottom-color: var(--fk-gold);
+  }
+  .mb-spread-kicker {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fk-terracotta);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .mb-spread-kicker--bar {
+    color: var(--fk-gold);
+  }
+  .mb-spread-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+    font-weight: 700;
+    color: var(--fk-ink);
     margin: 0;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  }
+  body.theme-bar-dark .mb-spread-title {
+    color: #F4ECDA;
+  }
+  .mb-spread-count {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--fk-muted);
   }
 
-  /* Category tabs on the counter top */
-  .mn-bar-tabs-wrap {
-    position: relative;
-    z-index: 6;
-    margin-top: auto;
-    padding: 8px 16px 14px;
-    background: rgba(13, 19, 8, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(224, 166, 60, 0.25);
+  /* Dishes Grid */
+  .mb-dishes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
   }
 
-  /* Price portion layout for spirits and wines */
-  .mn-price-portions {
+  /* Dish Card */
+  .mb-dish-card {
+    background: #FFF;
+    border: 1px solid var(--fk-line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .mb-dish-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    border-color: var(--fk-camel);
+  }
+
+  body.theme-bar-dark .mb-dish-card--bar {
+    background: var(--fk-bar-surface);
+    border-color: var(--fk-bar-border);
+    color: #F4ECDA;
+  }
+  body.theme-bar-dark .mb-dish-card--bar:hover {
+    border-color: var(--fk-gold);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .mb-dish-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 10px;
+  }
+  .mb-dish-badges {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #e0a63c;
   }
-  .mn-price-portions .mn-price-sep {
-    opacity: 0.4;
+  .mb-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1.5px solid;
+    display: inline-grid;
+    place-items: center;
+  }
+  .mb-dot::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .mb-dot--veg {
+    border-color: #2E7D32;
+  }
+  .mb-dot--veg::after {
+    background: #2E7D32;
+  }
+  .mb-dot--nonveg {
+    border-color: #C62828;
+  }
+  .mb-dot--nonveg::after {
+    background: #C62828;
+  }
+  .mb-badge-spicy {
+    font-size: 13px;
+  }
+  .mb-badge-chef {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(207, 75, 55, 0.12);
+    color: var(--fk-terracotta);
+  }
+  .mb-badge-alc {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(224, 166, 60, 0.15);
+    color: var(--fk-gold);
+  }
+  .mb-badge-sub {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(244, 236, 218, 0.7);
   }
 
-  /* Reduced motion */
+  .mb-dish-price {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--fk-ink);
+    white-space: nowrap;
+  }
+  body.theme-bar-dark .mb-dish-price {
+    color: var(--fk-gold);
+  }
+  .mb-spirit-prices {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--fk-gold);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .mb-price-bullet {
+    opacity: 0.6;
+  }
+
+  .mb-dish-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--fk-ink);
+    line-height: 1.3;
+  }
+  .mb-dish-title--bar {
+    color: #F4ECDA;
+  }
+
+  .mb-dish-desc {
+    font-size: 0.8125rem;
+    color: var(--fk-muted);
+    margin: 0 0 14px;
+    line-height: 1.45;
+  }
+  .mb-dish-desc--bar {
+    color: rgba(244, 236, 218, 0.7);
+  }
+
+  .mb-dish-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px dashed var(--fk-line);
+  }
+  body.theme-bar-dark .mb-dish-footer--bar {
+    border-top-color: rgba(224, 166, 60, 0.18);
+  }
+
+  .mb-photo-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--fk-forest);
+    background: rgba(46, 78, 33, 0.08);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .mb-bucket-pill {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fk-gold);
+  }
+
+  .mb-add-pick-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: 1px solid var(--fk-forest);
+    color: var(--fk-forest);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .mb-add-pick-btn:hover {
+    background: var(--fk-forest);
+    color: #FFF;
+  }
+  .mb-add-pick-btn[aria-pressed="true"] {
+    background: var(--fk-terracotta);
+    border-color: var(--fk-terracotta);
+    color: #FFF;
+  }
+  .mb-add-pick-btn--bar {
+    border-color: var(--fk-gold);
+    color: var(--fk-gold);
+  }
+  .mb-add-pick-btn--bar:hover {
+    background: var(--fk-gold);
+    color: #12190B;
+  }
+
+  .mb-empty-alert {
+    text-align: center;
+    padding: 40px 20px;
+    background: #FFF;
+    border: 1.5px dashed var(--fk-line);
+    border-radius: 16px;
+    color: var(--fk-muted);
+    font-size: 0.9375rem;
+    margin: 24px 0;
+  }
+  .mb-empty-alert--bar {
+    background: var(--fk-bar-surface);
+    border-color: var(--fk-bar-border);
+    color: rgba(244, 236, 218, 0.7);
+  }
+
+  /* ── Dark Theme Body Overrides when Bar is Active ───────────────────── */
+  body.theme-bar-dark {
+    background: var(--fk-bar-dark);
+    color: #F4ECDA;
+  }
+  body.theme-bar-dark .mb-main {
+    background: var(--fk-bar-dark);
+    color: #F4ECDA;
+  }
+
+  /* ── Reduced Motion ─────────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .mn-bar-layer,
-    .mn-bar-layer--back,
-    .mn-bar-layer--logo,
-    .mn-bar-layer--front {
-      transform: none !important;
+    * {
       transition: none !important;
       animation: none !important;
-    }
-    .mn-bar-logo-glow,
-    .mn-bar-neon-text {
-      animation: none !important;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .mn-bar-scene {
-      min-height: 320px;
-      height: 40vh;
-    }
-    .mn-bar-layer--logo {
-      top: 10%;
-    }
-    .mn-bar-logo-img {
-      width: 85px;
-    }
-    .mn-bar-neon-text {
-      font-size: 16px;
-    }
-    .mn-bar-layer--front {
-      height: 110px;
     }
   }
 </style>
