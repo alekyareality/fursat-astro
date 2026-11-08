@@ -1,14 +1,14 @@
 ---
-// PanoramicViewer.astro - "Step inside Fursat" Panoramic Tour
+// PanoramicViewer.astro - "Step inside Fursat" Panoramic Walkthrough
 // WebGL 3D Curved Cylindrical Rotunda with Three.js & Resilient Scroll-Snap Fallback
-// Real photography only from raw_assets/interior_named/
+// Real photography only from public/assets/interior/ (true 3:4 aspect ratio)
 
 const tourSpaces = [
   {
     id: 'entrance',
     title: 'Entrance & Elephant Mural',
     kicker: 'Arrival Area',
-    desc: 'Handcrafted elephant wall mural, warm wall sconce lighting, and carved wooden doors.',
+    desc: 'Handcrafted elephant wall mural, warm wall sconce lighting, and carved wooden doors welcoming you to Fursat.',
     img: '/assets/interior/tour-entrance.webp',
     width: 1050,
     height: 1400,
@@ -18,7 +18,7 @@ const tourSpaces = [
     id: 'bar',
     title: 'The Bar Counter',
     kicker: 'Bar Counter',
-    desc: 'Backlit liquor bottle shelving, illuminated circular Fursat wall sign, and dark bar counter top.',
+    desc: 'Backlit liquor bottle shelving, illuminated circular Fursat wall sign, and dark bar counter top for cocktail evenings.',
     img: '/assets/interior/tour-bar.webp',
     width: 1050,
     height: 1400,
@@ -28,7 +28,7 @@ const tourSpaces = [
     id: 'high-tables',
     title: 'High-Top Tables & Stools',
     kicker: 'Lounge Seating',
-    desc: 'High-top wooden tables with black-frame high bar stools and overhead pendant lights.',
+    desc: 'High-top wooden tables with black-frame high bar stools and overhead warm pendant lights for casual gatherings.',
     img: '/assets/interior/tour-high-tables.webp',
     width: 1050,
     height: 1400,
@@ -38,7 +38,7 @@ const tourSpaces = [
     id: 'lounge',
     title: 'Sofa & Table Dining',
     kicker: 'Dining Room',
-    desc: 'Green patterned sofa seating, dark square dining tables, indoor potted plants, and partition screens.',
+    desc: 'Green patterned sofa seating, dark square dining tables, indoor potted greenery, and partition screens for group dinners.',
     img: '/assets/interior/tour-lounge.webp',
     width: 1050,
     height: 1400,
@@ -48,7 +48,7 @@ const tourSpaces = [
     id: 'cafe',
     title: 'Café Logo Wall',
     kicker: 'Café Area',
-    desc: 'White wall with black Fursat lettering, track lighting, and dining tables.',
+    desc: 'White wall with black Fursat lettering, track lighting, and quiet dining tables for afternoon coffee and conversations.',
     img: '/assets/interior/tour-cafe.webp',
     width: 1050,
     height: 1400,
@@ -58,7 +58,7 @@ const tourSpaces = [
     id: 'booth',
     title: 'Red Booth Seating & Wall Posters',
     kicker: 'Booth Seating',
-    desc: 'Red banquette booth seating with framed wall posters and hanging warm lamps.',
+    desc: 'Red banquette booth seating with framed retro wall posters and hanging warm lamps for cozy private meals.',
     img: '/assets/interior/tour-booth.webp',
     width: 1050,
     height: 1400,
@@ -74,7 +74,7 @@ const tourSpaces = [
       <span class="tour-kicker">STEP INSIDE FURSAT</span>
       <h2 class="tour-title mot-headline" id="tour-heading">A Panoramic Walkthrough</h2>
       <p class="tour-sub">
-        Drag or swipe to rotate. Tap any space to fly in and explore details.
+        Drag or swipe to rotate through the space. Tap any interior to fly in and explore.
       </p>
     </div>
 
@@ -101,32 +101,28 @@ const tourSpaces = [
       aria-label="3D Panoramic tour"
       tabindex="0"
     >
-      <!-- Ambience Audio Toggle Button (Web Audio Synthesis, OFF by default) -->
-      <button
-        type="button"
-        class="tour-ambience-btn"
-        id="tour-ambience-btn"
-        aria-label="Toggle lounge ambience sound"
-        aria-pressed="false"
-        title="Toggle lounge ambience"
-      >
-        <span class="tour-ambience-icon" aria-hidden="true">♫</span>
-        <span class="tour-ambience-label">Ambience</span>
-      </button>
-
       <!-- WebGL Canvas Container -->
       <div class="tour-webgl-wrap" id="tour-webgl-wrap">
-        <canvas id="tour-webgl-canvas" class="tour-webgl-canvas"></canvas>
-
-        <!-- "Step Inside" Fly-In Button Overlay -->
-        <div class="tour-flyin-overlay" id="tour-flyin-overlay">
-          <button type="button" class="tour-flyin-btn" id="tour-flyin-btn" aria-label="Step inside Fursat 3D Rotunda">
-            <span class="tour-flyin-icon" aria-hidden="true">✦</span>
-            <span class="tour-flyin-text">Step Inside Fursat</span>
-          </button>
+        <!-- Poster placeholder: displayed immediately until Three.js renders first frame (eliminates blank canvas) -->
+        <div class="tour-poster" id="tour-poster" aria-hidden="true">
+          <img
+            src="/assets/interior/tour-entrance.webp"
+            alt="Fursat Entrance"
+            class="tour-poster-img"
+            width="1050"
+            height="1400"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="tour-poster-overlay">
+            <span class="tour-poster-badge">✦ 3D Rotunda</span>
+            <span class="tour-poster-text">Loading Walkthrough…</span>
+          </div>
         </div>
 
-        <!-- In-Scene Focus Details Drawer (No full-screen modal) -->
+        <canvas id="tour-webgl-canvas" class="tour-webgl-canvas"></canvas>
+
+        <!-- In-Scene Focus Details Drawer -->
         <div class="tour-focus-drawer" id="tour-focus-drawer" aria-hidden="true">
           <button
             type="button"
@@ -219,7 +215,7 @@ const tourSpaces = [
 
       <!-- Drag & Keyboard Hint -->
       <div class="tour-hint" aria-hidden="true">
-        <span>↔ Drag to spin · Tap panel to zoom in · Esc to zoom out · Arrow keys to navigate</span>
+        <span>↔ Drag or swipe to spin · Tap space to fly in · Esc to zoom out · Arrow keys to navigate</span>
       </div>
     </div>
   </div>
@@ -238,8 +234,7 @@ const tourSpaces = [
     var fallbackCards = Array.from(document.querySelectorAll('.tour-fallback-card'));
     var webglWrap = document.getElementById('tour-webgl-wrap');
     var canvas = document.getElementById('tour-webgl-canvas') as HTMLCanvasElement;
-    var flyinOverlay = document.getElementById('tour-flyin-overlay');
-    var flyinBtn = document.getElementById('tour-flyin-btn');
+    var poster = document.getElementById('tour-poster');
     var gyroBtn = document.getElementById('tour-gyro-btn');
     var prevBtn = document.getElementById('tour-prev');
     var nextBtn = document.getElementById('tour-next');
@@ -262,50 +257,50 @@ const tourSpaces = [
         id: 'entrance',
         title: 'Entrance & Elephant Mural',
         kicker: 'Arrival Area',
-        desc: 'Handcrafted elephant wall mural, warm wall sconce lighting, and carved wooden doors.',
+        desc: 'Handcrafted elephant wall mural, warm wall sconce lighting, and carved wooden doors welcoming you to Fursat.',
         img: '/assets/interior/tour-entrance.webp'
       },
       {
         id: 'bar',
         title: 'The Bar Counter',
         kicker: 'Bar Counter',
-        desc: 'Backlit liquor bottle shelving, illuminated circular Fursat wall sign, and dark bar counter top.',
+        desc: 'Backlit liquor bottle shelving, illuminated circular Fursat wall sign, and dark bar counter top for cocktail evenings.',
         img: '/assets/interior/tour-bar.webp'
       },
       {
         id: 'high-tables',
         title: 'High-Top Tables & Stools',
         kicker: 'Lounge Seating',
-        desc: 'High-top wooden tables with black-frame high bar stools and overhead pendant lights.',
+        desc: 'High-top wooden tables with black-frame high bar stools and overhead warm pendant lights for casual gatherings.',
         img: '/assets/interior/tour-high-tables.webp'
       },
       {
         id: 'lounge',
         title: 'Sofa & Table Dining',
         kicker: 'Dining Room',
-        desc: 'Green patterned sofa seating, dark square dining tables, indoor potted plants, and partition screens.',
+        desc: 'Green patterned sofa seating, dark square dining tables, indoor potted greenery, and partition screens for group dinners.',
         img: '/assets/interior/tour-lounge.webp'
       },
       {
         id: 'cafe',
         title: 'Café Logo Wall',
         kicker: 'Café Area',
-        desc: 'White wall with black Fursat lettering, track lighting, and dining tables.',
+        desc: 'White wall with black Fursat lettering, track lighting, and quiet dining tables for afternoon coffee and conversations.',
         img: '/assets/interior/tour-cafe.webp'
       },
       {
         id: 'booth',
         title: 'Red Booth Seating & Wall Posters',
         kicker: 'Booth Seating',
-        desc: 'Red banquette booth seating with framed wall posters and hanging warm lamps.',
+        desc: 'Red banquette booth seating with framed retro wall posters and hanging warm lamps for cozy private meals.',
         img: '/assets/interior/tour-booth.webp'
       }
     ];
 
-    var N = spacesData.length; // 6
-    var stepAngle = (Math.PI * 2) / N; // 60 deg in radians
+    var N = spacesData.length; // 6 spaces
+    var stepAngle = (Math.PI * 2) / N; // 60 degrees in radians
     var activeIndex = 0;
-    var targetIndex = 0;
+    var targetSlot = 0;
 
     var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -368,186 +363,19 @@ const tourSpaces = [
       focusDrawer.setAttribute('aria-hidden', 'true');
     }
 
-    // ── BATCH 2.3: Tour Ambience Toggle (Web Audio synthesis only, no audio files) ──
-    var ambienceBtn = document.getElementById('tour-ambience-btn');
-    var isAmbienceOn = false;
-    var audioCtx: AudioContext | null = null;
-    var masterGain: GainNode | null = null;
-    var chimeTimeout: number | null = null;
-    var isTourInView = false;
-
-    // Observe tour section to suspend audio offscreen
-    var tourObserver = new IntersectionObserver(
-      function (entries) {
-        isTourInView = entries[0].isIntersecting;
-        if (!isTourInView && audioCtx && audioCtx.state === 'running') {
-          audioCtx.suspend();
-        } else if (isTourInView && isAmbienceOn && !document.hidden && audioCtx && audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    tourObserver.observe(section);
-
-    // Suspend audio on tab hide
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden && audioCtx && audioCtx.state === 'running') {
-        audioCtx.suspend();
-      } else if (!document.hidden && isAmbienceOn && isTourInView && audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    });
-
-    // Suspend audio on page unload
-    window.addEventListener('pagehide', function () {
-      if (audioCtx && audioCtx.state === 'running') {
-        audioCtx.suspend();
-      }
-    });
-
-    function initWebAudioAmbience() {
-      if (audioCtx) return;
-      var AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtxClass) return;
-
-      audioCtx = new AudioCtxClass();
-
-      // Master Gain for smooth crossfades
-      masterGain = audioCtx.createGain();
-      masterGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-      masterGain.connect(audioCtx.destination);
-
-      // 1. Soft room tone (warm pink noise through lowpass filter)
-      var bufferSize = audioCtx.sampleRate * 2;
-      var noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      var out = noiseBuffer.getChannelData(0);
-      var b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-      for (var i = 0; i < bufferSize; i++) {
-        var white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        out[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.09;
-        b6 = white * 0.115926;
-      }
-
-      var roomToneSource = audioCtx.createBufferSource();
-      roomToneSource.buffer = noiseBuffer;
-      roomToneSource.loop = true;
-
-      var lowpass = audioCtx.createBiquadFilter();
-      lowpass.type = 'lowpass';
-      lowpass.frequency.setValueAtTime(320, audioCtx.currentTime);
-      lowpass.Q.setValueAtTime(0.8, audioCtx.currentTime);
-
-      var roomToneGain = audioCtx.createGain();
-      roomToneGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-
-      roomToneSource.connect(lowpass);
-      lowpass.connect(roomToneGain);
-      roomToneGain.connect(masterGain);
-      roomToneSource.start(0);
-
-      scheduleNextChime();
-    }
-
-    // Pentatonic scale frequencies for gentle, peaceful chimes (C D E G A C E)
-    var chimeScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 659.25];
-
-    function scheduleNextChime() {
-      if (!isAmbienceOn) return;
-      var delay = 4500 + Math.random() * 4500; // random interval between 4.5s and 9s
-      chimeTimeout = window.setTimeout(function () {
-        if (!isAmbienceOn || !audioCtx || audioCtx.state !== 'running') {
-          scheduleNextChime();
-          return;
-        }
-        playGentleChime();
-        scheduleNextChime();
-      }, delay);
-    }
-
-    function playGentleChime() {
-      if (!audioCtx || !masterGain || audioCtx.state !== 'running') return;
-      var t = audioCtx.currentTime;
-      var freq = chimeScale[Math.floor(Math.random() * chimeScale.length)];
-
-      var osc = audioCtx.createOscillator();
-      var chimeGain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, t);
-
-      // Low volume, soft linear attack and exponential decay
-      chimeGain.gain.setValueAtTime(0.0001, t);
-      chimeGain.gain.linearRampToValueAtTime(0.024, t + 0.03);
-      chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
-
-      osc.connect(chimeGain);
-      chimeGain.connect(masterGain);
-      osc.start(t);
-      osc.stop(t + 2.5);
-    }
-
-    function toggleAmbience() {
-      if (!isAmbienceOn) {
-        // Turn ON
-        initWebAudioAmbience();
-        if (audioCtx && audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        if (masterGain && audioCtx) {
-          masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-          masterGain.gain.linearRampToValueAtTime(1.0, audioCtx.currentTime + 0.4);
-        }
-        isAmbienceOn = true;
-        if (ambienceBtn) {
-          ambienceBtn.classList.add('is-active');
-          ambienceBtn.setAttribute('aria-pressed', 'true');
-        }
-        scheduleNextChime();
-      } else {
-        // Turn OFF
-        if (masterGain && audioCtx) {
-          masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-          masterGain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
-          window.setTimeout(function () {
-            if (!isAmbienceOn && audioCtx && audioCtx.state === 'running') {
-              audioCtx.suspend();
-            }
-          }, 320);
-        }
-        if (chimeTimeout) {
-          clearTimeout(chimeTimeout);
-          chimeTimeout = null;
-        }
-        isAmbienceOn = false;
-        if (ambienceBtn) {
-          ambienceBtn.classList.remove('is-active');
-          ambienceBtn.setAttribute('aria-pressed', 'false');
-        }
-      }
-    }
-
-    if (ambienceBtn) {
-      ambienceBtn.addEventListener('click', toggleAmbience);
-    }
-
-    // ── Fallback Handler with Logging ─────────────────────────────────
+    // ── Fallback Handler ──────────────────────────────────────────────
     function enableFallback(reason: string) {
       console.warn('[Tour] Fallback chosen: ' + reason);
       wrapper?.classList.remove('has-webgl');
       wrapper?.classList.add('is-fallback');
+      if (poster) poster.style.display = 'none';
       initFallbackGallery();
     }
 
     var webglAvailable = !prefersReduced && hasWebGLSupport();
 
     if (!webglAvailable) {
-      enableFallback(prefersReduced ? 'prefers-reduced-motion is active' : 'WebGL is not supported by browser/device');
+      enableFallback(prefersReduced ? 'prefers-reduced-motion is active' : 'WebGL is not supported');
       return;
     }
 
@@ -582,28 +410,28 @@ const tourSpaces = [
         var height = webglWrap.clientHeight || 520;
 
         var scene = new THREE.Scene();
-        // Light linear atmospheric fog starting far beyond panel distance (no panel goes dark)
-        scene.fog = new THREE.Fog(0x0d1308, 650, 1800);
 
-        // Responsive camera with wide horizontal FOV so at least 3 panels are always visible
-        var camera = new THREE.PerspectiveCamera(54, width / height, 1, 3000);
+        // Atmospheric linear fog creating depth without obscuring active spaces
+        scene.fog = new THREE.Fog(0x0d1308, 420, 950);
+
+        // Responsive camera with wide horizontal FOV
+        var camera = new THREE.PerspectiveCamera(52, width / height, 1, 3000);
 
         function updateCameraFOV() {
           var aspect = camera.aspect;
-          // Target ~92° horizontal FOV so center + both side neighbors fit comfortably
-          var targetHFOV = 92 * (Math.PI / 180);
-          var vfovRad = 2 * Math.atan(Math.tan(targetHFOV / 2) / Math.max(0.6, aspect));
-          camera.fov = Math.min(105, Math.max(48, vfovRad * (180 / Math.PI)));
+          // Maintain ~88° horizontal FOV across varying screen widths
+          var targetHFOV = 88 * (Math.PI / 180);
+          var vfovRad = 2 * Math.atan(Math.tan(targetHFOV / 2) / Math.max(0.55, aspect));
+          camera.fov = Math.min(95, Math.max(46, vfovRad * (180 / Math.PI)));
           camera.updateProjectionMatrix();
         }
         updateCameraFOV();
 
-        // Camera positions: rest position allows 3 panels on screen; zoom position moves close for inspection
-        var startCamPos = new THREE.Vector3(0, 30, 480);
-        var restCamPos = new THREE.Vector3(0, 0, 160);
-        var zoomCamPos = new THREE.Vector3(0, 0, -110);
-        var targetCamPos = startCamPos.clone();
-        camera.position.copy(startCamPos);
+        // Camera positions: Overview shows 3 spaces; Fly-in frames the selected space intimately
+        var overviewCamPos = new THREE.Vector3(0, 0, 165);
+        var flyInCamPos = new THREE.Vector3(0, -6, 75);
+        var targetCamPos = overviewCamPos.clone();
+        camera.position.copy(overviewCamPos);
 
         var renderer: any;
         try {
@@ -632,77 +460,72 @@ const tourSpaces = [
           renderer.dispose();
         }, { once: true });
 
-        // Cylindrical amphitheater setup
+        // ── 3D Rotunda Amphitheater Setup ─────────────────────────────
         var rotundaGroup = new THREE.Group();
         scene.add(rotundaGroup);
 
-        var radius = 350;
-        var panelHeight = 350;
-        var thetaLength = 0.58; // ~33.2° per panel arc
+        // Mathematically accurate geometry preserving the 3:4 (0.750) photo aspect ratio:
+        // Panel height = 330 units, true arc width = 330 * 0.75 = 247.5 units.
+        // With radius = 360 units, panel arc = 247.5 / 360 = 0.6875 radians (~39.4°).
+        // Each 60° slot leaves a refined ~20.6° gap between adjacent curved panels.
+        var radius = 360;
+        var panelHeight = 330;
+        var thetaLength = 0.6875;
 
         var cylinderGeo = new THREE.CylinderGeometry(
           radius,
           radius,
           panelHeight,
           32,
-          4,
+          1,
           true,
           -thetaLength / 2,
           thetaLength
         );
-        cylinderGeo.scale(-1, 1, 1); // inside faces camera
+        cylinderGeo.scale(-1, 1, 1); // Curve inwards facing the camera
 
-        // Panel ShaderMaterial: velocity RGB split + ripple + 85% to 100% brightness (NO dark boxes)
+        // Panel Shader: True photographic sharpness, anisotropic filtering, soft edge vignette
         var panelVertexShader = `
           varying vec2 vUv;
+          varying vec3 vNormal;
           void main() {
             vUv = uv;
+            vNormal = normalize(normalMatrix * normal);
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }
         `;
 
         var panelFragmentShader = `
           uniform sampler2D uMap;
-          uniform float uVelocity;
-          uniform float uTime;
           uniform float uActive;
           varying vec2 vUv;
+          varying vec3 vNormal;
 
           void main() {
-            vec2 uv = vUv;
+            vec4 tex = texture2D(uMap, vUv);
 
-            // Ken Burns slow pan/zoom on active panel
-            float kb = uActive * 0.05;
-            float kbScale = 1.0 + kb * (0.5 + 0.5 * sin(uTime * 0.18));
-            vec2 kbOffset = vec2(
-              kb * sin(uTime * 0.09) * 0.6,
-              kb * cos(uTime * 0.12) * 0.4
-            );
-            uv = (uv - 0.5) / kbScale + 0.5 + kbOffset;
+            // Soft refined edge vignette falloff at panel boundaries (no harsh borders)
+            float vx = smoothstep(0.0, 0.045, vUv.x) * smoothstep(1.0, 0.955, vUv.x);
+            float vy = smoothstep(0.0, 0.045, vUv.y) * smoothstep(1.0, 0.955, vUv.y);
+            float edge = vx * vy;
 
-            // Ripple distortion proportional to angular velocity
-            float speed = abs(uVelocity);
-            float rippleAmp = clamp(speed * 0.0012, 0.0, 0.022);
-            uv.y += rippleAmp * sin(uv.x * 14.0 + uTime * 6.0);
-            uv.x += rippleAmp * 0.5 * sin(uv.y * 10.0 + uTime * 5.0);
+            // Warm light falloff: active space is 100% luminous; side spaces gently dimmed to 76%
+            float luminosity = mix(0.76, 1.0, uActive);
 
-            // RGB chromatic aberration
-            float rgbSplit = clamp(abs(uVelocity) * 0.0018, 0.0, 0.025);
-            float dir = sign(uVelocity);
-            vec2 rOffset = vec2(rgbSplit * dir, 0.0);
-            vec2 bOffset = vec2(-rgbSplit * dir, 0.0);
+            // Natural background blending at edges
+            vec3 bgCol = vec3(0.051, 0.075, 0.031); // #0d1308
+            vec3 warmRim = vec3(0.88, 0.65, 0.24); // #E0A63C gold rim
 
-            float r = texture2D(uMap, clamp(uv + rOffset, 0.001, 0.999)).r;
-            float g = texture2D(uMap, clamp(uv,           0.001, 0.999)).g;
-            float b = texture2D(uMap, clamp(uv + bOffset, 0.001, 0.999)).b;
+            vec3 rgb = tex.rgb * luminosity;
+            rgb = mix(bgCol, rgb, edge);
+            rgb += warmRim * (1.0 - edge) * 0.12 * luminosity;
 
-            // Side panels at 85% brightness, active at 100% brightness (never dark)
-            float brightness = mix(0.85, 1.0, uActive);
-            gl_FragColor = vec4(r * brightness, g * brightness, b * brightness, 1.0);
+            gl_FragColor = vec4(rgb, 1.0);
           }
         `;
 
         var textureLoader = new THREE.TextureLoader();
+        var maxAnisotropy = renderer.capabilities ? renderer.capabilities.getMaxAnisotropy() : 4;
         var panelMeshes: any[] = [];
         var panelMaterials: any[] = [];
 
@@ -711,15 +534,15 @@ const tourSpaces = [
           texture.colorSpace = THREE.SRGBColorSpace;
           texture.generateMipmaps = true;
           texture.minFilter = THREE.LinearMipmapLinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+          texture.anisotropy = maxAnisotropy;
 
           var material = new THREE.ShaderMaterial({
             vertexShader: panelVertexShader,
             fragmentShader: panelFragmentShader,
             uniforms: {
-              uMap:      { value: texture },
-              uVelocity: { value: 0.0 },
-              uTime:     { value: 0.0 },
-              uActive:   { value: index === 0 ? 1.0 : 0.0 }
+              uMap:    { value: texture },
+              uActive: { value: index === 0 ? 1.0 : 0.0 }
             },
             side: THREE.DoubleSide
           });
@@ -727,7 +550,7 @@ const tourSpaces = [
           var mesh = new THREE.Mesh(cylinderGeo, material);
           mesh.userData = { index: index, space: space };
 
-          // Position around circle: index 0 centered at (0, 0, -350)
+          // Position around circle: index 0 centered at (0, 0, -360) facing camera
           var angle = index * stepAngle + Math.PI;
           mesh.rotation.y = angle;
 
@@ -736,23 +559,23 @@ const tourSpaces = [
           panelMaterials.push(material);
         });
 
-        // Ambient Gold Bokeh Dust Motes
-        var moteCount = 40;
+        // Ambient Gold Bokeh Particles drifting in 3D depth
+        var moteCount = 36;
         var motePositions = new Float32Array(moteCount * 3);
         for (var mi = 0; mi < moteCount; mi++) {
           var moteAngle = Math.random() * Math.PI * 2;
-          var moteR = 50 + Math.random() * 280;
+          var moteR = 60 + Math.random() * 260;
           motePositions[mi * 3]     = Math.cos(moteAngle) * moteR;
-          motePositions[mi * 3 + 1] = (Math.random() - 0.5) * panelHeight * 1.2;
+          motePositions[mi * 3 + 1] = (Math.random() - 0.5) * panelHeight * 1.1;
           motePositions[mi * 3 + 2] = Math.sin(moteAngle) * moteR;
         }
         var moteBufGeo = new THREE.BufferGeometry();
         moteBufGeo.setAttribute('position', new THREE.BufferAttribute(motePositions.slice(), 3));
         var moteMat = new THREE.PointsMaterial({
           color: 0xE0A63C,
-          size: 2.6,
+          size: 2.4,
           transparent: true,
-          opacity: 0.5,
+          opacity: 0.45,
           blending: THREE.AdditiveBlending,
           depthWrite: false,
           sizeAttenuation: true
@@ -761,125 +584,59 @@ const tourSpaces = [
         scene.add(motePoints);
         var moteOrigPos = motePositions.slice();
 
-        // ── Camera States: Overview vs In-Scene Zoom ──────────────────────
-        var hasSteppedInside = false;
+        // ── State & Interaction Management ────────────────────────────
         var isZoomed = false;
+        var isDragging = false;
+        var hasMoved = false;
+        var pointerStartX = 0;
+        var pointerStartY = 0;
+        var lastPointerX = 0;
+        var lastPointerTime = 0;
+        var angularVelocity = 0;
+        var currentRotY = 0;
+        var targetRotY = 0;
+        var isPointerOver = false;
+        var dragThresholdMet = false;
+        var lastInteractionTime = performance.now();
 
-        function stepInside() {
-          if (hasSteppedInside) return;
-          hasSteppedInside = true;
-          targetCamPos.copy(restCamPos);
-          if (flyinOverlay) {
-            flyinOverlay.style.opacity = '0';
-            flyinOverlay.style.pointerEvents = 'none';
-            setTimeout(function () {
-              if (flyinOverlay) flyinOverlay.style.display = 'none';
-            }, 500);
-          }
-        }
+        var raycaster = new THREE.Raycaster();
+        var mouseNDC = new THREE.Vector2();
 
-        function zoomInToSpace(idx: number) {
-          stepInside();
+        function flyInToSpace(idx: number) {
           isZoomed = true;
-          targetCamPos.copy(zoomCamPos);
+          targetCamPos.copy(flyInCamPos);
           showFocusDrawer(idx);
         }
 
         function zoomOutToOverview() {
           isZoomed = false;
-          targetCamPos.copy(restCamPos);
+          targetCamPos.copy(overviewCamPos);
           hideFocusDrawer();
         }
 
-        if (flyinBtn) flyinBtn.addEventListener('click', stepInside);
         if (focusClose) focusClose.addEventListener('click', zoomOutToOverview);
         if (focusBackBtn) focusBackBtn.addEventListener('click', zoomOutToOverview);
 
-        // ── Drag & Inertia Physics ─────────────────────────────────────────
-        var isDragging = false;
-        var pointerStartX = 0;
-        var lastPointerX = 0;
-        var lastTime = 0;
-        var angularVelocity = 0;
-        var targetRotY = 0;
-        var currentRotY = 0;
-        var isPointerOver = false;
-        var startClientY = 0;
-        var dragThresholdMet = false;
-
-        canvas.addEventListener('pointerdown', function (e) {
-          isDragging = true;
-          dragThresholdMet = false;
-          pointerStartX = e.clientX;
-          lastPointerX = e.clientX;
-          startClientY = e.clientY;
-          lastTime = performance.now();
-          angularVelocity = 0;
-          try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
-          if (!hasSteppedInside) stepInside();
-        });
-
-        canvas.addEventListener('pointermove', function (e) {
-          if (!isDragging) return;
-          var dx = e.clientX - lastPointerX;
-          var dy = e.clientY - startClientY;
-
-          // Non-blocking vertical scroll check
-          if (!dragThresholdMet) {
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) {
-              dragThresholdMet = true;
-            } else if (Math.abs(dy) > 10) {
-              isDragging = false;
-              return;
-            }
+        // ── Smooth Navigation & Nearest Space Snap ─────────────────────
+        function snapToSlot(slot: number, openDrawer: boolean) {
+          targetSlot = slot;
+          targetRotY = -targetSlot * stepAngle;
+          var normIdx = ((targetSlot % N) + N) % N;
+          updateActiveUI(normIdx);
+          if (openDrawer) {
+            flyInToSpace(normIdx);
+          } else if (isZoomed) {
+            showFocusDrawer(normIdx);
           }
-
-          var now = performance.now();
-          var dt = Math.max(1, now - lastTime);
-          angularVelocity = (dx / dt) * 0.003;
-          currentRotY -= dx * 0.0036;
-          targetRotY = currentRotY;
-          lastPointerX = e.clientX;
-          lastTime = now;
-        });
-
-        function endDrag() {
-          if (!isDragging) return;
-          isDragging = false;
-          var projectedRot = currentRotY - angularVelocity * 80;
-          var rawIndex = Math.round(projectedRot / stepAngle);
-          targetIndex = ((rawIndex % N) + N) % N;
-          targetRotY = rawIndex * stepAngle;
-          updateActiveUI(targetIndex);
-          if (isZoomed) {
-            showFocusDrawer(targetIndex);
-          }
+          lastInteractionTime = performance.now();
         }
 
-        canvas.addEventListener('pointerup', endDrag);
-        canvas.addEventListener('pointercancel', endDrag);
-        canvas.addEventListener('pointerenter', function () { isPointerOver = true; });
-        canvas.addEventListener('pointerleave', function () {
-          isPointerOver = false;
-          if (isDragging) endDrag();
-        });
-
-        // ── Navigation Buttons & Chips ─────────────────────────────────────
-        function snapToIndex(idx: number, autoZoom: boolean) {
-          stepInside();
-          var rawIndex = Math.round(currentRotY / stepAngle);
-          var currentNorm = ((rawIndex % N) + N) % N;
-          var delta = idx - currentNorm;
+        function snapToIndex(idx: number, openDrawer: boolean) {
+          var curNorm = ((targetSlot % N) + N) % N;
+          var delta = idx - curNorm;
           if (delta > N / 2) delta -= N;
           if (delta < -N / 2) delta += N;
-          targetRotY = (rawIndex + delta) * stepAngle;
-          targetIndex = idx;
-          updateActiveUI(targetIndex);
-          if (autoZoom) {
-            zoomInToSpace(idx);
-          } else if (isZoomed) {
-            showFocusDrawer(idx);
-          }
+          snapToSlot(targetSlot + delta, openDrawer);
         }
 
         chips.forEach(function (chip) {
@@ -898,21 +655,13 @@ const tourSpaces = [
 
         if (prevBtn) {
           prevBtn.addEventListener('click', function () {
-            var cur = Math.round(targetRotY / stepAngle);
-            targetRotY = (cur - 1) * stepAngle;
-            var norm = (((cur - 1) % N) + N) % N;
-            updateActiveUI(norm);
-            if (isZoomed) showFocusDrawer(norm);
+            snapToSlot(targetSlot - 1, false);
           });
         }
 
         if (nextBtn) {
           nextBtn.addEventListener('click', function () {
-            var cur = Math.round(targetRotY / stepAngle);
-            targetRotY = (cur + 1) * stepAngle;
-            var norm = (((cur + 1) % N) + N) % N;
-            updateActiveUI(norm);
-            if (isZoomed) showFocusDrawer(norm);
+            snapToSlot(targetSlot + 1, false);
           });
         }
 
@@ -923,53 +672,131 @@ const tourSpaces = [
             zoomOutToOverview();
           } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
-            var cur = Math.round(targetRotY / stepAngle);
-            targetRotY = (cur - 1) * stepAngle;
-            var normL = (((cur - 1) % N) + N) % N;
-            updateActiveUI(normL);
-            if (isZoomed) showFocusDrawer(normL);
+            snapToSlot(targetSlot - 1, false);
           } else if (e.key === 'ArrowRight') {
             e.preventDefault();
-            var cur2 = Math.round(targetRotY / stepAngle);
-            targetRotY = (cur2 + 1) * stepAngle;
-            var normR = (((cur2 + 1) % N) + N) % N;
-            updateActiveUI(normR);
-            if (isZoomed) showFocusDrawer(normR);
+            snapToSlot(targetSlot + 1, false);
           } else if (e.key === 'Home') {
             e.preventDefault();
-            targetRotY = 0;
-            updateActiveUI(0);
-            if (isZoomed) showFocusDrawer(0);
+            snapToIndex(0, false);
           } else if (e.key === 'End') {
             e.preventDefault();
-            targetRotY = (N - 1) * stepAngle;
-            updateActiveUI(N - 1);
-            if (isZoomed) showFocusDrawer(N - 1);
+            snapToIndex(N - 1, false);
           } else if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             if (isZoomed) {
               zoomOutToOverview();
             } else {
-              zoomInToSpace(targetIndex);
+              flyInToSpace(activeIndex);
             }
           }
         });
 
-        // Click on Canvas: Zoom In if at rest, or Zoom Out if already zoomed
-        canvas.addEventListener('click', function () {
-          if (Math.abs(lastPointerX - pointerStartX) > 8) return; // ignore drags
-          if (!hasSteppedInside) {
-            stepInside();
-            return;
+        // ── Drag & Inertia Physics ─────────────────────────────────────
+        canvas.addEventListener('pointerdown', function (e) {
+          isDragging = true;
+          hasMoved = false;
+          dragThresholdMet = false;
+          pointerStartX = e.clientX;
+          pointerStartY = e.clientY;
+          lastPointerX = e.clientX;
+          lastPointerTime = performance.now();
+          angularVelocity = 0;
+          lastInteractionTime = performance.now();
+          try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+        });
+
+        canvas.addEventListener('pointermove', function (e) {
+          // Update caption parallax CSS variables
+          var rect = canvas.getBoundingClientRect();
+          var px = ((e.clientX - rect.left) / rect.width - 0.5) * 16;
+          var py = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
+          if (focusDrawer) {
+            focusDrawer.style.setProperty('--prx', px.toFixed(1) + 'px');
+            focusDrawer.style.setProperty('--pry', py.toFixed(1) + 'px');
           }
-          if (isZoomed) {
-            zoomOutToOverview();
-          } else {
-            zoomInToSpace(targetIndex);
+
+          if (!isDragging) return;
+
+          var dx = e.clientX - lastPointerX;
+          var dy = e.clientY - pointerStartY;
+          var totalX = e.clientX - pointerStartX;
+
+          // Non-blocking gesture disambiguation for mobile touch
+          if (!dragThresholdMet) {
+            if (Math.abs(totalX) > 6 && Math.abs(totalX) >= Math.abs(dy)) {
+              dragThresholdMet = true;
+              hasMoved = true;
+            } else if (Math.abs(dy) > 12) {
+              isDragging = false;
+              return;
+            }
+          }
+
+          if (dragThresholdMet) {
+            var now = performance.now();
+            var dt = Math.max(1, now - lastPointerTime);
+            // Apply drag directly to rotunda rotation
+            currentRotY += dx * 0.0035;
+            targetRotY = currentRotY;
+            angularVelocity = (dx / dt) * 0.0035;
+            lastPointerX = e.clientX;
+            lastPointerTime = now;
+            lastInteractionTime = now;
           }
         });
 
-        // Gyroscope Look-Around
+        function endDrag(e: PointerEvent) {
+          if (!isDragging) return;
+          isDragging = false;
+          try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+
+          if (hasMoved) {
+            // Apply inertial glide and smoothly settle to nearest space slot
+            var projected = currentRotY + angularVelocity * 100;
+            var nearestSlot = Math.round(-projected / stepAngle);
+            snapToSlot(nearestSlot, false);
+          }
+          lastInteractionTime = performance.now();
+        }
+
+        canvas.addEventListener('pointerup', endDrag);
+        canvas.addEventListener('pointercancel', endDrag);
+        canvas.addEventListener('pointerenter', function () { isPointerOver = true; });
+        canvas.addEventListener('pointerleave', function () {
+          isPointerOver = false;
+          if (isDragging) isDragging = false;
+        });
+
+        // ── Tap-to-Fly-In Raycasting ───────────────────────────────────
+        canvas.addEventListener('click', function (e) {
+          var moveDist = Math.hypot(e.clientX - pointerStartX, e.clientY - pointerStartY);
+          if (moveDist > 7) return; // Ignore drag gestures
+
+          var rect = canvas.getBoundingClientRect();
+          mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+          raycaster.setFromCamera(mouseNDC, camera);
+          var hits = raycaster.intersectObjects(panelMeshes);
+
+          if (hits.length > 0) {
+            var hitMesh = hits[0].object;
+            var hitIdx = hitMesh.userData.index;
+
+            if (isZoomed && hitIdx === activeIndex) {
+              // Tapping the focused panel zooms out
+              zoomOutToOverview();
+            } else {
+              // Snap directly to the tapped space and fly in
+              snapToIndex(hitIdx, true);
+            }
+          } else if (isZoomed) {
+            zoomOutToOverview();
+          }
+        });
+
+        // ── Gyroscope Look-Around (Mobile Motion) ──────────────────────
         var gyroYaw = 0.0;
         var gyroPitch = 0.0;
         var gyroEnabled = false;
@@ -1004,7 +831,7 @@ const tourSpaces = [
           enableGyro();
         }
 
-        // ── Resize Handler ─────────────────────────────────────────────────
+        // ── Resize Handler ─────────────────────────────────────────────
         function onResize() {
           if (!webglWrap) return;
           var w = webglWrap.clientWidth;
@@ -1015,8 +842,9 @@ const tourSpaces = [
         }
         window.addEventListener('resize', onResize, { passive: true });
 
-        // ── Render Loop ───────────────────────────────────────────────────
+        // ── Render Loop & Poster Fade ──────────────────────────────────
         var isSectionVisible = true;
+        var hasFadedPoster = false;
         var visibilityObserver = new IntersectionObserver(function (entries) {
           isSectionVisible = entries[0].isIntersecting;
         });
@@ -1028,59 +856,72 @@ const tourSpaces = [
 
           var t = now * 0.001;
 
-          // Smooth Camera position interpolation (rest vs zoom)
+          // Camera smoothly interpolates between Overview and Fly-In inspection
           camera.position.lerp(targetCamPos, 0.08);
 
-          // Apply subtle gyro pitch & yaw offset
+          // Subtle gyro offsets on mobile
           if (gyroEnabled) {
-            camera.position.x += gyroYaw * 20;
-            camera.position.y += gyroPitch * 15;
+            camera.position.x += gyroYaw * 18;
+            camera.position.y += gyroPitch * 12;
           }
 
-          // Camera looks directly towards the active panel area along -Z
-          camera.lookAt(0, 0, -350);
+          // Camera always frames the active space zone
+          camera.lookAt(0, 0, -360);
 
-          // Smooth rotunda rotation
+          // Physics & Rotation update
           if (!isDragging) {
             var diff = targetRotY - currentRotY;
             if (Math.abs(diff) > 0.0005) {
-              currentRotY += diff * 0.12;
+              currentRotY += diff * 0.1;
             } else {
               currentRotY = targetRotY;
-              // Very subtle ambient idle drift when untouched and not zoomed in
-              if (!isPointerOver && hasSteppedInside && !isZoomed) {
-                targetRotY += 0.00025;
-                currentRotY += 0.00025;
+
+              // Gentle ambient auto-rotate when idle (pauses on interaction, touch, and zoom)
+              var idleElapsed = now - lastInteractionTime;
+              if (!isPointerOver && !isZoomed && idleElapsed > 3000) {
+                targetRotY -= 0.00035;
+                currentRotY = targetRotY;
+                var curSlot = Math.round(-currentRotY / stepAngle);
+                var norm = ((curSlot % N) + N) % N;
+                if (norm !== activeIndex) {
+                  updateActiveUI(norm);
+                }
               }
             }
           }
 
           rotundaGroup.rotation.y = currentRotY;
 
-          // Sync active space index from current angle
-          var computedIndex = Math.round(currentRotY / stepAngle);
-          var normIndex = ((computedIndex % N) + N) % N;
-          if (normIndex !== activeIndex && !isDragging) {
-            updateActiveUI(normIndex);
+          // Compute active slot continuously during motion
+          var activeFloat = -currentRotY / stepAngle;
+          var activeNorm = ((Math.round(activeFloat) % N) + N) % N;
+          if (activeNorm !== activeIndex && !isDragging) {
+            updateActiveUI(activeNorm);
           }
 
-          // Update shader uniforms per panel
-          angularVelocity *= 0.88;
+          // Update shader uniforms: highlight active space, dim peripheral spaces smoothly
           panelMaterials.forEach(function (mat, i) {
-            mat.uniforms.uVelocity.value = angularVelocity * 60.0;
-            mat.uniforms.uTime.value = t;
-            var targetActive = (i === normIndex) ? 1.0 : 0.0;
-            mat.uniforms.uActive.value += (targetActive - mat.uniforms.uActive.value) * 0.08;
+            var isActive = (i === activeNorm) ? 1.0 : 0.0;
+            mat.uniforms.uActive.value += (isActive - mat.uniforms.uActive.value) * 0.1;
           });
 
-          // Drift ambient gold motes gently
+          // Gentle ambient gold mote drift
           var posArr = moteBufGeo.attributes.position.array as Float32Array;
           for (var mi2 = 0; mi2 < moteCount; mi2++) {
-            posArr[mi2 * 3 + 1] = moteOrigPos[mi2 * 3 + 1] + Math.sin(t * 0.4 + mi2 * 0.7) * 16;
+            posArr[mi2 * 3 + 1] = moteOrigPos[mi2 * 3 + 1] + Math.sin(t * 0.5 + mi2 * 0.8) * 14;
           }
           moteBufGeo.attributes.position.needsUpdate = true;
 
           renderer.render(scene, camera);
+
+          // Once first frame is rendered, smoothly fade out poster placeholder
+          if (!hasFadedPoster && poster) {
+            hasFadedPoster = true;
+            poster.classList.add('is-hidden');
+            setTimeout(function () {
+              if (poster) poster.style.display = 'none';
+            }, 500);
+          }
         }
 
         requestAnimationFrame(animate);
@@ -1259,53 +1100,6 @@ const tourSpaces = [
     outline: none;
   }
 
-  /* Ambience Sound Toggle Button */
-  .tour-ambience-btn {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    z-index: 25;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 14px;
-    border-radius: 999px;
-    background: rgba(23, 32, 15, 0.88);
-    border: 1px solid rgba(224, 166, 60, 0.4);
-    color: #F4ECDA;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  }
-  .tour-ambience-btn:hover {
-    border-color: #E0A63C;
-    background: rgba(30, 42, 20, 0.95);
-    color: #E0A63C;
-    transform: translateY(-1px);
-  }
-  .tour-ambience-btn.is-active {
-    background: #E0A63C;
-    border-color: #E0A63C;
-    color: #17200F;
-    box-shadow: 0 0 16px rgba(224, 166, 60, 0.45);
-  }
-  .tour-ambience-icon {
-    font-size: 0.9rem;
-    line-height: 1;
-  }
-  @media (max-width: 640px) {
-    .tour-ambience-btn {
-      top: 10px;
-      right: 10px;
-      padding: 6px 11px;
-      font-size: 0.75rem;
-    }
-  }
-
   /* WebGL Canvas Wrap */
   .tour-webgl-wrap {
     display: none;
@@ -1338,70 +1132,84 @@ const tourSpaces = [
     cursor: grabbing;
   }
 
-  /* "Step Inside" Fly-In Button Overlay */
-  .tour-flyin-overlay {
+  /* Poster Placeholder (shown immediately while Three.js loads) */
+  .tour-poster {
     position: absolute;
     inset: 0;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at center, rgba(13, 19, 8, 0.25) 0%, rgba(13, 19, 8, 0.75) 85%);
-    transition: opacity 0.5s ease;
-    z-index: 10;
+    background: radial-gradient(circle at center, #17200f 0%, #0d1308 85%);
+    transition: opacity 0.5s ease, visibility 0.5s ease;
     pointer-events: none;
   }
-  .tour-flyin-btn {
-    pointer-events: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 34px;
-    background: #E0A63C;
-    color: #12190B;
-    border: 2px solid #F4ECDA;
+  .tour-poster.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .tour-poster-img {
+    height: 82%;
+    width: auto;
+    max-width: 85%;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+    border: 1.5px solid rgba(224, 166, 60, 0.35);
+  }
+  .tour-poster-overlay {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(18, 25, 11, 0.92);
+    border: 1px solid rgba(224, 166, 60, 0.4);
     border-radius: 999px;
-    font-size: 1rem;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  }
+  .tour-poster-badge {
+    color: #E0A63C;
+    font-size: 0.75rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(224, 166, 60, 0.4), 0 0 20px rgba(224, 166, 60, 0.2);
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
   }
-  .tour-flyin-btn:hover {
-    background: #F4ECDA;
-    color: #12190B;
-    transform: scale(1.05);
-    box-shadow: 0 12px 36px rgba(244, 236, 218, 0.45);
-  }
-  .tour-flyin-icon {
-    font-size: 1.15rem;
+  .tour-poster-text {
+    color: #F4ECDA;
+    font-size: 0.8125rem;
+    font-weight: 600;
   }
 
-  /* In-Scene Focus Details Drawer (No full-screen modal) */
+  /* In-Scene Focus Details Drawer */
   .tour-focus-drawer {
     position: absolute;
     bottom: 22px;
     left: 50%;
-    transform: translate(-50%, 20px);
+    transform: translate(calc(-50% + var(--prx, 0px)), calc(20px + var(--pry, 0px)));
     width: calc(100% - 36px);
     max-width: 620px;
     background: rgba(23, 32, 15, 0.94);
     border: 1.5px solid rgba(224, 166, 60, 0.5);
     border-radius: 18px;
-    padding: 18px 22px 18px 22px;
+    padding: 18px 22px;
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(224, 166, 60, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     z-index: 25;
     opacity: 0;
     pointer-events: none;
+    will-change: transform, opacity;
     transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .tour-focus-drawer.is-open {
     opacity: 1;
     pointer-events: auto;
-    transform: translate(-50%, 0);
+    transform: translate(calc(-50% + var(--prx, 0px)), var(--pry, 0px));
   }
 
   .tour-focus-close {
@@ -1568,7 +1376,6 @@ const tourSpaces = [
     height: 100%;
     object-fit: cover;
     display: block;
-    /* Clean 100% brightness, NO dark boxes or overlays */
     filter: brightness(1);
   }
   .tour-fallback-badge {
@@ -1700,10 +1507,6 @@ const tourSpaces = [
   @media (max-width: 768px) {
     .tour-webgl-wrap {
       height: 440px;
-    }
-    .tour-flyin-btn {
-      padding: 12px 24px;
-      font-size: 0.875rem;
     }
     .tour-chips-bar {
       gap: 6px 8px;
