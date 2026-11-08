@@ -1,7 +1,9 @@
 ---
 // PanoramicViewer.astro - "Step inside Fursat" Panoramic Walkthrough
-// WebGL 3D Curved Cylindrical Rotunda with Three.js & Resilient Scroll-Snap Fallback
-// Real photography only from public/assets/interior/ (true 3:4 aspect ratio)
+// WebGL 3D Curved Cylindrical Rotunda & 360° Equirectangular Spherical Experience
+// Real photography only (true 3:4 aspect ratio panels + optional public/panos/ 360 images)
+import fs from 'node:fs';
+import path from 'node:path';
 
 const tourSpaces = [
   {
@@ -65,13 +67,40 @@ const tourSpaces = [
     tag: 'Booth',
   },
 ];
+
+// Check if any equirectangular 360° panoramas exist in public/panos/
+let availablePanos360: string[] = [];
+try {
+  const panosDir = path.resolve('./public/panos');
+  if (fs.existsSync(panosDir)) {
+    availablePanos360 = fs
+      .readdirSync(panosDir)
+      .filter((file) => /\.(webp|jpg|jpeg|png)$/i.test(file))
+      .map((file) => `/panos/${file}`);
+  }
+} catch (_) {}
+const has360Panos = availablePanos360.length > 0;
 ---
 
 <section class="tour-section" id="tour" aria-labelledby="tour-heading">
   <div class="tour-container">
     <!-- Header -->
     <div class="tour-header">
-      <span class="tour-kicker">STEP INSIDE FURSAT</span>
+      <div class="tour-kicker-row">
+        <span class="tour-kicker">STEP INSIDE FURSAT</span>
+        {has360Panos && (
+          <button
+            type="button"
+            class="tour-360-toggle"
+            id="tour-360-toggle"
+            aria-label="Toggle between Rotunda and 360 Spherical View"
+            aria-pressed="false"
+          >
+            <span class="tour-360-icon">🌐</span>
+            <span class="tour-360-label">360° View</span>
+          </button>
+        )}
+      </div>
       <h2 class="tour-title mot-headline" id="tour-heading">A Panoramic Walkthrough</h2>
       <p class="tour-sub">
         Drag or swipe to rotate through the space. Tap any interior to fly in and explore.
@@ -103,7 +132,7 @@ const tourSpaces = [
     >
       <!-- WebGL Canvas Container -->
       <div class="tour-webgl-wrap" id="tour-webgl-wrap">
-        <!-- Poster placeholder: displayed immediately until Three.js renders first frame (eliminates blank canvas) -->
+        <!-- Poster placeholder: displayed immediately until Three.js renders first frame -->
         <div class="tour-poster" id="tour-poster" aria-hidden="true">
           <img
             src="/assets/interior/tour-entrance.webp"
@@ -220,6 +249,11 @@ const tourSpaces = [
     </div>
   </div>
 
+  <!-- Hidden JSON blob of 360 panoramas if present -->
+  {has360Panos && (
+    <script id="panos-360-data" type="application/json" set:html={JSON.stringify(availablePanos360)}></script>
+  )}
+
   <!-- ARIA live region for screen-reader announcements -->
   <div id="tour-live" aria-live="polite" aria-atomic="true" class="tour-sr-only"></div>
 </section>
@@ -240,6 +274,7 @@ const tourSpaces = [
     var nextBtn = document.getElementById('tour-next');
     var chips = Array.from(document.querySelectorAll('.tour-chip'));
     var dots = Array.from(document.querySelectorAll('.tour-dot'));
+    var toggle360Btn = document.getElementById('tour-360-toggle');
 
     // In-Scene Focus Drawer Elements
     var focusDrawer = document.getElementById('tour-focus-drawer');
@@ -297,10 +332,18 @@ const tourSpaces = [
       }
     ];
 
+    // Read available 360 panoramas if provided
+    var panos360List: string[] = [];
+    var panoDataScript = document.getElementById('panos-360-data');
+    if (panoDataScript) {
+      try { panos360List = JSON.parse(panoDataScript.textContent || '[]'); } catch (_) {}
+    }
+
     var N = spacesData.length; // 6 spaces
     var stepAngle = (Math.PI * 2) / N; // 60 degrees in radians
     var activeIndex = 0;
     var targetSlot = 0;
+    var is360Mode = false;
 
     var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -402,7 +445,6 @@ const tourSpaces = [
           return;
         }
 
-        // Mark as WebGL active
         wrapper?.classList.add('has-webgl');
         wrapper?.classList.remove('is-fallback');
 
@@ -410,16 +452,12 @@ const tourSpaces = [
         var height = webglWrap.clientHeight || 520;
 
         var scene = new THREE.Scene();
-
-        // Atmospheric linear fog creating depth without obscuring active spaces
         scene.fog = new THREE.Fog(0x0d1308, 420, 950);
 
-        // Responsive camera with wide horizontal FOV
         var camera = new THREE.PerspectiveCamera(52, width / height, 1, 3000);
 
         function updateCameraFOV() {
           var aspect = camera.aspect;
-          // Maintain ~88° horizontal FOV across varying screen widths
           var targetHFOV = 88 * (Math.PI / 180);
           var vfovRad = 2 * Math.atan(Math.tan(targetHFOV / 2) / Math.max(0.55, aspect));
           camera.fov = Math.min(95, Math.max(46, vfovRad * (180 / Math.PI)));
@@ -427,7 +465,6 @@ const tourSpaces = [
         }
         updateCameraFOV();
 
-        // Camera positions: Overview shows 3 spaces; Fly-in frames the selected space intimately
         var overviewCamPos = new THREE.Vector3(0, 0, 165);
         var flyInCamPos = new THREE.Vector3(0, -6, 75);
         var targetCamPos = overviewCamPos.clone();
@@ -450,7 +487,6 @@ const tourSpaces = [
         renderer.setSize(width, height);
         renderer.setClearColor(0x0d1308, 1);
 
-        // WebGL Context Loss Handler
         canvas.addEventListener('webglcontextlost', function (e) {
           e.preventDefault();
           enableFallback('WebGL context lost');
@@ -464,13 +500,9 @@ const tourSpaces = [
         var rotundaGroup = new THREE.Group();
         scene.add(rotundaGroup);
 
-        // Mathematically accurate geometry preserving the 3:4 (0.750) photo aspect ratio:
-        // Panel height = 330 units, true arc width = 330 * 0.75 = 247.5 units.
-        // With radius = 360 units, panel arc = 247.5 / 360 = 0.6875 radians (~39.4°).
-        // Each 60° slot leaves a refined ~20.6° gap between adjacent curved panels.
         var radius = 360;
         var panelHeight = 330;
-        var thetaLength = 0.6875;
+        var thetaLength = 0.6875; // 3:4 aspect ratio panels
 
         var cylinderGeo = new THREE.CylinderGeometry(
           radius,
@@ -482,9 +514,9 @@ const tourSpaces = [
           -thetaLength / 2,
           thetaLength
         );
-        cylinderGeo.scale(-1, 1, 1); // Curve inwards facing the camera
+        cylinderGeo.scale(-1, 1, 1);
 
-        // Panel Shader: True photographic sharpness, anisotropic filtering, soft edge vignette
+        // Panel Shader: Photographic sharpness, soft edge vignette, subtle RGB split & ripple
         var panelVertexShader = `
           varying vec2 vUv;
           varying vec3 vNormal;
@@ -498,25 +530,47 @@ const tourSpaces = [
         var panelFragmentShader = `
           uniform sampler2D uMap;
           uniform float uActive;
+          uniform float uVelocity;
+          uniform float uTime;
+          uniform float uRgbEnabled;
           varying vec2 vUv;
           varying vec3 vNormal;
 
           void main() {
-            vec4 tex = texture2D(uMap, vUv);
+            vec2 uv = vUv;
 
-            // Soft refined edge vignette falloff at panel boundaries (no harsh borders)
+            // Very subtle dynamic ripple on motion (max ~1px displacement)
+            if (uRgbEnabled > 0.5) {
+              float speed = abs(uVelocity);
+              float ripple = clamp(speed * 0.0003, 0.0, 0.0025);
+              uv.y += ripple * sin(uv.x * 12.0 + uTime * 4.0);
+              uv.x += ripple * 0.5 * sin(uv.y * 10.0 + uTime * 3.0);
+            }
+
+            // Very subtle RGB chromatic aberration (max 2px displacement)
+            float split = 0.0;
+            if (uRgbEnabled > 0.5) {
+              split = clamp(abs(uVelocity) * 0.0005, 0.0, 0.0045);
+            }
+            float dir = sign(uVelocity);
+            vec2 rOffset = vec2(split * dir, 0.0);
+            vec2 bOffset = vec2(-split * dir, 0.0);
+
+            float r = texture2D(uMap, clamp(uv + rOffset, 0.001, 0.999)).r;
+            float g = texture2D(uMap, clamp(uv,           0.001, 0.999)).g;
+            float b = texture2D(uMap, clamp(uv + bOffset, 0.001, 0.999)).b;
+
+            // Soft refined edge vignette falloff at panel boundaries
             float vx = smoothstep(0.0, 0.045, vUv.x) * smoothstep(1.0, 0.955, vUv.x);
             float vy = smoothstep(0.0, 0.045, vUv.y) * smoothstep(1.0, 0.955, vUv.y);
             float edge = vx * vy;
 
-            // Warm light falloff: active space is 100% luminous; side spaces gently dimmed to 76%
+            // Warm light falloff: active space 100%, peripheral 76%
             float luminosity = mix(0.76, 1.0, uActive);
-
-            // Natural background blending at edges
             vec3 bgCol = vec3(0.051, 0.075, 0.031); // #0d1308
             vec3 warmRim = vec3(0.88, 0.65, 0.24); // #E0A63C gold rim
 
-            vec3 rgb = tex.rgb * luminosity;
+            vec3 rgb = vec3(r, g, b) * luminosity;
             rgb = mix(bgCol, rgb, edge);
             rgb += warmRim * (1.0 - edge) * 0.12 * luminosity;
 
@@ -541,8 +595,11 @@ const tourSpaces = [
             vertexShader: panelVertexShader,
             fragmentShader: panelFragmentShader,
             uniforms: {
-              uMap:    { value: texture },
-              uActive: { value: index === 0 ? 1.0 : 0.0 }
+              uMap:        { value: texture },
+              uActive:     { value: index === 0 ? 1.0 : 0.0 },
+              uVelocity:   { value: 0.0 },
+              uTime:       { value: 0.0 },
+              uRgbEnabled: { value: 1.0 }
             },
             side: THREE.DoubleSide
           });
@@ -550,7 +607,6 @@ const tourSpaces = [
           var mesh = new THREE.Mesh(cylinderGeo, material);
           mesh.userData = { index: index, space: space };
 
-          // Position around circle: index 0 centered at (0, 0, -360) facing camera
           var angle = index * stepAngle + Math.PI;
           mesh.rotation.y = angle;
 
@@ -558,6 +614,80 @@ const tourSpaces = [
           panelMeshes.push(mesh);
           panelMaterials.push(material);
         });
+
+        // ── Real 360° Equirectangular Sphere Mode (public/panos/) ─────
+        var sphere360Group = new THREE.Group();
+        sphere360Group.visible = false;
+        scene.add(sphere360Group);
+
+        var sphere360Mesh: any = null;
+        var sphereLon = 0;
+        var sphereLat = 0;
+        var sphereTargetLon = 0;
+        var sphereTargetLat = 0;
+        var sphereHotspots: any[] = [];
+
+        if (panos360List.length > 0) {
+          var pano360Texture = textureLoader.load(panos360List[0]);
+          pano360Texture.colorSpace = THREE.SRGBColorSpace;
+          pano360Texture.minFilter = THREE.LinearFilter;
+          var sphereGeo = new THREE.SphereGeometry(600, 60, 40);
+          sphereGeo.scale(-1, 1, 1);
+          var sphereMat = new THREE.MeshBasicMaterial({ map: pano360Texture });
+          sphere360Mesh = new THREE.Mesh(sphereGeo, sphereMat);
+          sphere360Group.add(sphere360Mesh);
+
+          // Add interactive 3D hotspots inside the 360 sphere
+          var hotspotDefs = [
+            { title: 'The Bar Counter', pos: new THREE.Vector3(380, -20, -320), idx: 1 },
+            { title: 'Lounge Seating', pos: new THREE.Vector3(-360, 10, -340), idx: 3 },
+            { title: 'Booth Dining', pos: new THREE.Vector3(120, -10, 480), idx: 5 }
+          ];
+
+          hotspotDefs.forEach(function (h) {
+            var canvasH = document.createElement('canvas');
+            canvasH.width = 128;
+            canvasH.height = 128;
+            var ctx = canvasH.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = '#E0A63C';
+              ctx.beginPath();
+              ctx.arc(64, 64, 40, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 8;
+              ctx.stroke();
+            }
+            var hTex = new THREE.CanvasTexture(canvasH);
+            var hMat = new THREE.SpriteMaterial({ map: hTex, transparent: true, opacity: 0.88 });
+            var sprite = new THREE.Sprite(hMat);
+            sprite.position.copy(h.pos);
+            sprite.scale.set(40, 40, 1);
+            sprite.userData = { hotspot: true, title: h.title, index: h.idx };
+            sphere360Group.add(sprite);
+            sphereHotspots.push(sprite);
+          });
+        }
+
+        function toggle360View() {
+          is360Mode = !is360Mode;
+          if (toggle360Btn) {
+            toggle360Btn.setAttribute('aria-pressed', is360Mode ? 'true' : 'false');
+            toggle360Btn.classList.toggle('is-active', is360Mode);
+          }
+          rotundaGroup.visible = !is360Mode;
+          sphere360Group.visible = is360Mode;
+          if (is360Mode) {
+            hideFocusDrawer();
+            camera.position.set(0, 0, 0.1);
+          } else {
+            camera.position.copy(overviewCamPos);
+          }
+        }
+
+        if (toggle360Btn) {
+          toggle360Btn.addEventListener('click', toggle360View);
+        }
 
         // Ambient Gold Bokeh Particles drifting in 3D depth
         var moteCount = 36;
@@ -665,11 +795,14 @@ const tourSpaces = [
           });
         }
 
-        // Keyboard navigation
         wrapper?.addEventListener('keydown', function (e) {
           if (e.key === 'Escape') {
             e.preventDefault();
-            zoomOutToOverview();
+            if (is360Mode) {
+              toggle360View();
+            } else {
+              zoomOutToOverview();
+            }
           } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             snapToSlot(targetSlot - 1, false);
@@ -707,7 +840,6 @@ const tourSpaces = [
         });
 
         canvas.addEventListener('pointermove', function (e) {
-          // Update caption parallax CSS variables
           var rect = canvas.getBoundingClientRect();
           var px = ((e.clientX - rect.left) / rect.width - 0.5) * 16;
           var py = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
@@ -722,7 +854,6 @@ const tourSpaces = [
           var dy = e.clientY - pointerStartY;
           var totalX = e.clientX - pointerStartX;
 
-          // Non-blocking gesture disambiguation for mobile touch
           if (!dragThresholdMet) {
             if (Math.abs(totalX) > 6 && Math.abs(totalX) >= Math.abs(dy)) {
               dragThresholdMet = true;
@@ -736,10 +867,17 @@ const tourSpaces = [
           if (dragThresholdMet) {
             var now = performance.now();
             var dt = Math.max(1, now - lastPointerTime);
-            // Apply drag directly to rotunda rotation
-            currentRotY += dx * 0.0035;
-            targetRotY = currentRotY;
-            angularVelocity = (dx / dt) * 0.0035;
+
+            if (is360Mode) {
+              sphereTargetLon -= dx * 0.2;
+              sphereTargetLat += (e.clientY - lastPointerX) * 0.1;
+              sphereTargetLat = Math.max(-85, Math.min(85, sphereTargetLat));
+            } else {
+              currentRotY += dx * 0.0035;
+              targetRotY = currentRotY;
+              angularVelocity = (dx / dt) * 0.0035;
+            }
+
             lastPointerX = e.clientX;
             lastPointerTime = now;
             lastInteractionTime = now;
@@ -751,8 +889,7 @@ const tourSpaces = [
           isDragging = false;
           try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
 
-          if (hasMoved) {
-            // Apply inertial glide and smoothly settle to nearest space slot
+          if (hasMoved && !is360Mode) {
             var projected = currentRotY + angularVelocity * 100;
             var nearestSlot = Math.round(-projected / stepAngle);
             snapToSlot(nearestSlot, false);
@@ -771,24 +908,32 @@ const tourSpaces = [
         // ── Tap-to-Fly-In Raycasting ───────────────────────────────────
         canvas.addEventListener('click', function (e) {
           var moveDist = Math.hypot(e.clientX - pointerStartX, e.clientY - pointerStartY);
-          if (moveDist > 7) return; // Ignore drag gestures
+          if (moveDist > 7) return;
 
           var rect = canvas.getBoundingClientRect();
           mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
           mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
           raycaster.setFromCamera(mouseNDC, camera);
-          var hits = raycaster.intersectObjects(panelMeshes);
 
+          if (is360Mode && sphereHotspots.length > 0) {
+            var hitsH = raycaster.intersectObjects(sphereHotspots);
+            if (hitsH.length > 0) {
+              var targetIdx = hitsH[0].object.userData.index;
+              toggle360View();
+              snapToIndex(targetIdx, true);
+              return;
+            }
+          }
+
+          var hits = raycaster.intersectObjects(panelMeshes);
           if (hits.length > 0) {
             var hitMesh = hits[0].object;
             var hitIdx = hitMesh.userData.index;
 
             if (isZoomed && hitIdx === activeIndex) {
-              // Tapping the focused panel zooms out
               zoomOutToOverview();
             } else {
-              // Snap directly to the tapped space and fly in
               snapToIndex(hitIdx, true);
             }
           } else if (isZoomed) {
@@ -796,7 +941,7 @@ const tourSpaces = [
           }
         });
 
-        // ── Gyroscope Look-Around (Mobile Motion) ──────────────────────
+        // ── Gyroscope Look-Around ─────────────────────────────────────
         var gyroYaw = 0.0;
         var gyroPitch = 0.0;
         var gyroEnabled = false;
@@ -842,6 +987,12 @@ const tourSpaces = [
         }
         window.addEventListener('resize', onResize, { passive: true });
 
+        // ── Performance / FPS Monitor (Disables RGB split if mobile FPS drops) ──
+        var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+        var lastFpsCheckTime = performance.now();
+        var frameCount = 0;
+        var rgbShaderActive = true;
+
         // ── Render Loop & Poster Fade ──────────────────────────────────
         var isSectionVisible = true;
         var hasFadedPoster = false;
@@ -856,54 +1007,78 @@ const tourSpaces = [
 
           var t = now * 0.001;
 
-          // Camera smoothly interpolates between Overview and Fly-In inspection
-          camera.position.lerp(targetCamPos, 0.08);
-
-          // Subtle gyro offsets on mobile
-          if (gyroEnabled) {
-            camera.position.x += gyroYaw * 18;
-            camera.position.y += gyroPitch * 12;
-          }
-
-          // Camera always frames the active space zone
-          camera.lookAt(0, 0, -360);
-
-          // Physics & Rotation update
-          if (!isDragging) {
-            var diff = targetRotY - currentRotY;
-            if (Math.abs(diff) > 0.0005) {
-              currentRotY += diff * 0.1;
-            } else {
-              currentRotY = targetRotY;
-
-              // Gentle ambient auto-rotate when idle (pauses on interaction, touch, and zoom)
-              var idleElapsed = now - lastInteractionTime;
-              if (!isPointerOver && !isZoomed && idleElapsed > 3000) {
-                targetRotY -= 0.00035;
-                currentRotY = targetRotY;
-                var curSlot = Math.round(-currentRotY / stepAngle);
-                var norm = ((curSlot % N) + N) % N;
-                if (norm !== activeIndex) {
-                  updateActiveUI(norm);
-                }
-              }
+          // FPS monitor: protect 60 fps on mobile
+          frameCount++;
+          if (now - lastFpsCheckTime >= 1000) {
+            var currentFps = (frameCount * 1000) / (now - lastFpsCheckTime);
+            frameCount = 0;
+            lastFpsCheckTime = now;
+            if (isMobile && currentFps < 50 && rgbShaderActive) {
+              rgbShaderActive = false;
+              panelMaterials.forEach(function (mat) {
+                mat.uniforms.uRgbEnabled.value = 0.0;
+              });
             }
           }
 
-          rotundaGroup.rotation.y = currentRotY;
+          if (is360Mode) {
+            // 360 Spherical Look-Around
+            sphereLon += (sphereTargetLon - sphereLon) * 0.1;
+            sphereLat += (sphereTargetLat - sphereLat) * 0.1;
+            var phi = THREE.MathUtils.degToRad(90 - sphereLat);
+            var theta = THREE.MathUtils.degToRad(sphereLon);
+            var targetX = 500 * Math.sin(phi) * Math.cos(theta);
+            var targetY = 500 * Math.cos(phi);
+            var targetZ = 500 * Math.sin(phi) * Math.sin(theta);
+            camera.lookAt(targetX, targetY, targetZ);
+          } else {
+            // Rotunda mode
+            camera.position.lerp(targetCamPos, 0.08);
 
-          // Compute active slot continuously during motion
-          var activeFloat = -currentRotY / stepAngle;
-          var activeNorm = ((Math.round(activeFloat) % N) + N) % N;
-          if (activeNorm !== activeIndex && !isDragging) {
-            updateActiveUI(activeNorm);
+            if (gyroEnabled) {
+              camera.position.x += gyroYaw * 18;
+              camera.position.y += gyroPitch * 12;
+            }
+
+            camera.lookAt(0, 0, -360);
+
+            if (!isDragging) {
+              var diff = targetRotY - currentRotY;
+              if (Math.abs(diff) > 0.0005) {
+                currentRotY += diff * 0.1;
+              } else {
+                currentRotY = targetRotY;
+
+                var idleElapsed = now - lastInteractionTime;
+                if (!isPointerOver && !isZoomed && idleElapsed > 3000) {
+                  targetRotY -= 0.00035;
+                  currentRotY = targetRotY;
+                  var curSlot = Math.round(-currentRotY / stepAngle);
+                  var norm = ((curSlot % N) + N) % N;
+                  if (norm !== activeIndex) {
+                    updateActiveUI(norm);
+                  }
+                }
+              }
+            }
+
+            rotundaGroup.rotation.y = currentRotY;
+
+            var activeFloat = -currentRotY / stepAngle;
+            var activeNorm = ((Math.round(activeFloat) % N) + N) % N;
+            if (activeNorm !== activeIndex && !isDragging) {
+              updateActiveUI(activeNorm);
+            }
+
+            // Update shader uniforms: subtle velocity-based RGB split & ripple
+            angularVelocity *= 0.9;
+            panelMaterials.forEach(function (mat, i) {
+              var isActive = (i === activeNorm) ? 1.0 : 0.0;
+              mat.uniforms.uActive.value += (isActive - mat.uniforms.uActive.value) * 0.1;
+              mat.uniforms.uVelocity.value = angularVelocity * 60.0;
+              mat.uniforms.uTime.value = t;
+            });
           }
-
-          // Update shader uniforms: highlight active space, dim peripheral spaces smoothly
-          panelMaterials.forEach(function (mat, i) {
-            var isActive = (i === activeNorm) ? 1.0 : 0.0;
-            mat.uniforms.uActive.value += (isActive - mat.uniforms.uActive.value) * 0.1;
-          });
 
           // Gentle ambient gold mote drift
           var posArr = moteBufGeo.attributes.position.array as Float32Array;
@@ -914,7 +1089,6 @@ const tourSpaces = [
 
           renderer.render(scene, camera);
 
-          // Once first frame is rendered, smoothly fade out poster placeholder
           if (!hasFadedPoster && poster) {
             hasFadedPoster = true;
             poster.classList.add('is-hidden');
@@ -930,7 +1104,7 @@ const tourSpaces = [
       });
     }
 
-    // ── Fallback Gallery implementation (Clean Horizontal Scroll-Snap) ─
+    // ── Fallback Gallery implementation ───────────────────────────────
     function initFallbackGallery() {
       if (!fallbackTrack) return;
 
@@ -1021,6 +1195,13 @@ const tourSpaces = [
     max-width: 720px;
     margin: 0 auto 24px;
   }
+  .tour-kicker-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
   .tour-kicker {
     font-size: 0.8125rem;
     font-weight: 800;
@@ -1028,11 +1209,33 @@ const tourSpaces = [
     color: #E0A63C;
     display: inline-block;
     text-transform: uppercase;
-    margin-bottom: 10px;
     background: rgba(224, 166, 60, 0.1);
     border: 1px solid rgba(224, 166, 60, 0.35);
     padding: 4px 14px;
     border-radius: 999px;
+  }
+  .tour-360-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(23, 32, 15, 0.9);
+    border: 1px solid rgba(224, 166, 60, 0.5);
+    color: #F4ECDA;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tour-360-toggle:hover {
+    background: #E0A63C;
+    color: #12190B;
+  }
+  .tour-360-toggle.is-active {
+    background: #E0A63C;
+    color: #12190B;
+    box-shadow: 0 0 12px rgba(224, 166, 60, 0.5);
   }
   .tour-title {
     font-family: 'Playfair Display', Georgia, serif;
