@@ -1,19 +1,29 @@
 // Fursat panorama data: 12 real spaces (owner photos, 8 Nov 2026).
 // Shared by PanoramicViewer.astro (server-rendered fallback) and panorama.js (WebGL).
 // Captions describe only what is visible in the real photos. No offers, prices or claims.
+// Ring order (9 Nov): Bar, Dining, Lounge and Café sit side by side so the wide window rests on all four zones,
+// like the reference collage. The story then runs entrance -> bar -> dining -> lounge -> cafe -> ... -> table for two.
 export const SPACES = [
- {id:'entrance',k:'Arrival',t:'The Entrance',d:'A plant-lined glass corridor leading to the elephant mural: “Fursat, aur kuch nahi!”'},
- {id:'bar',k:'Kitchen | Bar',t:'The Bar',d:'Backlit hexagon shelves of bottles around the glowing Fursat sign, under a mirrored ceiling.'},
- {id:'high-tables',k:'Dining hall',t:'High Tables',d:'Marble high tables and leather stools, with a wall of framed prints and the buffet counter behind.'},
- {id:'sign-wall',k:'Dining hall',t:'The Red Wall',d:'The glowing Fursat sign on a red wall, framed by travel posters and red banquettes.'},
- {id:'booths',k:'Booth seating',t:'The Booths',d:'Red banquettes, bold framed art and a black-and-white geometric floor.'},
- {id:'dining',k:'Dining room',t:'Dining Room',d:'Blue velvet chairs at dark tables, beside screens of cane and printed fabric panels.'},
- {id:'table-for-two',k:'Dining room',t:'Table for Two',d:'A round table with gold-trimmed chairs, set against the cane and fabric screens.'},
- {id:'lounge',k:'Lounge',t:'The Lounge',d:'A blush sofa and houndstooth armchairs round a black table, under a white coffered ceiling.'},
- {id:'sofa-corner',k:'Lounge',t:'Sofa Corner',d:'Soft sofas round a marble table, beside glass walls and indoor trees.'},
- {id:'garden-window',k:'Café',t:'Garden Window',d:'Cane armchairs at a tall window lined with indoor trees.'},
- {id:'cafe',k:'Café',t:'The Café',d:'The green Fursat Café sign and orange elephant on a warm wall.'},
- {id:'mural',k:'Café',t:'The Mural',d:'A hand-painted mural of a woman carrying a tower of flowers, beside a metro train.'}
+{id:'entrance',k:'Arrival',t:'The Entrance',d:'A plant-lined glass corridor leading to the elephant mural: “Fursat, aur kuch nahi!”'},
+{id:'bar',k:'Kitchen | Bar',t:'The Bar',d:'Backlit hexagon shelves of bottles around the glowing Fursat sign, under a mirrored ceiling.'},
+{id:'dining',k:'Dining room',t:'Dining Room',d:'Blue velvet chairs at dark tables, beside screens of cane and printed fabric panels.'},
+{id:'lounge',k:'Lounge',t:'The Lounge',d:'A blush sofa and houndstooth armchairs round a black table, under a white coffered ceiling.'},
+{id:'garden-window',k:'Café',t:'Garden Window',d:'Cane armchairs at a tall window lined with indoor trees.'},
+{id:'cafe',k:'Café',t:'The Café',d:'The green Fursat Café sign and orange elephant on a warm wall.'},
+{id:'mural',k:'Café',t:'The Mural',d:'A hand-painted mural of a woman carrying a tower of flowers, beside a metro train.'},
+{id:'sofa-corner',k:'Lounge',t:'Sofa Corner',d:'Soft sofas round a marble table, beside glass walls and indoor trees.'},
+{id:'high-tables',k:'Dining hall',t:'High Tables',d:'Marble high tables and leather stools, with a wall of framed prints and the buffet counter behind.'},
+{id:'sign-wall',k:'Dining hall',t:'The Red Wall',d:'The glowing Fursat sign on a red wall, framed by travel posters and red banquettes.'},
+{id:'booths',k:'Booth seating',t:'The Booths',d:'Red banquettes, bold framed art and a black-and-white geometric floor.'},
+{id:'table-for-two',k:'Dining room',t:'Table for Two',d:'A round table with gold-trimmed chairs, set against the cane and fabric screens.'}
+];
+// The four zones shown in the header row, the thumbnails and the pins (reference layout, 9 Nov).
+// `spaces` are in ring order; `pin` is the space the pin and thumbnail point at; `fy` = thumbnail crop height (%); `py` = pin height on the photo (staggered like the reference). The Entrance opens the tour (no zone).
+export const ZONES = [
+ {id:'bar', py:0.05, fy:38, name:'The Bar', line:'Signature sips & vibes', icon:'spark', spaces:['bar'], pin:'bar'},
+ {id:'dining', py:0.15, fy:55, name:'Dining', line:'A feast for every mood', icon:'diamond', spaces:['dining','high-tables','sign-wall','booths','table-for-two'], pin:'dining'},
+ {id:'lounge', py:-0.01, fy:78, name:'Lounge', line:'Settle into the vibe', icon:'spark', spaces:['lounge','sofa-corner'], pin:'lounge'},
+ {id:'cafe', py:0.16, fy:50, name:'Café', line:'Your everyday escape', icon:'gem', spaces:['garden-window','cafe','mural'], pin:'garden-window'},
 ];
 export const IMGS = {
  "entrance": "/assets/tour/img/entrance.webp",
@@ -48,4 +58,5 @@ export const PAL = {"entrance":{"fp":[0.55,0.45],"bg1":[0.1087,0.0696,0.0412],"b
 // (Ratchagan BGM, Dark Techno x Opera edit). Off until the visitor taps Sound. LICENCE NEEDED before launch.
 export const MUSIC = '/assets/tour/audio/panorama-loop.mp3';
 // POV walk-through script
-export const POV = [{i:0,l:['POV:',"it's Friday,",'9 pm.']},{i:1,l:['First stop:','the bar.']},{i:3,l:['Neon on.','Glasses up.']},{i:6,l:['And this table','could be yours.']}];
+// POV steps name the space by id, so reordering the ring never breaks the script.
+export const POV = [{s:'entrance',l:['POV:',"it's Friday,",'9 pm.']},{s:'bar',l:['First stop:','the bar.']},{s:'sign-wall',l:['Neon on.','Glasses up.']},{s:'table-for-two',l:['And this table','could be yours.']}];
