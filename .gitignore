@@ -14,6 +14,7 @@ public/**/*.mp4
 !public/assets/hero-master-v2-sm.mp4
 !public/assets/f56e73c9e7.mp4
 !public/assets/reels/reel-*.mp4
+!public/assets/tour/clips/*.mp4
 
 # System & logs
 .DS_Store
