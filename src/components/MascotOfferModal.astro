@@ -1,8 +1,10 @@
 ---
 // MascotOfferModal.astro - Fursat 15% Special Lead Capture & Scratch Modal
 // Directly inspired by the custom mascot mockup (emerald/gold sherwani elephant with sunglasses)
+// TODO(client): the 15% / FURSAT15 offer is not confirmed. Hidden site-wide until the client confirms it; set OFFER_ENABLED = true to show it again.
+const OFFER_ENABLED = false;
 ---
-<div class="fom-wrapper" id="fom-wrapper">
+<div class="fom-wrapper" id="fom-wrapper" hidden={!OFFER_ENABLED} style={OFFER_ENABLED ? undefined : "display:none"}>
   <!-- Floating Mascot Trigger Badge -->
   <aside class="fom-trigger" id="fom-trigger" aria-label="Unlock Special Offer">
     <div class="fom-bubble" id="fom-bubble">

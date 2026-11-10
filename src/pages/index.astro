@@ -25,10 +25,12 @@ import IntroGate from '../components/IntroGate.astro';
 import IntroCaption from '../components/IntroCaption.astro';
 import Wizard from '../components/Wizard.astro';
 import VoiceButton from '../components/VoiceButton.astro';
+// TODO(client): 15% / FURSAT15 offer not confirmed; hidden until the client confirms.
+const OFFER_ENABLED = false;
 ---
 <Base
   title="Fursat Kitchen | Bar – Café, Bar & Banquet in Madhapur, Hyderabad"
-  description="Fursat Kitchen | Bar in Madhapur, Hyderabad — a vibrant café, kitchen, bar and banquet space. Dine, drink & celebrate. FURSAT15 for 15% off."
+  description="Fursat Kitchen | Bar in Madhapur, Hyderabad — a vibrant café, kitchen, bar and banquet space. Dine, drink & celebrate."
   canonical="https://fursatind.in/"
   ogImage="https://fursatind.in/assets/fursat_space_01.webp"
   ogImageAlt="Fursat Kitchen | Bar interior — warm luxury dining in Madhapur"
@@ -46,7 +48,7 @@ import VoiceButton from '../components/VoiceButton.astro';
 <TableSpread />
 
 <!-- ── Offer Strip ──────────────────────────────────────────────────── -->
-<div class="hm-offer-strip">
+<div class="hm-offer-strip" hidden={!OFFER_ENABLED} style={OFFER_ENABLED ? undefined : "display:none"}>
   <span class="hm-os-fire">🔥</span>
   <span class="hm-os-text">Lunch Offer: <strong>Flat 15% OFF</strong></span>
   <span class="hm-os-pill">Code: FURSAT15</span>
