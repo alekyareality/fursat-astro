@@ -21,3 +21,4 @@ public/**/*.mp4
 *.log
 
 review/lh-*.json
+*.zip
