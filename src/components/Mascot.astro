@@ -1,6 +1,8 @@
 ---
 import fs from 'node:fs';
 // PLACEHOLDER: client must confirm the coupon code, the offer and how staff redeem it.
+// TODO(client): offer not confirmed, so the mascot offer is hidden. Set OFFER_ENABLED = true once the client confirms the offer and how staff redeem it.
+const OFFER_ENABLED = false;
 const coupon = { code: 'FEEDFURSAT', note: 'Show this code to the Fursat team to claim your treat.' };
 const hasImg = fs.existsSync('public/assets/ask-mascot-md.webp');
 const hasSm = fs.existsSync('public/assets/ask-mascot-sm.webp');
@@ -8,7 +10,7 @@ const wa = 'https://wa.me/919059670033?text=' + encodeURIComponent('Hi Fursat! I
 const iDrink = '<path d="M5 4h14l-7 8z"/><path d="M12 12v7M8 20h8M13.5 7.5 17 2"/>';
 const iFood = '<path d="M4 16a8 8 0 0 1 16 0z"/><path d="M3 19.5h18"/><circle cx="12" cy="5.5" r="1.3"/>';
 ---
-<section class="ms" id="ms" aria-label="Ask Fursat mascot" data-code={coupon.code}>
+<section class="ms" id="ms" aria-label="Ask Fursat mascot" data-code={coupon.code} hidden={!OFFER_ENABLED} style={OFFER_ENABLED ? undefined : "display:none"}>
   <p class="ms-bubble" id="ms-bubble"><em>Special offers</em><span>Click me</span></p>
   <div class="ms-stage">
     <div class="ms-float"><div class="ms-live">
