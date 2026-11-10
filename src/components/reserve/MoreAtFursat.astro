@@ -1,0 +1,25 @@
+---
+// MoreAtFursat.astro — replaces the reference's "What's Happening" row. No client-confirmed events yet, so these link to real existing pages.
+// TODO(client): confirm any live music / screening / buffet before adding event cards.
+const items = [
+  { t: 'Party packages', p: 'Bar parties, elite buffets and banquet spreads.', href: '/party', img: 'sign-wall' },
+  { t: 'Banquet hall', p: 'Celebrations and corporate gatherings.', href: '/banquet', img: 'dining' }, // GAP: neutral hall crop until a real banquet-hall photo arrives
+  { t: 'Catering', p: 'Fursat food, served at your venue.', href: '/catering', img: 'entrance' }, // GAP: neutral venue crop until real catering photos arrive
+  { t: 'Fursat Café', p: 'Specialty brews, shakes and bakes.', href: '/cafe', img: 'garden-window' }, // GAP: neutral crop (cane chairs, plants) until real Café photos arrive
+];
+---
+<section aria-labelledby="rs-m-h" class="rs-vis">
+  <div class="rs-title"><i aria-hidden="true"></i><h2 id="rs-m-h">More at Fursat</h2><i aria-hidden="true"></i></div>
+  <div class="rs-mrow">
+    {items.map((m, i) => (
+      <a class="rs-mcard rs-card-in" href={m.href} style={`--i:${i}`}>
+        <img class="rs-ph" src={`/assets/tour/img/sm/${m.img}.webp`} alt="" width="540" height="720" loading="lazy" decoding="async" />
+        <div class="rs-mbody">
+          <h3>{m.t}</h3>
+          <p>{m.p}</p>
+          <span>Know More <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>

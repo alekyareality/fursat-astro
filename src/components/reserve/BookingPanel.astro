@@ -1,0 +1,258 @@
+---
+// BookingPanel.astro — "Book Your Experience" (R2 rev: static pickers, WhatsApp handler).
+// Owner-approved logic changes in this revision: (1) message gains a "• Seating:" line, (2) the "Coupon: FURSAT15" line is removed,
+// (3) the date is shown and sent as "Tue, 10 Nov" instead of the raw input value. Same wa.me/919059670033 target and field ids.
+// Stored request + staff alert are R4 and still need owner approval.
+import site from '../../data/site.json';
+
+// ASSUMPTION (not client-confirmed): last bookable slot = 10:00 PM (90 min before the 11:30 PM close). 30-min slots.
+// TODO(client): confirm last booking time, slot length and closing time (site.json says 23:30, EazyDiner lists 10:30 PM).
+const LAST_SLOT = '22:00';
+const SLOT_STEP = 30;
+const toMin = (hhmm: string) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
+const label = (min: number) => {
+  const h = Math.floor(min / 60), m = min % 60, h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+};
+const slots: { min: number; text: string }[] = [];
+for (let t = toMin(site.hours.open); t <= toMin(LAST_SLOT); t += SLOT_STEP) slots.push({ min: t, text: label(t) });
+const groups = [
+  { name: 'Lunch', from: 0, to: 16 * 60 },
+  { name: 'Evening', from: 16 * 60, to: 20 * 60 },
+  { name: 'Late', from: 20 * 60, to: 24 * 60 },
+].map(g => ({ ...g, items: slots.filter(s => s.min >= g.from && s.min < g.to) })).filter(g => g.items.length);
+
+const guestOptions = Array.from({ length: 12 }, (_, i) => i + 1);
+const zones = ['The Bar', 'Dining', 'Lounge', 'Café'];
+const occasions = [
+  { v: 'Casual Dining', t: 'Casual dining' },
+  { v: 'Date Night', t: 'Date night' },
+  { v: 'Birthday', t: 'Birthday' },
+  { v: 'Anniversary', t: 'Anniversary' },
+  { v: 'Business Lunch', t: 'Business lunch' },
+];
+// TODO(client): booking conditions (minimum spend, time limit, deposit, offer terms). Empty = renders "No conditions".
+const conditions: string[] = [];
+const hoursDisplay = site.hours.display; // TODO(client): confirm closing time (23:30 in site.json)
+---
+<section id="book" class="rs-panel" tabindex="-1" aria-labelledby="rs-book-h">
+  <div class="rs-pphoto" aria-hidden="true">
+    <img class="rs-ph" src="/assets/tour/img/sm/bar.webp" alt="" width="540" height="720" loading="lazy" decoding="async" />
+    <p class="rs-script">Good Food.<br />Great Company.
+      <svg viewBox="0 0 160 12" preserveAspectRatio="none"><path d="M2 8c30-6 70-7 120-4 14 1 26 2 36 1"/></svg>
+    </p>
+  </div>
+
+  <form class="rs-pform" id="res-form" novalidate onsubmit="return false;">
+    <h2 id="rs-book-h">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15l2 2 4-4"/></svg>
+      Book Your Experience
+    </h2>
+
+    <div class="rs-fgrid">
+      <label class="rs-f" id="f-date">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+        <span class="rs-fl">Select Date</span><span class="rs-pre">Pre-filled</span>
+        <input type="date" id="res-date" class="rs-dateinp" required />
+        <span class="rs-dv" id="res-date-v" aria-hidden="true"></span>
+      </label>
+      <label class="rs-f" id="f-time">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        <span class="rs-fl">Select Time</span><span class="rs-pre">Pre-filled</span>
+        <select id="res-time" required>
+          <option value="" disabled selected>Choose a time</option>
+          {groups.map(g => (
+            <optgroup label={g.name}>
+              {g.items.map(s => <option value={s.text} data-m={s.min}>{s.text}</option>)}
+            </optgroup>
+          ))}
+        </select>
+      </label>
+      <label class="rs-f" id="f-guests">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c0-3.2 2.4-5.5 5.5-5.5s5.5 2.3 5.5 5.5M16 6a2.8 2.8 0 0 1 0 5.4M17.5 14c2 .6 3 2.4 3 5"/></svg>
+        <span class="rs-fl">Guests</span><span class="rs-pre">Pre-filled</span>
+        <select id="res-guests">
+          {guestOptions.map(n => <option value={String(n)} selected={n === 4}>{n} {n === 1 ? 'guest' : 'guests'}</option>)}
+          <option value="13+">13 or more</option>
+        </select>
+      </label>
+      <label class="rs-f" id="f-zone">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3M4 12.5a2 2 0 0 1 2-1.5 2 2 0 0 1 2 2V15h8v-2a2 2 0 0 1 2-2 2 2 0 0 1 2 1.5V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zM6.5 18v2M17.5 18v2"/></svg>
+        <span class="rs-fl">Seating<span class="rs-long"> Preference</span></span><span class="rs-pre">Pre-filled</span>
+        <select id="res-zone">
+          <option value="">No preference</option>
+          {zones.map(z => <option value={z}>{z}</option>)}
+        </select>
+      </label>
+      <label class="rs-f" id="f-name">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg>
+        <span class="rs-fl">Your Name</span>
+        <input type="text" id="res-name" autocomplete="name" placeholder="Full name" required />
+      </label>
+      <label class="rs-f" id="f-phone">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h3l1.6 4-2 1.3a11 11 0 0 0 5.1 5.1l1.3-2 4 1.6v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2z"/></svg>
+        <span class="rs-fl">Mobile Number</span>
+        <input type="tel" id="res-phone" autocomplete="tel" inputmode="tel" placeholder="10-digit number" required />
+      </label>
+      <label class="rs-f" id="f-occasion">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/></svg>
+        <span class="rs-fl">Occasion (optional)</span><span class="rs-pre">Pre-filled</span>
+        <select id="res-occasion">
+          {occasions.map(o => <option value={o.v}>{o.t}</option>)}
+        </select>
+      </label>
+      <p class="rs-hint" id="rs-party" hidden>Party of 13 or more? <a href="/party">See party packages</a> or <a href="/banquet">the banquet hall</a>.</p>
+      <p class="rs-hint" id="rs-noslot" hidden>No more slots today. Please pick another date.</p>
+    </div>
+
+    <p class="rs-err" id="rs-err" role="alert" aria-live="assertive">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.1"/></svg>
+      <span id="rs-err-t"></span>
+    </p>
+
+    <button type="button" id="res-submit-btn" class="rs-btn rs-btn-solid rs-submit">
+      <span>Request a Table</span>
+      <svg class="rs-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.37a9.9 9.9 0 0 0 4.74 1.2c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c.01-4.54 3.7-8.24 8.24-8.24z"/></svg>
+    </button>
+    <p class="rs-cond" role="note">{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · This is a request, not a confirmed booking · Seating is a preference.</p>
+    <p class="rs-fine" id="rs-fine">Opens WhatsApp with your details.</p>
+  </form>
+
+  <aside class="rs-perks" aria-label="At Fursat">
+    <div class="rs-perk">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 17.5h17M5 17.5a7 7 0 0 1 14 0M12 8.5v-2M10.5 6.5h3M2.5 20h19"/></svg>
+      <span>Exceptional<br />Cuisine</span>
+    </div>
+    <div class="rs-perk">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4h8L10.2 11a2.7 2.7 0 0 1-5.4 0zM7.5 13.5V20M4.5 20h6M14.5 8.5h6l-.9 5.3a2.2 2.2 0 0 1-4.2 0zM17.5 16V20M14.5 20h6"/></svg>
+      <span>Signature<br />Drinks</span>
+    </div>
+    <div class="rs-hours" data-todo="client-confirm-closing-time"><b>Open</b><span>Daily<br />{hoursDisplay.replace('Open ','').replace(/^Daily\s*/i,'')}</span></div>
+  </aside>
+</section>
+
+<script is:inline>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var page = document.querySelector('.rs-page');
+  var panel = $('book');
+
+  /* ---- date + slots (client time) ---- */
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  var dateEl = $('res-date'), timeEl = $('res-time'), guestsEl = $('res-guests'), occEl = $('res-occasion'), zoneEl = $('res-zone');
+  dateEl.min = todayStr();
+  dateEl.value = todayStr();
+  var DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  /* "2026-11-10" -> "Tue, 10 Nov" (year added only when it is not the current year) */
+  function friendly(v) {
+    var p = (v || '').split('-'); if (p.length !== 3) return '';
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+    var s = DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
+    return d.getFullYear() === new Date().getFullYear() ? s : s + ' ' + d.getFullYear();
+  }
+  var dateV = $('res-date-v');
+  function showDate() { dateV.textContent = friendly(dateEl.value) || 'Choose a date'; dateEl.setAttribute('aria-label', 'Select date, ' + (friendly(dateEl.value) || 'none chosen')); }
+  dateEl.addEventListener('input', showDate);
+  dateEl.addEventListener('click', function () { try { if (dateEl.showPicker) dateEl.showPicker(); } catch (e) {} });
+  showDate();
+
+  function refreshSlots() {
+    var isToday = dateEl.value === todayStr(), now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes();
+    var opts = timeEl.querySelectorAll('option[data-m]'), first = null, any = false;
+    for (var i = 0; i < opts.length; i++) {
+      var past = isToday && Number(opts[i].getAttribute('data-m')) < nowMin;
+      opts[i].disabled = past;
+      if (!past) { any = true; if (!first) first = opts[i]; }
+    }
+    var cur = timeEl.selectedOptions[0];
+    if (!cur || cur.disabled || !cur.value) timeEl.value = first ? first.value : '';
+    $('rs-noslot').hidden = any;
+  }
+  dateEl.addEventListener('change', function () { showDate(); refreshSlots(); });
+  refreshSlots();
+
+  /* ---- 13+ guests -> party page ---- */
+  var submit = $('res-submit-btn');
+  function refreshGuests() {
+    var big = guestsEl.value === '13+';
+    $('rs-party').hidden = !big;
+    submit.setAttribute('aria-disabled', big ? 'true' : 'false');
+  }
+  guestsEl.addEventListener('change', refreshGuests);
+  refreshGuests();
+
+  /* ---- clear the "Pre-filled" tag once the guest edits that field ---- */
+  ['f-date', 'f-time', 'f-guests', 'f-zone', 'f-occasion'].forEach(function (id) {
+    var f = $(id); if (!f) return;
+    f.addEventListener('change', function () { f.classList.remove('is-prefilled'); });
+  });
+
+  /* ---- experience cards: prefill + scroll ---- */
+  var presets = {
+    'date-night': { guests: '2', occasion: 'Date Night' },
+    'birthday': { occasion: 'Birthday' },
+    'groups': { guests: '6', occasion: 'Casual Dining' }
+  };
+  function mark(id) { var f = $(id); if (f) f.classList.add('is-prefilled'); }
+  document.querySelectorAll('[data-xp]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var p = presets[btn.getAttribute('data-xp')]; if (!p) return;
+      if (p.guests) { guestsEl.value = p.guests; mark('f-guests'); refreshGuests(); }
+      if (p.occasion) { occEl.value = p.occasion; mark('f-occasion'); }
+      panel.scrollIntoView({ block: 'start' });
+      panel.focus({ preventScroll: true });
+    });
+  });
+  document.querySelectorAll('[data-scroll-book]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); panel.scrollIntoView({ block: 'start' }); panel.focus({ preventScroll: true }); });
+  });
+
+  /* ---- submit: open wa.me/919059670033 with the message (seating line added, coupon line removed, friendly date) ---- */
+  function showErr(msg, ids) {
+    $('rs-err-t').textContent = msg; $('rs-err').classList.add('on');
+    ['f-name', 'f-phone'].forEach(function (id) { $(id).classList.toggle('is-bad', ids.indexOf(id) > -1); });
+  }
+  function clearErr() { $('rs-err').classList.remove('on'); ['f-name', 'f-phone'].forEach(function (id) { $(id).classList.remove('is-bad'); }); }
+  ['res-name', 'res-phone'].forEach(function (id) { $(id).addEventListener('input', clearErr); });
+
+  submit.addEventListener('click', function () {
+    if (submit.getAttribute('aria-disabled') === 'true') { $('rs-party').hidden = false; return; }
+    var name = ($('res-name').value || '').trim();
+    var phone = ($('res-phone').value || '').trim();
+    var date = friendly(dateEl.value);
+    var seating = zoneEl.value || 'No preference';
+    var occasion = occEl.value || 'Dining';
+    var selectedGuests = guestsEl.value + ' Guests';
+    var selectedTime = timeEl.value;
+
+    if (!name || !phone) {
+      showErr('Please enter your name and mobile number.', [!name ? 'f-name' : '', !phone ? 'f-phone' : '']);
+      ($('res-' + (!name ? 'name' : 'phone'))).focus();
+      return;
+    }
+    if (!selectedTime) { showErr('Please choose a time.', []); timeEl.focus(); return; }
+    clearErr();
+
+    var msg = 'Hi Fursat! I would like to reserve a table:\n\n• Name: ' + name + '\n• Phone: ' + phone + '\n• Guests: ' + selectedGuests + '\n• Date: ' + date + '\n• Time: ' + selectedTime + '\n• Seating: ' + seating + '\n• Occasion: ' + occasion;
+    var url = 'https://wa.me/919059670033?text=' + encodeURIComponent(msg);
+    var w = window.open(url, '_blank');
+    var fine = $('rs-fine');
+    fine.textContent = 'WhatsApp is open. Your request is only sent once you press Send there. ';
+    if (!w) { var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'WhatsApp didn’t open? Tap here.'; a.style.cssText = 'color:#f3c56b;text-decoration:underline'; fine.appendChild(a); }
+  });
+
+  /* ---- reveal on view (composite-only; CSS decides the motion). Deferred: later sections are parsed after this script ---- */
+  function reveal() {
+  if (page) page.classList.add('rs-anim');
+  var els = document.querySelectorAll('.rs-rise, .rs-card-in');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+  } else { els.forEach(function (el) { el.classList.add('is-in'); }); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal); else reveal();
+})();
+</script>

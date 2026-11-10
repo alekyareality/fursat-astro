@@ -1,0 +1,33 @@
+---
+// ReserveHero.astro — /reserve hero. Real photo only (tour/img/lounge, candlelit grade via CSS), leaf = approved decorative exception.
+---
+<section class="rs-hero" aria-labelledby="rs-h1">
+  <div class="rs-hero-photo" aria-hidden="true">
+    <div class="rs-hero-photo-in">
+      <img class="rs-ph" src="/assets/tour/img/lounge.webp" alt="" width="780" height="1040" fetchpriority="high" decoding="async" />
+    </div>
+  </div>
+  <img class="rs-leaf rs-rise" src="/assets/tour/leaves/leaf-tl.webp" alt="" width="268" height="222" decoding="async" />
+  <div class="rs-hero-in">
+    <h1 class="rs-h1 rs-rise" id="rs-h1">Your evening<br />deserves a <span class="rs-gold" data-t="Fursat.">Fursat.</span></h1>
+    <p class="rs-sub rs-rise rs-s" style="--rs-d:80ms">Experience the vibe. Feel the Fursat.</p>
+    <div class="rs-cta rs-rise rs-c" style="--rs-d:140ms">
+      <a class="rs-btn rs-btn-solid" href="#book" data-scroll-book>
+        <span>Reserve a Table</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="rs-btn rs-btn-line" href="/party">
+        <span>Plan a Celebration</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <svg class="rs-orn rs-rise" viewBox="0 0 260 16" aria-hidden="true">
+      <defs>
+        <linearGradient id="rsoL" x1="0" x2="1"><stop offset="0" stop-color="#E0A63C" stop-opacity="0"/><stop offset="1" stop-color="#E0A63C"/></linearGradient>
+        <linearGradient id="rsoR" x1="0" x2="1"><stop offset="0" stop-color="#E0A63C"/><stop offset="1" stop-color="#E0A63C" stop-opacity="0"/></linearGradient>
+      </defs>
+      <rect x="0" y="7.4" width="120" height="1.2" fill="url(#rsoL)"/><rect x="140" y="7.4" width="120" height="1.2" fill="url(#rsoR)"/>
+      <path d="M130 2l6 6-6 6-6-6z" fill="none" stroke="#E0A63C" stroke-width="1.2"/>
+    </svg>
+  </div>
+</section>
