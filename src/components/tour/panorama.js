@@ -1,6 +1,7 @@
 // "Step inside Fursat" panorama, reference layout (9 Nov 2026).
 // A wide glowing window shows the 12 real photos as one continuous curved strip (feathered seams),
 // with the approved story mode, step-through transitions, real clips, neon, lights, sound, POV and elephant hunt.
+// Phone upgrades (9 Nov): opening pan, tilt to look, landscape collage, one-screen fit.
 // Root state classes: pv-js, is-seen, is-inside, is-focus, is-pov, is-end, is-paused, is-vid, is-nogl, is-lite, is-360, is-imm, is-dragged.
 import { SPACES as S, IMGS, smallImg, EMI, CLIPS, HOT, PAL, POV, MUSIC, ZONES } from './spaces.js';
 
@@ -96,7 +97,7 @@ export function initTour(root) {
   })();
 
   /* ---------- visibility: header reveal, lazy start, render pause, auto step-inside ---------- */
-  let started = false, autoTimer = 0, enterFn = null, pauseVids = null, immersive = false;
+  let started = false, autoTimer = 0, enterFn = null, pauseVids = null, stopTilt = null, immersive = false;
   function maybeAutoEnter() {
     clearTimeout(autoTimer);
     if (!shown || !enterFn || has('inside') || ratio < 0.55) return;
@@ -107,6 +108,7 @@ export function initTour(root) {
     const e = es[es.length - 1];
     visible = e.isIntersecting || immersive; ratio = immersive ? 1 : e.intersectionRatio;
     if (!visible && pauseVids) pauseVids();
+    if (!visible && stopTilt) stopTilt();
     sound.sync(); maybeAutoEnter();
   }, { threshold: [0, 0.15, 0.3, 0.55, 0.8, 1] }).observe(win);
   new IntersectionObserver((es) => {
@@ -268,7 +270,7 @@ void main(){
       is360 = on === undefined ? !is360 : on;
       cls('360', is360); const b = $('b360'); if (b) b.setAttribute('aria-pressed', is360 ? 'true' : 'false');
       room.visible = motes.visible = !is360; sphere.visible = is360;
-      if (is360) { closeDetail(); storyT = 0; }
+      if (is360) { tiltStop(true); closeDetail(); storyT = 0; }
     }
 
     /* ---------- state ---------- */
@@ -277,6 +279,12 @@ void main(){
     const focusVals = new Array(N).fill(0), sweep = new Array(N).fill(2);
     const wrap = (i) => ((i % N) + N) % N;
     let sw = 1, shh = 1;
+    // phone upgrades: opening pan, tilt to look, landscape collage
+    const coarse = matchMedia('(pointer:coarse)').matches;
+    const isPhone = coarse && Math.min(screen.width, screen.height) < 600;
+    let pan = null, sweepPlanned = false, overviewRan = false, overviewMax = 9, rotShown = false, fsOn = false, lockedLandscape = false;
+    const tilt = { on: false, busy: false, got: false, raw: 0, f: 0, hLast: null, p0: null, pr: 0, pf: 0, base: 0, lastPos: 0, y: 0, to: 0 };
+    const pinW = [], pinD = [];
 
     function size() {
       sw = win.clientWidth || 1; shh = win.clientHeight || 1;
@@ -292,9 +300,15 @@ void main(){
     }
     // Wide window (desktop): panorama projection, each photo ~0.95 as wide as the window is tall, so about four photos
     // show side by side. Phone and full screen keep the curved perspective look.
-    const pano = () => camera.aspect >= 2.2;
-    function computePano() { const hh = Math.min(70 * Math.PI / 180, camera.aspect * STEP / 1.9); U.uHalfH.value = hh; U.uTanV.value = hh / camera.aspect; }
-    new ResizeObserver(() => { size(); computeFit(); computePano(); }).observe(win); size(); computeFit(); computePano();
+    // A phone turned sideways (aspect about 2.0 to 2.4) uses it too, with the photos filling the height so about four sit side by side.
+    const pano = () => camera.aspect >= 2.0;
+    function computePano() {
+      const a = camera.aspect, std = a * STEP / 1.9, fitHH = (H / 2) / R * a;
+      const k = a <= 2.45 ? 1 : a >= 2.6 ? 0 : (2.6 - a) / 0.15;
+      const hh = Math.min(70 * Math.PI / 180, std + (fitHH - std) * k);
+      U.uHalfH.value = hh; U.uTanV.value = hh / a;
+    }
+    new ResizeObserver(() => { size(); computeFit(); computePano(); pinW.length = 0; pinD.length = 0; viewChanged(); }).observe(win); size(); computeFit(); computePano();
 
     function goTo(i) { target = Math.round(pos) + (((i - wrap(Math.round(pos))) % N + N + N / 2) % N - N / 2); storyT = 0; }
     function navTo(i, isPin) {
@@ -319,10 +333,25 @@ void main(){
     // Overview: after stepping inside, the wide window rests on Bar | Dining | Lounge | Café with all four pins,
     // like the reference. The story starts after a few seconds or as soon as the visitor does anything.
     let overview = false, overviewT = 0;
+    // A visitor touch, tilt or button press during the opening pan keeps the view where it is (settles on the nearest space).
     function endOverview(keep) {
+      sweepPlanned = false;
       if (!overview) return; overview = false; cls('overview', false); overviewT = 0; storyT = 0;
-      if (!keep) goTo(0);
+      if (pan) { pan = null; vel = 0; target = Math.round(pos); }
+      else if (!keep) goTo(0);
       current = -1;
+    }
+    // Phone, portrait: after the fly-in the camera sweeps bar -> garden window (whole venue), then the story starts at the Entrance.
+    function beginSweep() { pan = { t: 0, from: pos, to: pos + 3 }; target = null; vel = 0; storyT = 0; overviewT = 0; }
+    // Phone, landscape full screen: rest on Bar | Dining | Lounge | Café once, like the desktop window.
+    function startCollage() {
+      tiltStop(true); overviewRan = true; overview = true; cls('overview', true); overviewT = 0; overviewMax = 6; storyT = 0; closeDetail();
+      target = 2.5 + N * Math.round((pos - 2.5) / N); vel = 0; setZone(0);
+    }
+    function viewChanged() {
+      if (!immersive) { hideRotate(); return; }
+      if (pano()) { hideRotate(); if (inside && !flying && !overview && !overviewRan && !portal && !has('pov') && !has('focus') && !is360) startCollage(); }
+      else if (isPhone && camera.aspect < 1) showRotateSoon();
     }
     function toast(msg, ms) { const el = $('toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), ms || 3200); }
     function buzz(ms) { try { navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive && navigator.vibrate(ms); } catch (e) {} }
@@ -358,9 +387,34 @@ void main(){
       $('explore').setAttribute('aria-expanded', on ? 'true' : 'false');
       if (on) { lastFocus = document.activeElement; visible = true; ratio = 1; setTimeout(() => $('closeImm').focus({ preventScroll: true }), 50); }
       else if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+      if (!on) { hideRotate(); leaveLandscape(); }
       sound.sync();
     }
-    $('explore').onclick = () => { if (!inside && !flying) enter(); else endOverview(true); setImmersive(true); };
+    // Android Chrome: real full screen, then lock to landscape (iOS cannot lock, so it gets the rotate hint instead)
+    async function goLandscape() {
+      const w = $('wrap');
+      if (!isPhone || !w.requestFullscreen || !(screen.orientation && screen.orientation.lock)) return;
+      try { await w.requestFullscreen({ navigationUI: 'hide' }); fsOn = true; await screen.orientation.lock('landscape'); lockedLandscape = true; hideRotate(); } catch (e) {}
+    }
+    function leaveLandscape() {
+      lockedLandscape = false;
+      try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+      if (fsOn) { fsOn = false; try { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) {} }
+    }
+    document.addEventListener('fullscreenchange', () => { if (fsOn && !document.fullscreenElement) { fsOn = false; if (immersive) { if (has('pov')) povEnd(); setImmersive(false); } } });
+    // one-time hint (per session) when full screen is opened upright on a phone
+    const rotEl = $('rotate'); let rotT = 0, rotWait = 0;
+    function hideRotate() { clearTimeout(rotT); clearTimeout(rotWait); if (rotEl) { rotEl.classList.remove('on'); rotEl.setAttribute('aria-hidden', 'true'); } }
+    function showRotateSoon() {
+      if (!rotEl || rotShown || lockedLandscape) return; clearTimeout(rotWait);
+      rotWait = setTimeout(() => {
+        if (!immersive || pano() || camera.aspect >= 1 || lockedLandscape) return;
+        let seen = false; try { seen = sessionStorage.getItem('fursat-rot') === '1'; sessionStorage.setItem('fursat-rot', '1'); } catch (e) {}
+        rotShown = true; if (seen) return;
+        rotEl.classList.add('on'); rotEl.setAttribute('aria-hidden', 'false'); rotT = setTimeout(hideRotate, 4000);
+      }, 500);
+    }
+    $('explore').onclick = () => { if (!inside && !flying) enter(); else endOverview(true); setImmersive(true); goLandscape(); };
     $('closeImm').onclick = () => { if (has('pov')) povEnd(); setImmersive(false); };
 
     // ---------- POV walk-through (plays full screen) ----------
@@ -382,7 +436,7 @@ void main(){
       const st = POV[povStep], si = Math.max(0, S.findIndex((x) => x.id === st.s)); const c = wrap(Math.round(pos)); if (si !== c) startPortal(si);
       setTimeout(() => { if (has('pov')) povShow(st.l); }, reduce ? 0 : (si !== c ? 900 : 200)); povAt = performance.now();
     }
-    function povStart() { if (!inside) return; endOverview(true); toggle360(false); closeDetail(); povWasImm = immersive; setImmersive(true); cls('pov', true); cls('end', false); povStep = -1; povLock = 0; povNext(); }
+    function povStart() { if (!inside) return; tiltStop(true); endOverview(true); toggle360(false); closeDetail(); povWasImm = immersive; setImmersive(true); cls('pov', true); cls('end', false); povStep = -1; povLock = 0; povNext(); }
     function povEnd() { cls('pov', false); cls('end', false); $('povlayer').innerHTML = ''; storyT = 0; if (!povWasImm) setImmersive(false); }
     $('povBtn').onclick = povStart; $('povExit').onclick = povEnd; $('endBack').onclick = povEnd;
     const povActive = () => has('pov') && !has('end');
@@ -411,7 +465,9 @@ void main(){
       if (inside || flying) return; clearTimeout(autoTimer);
       setTimeout(() => toast(evening ? 'Evening at Fursat, so the lights are down. Drag, or tap the sides to move.' : 'Drag to look around, tap a photo to open it. Six elephants are hidden in here.', 4200), 2400);
       flying = true; flyT = reduce ? 1 : 0; p0 = pos; cls('inside', true); target = null; vel = 0;
-      flyEnd = -N + (pano() ? 2.5 : 0); overview = pano(); cls('overview', overview);
+      const wide = pano(); sweepPlanned = !wide && !reduce;
+      flyEnd = -N + (wide ? 2.5 : sweepPlanned ? 1 : 0); overview = wide || sweepPlanned; cls('overview', overview);
+      if (wide) { overviewRan = true; overviewMax = 9; }
       if (overview) setZone(0); else setCaption(0, true);
     }
     enterFn = enter;
@@ -420,6 +476,57 @@ void main(){
     if (evening) setLights(1);
     $('lights').onclick = () => setLights(nightT ? 0 : 1);
     if ($('b360')) $('b360').onclick = () => toggle360();
+
+    // ---------- tilt to look (gyroscope) ----------
+    // The phone is a window onto the room: turning it turns the view (30 degrees = one space). The heading comes from where the back of
+    // the phone points (the full rotation, so it also works when the phone is held upright, where alpha alone is unreliable),
+    // falling back to the top edge of the screen when the phone lies flat. Everything is relative to the moment of switching on.
+    const tiltBtn = $('tilt'), D2R = Math.PI / 180;
+    if (tiltBtn && 'DeviceOrientationEvent' in window && coarse) tiltBtn.hidden = false;
+    const smooth01 = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    function onTilt(e) {
+      if (e.alpha == null || e.beta == null || e.gamma == null) return;
+      const a = e.alpha * D2R, b = e.beta * D2R, g = e.gamma * D2R;
+      const cA = Math.cos(a), sA = Math.sin(a), cB = Math.cos(b), sB = Math.sin(b), cG = Math.cos(g), sG = Math.sin(g);
+      const bx = -(cA * sG + cG * sA * sB), by = -(sA * sG - cA * cG * sB), bz = -cB * cG;   // where the back of the phone points
+      const xX = cA * cG - sA * sB * sG, xY = cG * sA + cA * sB * sG, yX = -cB * sA, yY = cA * cB;   // right and top edges
+      const ang = screen.orientation && typeof screen.orientation.angle === 'number' ? screen.orientation.angle : (window.orientation || 0);
+      const q = ((Math.round(ang / 90) % 4) + 4) % 4;
+      const ux = q === 0 ? yX : q === 1 ? xX : q === 2 ? -yX : -xX, uy = q === 0 ? yY : q === 1 ? xY : q === 2 ? -yY : -xY;   // top of the screen
+      const mb = Math.hypot(bx, by), mu = Math.hypot(ux, uy), wB = smooth01(0.2, 0.5, mb);
+      const hx = (mb > 1e-4 ? bx / mb : 0) * wB + (mu > 1e-4 ? ux / mu : 0) * (1 - wB);
+      const hy = (mb > 1e-4 ? by / mb : 0) * wB + (mu > 1e-4 ? uy / mu : 0) * (1 - wB);
+      if (Math.abs(hx) + Math.abs(hy) < 1e-4) return;
+      const heading = Math.atan2(hx, hy) / D2R, pitch = Math.asin(Math.max(-1, Math.min(1, bz))) / D2R;
+      if (tilt.hLast === null) { tilt.hLast = heading; tilt.p0 = pitch; }
+      let d = heading - tilt.hLast; d -= 360 * Math.round(d / 360);   // unwrap across 0/360
+      tilt.raw += d; tilt.hLast = heading; tilt.pr = Math.max(-25, Math.min(25, pitch - tilt.p0)); tilt.got = true;
+    }
+    const tiltFail = () => toast("Tilt isn't available on this device", 3200);
+    async function tiltStart() {
+      if (tilt.on || tilt.busy || !inside || flying) return;
+      tilt.busy = true;
+      try {
+        // iOS: the permission prompt must be raised straight from the tap
+        if (typeof DeviceOrientationEvent.requestPermission === 'function' && (await DeviceOrientationEvent.requestPermission()) !== 'granted') throw new Error('denied');
+      } catch (e) { tilt.busy = false; tiltFail(); return; }
+      tilt.busy = false;
+      if (!inside || has('pov')) return;
+      if (is360) toggle360(false);
+      endOverview(true); closeDetail();
+      tilt.on = true; tilt.got = false; tilt.hLast = null; tilt.raw = tilt.f = tilt.pr = tilt.pf = 0;
+      tilt.base = pos; tilt.lastPos = pos; target = null; vel = 0; storyT = 0;
+      tiltBtn.setAttribute('aria-pressed', 'true');
+      window.addEventListener('deviceorientation', onTilt);
+      clearTimeout(tilt.to); tilt.to = setTimeout(() => { if (tilt.on && !tilt.got) { tiltStop(true); tiltFail(); } }, 1500);
+    }
+    function tiltStop() {
+      if (!tilt.on) return; tilt.on = false; clearTimeout(tilt.to); window.removeEventListener('deviceorientation', onTilt);
+      tiltBtn.setAttribute('aria-pressed', 'false'); vel = 0; target = Math.round(pos); storyT = 0;
+    }
+    stopTilt = tiltStop;
+    if (tiltBtn) tiltBtn.onclick = () => (tilt.on ? tiltStop() : tiltStart());
+    document.addEventListener('visibilitychange', () => { if (document.hidden) tiltStop(); });
 
     // ---------- detail panel ----------
     function openDetail(i) { goTo(i); vel = 0; const s = S[i]; $('dK').textContent = s.k; $('dT').textContent = s.t; $('dD').textContent = s.d; cls('focus', true); $('drawer').setAttribute('aria-hidden', 'false'); $('drawer').inert = false; openTarget = 1; setTimeout(() => $('back').focus({ preventScroll: true }), 400); }
@@ -446,6 +553,7 @@ void main(){
     }
     canvas.addEventListener('pointerdown', (e) => {
       if (!inside || has('pov')) return;
+      tapCancel = !!pan;
       endOverview(true);
       clearTimeout(holdTimer); held = false;
       if (!is360) holdTimer = setTimeout(() => { if (moved < 6 && axis !== 'x') { held = true; paused = true; cls('paused', true); } }, 260);
@@ -467,18 +575,21 @@ void main(){
         lastX = e.clientX; lastY = e.clientY;
       } else if (inside && fine && !is360) { hoverI = pick(e, true); }
     });
+    const settle = () => { if (!tilt.on) target = Math.round(pos); };
+    let tapCancel = false;   // a tap that stops the opening pan only stops it (no detail panel)
     function up(e) {
       clearTimeout(holdTimer); if (!dragging) return; dragging = false; canvas.classList.remove('drag'); cur.classList.remove('drag');
       if (is360) return;
-      if (held) { held = false; paused = false; cls('paused', false); target = Math.round(pos); return; }
+      if (held) { held = false; paused = false; cls('paused', false); settle(); return; }
+      if (tapCancel) { tapCancel = false; if (moved < 6) { settle(); return; } }
       if (moved < 6 && axis !== 'y') {
         const i = pick(e, true), c = wrap(Math.round(pos)), x = rel(e)[0];
-        if (i >= 0 && checkElephant(i, torchUV.x, torchUV.y)) { target = Math.round(pos); return; }
-        if (has('focus')) { closeDetail(); target = Math.round(pos); return; }
+        if (i >= 0 && checkElephant(i, torchUV.x, torchUV.y)) { settle(); return; }
+        if (has('focus')) { closeDetail(); settle(); return; }
         if (i >= 0) { if (i === c) openDetail(i); else goTo(i); }
-        else if (x < 0.2) goTo(wrap(c - 1)); else if (x > 0.8) goTo(wrap(c + 1)); else target = Math.round(pos);
+        else if (x < 0.2) goTo(wrap(c - 1)); else if (x > 0.8) goTo(wrap(c + 1)); else settle();
       } else if (moved > 6) { closeDetail(); storyT = 0; }
-      else target = Math.round(pos);
+      else settle();
     }
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
     canvas.addEventListener('pointerleave', () => { torchI = -1; hoverI = -1; });
@@ -528,12 +639,27 @@ void main(){
       }
 
       // physics
+      let drove = false;
+      if (tilt.on) { const kk = 1 - Math.exp(-dt * 10); tilt.f += (tilt.raw - tilt.f) * kk; tilt.pf += (tilt.pr - tilt.pf) * kk; }
+      tilt.y += ((tilt.on ? Math.max(-1, Math.min(1, tilt.pf / 25)) : 0) - tilt.y) * Math.min(1, dt * 6);
       if (flying) { const e = flyT < 0.5 ? 4 * flyT ** 3 : 1 - Math.pow(-2 * flyT + 2, 3) / 2; const np = p0 + (flyEnd - p0) * e; vel = (np - pos) / Math.max(dt, 0.001); pos = np; if (flyT >= 1) { pos = flyEnd; vel = 0; target = flyEnd; } }
+      else if (pan) {
+        pan.t = Math.min(1, pan.t + dt / 4.5); const q = pan.t, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+        const np = pan.from + (pan.to - pan.from) * e; vel = (np - pos) / Math.max(dt, 0.001); pos = np; setZone(zoneOf[wrap(Math.round(pos))]);
+      }
+      else if (tilt.on && !is360 && target === null && !has('focus') && !portal) {
+        const ext = pos - tilt.lastPos; if (ext !== 0) tilt.base += ext;   // a drag, wheel or jump moves the base, so it adds to the tilt
+        const np = tilt.base + tilt.f / 30; if (!dragging) vel = Math.max(-6, Math.min(6, (np - pos) / Math.max(dt, 0.001)));
+        pos = np; tilt.lastPos = pos; drove = true;
+      }
       else if (!dragging || is360) {
+        if (tilt.on && target !== null && pos === target) target = null;
         if (target !== null) { const d = target - pos; vel += (d * 38 - vel * 11) * dt; if (Math.abs(d) < 0.0005 && Math.abs(vel) < 0.01) { pos = target; vel = 0; } }
         else { pos += vel * dt; vel *= Math.exp(-dt * 3.2); if (Math.abs(vel) < 0.6) target = Math.round(pos); }
         if (target !== null) pos += vel * dt;
       }
+      if (tilt.on && !drove) { tilt.base = pos - tilt.f / 30; tilt.lastPos = pos; }
+      if (pan && pan.t >= 1) { pan = null; overview = false; cls('overview', false); overviewT = 0; storyT = 0; vel = 0; target = Math.round(pos); current = -1; startPortal(0); }
       if (!inside && !flying) { pos = 0.5 + Math.sin(t * 0.15) * 0.25; vel = 0; }
       smoothVel += ((reduce ? 0 : Math.max(-1, Math.min(1, vel * 0.32))) - smoothVel) * Math.min(1, dt * 8);
       U.uVel.value = reduce ? 0 : Math.max(smoothVel, portalAmt * 0.6);
@@ -541,15 +667,16 @@ void main(){
       applyPalette(((pos % N) + N) % N);
       const still = !dragging && !flying && inside && Math.abs(vel) < 0.05;
       // reverse zoom: zoomed into the detail while travelling, pulls back to the full photo once settled
-      const rzT = reduce ? 0 : ((flying || portal || (inside && Math.abs(vel) > 0.25) || dragging) ? 1 : 0);
+      const rzT = reduce ? 0 : ((flying || portal || (inside && !pan && Math.abs(vel) > 0.25) || dragging) ? 1 : 0);
       U.uRZ.value += (rzT - U.uRZ.value) * Math.min(1, dt * (rzT > U.uRZ.value ? 3 : 1));
       U.uDwell.value = Math.max(0, Math.min(1, U.uDwell.value + ((still && U.uRZ.value < 0.1) ? dt / 4 : -dt * 3)));
       // neon ignition when a space settles
       const cs = wrap(Math.round(pos));
       if (still && cs !== litIdx) { litIdx = cs; age[cs] = 0; buzz(8); }
       // story timer (runs while the window is on screen and nobody is interacting)
-      if (overview && still && ratio > 0.5 && !has('focus')) { overviewT += dt; if (overviewT > 9) endOverview(false); }
-      const storyOn = inside && !overview && !is360 && !has('focus') && !has('pov') && !paused && !portal && !dragging && ratio > 0.5;
+      if (overview && !pan && !flying && still && ratio > 0.5 && !has('focus')) { overviewT += dt; if (overviewT > overviewMax) endOverview(false); }
+      if (overview && !pan && !flying && !sweepPlanned && !pano()) endOverview(false);
+      const storyOn = inside && !overview && !is360 && !has('focus') && !has('pov') && !paused && !portal && !dragging && !tilt.on && ratio > 0.5;
       if (storyOn && still) storyT += dt;
       if (storyOn && storyT >= storyDur(cs)) { storyT = 0; advance(1); }
       const sp = Math.min(1, storyT / storyDur(cs));
@@ -594,7 +721,7 @@ void main(){
       openAmt += (openTarget - openAmt) * Math.min(1, dt * (reduce ? 60 : 3.5));
       U.uNight.value += (nightT - U.uNight.value) * Math.min(1, dt * (reduce ? 60 : 1.6));
       cmx += (mx - cmx) * Math.min(1, dt * 3); cmy += (my - cmy) * Math.min(1, dt * 3);
-      if (flying) { flyT = Math.min(1, flyT + dt / 2.2); if (flyT >= 1) { flying = false; inside = true; pos = flyEnd; target = flyEnd; vel = 0; } }
+      if (flying) { flyT = Math.min(1, flyT + dt / 2.2); if (flyT >= 1) { flying = false; inside = true; pos = flyEnd; target = flyEnd; vel = 0; if (sweepPlanned) { sweepPlanned = false; if (pano()) startCollage(); else beginSweep(); } } }
       const cylT = pano() && inside && !flying && !portal && !is360 ? 1 : 0;
       U.uCyl.value += (cylT - U.uCyl.value) * Math.min(1, dt * (reduce ? 60 : 2.5));
       const zIn = (fit.d - R) * (1 - U.uCyl.value);
@@ -613,8 +740,10 @@ void main(){
         const wide = camera.aspect > 1.3;
         const fwd = -openAmt * Math.min(2.6, fit.d * 0.35) - (reduce ? 0 : U.uDwell.value * (1 - openAmt) * 0.5) - portalAmt * Math.max(0, fit.d - 1.2);
         const par = 1 - U.uCyl.value * 0.8;
-        camera.position.set((cmx * 0.45 * (fine ? 1 : 0)) * par + (wide ? openAmt * 1.1 : 0), -cmy * 0.3 * par, zIn + fwd);
-        look.set(cmx * 2.4 * par + (wide ? openAmt * 3.4 : 0), -cmy * 1.2 * par + (wide ? 0 : -openAmt * 0.9), -10);
+        // tilt pitch: perspective looks up/down a little; the panorama slides the whole view (the cylinder must stay upright)
+        const yS = U.uCyl.value * tilt.y * Math.max(0, H / 2 - U.uTanV.value * R) * 0.9;
+        camera.position.set((cmx * 0.45 * (fine ? 1 : 0)) * par + (wide ? openAmt * 1.1 : 0), -cmy * 0.3 * par + yS, zIn + fwd);
+        look.set(cmx * 2.4 * par + (wide ? openAmt * 3.4 : 0), -cmy * 1.2 * par + (wide ? 0 : -openAmt * 0.9) + (1 - U.uCyl.value) * tilt.y * 1.2 + yS, -10);
         camera.fov = fit.fov - openAmt * 4 - portalAmt * 10;
       }
       camera.lookAt(look); camera.updateProjectionMatrix();
@@ -635,7 +764,15 @@ void main(){
         }
         const ax = Math.abs(pinV.x), op = showPins && front && ax < 0.96 && Math.abs(pinV.y) < 0.85 ? Math.min(1, (0.96 - ax) / 0.12) : 0;
         el.style.opacity = op.toFixed(2); el.style.pointerEvents = op > 0.4 ? 'auto' : 'none'; el.tabIndex = op > 0.4 ? 0 : -1;
-        if (op > 0) el.style.transform = `translate3d(${((pinV.x * 0.5 + 0.5) * sw).toFixed(1)}px,${((-pinV.y * 0.5 + 0.5) * shh).toFixed(1)}px,0)`;
+        if (op > 0) {
+          let px = (pinV.x * 0.5 + 0.5) * sw;
+          if (sw < 900 && U.uCyl.value > 0.5) {   // narrow panorama (phone sideways): a label that would run off the right edge sits left of its dot
+            const w = pinW[k] || (pinW[k] = el.offsetWidth), d = pinD[k] || (pinD[k] = el.firstChild.offsetWidth), over = px - d / 2 + w - (sw - 8);
+            if (over > 0) el._f = 1; else if (over < -28) el._f = 0;
+            el.classList.toggle('is-flip', !!el._f); if (el._f) px -= w - d;
+          } else if (el._f) { el._f = 0; el.classList.remove('is-flip'); }
+          el.style.transform = `translate3d(${px.toFixed(1)}px,${((-pinV.y * 0.5 + 0.5) * shh).toFixed(1)}px,0)`;
+        }
       }
 
       // custom cursor
