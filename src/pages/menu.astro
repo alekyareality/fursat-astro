@@ -65,9 +65,35 @@ const addAttrs = (i: Item) => {
 };
 const vegMark = (veg?: boolean) => (veg ? 'mv-vm mv-vm--v' : 'mv-vm mv-vm--n');
 
-// ── SEO: Menu / MenuSection / MenuItem schema lands in M3 ────────────────────
-const TODO_PRICE = 'TODO(client): Peri Peri Cottage Cheese Sandwich (395 vs 240) and Sriracha Paneer Tikka Burger price conflicts left untouched.';
-void TODO_PRICE;
+// ── SEO: Menu / MenuSection / MenuItem schema (same text and prices as the visible list) ──
+// TODO(client): Peri Peri Cottage Cheese Sandwich (395 vs 240) and Sriracha Paneer Tikka Burger prices are untouched.
+const SITE = 'https://fursatind.in';
+const itemLd = (i: Item) => {
+  const vs = variants(i);
+  const offers = vs.length > 1
+    ? vs.map((v) => ({ '@type': 'Offer', name: v.label, price: v.value, priceCurrency: 'INR' }))
+    : i.price != null ? { '@type': 'Offer', price: i.price, priceCurrency: 'INR' } : undefined;
+  return {
+    '@type': 'MenuItem', name: titleCase(i.name),
+    ...(i.description ? { description: i.description } : {}),
+    ...(offers ? { offers } : {}),
+    ...(i.veg ? { suitableForDiet: 'https://schema.org/VegetarianDiet' } : {}),
+    ...(i.image ? { image: SITE + i.image } : {}),
+  };
+};
+const menuLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { name: 'Fursat Kitchen Menu', list: food, id: 'food' },
+    { name: 'Fursat Bar Menu', list: drinks, id: 'drinks' },
+  ].map(({ name, list, id }) => ({
+    '@type': 'Menu', '@id': `${SITE}/menu/#${id}`, name, url: `${SITE}/menu/#mv-${id}`, inLanguage: 'en-IN',
+    provider: { '@id': `${SITE}/#restaurant` },
+    hasMenuSection: list.map((sec) => ({ '@type': 'MenuSection', name: sec.section, hasMenuItem: sec.items.map(itemLd) })),
+  })),
+};
+const ldItems = menuLd['@graph'].reduce((n, m) => n + m.hasMenuSection.reduce((k, sec) => k + sec.hasMenuItem.length, 0), 0);
+if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} != ${totalItems}`);
 ---
 
 <Base
@@ -103,6 +129,7 @@ void TODO_PRICE;
       <div class="mv-hero" id="mv-hero">
         <article class="mv-win mv-win--bar">
           <div class="mv-win-ph"><img src="/assets/menu/hero-bar-1400.webp" srcset="/assets/menu/hero-bar-800.webp 800w, /assets/menu/hero-bar-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1074" alt="The Fursat bar: backlit hexagon shelves of bottles beside the glowing Fursat sign" fetchpriority="high" decoding="async" /></div>
+          <span class="mv-sweep" aria-hidden="true"></span>
           <div class="mv-win-cap">
             <span class="mv-eyebrow">The Bar</span>
             <h2 class="mv-hl">Sip. Socialize. <span>Unwind.</span></h2>
@@ -110,7 +137,8 @@ void TODO_PRICE;
           </div>
         </article>
         <article class="mv-win mv-win--table">
-          <div class="mv-win-ph"><img src="/assets/menu/hero-table-1400.webp" srcset="/assets/menu/hero-table-800.webp 800w, /assets/menu/hero-table-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1008" alt="A Fursat lounge corner with a cream sofa, two leather chairs and a round table" loading="eager" decoding="async" /></div>
+          <div class="mv-win-ph"><img src="/assets/menu/hero-table-1400.webp" srcset="/assets/menu/hero-table-800.webp 800w, /assets/menu/hero-table-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1008" alt="A Fursat lounge corner with a cream sofa, two leather chairs and a round table" loading="lazy" decoding="async" /></div>
+          <span class="mv-sweep" aria-hidden="true"></span>
           <div class="mv-win-cap">
             <span class="mv-eyebrow">The Table</span>
             <h2 class="mv-hl">Dine. Delight. <span>Repeat.</span></h2>
@@ -138,7 +166,7 @@ void TODO_PRICE;
 
         <section class="mv-card mv-feat" aria-labelledby="mv-feat-name">
           <div class="mv-feat-ph">
-            <img src={featured.featuredDrink.image} alt={featured.featuredDrink.imageAlt} width="1200" height="1637" loading="eager" decoding="async" />
+            <img src={featured.featuredDrink.image} alt={featured.featuredDrink.imageAlt} width="1200" height="1637" loading="lazy" decoding="async" />
           </div>
           <div class="mv-feat-txt">
             <span class="mv-lab">Featured drink</span>
@@ -178,7 +206,7 @@ void TODO_PRICE;
             <span class="mv-orn" aria-hidden="true"><b></b></span>
             <div class="mv-chef-2in">
               <div>
-                <span class="mv-lab">Also a chef's pick · veg</span>
+                <span class="mv-lab">Also a chef's pick</span>
                 <h4 class="mv-nm2">{titleCase(picks[1].name)}</h4>
                 <p class="mv-meta">
                   <span class={vegMark(picks[1].veg)} role="img" aria-label={picks[1].veg ? 'Vegetarian' : 'Non-vegetarian'}></span>{picks[1].veg ? 'Vegetarian' : 'Non-vegetarian'}
@@ -210,7 +238,7 @@ void TODO_PRICE;
           <span class="mv-sep" aria-hidden="true"></span>
           <a class="mv-wa" id="mv-wa" href="#" aria-disabled="true" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2z"/></svg>
-            Send on WhatsApp <span aria-hidden="true">→</span>
+            <span><span class="mv-wa-long">Send on </span>WhatsApp</span> <span aria-hidden="true">→</span>
           </a>
           <div class="mv-picks-panel" id="mv-picks-panel" hidden>
             <ul id="mv-picks-list"></ul>
@@ -220,26 +248,40 @@ void TODO_PRICE;
       </div>
     </section>
 
-    <!-- Basic server-rendered list (M3 replaces this with the full list, schema, scroll-spy and cursor reveal) -->
+    <!-- Full menu: every item server-rendered (works without JS) -->
     <section class="mv-list" aria-label="Full menu" id="mv-list">
+      <div class="mv-sticky" id="mv-sticky">
+        <div class="mv-sticky-in">
+          <div class="mv-seg" role="group" aria-label="Food or drinks">
+            <button class="mv-seg-b is-on" type="button" data-side-go="food" data-seg="food">Food</button>
+            <button class="mv-seg-b" type="button" data-side-go="drinks" data-seg="drinks">Drinks</button>
+          </div>
+          {[{ side: 'food', groups: FOOD_GROUPS }, { side: 'drinks', groups: DRINK_GROUPS }].map(({ side, groups }) => (
+            <div class="mv-schips" data-schips={side} hidden={side !== 'food'}>
+              {groups.map((g) => (<button class="mv-schip" type="button" data-go={g.id} data-side-of={side}>{g.label}</button>))}
+            </div>
+          ))}
+          <p class="mv-count num" id="mv-count" role="status" aria-live="polite"></p>
+        </div>
+      </div>
       <div class="mv-list-in">
         {[{ side: 'food', title: 'The Table', blurb: `${foodCount} dishes`, groups: FOOD_GROUPS }, { side: 'drinks', title: 'The Bar', blurb: `${drinkCount} drinks`, groups: DRINK_GROUPS }].map(({ side, title, blurb, groups }) => (
           <div class="mv-side" id={`mv-${side}`} data-side-block={side}>
             <header class="mv-side-h"><h2>{title}</h2><span>{blurb}</span></header>
             {groups.map((g) => (
               <div class="mv-grp" id={`g-${g.id}`} data-group={g.id}>
-                <h3 class="mv-grp-h">{g.label}</h3>
-                {groupSections(g).map((s) => (
-                  <section class="mv-sec" id={`s-${slug(s.section)}`}>
-                    {g.sections.length > 1 && <h4 class="mv-sec-h">{s.section}</h4>}
+                <h3 class="mv-grp-h">{g.label}<span class="num">{groupCount(g)}</span></h3>
+                {groupSections(g).map((sec) => (
+                  <section class="mv-sec" id={`s-${slug(sec.section)}`}>
+                    {g.sections.length > 1 && <p class="mv-sec-h">{sec.section}</p>}
                     <ul class="mv-items">
-                      {s.items.map((i) => (
-                        <li class="mv-item" data-row data-veg={i.veg ? '1' : '0'} data-spicy={i.spicy ? '1' : '0'} data-text={`${i.name} ${i.description ?? ''} ${i.section}`.toLowerCase()}>
+                      {sec.items.map((i) => (
+                        <li class="mv-item" data-row data-veg={i.veg ? '1' : '0'} data-spicy={i.spicy ? '1' : '0'} data-text={`${titleCase(i.name)} ${i.description ?? ''} ${i.section}`.toLowerCase()} {...(i.image ? { 'data-img': i.image } : {})}>
                           <div class="mv-item-main">
                             <span class={vegMark(i.veg)} role="img" aria-label={i.veg ? 'Vegetarian' : 'Non-vegetarian'}></span>
                             <div>
-                              <h5>{titleCase(i.name)}{i.chefSpecial && <em class="mv-chefmark">Chef's special</em>}{i.spicy && <em class="mv-spice">Spicy</em>}</h5>
-                              {i.description && <p>{i.description}</p>}
+                              <h4 class="mv-item-name"><span class="mv-iname">{titleCase(i.name)}</span>{i.chefSpecial && <em class="mv-chefmark">Chef's special</em>}{i.spicy && <em class="mv-spice">Spicy</em>}</h4>
+                              {i.description && <p class="mv-idesc">{i.description}</p>}
                               {i.note && <p class="mv-note">{i.note}</p>}
                             </div>
                           </div>
@@ -262,11 +304,16 @@ void TODO_PRICE;
             ))}
           </div>
         ))}
-        <p class="mv-empty" id="mv-empty" hidden>Nothing matches that search. Try a different word or clear the filters.</p>
-        <p class="mv-fine">Prices in ₹, taxes extra. Please tell us about any allergies when you order.</p>
+        <p class="mv-empty" id="mv-empty" hidden>No dish found. Try “biryani”, or clear the filters.</p>
+        <p class="mv-fine">Prices in ₹, taxes extra.</p>
       </div>
     </section>
   </main>
+
+  <!-- Cursor photo reveal (desktop, rows that have a real photo) -->
+  <div class="mv-reveal" id="mv-reveal" aria-hidden="true"><img alt="" width="220" height="160" decoding="async" /></div>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(menuLd)}></script>
 
   <!-- 21+ notice (shown once, before the bar menu) -->
   <dialog class="mv-dialog" id="mv-age" aria-labelledby="mv-age-t">

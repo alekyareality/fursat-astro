@@ -856,7 +856,6 @@
         "veg": false,
         "spicy": false,
         "chefSpecial": true,
-        "image": "/assets/dishes/dsc03317.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -894,7 +893,6 @@
         "veg": true,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc03333.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -904,7 +902,6 @@
         "veg": true,
         "spicy": true,
         "chefSpecial": true,
-        "image": "/assets/dishes/dsc03331.webp",
         "section": "Appetizers",
         "description": ""
       },
