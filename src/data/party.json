@@ -439,17 +439,19 @@
   {
    "id": "b1049",
    "group": "banquet",
-   "name": "Package 1049",
+   "name": "Package 1049 · Veg",
    "price": 1049,
-   "veg": false,
+   "veg": true,
    "tone": "red",
    "sections": [
     {
      "h": "Welcome drink (mocktail)",
-     "rule": "Any 1",
+     "rule": "Any 2",
      "items": [
       "Orange Chaska",
-      "Virgin Mojito"
+      "Virgin Mojito",
+      "Blue Lagoon",
+      "Fruit Punch"
      ]
     },
     {
@@ -457,56 +459,44 @@
      "rule": "Any 1",
      "items": [
       "Veg Manchow Soup",
-      "Tomato Soup"
+      "Tomato Soup",
+      "Sweet Corn Soup",
+      "Hot n Sour Soup"
      ]
     },
     {
      "h": "Salad",
-     "rule": "Any 1",
+     "rule": "Any 2",
      "items": [
       "Green Salad",
-      "Russian Salad"
+      "Russian Salad",
+      "Waldorf Salad",
+      "Aloo Papadi Salad"
      ]
     },
     {
      "h": "Veg starters",
-     "rule": "Any 2",
+     "rule": "Any 4",
      "items": [
-      "Baby Corn Manchurian",
-      "Kothameera Paneer",
-      "Veg Manchurian",
-      "Bhutan Veg"
-     ]
-    },
-    {
-     "h": "Non-veg starters",
-     "rule": "Any 2",
-     "items": [
-      "Apollo Fish",
-      "Fish Tikka",
-      "Karivepaku Kodi Vepudu",
-      "Buhari Chicken 65",
-      "Chicken Tikka"
+      "Baby Corn Lollipop",
+      "Gongura Paneer Vepudu",
+      "Mini Burmese Parcel",
+      "Shanghai Roll",
+      "Paneer Tikka",
+      "Tempura Broccoli Bites",
+      "Jalapeno Cheese Balls",
+      "Beetroot Cheesy Sticks"
      ]
     },
     {
      "h": "Rice, veg",
-     "rule": "Any 1",
+     "rule": "Any 2",
      "items": [
       "Veg Dum Biryani",
       "Brown Onion Bagara Rice",
       "Gongura Paneer Pulao",
-      "Kothameera Paneer Pulao"
-     ]
-    },
-    {
-     "h": "Rice, non-veg",
-     "rule": "Any 1",
-     "items": [
-      "Chicken Dum Biryani",
-      "Fursat Spl Chicken Pulao",
-      "Chicken Fry Pc Pulao (Bone)",
-      "Chicken 65 Biryani"
+      "Kothameera Paneer Pulao",
+      "Coconut Rice"
      ]
     },
     {
@@ -517,16 +507,6 @@
       "Palak Paneer",
       "Mix Veg Curry",
       "Guttivankaya"
-     ]
-    },
-    {
-     "h": "Non-veg curries",
-     "rule": "Any 1",
-     "items": [
-      "Telangana Chicken Curry",
-      "Chettinad Chicken",
-      "Chepala Pulusu",
-      "Fish Masala"
      ]
     },
     {
@@ -541,9 +521,13 @@
     },
     {
      "h": "Indian breads",
-     "rule": "",
+     "rule": "Any 2",
      "items": [
-      "Roti / Naan"
+      "Roti",
+      "Naan",
+      "Butter Naan",
+      "Kulcha",
+      "Garlic Naan"
      ]
     },
     {
@@ -560,9 +544,12 @@
     },
     {
      "h": "Desserts",
-     "rule": "Any 1",
+     "rule": "Any 2",
      "items": [
-      "Gulab Jamun",
+      "Melange Fruit Pudding",
+      "Double ka Meetha",
+      "Chocolate Brownie",
+      "Apricot Delight",
       "Kadhu ka Kheer",
       "Vanilla Ice Cream"
      ]
@@ -882,7 +869,7 @@
    "sections": [
     {
      "h": "Welcome drink (mocktail)",
-     "rule": "Any 1",
+     "rule": "Any 2",
      "items": [
       "Orange Chaska",
       "Virgin Mojito",
@@ -1016,7 +1003,7 @@
     },
     {
      "h": "Desserts",
-     "rule": "Any 3",
+     "rule": "Any 2",
      "items": [
       "Melange Fruit Pudding",
       "Double ka Meetha",
