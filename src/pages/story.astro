@@ -1,4 +1,5 @@
 ---
+import site from '../data/site.json';
 // story.astro - Fursat Brand Story, Values & Heritage
 // Reference layout: Cinder & Dew editorial cafe/bar system (Slide 1 & 2)
 import Base from '../layouts/Base.astro';
@@ -190,7 +191,7 @@ import '../styles/fk-tokens.css';
             </div>
             <div class="st-ig-item">
               <b>Operating Hours</b>
-              <span>Open 7 Days a Week: 12:00 PM – 11:30 PM</span>
+              <span>Open 7 Days a Week: {site.hours.display}</span>
             </div>
             <div class="st-ig-item">
               <b>Official Contact</b>

@@ -37,7 +37,6 @@ const occasions = [
 ];
 // TODO(client): booking conditions (minimum spend, time limit, deposit, offer terms). Empty = renders "No conditions".
 const conditions: string[] = [];
-const hoursDisplay = site.hours.display; // TODO(client): confirm closing time (23:30 in site.json)
 ---
 <section id="book" class="rs-panel" tabindex="-1" aria-labelledby="rs-book-h">
   <div class="rs-pphoto" aria-hidden="true">
@@ -172,7 +171,7 @@ const hoursDisplay = site.hours.display; // TODO(client): confirm closing time (
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4h8L10.2 11a2.7 2.7 0 0 1-5.4 0zM7.5 13.5V20M4.5 20h6M14.5 8.5h6l-.9 5.3a2.2 2.2 0 0 1-4.2 0zM17.5 16V20M14.5 20h6"/></svg>
       <span>Signature<br />Drinks</span>
     </div>
-    <div class="rs-hours" data-todo="client-confirm-closing-time"><b>Open</b><span>Daily<br />{hoursDisplay.replace('Open ','').replace(/^Daily\s*/i,'')}</span></div>
+    <div class="rs-hours"><b>Open</b>{site.hours.schedule.map(h => <span>{h.days}<br />{h.open} – {h.close}</span>)}</div>
   </aside>
 </section>
 

@@ -233,8 +233,8 @@
 .rs-perks{grid-column:1/-1;grid-row:2;display:flex;align-items:center;justify-content:center;gap:clamp(24px,5vw,64px);margin:0 18px;padding:12px 0 14px;border-top:1px solid var(--c-hair)}
 .rs-perk{display:flex;align-items:center;gap:12px;text-align:left;font:500 .9rem/1.3 var(--rs-sans);color:var(--c-text)}
 .rs-perk svg{width:30px;height:30px;flex:none;stroke:var(--c-rim);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.rs-hours{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:8px 14px;border-radius:14px;border:1px dashed var(--c-hair);font-variant-numeric:tabular-nums}
-.rs-hours b{font:500 .68rem/1.2 var(--rs-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--c-gold-soft)}
+.rs-hours{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;text-align:center;gap:2px 16px;padding:8px 14px;border-radius:14px;border:1px dashed var(--c-hair);font-variant-numeric:tabular-nums}
+.rs-hours b{flex-basis:100%;font:500 .68rem/1.2 var(--rs-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--c-gold-soft)}
 .rs-hours span{font-size:.8rem;line-height:1.35;color:var(--c-text);white-space:nowrap}
 
 /* ───────── More at Fursat ───────── */

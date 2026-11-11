@@ -1,4 +1,5 @@
 ---
+import site from '../data/site.json';
 // cafe.astro - Fursat Café & Shakes
 // Curated highlights, specialty coffee, bakes & organic fluid aesthetic
 import Base from '../layouts/Base.astro';
@@ -171,7 +172,7 @@ import BookingDialog from '../components/BookingDialog.astro';
         <div class="cf-faq-list">
           <details class="cf-faq-item">
             <summary>What are the café opening hours?</summary>
-            <p>Our café opens daily from 12:00 PM until 11:30 PM. Perfect for quiet lunch breaks, afternoon meetings, and evening desserts.</p>
+            <p>Our café is open {site.hours.display}. Perfect for quiet lunch breaks, afternoon meetings, and evening desserts.</p>
           </details>
           <details class="cf-faq-item">
             <summary>Is high-speed Wi-Fi and power available for remote working?</summary>

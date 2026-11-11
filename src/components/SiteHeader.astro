@@ -1,4 +1,5 @@
 ---
+import site from '../data/site.json';
 // SiteHeader.astro - Fursat Luxury Hospitality Navigation
 // Structure: Menu ▾ | Celebrate ▾ | Order | Ask Fursat | Story  +  gold Reserve button
 interface Props {
@@ -118,7 +119,7 @@ const { active = 'home' } = Astro.props;
       </div>
       <div class="sh-mp-cta">
         <a href="/reserve" class="sh-mp-reserve" data-open="book" aria-current={active === 'reserve' ? 'page' : undefined}>Reserve a Table</a>
-        <p class="sh-mp-time">Open Daily 12:00 PM – 11:30 PM · Capital Park, Madhapur</p>
+        <p class="sh-mp-time">{site.hours.display} · Capital Park, Madhapur</p>
       </div>
     </div>
   </div>

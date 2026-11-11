@@ -1,4 +1,5 @@
 ---
+import site from '../data/site.json';
 // SiteFooter.astro - Fursat Luxury Hospitality Footer
 // Legal Name, Address, FSSAI, Hours, Socials & Quick Links
 ---
@@ -48,7 +49,7 @@
           </p>
           <p class="sf-info-p">
             <b>Hours:</b><br />
-            12:00 PM – 11:30 PM (Daily)
+            {site.hours.display}
           </p>
           <p class="sf-info-p">
             <b>Reservations:</b><br />
