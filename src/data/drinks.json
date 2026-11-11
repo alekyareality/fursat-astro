@@ -1442,7 +1442,8 @@
         "section": "Milk Shakes",
         "description": "",
         "spicy": false,
-        "chefSpecial": false
+        "chefSpecial": false,
+        "image": "/assets/dishes/lotus_biscoff_.webp"
       },
       {
         "name": "BROWNIE CHOCOLATE SHAKE",

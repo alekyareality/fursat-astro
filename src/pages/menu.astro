@@ -2,2536 +2,287 @@
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import PicksTray from '../components/PicksTray.astro';
 import foodData from '../data/food.json';
 import drinksData from '../data/drinks.json';
+import featured from '../data/menu-featured.json';
+import { FOOD_GROUPS, DRINK_GROUPS, CHIPS, ICONS, type Group } from '../components/menu/menuGroups';
+import { money } from '../components/menu/cart';
+import '../styles/menu-v2.css';
 
 // ── Types ────────────────────────────────────────────────────────────────────
-type MenuItem = {
-  name: string;
-  section: string;
-  description?: string;
-  price: number | null;
-  veg?: boolean;
-  spicy?: boolean;
-  chefSpecial?: boolean;
-  image?: string;
-  alc?: boolean;
-  price30ml?: number;
-  priceBottle?: number;
-  priceGlass?: number | null;
-  priceBucket?: number;
-  price500ml?: number;
-  price330ml?: number;
-  pricePitcher?: number;
-  priceTower?: number;
-  subCategory?: string;
+type Raw = {
+  name: string; section: string; description?: string; price: number | null;
+  veg?: boolean; spicy?: boolean; chefSpecial?: boolean; image?: string; alc?: boolean;
+  price30ml?: number; priceGlass?: number | null; priceBottle?: number; priceBucket?: number;
+  price500ml?: number; price330ml?: number; pricePitcher?: number; priceTower?: number;
   note?: string;
-  kind: 'food' | 'drink';
 };
+type Item = Raw & { kind: 'food' | 'drink' };
+type Section = { section: string; items: Item[] };
 
-type MenuSection = {
-  section: string;
-  items: MenuItem[];
-};
+const food: Section[] = (foodData as { section: string; items: Raw[] }[]).map((s) => ({ section: s.section, items: s.items.map((i) => ({ ...i, kind: 'food' as const })) }));
+const drinks: Section[] = (drinksData as { section: string; items: Raw[] }[]).map((s) => ({ section: s.section, items: s.items.map((i) => ({ ...i, kind: 'drink' as const })) }));
+const byName = new Map<string, Section>();
+[...food, ...drinks].forEach((s) => byName.set(s.section, s));
 
-// ── Strict Photo Exclusion List (Per AGENTS.md rule) ──────────────────────────
-// Never show these files as dishes: fursat_.webp, fursat_1_.webp, dsc08946.webp, dsc05389.webp, pandu_mirchi_kodi_kebab.webp
-const excludedDishImages = new Set([
-  'fursat_.webp',
-  'fursat_1_.webp',
-  'dsc08946.webp',
-  'dsc05389.webp',
-  'pandu_mirchi_kodi_kebab.webp',
-]);
-
-function getValidDishImage(img?: string): string | null {
-  if (!img) return null;
-  const basename = img.split('/').pop() || '';
-  if (excludedDishImages.has(basename)) return null;
-  return img;
+// Build gates: every section sits in exactly one group, every group section exists.
+for (const [list, groups] of [[food, FOOD_GROUPS], [drinks, DRINK_GROUPS]] as [Section[], Group[]][]) {
+  const used = groups.flatMap((g) => g.sections);
+  const missing = list.map((s) => s.section).filter((n) => !used.includes(n));
+  const ghost = used.filter((n) => !list.some((s) => s.section === n));
+  if (missing.length || ghost.length) throw new Error(`menu groups out of sync. unassigned: ${missing.join(', ')} unknown: ${ghost.join(', ')}`);
 }
 
-function slugify(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
+const all: Item[] = [...food, ...drinks].flatMap((s) => s.items);
+const totalItems = all.length;
+const foodCount = food.reduce((n, s) => n + s.items.length, 0);
+const drinkCount = totalItems - foodCount;
 
-// ── Category Lead Images Mapping (Real photos only) ───────────────────────────
-const categoryFallbackPhotos: Record<string, string> = {
-  'Appetizers': '/assets/dishes/angaraa_chicken_tikka_.webp',
-  'Regional specials': '/assets/dishes/karvepaku_kodi_vepudu.webp',
-  'Desserts': '/assets/dishes/lotus_biscoff_.webp',
-  'Sandwiches & burgers': '/assets/dishes/jamicon_jerk_chicken_with_fires.webp',
-  'Finger bites': '/assets/dishes/onion_rings.webp',
-  'Quick Bites': '/assets/dishes/dsc05366.webp',
-  'All day breakfast': '/assets/interior/tour-cafe.webp',
-  'Biryani & rice': '/assets/interior/tour-lounge.webp',
-  'South Indian': '/assets/interior/tour-entrance.webp',
-  'Mains': '/assets/dishes/dsc03317.webp',
-  'Pasta': '/assets/interior/tour-booth.webp',
-  'Pizza': '/assets/interior/tour-high-tables.webp',
-  'Cookies': '/assets/interior/tour-cafe.webp',
-  'Healthy bowls': '/assets/interior/tour-lounge.webp',
-  'Kids menu': '/assets/interior/tour-booth.webp',
-  'Healthy Salads': '/assets/interior/tour-lounge.webp',
-  'Soups': '/assets/interior/tour-booth.webp',
-  'Asian mains': '/assets/interior/tour-lounge.webp',
-  'Indian Breads': '/assets/interior/tour-entrance.webp',
-  'Extras/Sides': '/assets/interior/tour-booth.webp',
-  "Sreemukhi's special menu": '/assets/dishes/tandoori_prawns_.webp',
-  // Bar categories fallback
-  'Mocktails': '/assets/interior/tour-bar.webp',
-  'Silly Classic': '/assets/interior/bar-front.webp',
-  'The Classic': '/assets/interior/tour-bar.webp',
-  'Long Island Iced Tea': '/assets/interior/bar-back.webp',
-  'Shooters': '/assets/interior/tour-high-tables.webp',
-  'Whisky': '/assets/interior/bar-front.webp',
-  'Vodka': '/assets/interior/tour-bar.webp',
-  'Gin': '/assets/interior/bar-front.webp',
-  'Rum': '/assets/interior/tour-bar.webp',
-  'Brandy': '/assets/interior/bar-back.webp',
-  'Tequila': '/assets/interior/tour-high-tables.webp',
-  'Liqueur': '/assets/interior/bar-front.webp',
-  'Wines': '/assets/interior/tour-lounge.webp',
-  'Beer': '/assets/interior/tour-high-tables.webp',
-  'Soft Drinks': '/assets/interior/tour-cafe.webp',
-  'Milk Shakes': '/assets/interior/tour-cafe.webp',
-  'Smoothies': '/assets/interior/tour-cafe.webp',
-  'Coffee': '/assets/interior/tour-cafe.webp',
-  'Tea': '/assets/interior/tour-cafe.webp',
+const find = (name: string, kind: 'food' | 'drink') => {
+  const hit = all.find((i) => i.name === name && i.kind === kind);
+  if (!hit) throw new Error(`menu-featured.json: "${name}" not found in ${kind} data`);
+  return hit;
 };
+const drink = find(featured.featuredDrink.name, 'drink');
+const picks = featured.chefPicks.map((p) => find(p.name, 'food'));
+const moreShakes = (byName.get(drink.section)?.items ?? []).filter((i) => i.name !== drink.name && i.price != null).slice(0, 4);
 
-// ── Process Food and Drinks Server-Side ───────────────────────────────────────
-const foodSections = (foodData as MenuSection[]).map((sec) => {
-  const items = sec.items.map((it) => ({
-    ...it,
-    kind: 'food' as const,
-    validImage: getValidDishImage(it.image),
-  }));
-  const directDishImg = items.map((it) => it.validImage).find(Boolean);
-  const leadImage = directDishImg || categoryFallbackPhotos[sec.section] || '/assets/interior/tour-lounge.webp';
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const titleCase = (s: string) => (s === s.toUpperCase() && /[A-Z]/.test(s) ? s.toLowerCase().replace(/(^|[\s(/&-])([a-z])/g, (_m, a, b) => a + b.toUpperCase()) : s);
+const slug = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const VARIANTS: [keyof Raw, string][] = [['price30ml', '30 ml'], ['priceGlass', 'Glass'], ['price330ml', '330 ml'], ['price500ml', '500 ml'], ['pricePitcher', 'Pitcher'], ['priceBucket', 'Bucket'], ['priceTower', 'Tower'], ['priceBottle', 'Bottle']];
+const variants = (i: Item) => VARIANTS.filter(([k]) => typeof i[k] === 'number').map(([k, l]) => ({ label: l, value: i[k] as number }));
+const mainLabel = (i: Item) => (i.price != null ? variants(i).find((v) => v.value === i.price)?.label : undefined);
+const groupSections = (g: Group) => g.sections.map((n) => byName.get(n)!).filter(Boolean);
+const groupCount = (g: Group) => groupSections(g).reduce((n, s) => n + s.items.length, 0);
+const groupSub = (g: Group) => (g.sections.length > 1 ? `${g.sections[0]} & more` : `${groupCount(g)} items`);
+const addAttrs = (i: Item) => {
+  const lab = mainLabel(i);
   return {
-    title: sec.section,
-    slug: slugify(sec.section),
-    items,
-    leadImage,
-    isRealDishLead: !!directDishImg,
+    'data-add': '', 'data-n': titleCase(i.name) + (lab ? ` (${lab})` : ''), 'data-p': String(i.price ?? ''),
+    'data-c': i.section, 'data-k': i.kind, 'data-v': i.veg ? 'v' : 'n', ...(i.alc ? { 'data-a': '1' } : {}),
   };
-});
+};
+const vegMark = (veg?: boolean) => (veg ? 'mv-vm mv-vm--v' : 'mv-vm mv-vm--n');
 
-const drinksSections = (drinksData as MenuSection[]).map((sec) => {
-  const items = sec.items.map((it) => ({
-    ...it,
-    kind: 'drink' as const,
-    validImage: getValidDishImage(it.image),
-  }));
-  const directDishImg = items.map((it) => it.validImage).find(Boolean);
-  const leadImage = directDishImg || categoryFallbackPhotos[sec.section] || '/assets/interior/tour-bar.webp';
-  return {
-    title: sec.section,
-    slug: slugify(sec.section),
-    items,
-    leadImage,
-    isRealDishLead: !!directDishImg,
-  };
-});
-
-const totalFoodCount = foodSections.reduce((sum, s) => sum + s.items.length, 0);
-const totalDrinksCount = drinksSections.reduce((sum, s) => sum + s.items.length, 0);
+// ── SEO: Menu / MenuSection / MenuItem schema lands in M3 ────────────────────
+const TODO_PRICE = 'TODO(client): Peri Peri Cottage Cheese Sandwich (395 vs 240) and Sriracha Paneer Tikka Burger price conflicts left untouched.';
+void TODO_PRICE;
 ---
 
 <Base
-  title="The Fursat Menu Book — Kitchen & Craft Bar | Madhapur, Hyderabad"
-  description="Explore The Fursat Menu Book: 150+ authentic kitchen dishes and craft bar cocktails. Full server-rendered menu, dietary filters, and WhatsApp picks."
+  title="Menu | Fursat Kitchen | Bar, Madhapur, Hyderabad"
+  description={`The Fursat menu: ${foodCount} kitchen dishes and ${drinkCount} bar drinks, cocktails, whisky, wine, mocktails, shakes and coffee. Build your picks and send them on WhatsApp.`}
   canonical="https://fursatind.in/menu/"
   ogImage="https://fursatind.in/assets/fursat_space_07.webp"
-  ogImageAlt="The Fursat Menu Book — Kitchen & Craft Bar"
+  ogImageAlt="Fursat Kitchen | Bar dining room"
+  preloadImages={[
+    { href: '/assets/menu/hero-bar-1400.webp', media: '(min-width: 721px)' },
+    { href: '/assets/menu/hero-table-1400.webp', media: '(min-width: 721px)' },
+  ]}
 >
   <SiteHeader active="menu" />
 
-  <main class="mb-main" id="main">
-    <!-- ── 1. Full-Screen Split Entry (Drinks | Food) ─────────────────────── -->
-    <section class="mb-split-entry" id="mb-split-entry" aria-label="Menu selection">
-      <div class="mb-split-half mb-split-half--drinks" id="half-drinks" role="button" tabindex="0" aria-label="Open Drinks Menu">
-        <div class="mb-split-bg" style="background-image: url('/assets/interior/bar-back.webp')"></div>
-        <div class="mb-split-overlay mb-split-overlay--drinks"></div>
-        <div class="mb-split-content">
-          <span class="mb-split-kicker">✦ CRAFT BAR &amp; CELLAR ✦</span>
-          <h2 class="mb-split-title">Drinks &amp; Spirits</h2>
-          <p class="mb-split-sub">Craft Cocktails, Single Malts, Draught Brews &amp; Mocktails ({totalDrinksCount} pours)</p>
-          <div class="mb-split-btn">
-            <span>Explore Bar Book →</span>
-          </div>
+  <main class="mv" id="main" data-side="drinks">
+    <section class="mv-stage" aria-label="Menu overview">
+      <!-- Toolbar -->
+      <div class="mv-tools">
+        <label class="mv-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="mv-q" type="search" placeholder="Search the menu…" autocomplete="off" enterkeyhint="search" aria-label="Search the menu" />
+        </label>
+        <div class="mv-diet" role="group" aria-label="Dietary filters">
+          <button class="mv-pill" type="button" data-diet="veg" aria-pressed="false"><i class="mv-dot mv-dot--v"></i>Veg</button>
+          <button class="mv-pill" type="button" data-diet="nonveg" aria-pressed="false"><i class="mv-dot mv-dot--n"></i>Non-veg</button>
+          <button class="mv-pill" type="button" data-diet="spicy" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 3c-1 3-4 4-6 4C8 7 5 9 5 13c0 4 3 7 7 7 5 0 8-4 8-9 0-3-1-6-3-8z"/></svg>Spicy</button>
         </div>
+        <button class="mv-pill mv-age-pill" type="button" id="mv-age-open" aria-haspopup="dialog">21+ <span aria-hidden="true">ⓘ</span><span class="mv-sr"> bar menu age notice</span></button>
       </div>
 
-      <div class="mb-split-half mb-split-half--food" id="half-food" role="button" tabindex="0" aria-label="Open Food Menu">
-        <div class="mb-split-bg" style="background-image: url('/assets/interior/tour-lounge.webp')"></div>
-        <div class="mb-split-overlay mb-split-overlay--food"></div>
-        <div class="mb-split-content">
-          <span class="mb-split-kicker">✦ KITCHEN &amp; DINING ✦</span>
-          <h2 class="mb-split-title">Kitchen Dishes</h2>
-          <p class="mb-split-sub">Hyderabadi Biryanis, Regional Tandoor, Appetizers &amp; Desserts ({totalFoodCount} recipes)</p>
-          <div class="mb-split-btn">
-            <span>Explore Food Book →</span>
+      <!-- Split hero (Take B: framed windows) -->
+      <div class="mv-hero" id="mv-hero">
+        <article class="mv-win mv-win--bar">
+          <div class="mv-win-ph"><img src="/assets/menu/hero-bar-1400.webp" srcset="/assets/menu/hero-bar-800.webp 800w, /assets/menu/hero-bar-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1074" alt="The Fursat bar: backlit hexagon shelves of bottles beside the glowing Fursat sign" fetchpriority="high" decoding="async" /></div>
+          <div class="mv-win-cap">
+            <span class="mv-eyebrow">The Bar</span>
+            <h2 class="mv-hl">Sip. Socialize. <span>Unwind.</span></h2>
+            <button class="mv-btn" type="button" data-side-go="drinks">Explore Drinks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </article>
+        <article class="mv-win mv-win--table">
+          <div class="mv-win-ph"><img src="/assets/menu/hero-table-1400.webp" srcset="/assets/menu/hero-table-800.webp 800w, /assets/menu/hero-table-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1008" alt="A Fursat lounge corner with a cream sofa, two leather chairs and a round table" loading="eager" decoding="async" /></div>
+          <div class="mv-win-cap">
+            <span class="mv-eyebrow">The Table</span>
+            <h2 class="mv-hl">Dine. Delight. <span>Repeat.</span></h2>
+            <button class="mv-btn" type="button" data-side-go="food">Explore Food <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Rail + featured + chef's pick -->
+      <div class="mv-grid">
+        <nav class="mv-card mv-rail" aria-label="Menu categories">
+          {[{ side: 'drinks', groups: DRINK_GROUPS }, { side: 'food', groups: FOOD_GROUPS }].map(({ side, groups }) => (
+            <ul class="mv-rail-list" data-rail={side} hidden={side !== 'drinks'}>
+              {groups.map((g, k) => (
+                <li>
+                  <button class:list={['mv-rw', { 'is-on': k === 0 }]} type="button" data-go={g.id} data-side-of={side}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONS[g.icon]} />
+                    <span><b>{g.label}</b><small>{groupSub(g)}</small></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </nav>
+
+        <section class="mv-card mv-feat" aria-labelledby="mv-feat-name">
+          <div class="mv-feat-ph">
+            <img src={featured.featuredDrink.image} alt={featured.featuredDrink.imageAlt} width="1200" height="1637" loading="eager" decoding="async" />
+          </div>
+          <div class="mv-feat-txt">
+            <span class="mv-lab">Featured drink</span>
+            <h3 class="mv-nm" id="mv-feat-name">{titleCase(drink.name)}</h3>
+            <p class="mv-meta"><span class={vegMark(drink.veg)} role="img" aria-label={drink.veg ? 'Vegetarian' : 'Non-vegetarian'}></span>{drink.section}</p>
+            <div class="mv-chef-row">
+              <p class="mv-price num">{money(drink.price!)}</p>
+              <button class="mv-btn mv-btn--cream" type="button" {...addAttrs(drink)} data-img={featured.featuredDrink.image}>Add to Picks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+            </div>
+            <div class="mv-more">
+              <div class="mv-more-top"><span class="mv-more-h">More from {drink.section}</span><button class="mv-link" type="button" data-go="d-shakes" data-side-of="drinks">See all →</button></div>
+              <ul>
+                {moreShakes.map((s) => (
+                  <li><span>{titleCase(s.name)}</span><b class="num">{money(s.price!)}</b></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="mv-card mv-chef" aria-label="Chef's picks">
+          <div class="mv-chef-main">
+            <span class="mv-ghost" aria-hidden="true">{picks[0].name[0]}</span>
+            <span class="mv-lab">Chef's pick</span>
+            <h3 class="mv-nm">{titleCase(picks[0].name)}</h3>
+            <p class="mv-meta">
+              <span class={vegMark(picks[0].veg)} role="img" aria-label={picks[0].veg ? 'Vegetarian' : 'Non-vegetarian'}></span>{picks[0].veg ? 'Vegetarian' : 'Non-vegetarian'}
+              {picks[0].spicy && <span class="mv-spice">Spicy</span>}
+              <span class="mv-sec-name">{picks[0].section}</span>
+            </p>
+            <div class="mv-chef-row">
+              <p class="mv-price num">{money(picks[0].price!)}</p>
+              <button class="mv-btn" type="button" {...addAttrs(picks[0])}>Add to Picks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+            </div>
+          </div>
+          <div class="mv-chef-second">
+            <span class="mv-orn" aria-hidden="true"><b></b></span>
+            <div class="mv-chef-2in">
+              <div>
+                <span class="mv-lab">Also a chef's pick · veg</span>
+                <h4 class="mv-nm2">{titleCase(picks[1].name)}</h4>
+                <p class="mv-meta">
+                  <span class={vegMark(picks[1].veg)} role="img" aria-label={picks[1].veg ? 'Vegetarian' : 'Non-vegetarian'}></span>{picks[1].veg ? 'Vegetarian' : 'Non-vegetarian'}
+                  {picks[1].spicy && <span class="mv-spice">Spicy</span>}
+                  <span class="mv-sec-name">{picks[1].section}</span>
+                </p>
+              </div>
+              <div class="mv-chef-row">
+                <p class="mv-price mv-price--sm num">{money(picks[1].price!)}</p>
+                <button class="mv-btn mv-btn--sm" type="button" {...addAttrs(picks[1])}>Add to Picks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Chips + picks bar -->
+      <div class="mv-bar">
+        <div class="mv-chips" role="group" aria-label="Jump to a category">
+          {CHIPS.map((c, k) => (
+            <button class:list={['mv-chip', { 'is-on': k === 0 }]} type="button" data-chip={c.to ?? 'all'} data-side-of={c.side}>{c.label}</button>
+          ))}
+        </div>
+        <div class="mv-picks" id="mv-picks" data-count="0">
+          <button class="mv-picks-btn" type="button" id="mv-picks-toggle" aria-expanded="false" aria-controls="mv-picks-panel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" id="mv-bag"><path d="M5 8h14l-1 12H6L5 8zM9 8a3 3 0 0 1 6 0"/></svg>
+            <span>Your Picks (<b class="num" id="mv-cnt">0</b>)</span>
+          </button>
+          <span class="mv-sep" aria-hidden="true"></span>
+          <a class="mv-wa" id="mv-wa" href="#" aria-disabled="true" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2z"/></svg>
+            Send on WhatsApp <span aria-hidden="true">→</span>
+          </a>
+          <div class="mv-picks-panel" id="mv-picks-panel" hidden>
+            <ul id="mv-picks-list"></ul>
+            <div class="mv-picks-foot"><span>Subtotal <b class="num" id="mv-sub">₹0</b> <small>taxes extra</small></span><button type="button" class="mv-link" id="mv-clear">Clear all</button></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── 2. Floating Top Switcher Bar (Always accessible once menu is open) ── -->
-    <header class="mb-top-bar" id="mb-top-bar" aria-label="Menu controls">
-      <div class="mb-top-bar-inner">
-        <div class="mb-switch-pill" role="tablist" aria-label="Menu view switch">
-          <button
-            type="button"
-            class="mb-switch-tab mb-switch-tab--food is-active"
-            id="tab-switch-food"
-            role="tab"
-            aria-selected="true"
-            data-target="food"
-          >
-            <span class="mb-switch-icon">🍲</span>
-            <span class="mb-switch-label">Food Book</span>
-            <span class="mb-switch-count">{totalFoodCount}</span>
-          </button>
-          <button
-            type="button"
-            class="mb-switch-tab mb-switch-tab--drinks"
-            id="tab-switch-drinks"
-            role="tab"
-            aria-selected="false"
-            data-target="drinks"
-          >
-            <span class="mb-switch-icon">🍸</span>
-            <span class="mb-switch-label">Drinks Book</span>
-            <span class="mb-switch-count">{totalDrinksCount}</span>
-          </button>
-        </div>
-
-        <button type="button" class="mb-split-return-btn" id="mb-return-split" title="Return to split entry">
-          ⤢ Split View
-        </button>
-      </div>
-
-      <!-- Filters & Search Toolbar -->
-      <div class="mb-toolbar">
-        <div class="mb-search-wrap">
-          <svg class="mb-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input
-            type="search"
-            id="mb-search-input"
-            class="mb-search-input"
-            placeholder="Search dishes, drinks, ingredients…"
-            aria-label="Search menu"
-          />
-          <button type="button" id="mb-search-clear" class="mb-search-clear" aria-label="Clear search" hidden>✕</button>
-        </div>
-
-        <div class="mb-filter-chips" role="group" aria-label="Dietary filters">
-          <button type="button" class="mb-filter-chip is-active" data-filter="all" aria-pressed="true">All</button>
-          <button type="button" class="mb-filter-chip mb-filter-chip--veg" data-filter="veg" aria-pressed="false">
-            <span class="mb-dot mb-dot--veg" aria-hidden="true"></span>
-            <span>Veg</span>
-          </button>
-          <button type="button" class="mb-filter-chip mb-filter-chip--nonveg" data-filter="nonveg" aria-pressed="false">
-            <span class="mb-dot mb-dot--nonveg" aria-hidden="true"></span>
-            <span>Non-Veg</span>
-          </button>
-          <button type="button" class="mb-filter-chip mb-filter-chip--spicy" data-filter="spicy" aria-pressed="false">
-            <span aria-hidden="true">🌶️</span>
-            <span>Spicy</span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- ── 3. Menu Book Shell: Sidebar Rail + Scroll Content ───────────────── -->
-    <div class="mb-book-shell" id="mb-book-shell" data-active-pane="food">
-      
-      <!-- ── FOOD PANE ──────────────────────────────────────────────────── -->
-      <div class="mb-pane mb-pane--food is-active" id="pane-food" role="region" aria-label="Food Menu Book">
-        <div class="mb-pane-layout">
-          <!-- Desktop Category Rail (Left column) -->
-          <aside class="mb-cat-rail mb-cat-rail--desktop" aria-label="Food category index">
-            <div class="mb-cat-rail-header">
-              <span class="mb-cat-rail-title">CATEGORIES</span>
-              <span class="mb-cat-rail-counter">{foodSections.length}</span>
-            </div>
-            <nav class="mb-cat-rail-list">
-              {foodSections.map((sec, idx) => (
-                <a
-                  href={`#cat-food-${sec.slug}`}
-                  class={`mb-cat-link${idx === 0 ? ' is-active' : ''}`}
-                  data-cat-slug={`cat-food-${sec.slug}`}
-                >
-                  <span class="mb-cat-name">{sec.title}</span>
-                  <span class="mb-cat-count">{sec.items.length}</span>
-                </a>
-              ))}
-            </nav>
-          </aside>
-
-          <!-- Main Server-Rendered Food List -->
-          <div class="mb-book-content">
-            <div class="mb-book-header">
-              <h1 class="mb-book-headline">The Kitchen Book</h1>
-              <p class="mb-book-lead">
-                Every dish crafted fresh with Telangana spices, slow-cooked gravies, and coastal recipes.
-              </p>
-            </div>
-
-            {foodSections.map((sec) => (
-              <section class="mb-category-spread mb-book-spread" id={`cat-food-${sec.slug}`} data-section-slug={sec.slug}>
-                <!-- CSS 3D Book Spread Header: Left Page (Photo Leaf) + Right Page (Spread Info) -->
-                <div class="mb-spread-book-turn" data-turn-target>
-                  <div class="mb-spread-page mb-spread-page--left">
-                    <div class="mb-spread-photo-wrap">
-                      <img
-                        src={sec.leadImage}
-                        alt={sec.title}
-                        class="mb-spread-lead-img"
-                        width="480"
-                        height="360"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div class="mb-spread-caption">
-                        <span class="mb-spread-leaf-badge">Fursat Kitchen</span>
-                        <p class="mb-spread-quote">Crafted with patience &amp; fire.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mb-spread-page mb-spread-page--right">
-                    <header class="mb-spread-header">
-                      <div class="mb-spread-title-wrap">
-                        <span class="mb-spread-kicker">Section</span>
-                        <h2 class="mb-spread-title">{sec.title}</h2>
-                      </div>
-                      <span class="mb-spread-count">{sec.items.length} dishes</span>
-                    </header>
-
-                    <div class="mb-dishes-grid">
-                      {sec.items.map((item) => {
-                        const isVeg = item.veg === true;
-                        const isNonVeg = item.veg === false;
-                        const isSpicy = item.spicy === true;
-                        const isChef = item.chefSpecial === true;
-                        const hasValidImg = !!item.validImage;
-
-                        return (
-                          <article
-                            class={`mb-dish-card${hasValidImg ? ' has-photo' : ''}`}
-                            data-dish-name={item.name}
-                            data-dish-price={item.price != null ? `₹${item.price}` : '—'}
-                            data-dish-raw-price={item.price != null ? item.price : ''}
-                            data-dish-img={hasValidImg ? item.validImage : ''}
-                            data-dish-desc={item.description || ''}
-                            data-dish-cat={sec.title}
-                            data-veg={isVeg ? 'true' : isNonVeg ? 'false' : ''}
-                            data-spicy={isSpicy ? 'true' : 'false'}
-                            data-chef={isChef ? 'true' : 'false'}
-                          >
-                            <div class="mb-dish-card-main">
-                              <div class="mb-dish-header">
-                                <div class="mb-dish-badges">
-                                  {isVeg && <span class="mb-dot mb-dot--veg" title="Vegetarian" aria-label="Vegetarian" />}
-                                  {isNonVeg && <span class="mb-dot mb-dot--nonveg" title="Non-vegetarian" aria-label="Non-vegetarian" />}
-                                  {isSpicy && <span class="mb-badge-spicy" title="Spicy">🌶️</span>}
-                                  {isChef && <span class="mb-badge-chef">Chef's Special</span>}
-                                </div>
-                                <span class="mb-dish-price">
-                                  {item.price != null ? `₹${item.price}` : '—'}
-                                </span>
-                              </div>
-
-                              <h3 class="mb-dish-title">{item.name}</h3>
-                              {item.description && <p class="mb-dish-desc">{item.description}</p>}
+    <!-- Basic server-rendered list (M3 replaces this with the full list, schema, scroll-spy and cursor reveal) -->
+    <section class="mv-list" aria-label="Full menu" id="mv-list">
+      <div class="mv-list-in">
+        {[{ side: 'food', title: 'The Table', blurb: `${foodCount} dishes`, groups: FOOD_GROUPS }, { side: 'drinks', title: 'The Bar', blurb: `${drinkCount} drinks`, groups: DRINK_GROUPS }].map(({ side, title, blurb, groups }) => (
+          <div class="mv-side" id={`mv-${side}`} data-side-block={side}>
+            <header class="mv-side-h"><h2>{title}</h2><span>{blurb}</span></header>
+            {groups.map((g) => (
+              <div class="mv-grp" id={`g-${g.id}`} data-group={g.id}>
+                <h3 class="mv-grp-h">{g.label}</h3>
+                {groupSections(g).map((s) => (
+                  <section class="mv-sec" id={`s-${slug(s.section)}`}>
+                    {g.sections.length > 1 && <h4 class="mv-sec-h">{s.section}</h4>}
+                    <ul class="mv-items">
+                      {s.items.map((i) => (
+                        <li class="mv-item" data-row data-veg={i.veg ? '1' : '0'} data-spicy={i.spicy ? '1' : '0'} data-text={`${i.name} ${i.description ?? ''} ${i.section}`.toLowerCase()}>
+                          <div class="mv-item-main">
+                            <span class={vegMark(i.veg)} role="img" aria-label={i.veg ? 'Vegetarian' : 'Non-vegetarian'}></span>
+                            <div>
+                              <h5>{titleCase(i.name)}{i.chefSpecial && <em class="mv-chefmark">Chef's special</em>}{i.spicy && <em class="mv-spice">Spicy</em>}</h5>
+                              {i.description && <p>{i.description}</p>}
+                              {i.note && <p class="mv-note">{i.note}</p>}
                             </div>
-
-                            <div class="mb-dish-footer">
-                              {hasValidImg ? (
-                                <span class="mb-photo-pill" title="Hover on desktop to preview photo">✦ Photo</span>
-                              ) : (
-                                <span></span>
-                              )}
-                              <button
-                                type="button"
-                                class="mb-add-pick-btn fx-add"
-                                data-name={item.name}
-                                data-price={item.price != null ? item.price : ''}
-                                aria-label={`Add ${item.name} to picks`}
-                                aria-pressed="false"
-                              >
-                                <span class="mb-add-icon">+</span>
-                                <span>Pick</span>
-                              </button>
-                            </div>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </section>
-            ))}
-
-            <p class="mb-empty-alert" id="mb-empty-food" hidden>
-              No dishes match your active filter. Try resetting dietary toggles or search keyword.
-            </p>
-          </div>
-        </div>
-
-        <!-- Phone Sticky Category Rail (Bottom thumb zone) -->
-        <nav class="mb-cat-rail mb-cat-rail--mobile" aria-label="Mobile food category selector">
-          <div class="mb-cat-scroll-track" id="track-food">
-            {foodSections.map((sec, idx) => (
-              <a
-                href={`#cat-food-${sec.slug}`}
-                class={`mb-cat-pill${idx === 0 ? ' is-active' : ''}`}
-                data-cat-slug={`cat-food-${sec.slug}`}
-              >
-                {sec.title}
-              </a>
+                          </div>
+                          <div class="mv-item-buy">
+                            <span class="mv-item-price num">
+                              {variants(i).length > 1
+                                ? variants(i).map((v) => <span><small>{v.label}</small> {money(v.value)}</span>)
+                                : i.price != null ? money(i.price) : '—'}
+                            </span>
+                            {i.price != null && (
+                              <button class="mv-add" type="button" aria-label={`Add ${titleCase(i.name)} to picks`} {...addAttrs(i)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
             ))}
           </div>
-        </nav>
+        ))}
+        <p class="mv-empty" id="mv-empty" hidden>Nothing matches that search. Try a different word or clear the filters.</p>
+        <p class="mv-fine">Prices in ₹, taxes extra. Please tell us about any allergies when you order.</p>
       </div>
-
-      <!-- ── DRINKS PANE ────────────────────────────────────────────────── -->
-      <div class="mb-pane mb-pane--drinks" id="pane-drinks" role="region" aria-label="Drinks Menu Book">
-        <div class="mb-pane-layout">
-          <!-- Desktop Category Rail (Left column) -->
-          <aside class="mb-cat-rail mb-cat-rail--desktop mb-cat-rail--bar" aria-label="Drinks category index">
-            <div class="mb-cat-rail-header">
-              <span class="mb-cat-rail-title">BAR SECTIONS</span>
-              <span class="mb-cat-rail-counter">{drinksSections.length}</span>
-            </div>
-            <nav class="mb-cat-rail-list">
-              {drinksSections.map((sec, idx) => (
-                <a
-                  href={`#cat-drinks-${sec.slug}`}
-                  class={`mb-cat-link${idx === 0 ? ' is-active' : ''}`}
-                  data-cat-slug={`cat-drinks-${sec.slug}`}
-                >
-                  <span class="mb-cat-name">{sec.title}</span>
-                  <span class="mb-cat-count">{sec.items.length}</span>
-                </a>
-              ))}
-            </nav>
-          </aside>
-
-          <!-- Main Server-Rendered Drinks List -->
-          <div class="mb-book-content mb-book-content--bar">
-            <div class="mb-book-header mb-book-header--bar">
-              <span class="mb-bar-gate-badge">21+ Craft Cellar</span>
-              <h1 class="mb-book-headline">The Bar &amp; Cellar Book</h1>
-              <p class="mb-book-lead">
-                Curated cocktails, rare single malts, aged rums, chilled beer buckets, and fresh artisanal brews.
-              </p>
-            </div>
-
-            {drinksSections.map((sec) => (
-              <section class="mb-category-spread mb-category-spread--bar mb-book-spread" id={`cat-drinks-${sec.slug}`} data-section-slug={sec.slug}>
-                <div class="mb-spread-book-turn" data-turn-target>
-                  <div class="mb-spread-page mb-spread-page--left mb-spread-page--bar-left">
-                    <div class="mb-spread-photo-wrap">
-                      <img
-                        src={sec.leadImage}
-                        alt={sec.title}
-                        class="mb-spread-lead-img"
-                        width="480"
-                        height="360"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div class="mb-spread-caption mb-spread-caption--bar">
-                        <span class="mb-spread-leaf-badge mb-spread-leaf-badge--bar">Fursat Cellar</span>
-                        <p class="mb-spread-quote">Distilled to perfection.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mb-spread-page mb-spread-page--right">
-                    <header class="mb-spread-header mb-spread-header--bar">
-                      <div class="mb-spread-title-wrap">
-                        <span class="mb-spread-kicker mb-spread-kicker--bar">Bar Collection</span>
-                        <h2 class="mb-spread-title">{sec.title}</h2>
-                      </div>
-                      <span class="mb-spread-count">{sec.items.length} pours</span>
-                    </header>
-
-                    <div class="mb-dishes-grid mb-dishes-grid--bar">
-                      {sec.items.map((item) => {
-                        const isAlc = item.alc === true;
-                        const isVeg = item.veg === true;
-                        const isSpirit = item.price30ml != null || (item.priceBottle != null && sec.title !== 'Wines' && sec.title !== 'Beer');
-                        const isWine = sec.title === 'Wines' || item.priceGlass != null;
-
-                        return (
-                          <article
-                            class="mb-dish-card mb-dish-card--bar"
-                            data-dish-name={item.name}
-                            data-dish-price={item.price != null ? `₹${item.price}` : item.priceBottle != null ? `₹${item.priceBottle}` : '—'}
-                            data-dish-raw-price={item.price != null ? item.price : item.priceBottle != null ? item.priceBottle : ''}
-                            data-dish-img=""
-                            data-dish-desc={item.description || ''}
-                            data-dish-cat={sec.title}
-                            data-alc={isAlc ? 'true' : 'false'}
-                            data-veg={isVeg ? 'true' : ''}
-                          >
-                            <div class="mb-dish-card-main">
-                              <div class="mb-dish-header">
-                                <div class="mb-dish-badges">
-                                  {isAlc && <span class="mb-badge-alc">Alcohol</span>}
-                                  {!isAlc && isVeg && <span class="mb-dot mb-dot--veg" title="Vegetarian Mocktail" />}
-                                  {item.subCategory && <span class="mb-badge-sub">{item.subCategory}</span>}
-                                </div>
-                                <div class="mb-dish-price-wrap">
-                                  {isSpirit ? (
-                                    <div class="mb-spirit-prices">
-                                      <span>30ml: {item.price30ml != null ? `₹${item.price30ml}` : '—'}</span>
-                                      <span class="mb-price-bullet">·</span>
-                                      <span>Btl: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
-                                    </div>
-                                  ) : isWine ? (
-                                    <div class="mb-spirit-prices">
-                                      <span>Glass: {item.priceGlass != null ? `₹${item.priceGlass}` : '—'}</span>
-                                      <span class="mb-price-bullet">·</span>
-                                      <span>Btl: {item.priceBottle != null ? `₹${item.priceBottle}` : '—'}</span>
-                                    </div>
-                                  ) : (
-                                    <span class="mb-dish-price">
-                                      {item.price != null ? `₹${item.price}` : item.priceBottle != null ? `₹${item.priceBottle}` : '—'}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-
-                              <h3 class="mb-dish-title mb-dish-title--bar">{item.name}</h3>
-                              {item.description && <p class="mb-dish-desc mb-dish-desc--bar">{item.description}</p>}
-                            </div>
-
-                            <div class="mb-dish-footer mb-dish-footer--bar">
-                              {item.priceBucket != null ? (
-                                <span class="mb-bucket-pill">Bucket: ₹{item.priceBucket}</span>
-                              ) : (
-                                <span></span>
-                              )}
-                              <button
-                                type="button"
-                                class="mb-add-pick-btn mb-add-pick-btn--bar fx-add"
-                                data-name={item.name}
-                                data-price={item.price != null ? item.price : item.priceBottle != null ? item.priceBottle : ''}
-                                aria-label={`Add ${item.name} to picks`}
-                                aria-pressed="false"
-                              >
-                                <span class="mb-add-icon">+</span>
-                                <span>Pick</span>
-                              </button>
-                            </div>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </section>
-            ))}
-
-            <p class="mb-empty-alert mb-empty-alert--bar" id="mb-empty-drinks" hidden>
-              No drinks match your search or filter.
-            </p>
-          </div>
-        </div>
-
-        <!-- Phone Sticky Category Rail (Bottom thumb zone) -->
-        <nav class="mb-cat-rail mb-cat-rail--mobile mb-cat-rail--mobile-bar" aria-label="Mobile drinks category selector">
-          <div class="mb-cat-scroll-track" id="track-drinks">
-            {drinksSections.map((sec, idx) => (
-              <a
-                href={`#cat-drinks-${sec.slug}`}
-                class={`mb-cat-pill mb-cat-pill--bar${idx === 0 ? ' is-active' : ''}`}
-                data-cat-slug={`cat-drinks-${sec.slug}`}
-              >
-                {sec.title}
-              </a>
-            ))}
-          </div>
-        </nav>
-      </div>
-
-    </div>
-
-    <!-- ── 4. Desktop Cursor Photo Reveal Floating Card (pointer: fine) ──── -->
-    <div class="mb-cursor-reveal" id="mb-cursor-reveal" aria-hidden="true">
-      <div class="mb-cursor-card">
-        <img id="mb-cursor-img" class="mb-cursor-img" src="" alt="" width="260" height="195" />
-        <div class="mb-cursor-info">
-          <span class="mb-cursor-title" id="mb-cursor-title"></span>
-          <span class="mb-cursor-price" id="mb-cursor-price"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── 5. Phone Dish Details Bottom Sheet ────────────────────────────── -->
-    <div class="mb-sheet-backdrop" id="mb-sheet-backdrop" aria-hidden="true">
-      <div class="mb-sheet-dialog" id="mb-sheet-dialog" role="dialog" aria-modal="true" aria-labelledby="mb-sheet-title">
-        <div class="mb-sheet-handle-wrap" id="mb-sheet-handle">
-          <span class="mb-sheet-drag-handle"></span>
-        </div>
-        <button type="button" class="mb-sheet-close" id="mb-sheet-close" aria-label="Close dish details">✕</button>
-
-        <div class="mb-sheet-body">
-          <div class="mb-sheet-img-wrap" id="mb-sheet-img-wrap">
-            <img id="mb-sheet-img" class="mb-sheet-img" src="" alt="" width="480" height="320" />
-          </div>
-
-          <div class="mb-sheet-meta">
-            <span class="mb-sheet-category" id="mb-sheet-cat"></span>
-            <div class="mb-sheet-title-row">
-              <h2 class="mb-sheet-title" id="mb-sheet-title"></h2>
-              <span class="mb-sheet-price" id="mb-sheet-price"></span>
-            </div>
-            <p class="mb-sheet-desc" id="mb-sheet-desc"></p>
-
-            <div class="mb-sheet-badges" id="mb-sheet-badges"></div>
-          </div>
-
-          <div class="mb-sheet-footer">
-            <button type="button" class="mb-sheet-pick-btn" id="mb-sheet-pick-btn">
-              <span class="mb-add-icon">+</span>
-              <span id="mb-sheet-pick-label">Add to Picks</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── 6. Drinks 21+ Age Gate Modal ──────────────────────────────────── -->
-    <div class="mb-age-gate-modal" id="mb-age-gate" aria-hidden="true" hidden>
-      <div class="mb-age-gate-box">
-        <span class="mb-age-gate-icon">🍸</span>
-        <h3 class="mb-age-gate-title">Craft Bar &amp; Cellar</h3>
-        <p class="mb-age-gate-text">
-          Our craft bar showcases artisanal spirits and signature cocktails. Please confirm you are 21 years of age or older to enter.
-        </p>
-        <div class="mb-age-gate-actions">
-          <button type="button" class="mb-age-btn mb-age-btn--yes" id="mb-age-yes">Yes, I am 21+</button>
-          <button type="button" class="mb-age-btn mb-age-btn--no" id="mb-age-no">Return to Food Menu</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Picks Tray Component ─────────────────────────────────────────── -->
-    <PicksTray />
+    </section>
   </main>
+
+  <!-- 21+ notice (shown once, before the bar menu) -->
+  <dialog class="mv-dialog" id="mv-age" aria-labelledby="mv-age-t">
+    <form method="dialog">
+      <h2 id="mv-age-t">The bar menu is for guests 21 and over</h2>
+      <p>Alcohol is served only to guests aged 21 or older, with valid ID on request. Please drink responsibly.</p>
+      <div class="mv-dialog-act">
+        <button class="mv-btn" value="yes" id="mv-age-yes">I'm 21 or older</button>
+        <button class="mv-btn mv-btn--ghost" value="no" id="mv-age-no">Show me food</button>
+      </div>
+    </form>
+  </dialog>
 
   <SiteFooter />
 </Base>
 
-<!-- ── Client Interactivity: Wow Layer, Page Turn, Cursor Reveal, Sheet ──── -->
 <script>
-  (function () {
-    var splitEntry = document.getElementById('mb-split-entry');
-    var halfDrinks = document.getElementById('half-drinks');
-    var halfFood = document.getElementById('half-food');
-    var topBar = document.getElementById('mb-top-bar');
-    var bookShell = document.getElementById('mb-book-shell');
-    var tabFood = document.getElementById('tab-switch-food');
-    var tabDrinks = document.getElementById('tab-switch-drinks');
-    var returnSplit = document.getElementById('mb-return-split');
-
-    var paneFood = document.getElementById('pane-food');
-    var paneDrinks = document.getElementById('pane-drinks');
-
-    var searchInput = document.getElementById('mb-search-input') as HTMLInputElement | null;
-    var searchClear = document.getElementById('mb-search-clear');
-    var filterChips = Array.from(document.querySelectorAll('.mb-filter-chip'));
-
-    var cursorReveal = document.getElementById('mb-cursor-reveal');
-    var cursorImg = document.getElementById('mb-cursor-img') as HTMLImageElement | null;
-    var cursorTitle = document.getElementById('mb-cursor-title');
-    var cursorPrice = document.getElementById('mb-cursor-price');
-
-    var sheetBackdrop = document.getElementById('mb-sheet-backdrop');
-    var sheetDialog = document.getElementById('mb-sheet-dialog');
-    var sheetClose = document.getElementById('mb-sheet-close');
-    var sheetHandle = document.getElementById('mb-sheet-handle');
-    var sheetImgWrap = document.getElementById('mb-sheet-img-wrap');
-    var sheetImg = document.getElementById('mb-sheet-img') as HTMLImageElement | null;
-    var sheetTitle = document.getElementById('mb-sheet-title');
-    var sheetCat = document.getElementById('mb-sheet-cat');
-    var sheetPrice = document.getElementById('mb-sheet-price');
-    var sheetDesc = document.getElementById('mb-sheet-desc');
-    var sheetBadges = document.getElementById('mb-sheet-badges');
-    var sheetPickBtn = document.getElementById('mb-sheet-pick-btn');
-    var sheetPickLabel = document.getElementById('mb-sheet-pick-label');
-
-    var ageGate = document.getElementById('mb-age-gate');
-    var ageYes = document.getElementById('mb-age-yes');
-    var ageNo = document.getElementById('mb-age-no');
-
-    var fxtray = document.getElementById('fxtray');
-    var fxtrayText = document.getElementById('fxtray-t');
-    var fxtrayGo = document.getElementById('fxtray-go');
-    var fxtrayClear = document.getElementById('fxtray-x');
-
-    var currentView: 'split' | 'food' | 'drinks' = 'split';
-    var activeDietFilter: 'all' | 'veg' | 'nonveg' | 'spicy' = 'all';
-    var currentQuery = '';
-    var picks: Array<{ n: string; p: string }> = [];
-    var activeSheetDish: { name: string; price: string } | null = null;
-
-    var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var isFinePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
-
-    // ── 1. Switch View (View Transition API) ────────────────────────────
-    function checkAgeGate(onVerified: () => void) {
-      try {
-        var isAge21 = localStorage.getItem('fursat_age_gate') === '21';
-        if (isAge21) {
-          onVerified();
-        } else if (ageGate) {
-          ageGate.hidden = false;
-          ageGate.setAttribute('aria-hidden', 'false');
-          ageGate.classList.add('is-open');
-        } else {
-          onVerified();
-        }
-      } catch (_) {
-        onVerified();
-      }
-    }
-
-    if (ageYes) {
-      ageYes.addEventListener('click', function () {
-        try { localStorage.setItem('fursat_age_gate', '21'); } catch (_) {}
-        if (ageGate) {
-          ageGate.hidden = true;
-          ageGate.setAttribute('aria-hidden', 'true');
-          ageGate.classList.remove('is-open');
-        }
-        executeSetView('drinks');
-      });
-    }
-
-    if (ageNo) {
-      ageNo.addEventListener('click', function () {
-        if (ageGate) {
-          ageGate.hidden = true;
-          ageGate.setAttribute('aria-hidden', 'true');
-          ageGate.classList.remove('is-open');
-        }
-        executeSetView('food');
-      });
-    }
-
-    function setView(view: 'split' | 'food' | 'drinks') {
-      if (view === 'drinks') {
-        checkAgeGate(function () {
-          executeSetView('drinks');
-        });
-      } else {
-        executeSetView(view);
-      }
-    }
-
-    function executeSetView(view: 'split' | 'food' | 'drinks') {
-      if (view === currentView) return;
-
-      function updateDOM() {
-        currentView = view;
-        if (view === 'split') {
-          splitEntry?.classList.remove('is-hidden');
-          topBar?.classList.remove('is-visible');
-          bookShell?.classList.remove('is-open');
-          window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
-        } else if (view === 'food') {
-          splitEntry?.classList.add('is-hidden');
-          topBar?.classList.add('is-visible');
-          bookShell?.classList.add('is-open');
-          bookShell?.setAttribute('data-active-pane', 'food');
-
-          tabFood?.classList.add('is-active');
-          tabFood?.setAttribute('aria-selected', 'true');
-          tabDrinks?.classList.remove('is-active');
-          tabDrinks?.setAttribute('aria-selected', 'false');
-
-          paneFood?.classList.add('is-active');
-          paneDrinks?.classList.remove('is-active');
-          document.body.classList.remove('theme-bar-dark');
-          applyFilters();
-        } else if (view === 'drinks') {
-          splitEntry?.classList.add('is-hidden');
-          topBar?.classList.add('is-visible');
-          bookShell?.classList.add('is-open');
-          bookShell?.setAttribute('data-active-pane', 'drinks');
-
-          tabDrinks?.classList.add('is-active');
-          tabDrinks?.setAttribute('aria-selected', 'true');
-          tabFood?.classList.remove('is-active');
-          tabFood?.setAttribute('aria-selected', 'false');
-
-          paneDrinks?.classList.add('is-active');
-          paneFood?.classList.remove('is-active');
-          document.body.classList.add('theme-bar-dark');
-          applyFilters();
-        }
-      }
-
-      if (document.startViewTransition && !prefersReduced) {
-        document.startViewTransition(updateDOM);
-      } else {
-        updateDOM();
-      }
-    }
-
-    if (halfFood) halfFood.addEventListener('click', function () { setView('food'); });
-    if (halfDrinks) halfDrinks.addEventListener('click', function () { setView('drinks'); });
-    if (tabFood) tabFood.addEventListener('click', function () { setView('food'); });
-    if (tabDrinks) tabDrinks.addEventListener('click', function () { setView('drinks'); });
-    if (returnSplit) returnSplit.addEventListener('click', function () { setView('split'); });
-
-    halfFood?.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setView('food'); }
-    });
-    halfDrinks?.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setView('drinks'); }
-    });
-
-    // ── 2. Filters & Instant Search ────────────────────────────────────
-    function applyFilters() {
-      var activePane = currentView === 'drinks' ? paneDrinks : paneFood;
-      if (!activePane) return;
-
-      var q = currentQuery.trim().toLowerCase();
-      var articles = Array.from(activePane.querySelectorAll('.mb-dish-card'));
-      var matchCount = 0;
-
-      articles.forEach(function (el) {
-        var card = el as HTMLElement;
-        var name = (card.dataset.dishName || '').toLowerCase();
-        var desc = (card.dataset.dishDesc || '').toLowerCase();
-        var isVeg = card.dataset.veg === 'true';
-        var isNonVeg = card.dataset.veg === 'false';
-        var isSpicy = card.dataset.spicy === 'true';
-
-        var dietMatch = true;
-        if (activeDietFilter === 'veg') dietMatch = isVeg;
-        else if (activeDietFilter === 'nonveg') dietMatch = isNonVeg;
-        else if (activeDietFilter === 'spicy') dietMatch = isSpicy;
-
-        var queryMatch = !q || name.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
-
-        if (dietMatch && queryMatch) {
-          card.style.display = '';
-          matchCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      var sections = Array.from(activePane.querySelectorAll('.mb-category-spread'));
-      sections.forEach(function (sec) {
-        var visibleCards = sec.querySelectorAll('.mb-dish-card:not([style*="display: none"])');
-        (sec as HTMLElement).style.display = visibleCards.length > 0 ? '' : 'none';
-      });
-
-      var emptyEl = document.getElementById(currentView === 'drinks' ? 'mb-empty-drinks' : 'mb-empty-food');
-      if (emptyEl) {
-        emptyEl.hidden = matchCount > 0;
-      }
-    }
-
-    if (searchInput) {
-      searchInput.addEventListener('input', function () {
-        currentQuery = searchInput.value;
-        if (searchClear) searchClear.hidden = !currentQuery;
-        applyFilters();
-      });
-    }
-
-    if (searchClear && searchInput) {
-      searchClear.addEventListener('click', function () {
-        searchInput.value = '';
-        currentQuery = '';
-        searchClear.hidden = true;
-        searchInput.focus();
-        applyFilters();
-      });
-    }
-
-    filterChips.forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        filterChips.forEach(function (c) {
-          c.classList.remove('is-active');
-          c.setAttribute('aria-pressed', 'false');
-        });
-        chip.classList.add('is-active');
-        chip.setAttribute('aria-pressed', 'true');
-        activeDietFilter = (chip.getAttribute('data-filter') as any) || 'all';
-        applyFilters();
-      });
-    });
-
-    // ── 3. Category Rail Scroll-Spy ────────────────────────────────────
-    function initScrollSpy() {
-      var options = {
-        root: null,
-        rootMargin: '-15% 0px -70% 0px',
-        threshold: 0
-      };
-
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            var id = entry.target.id;
-            var links = Array.from(document.querySelectorAll(`.mb-cat-link[data-cat-slug="${id}"], .mb-cat-pill[data-cat-slug="${id}"]`));
-            if (links.length > 0) {
-              var parentPane = entry.target.closest('.mb-pane');
-              if (parentPane) {
-                parentPane.querySelectorAll('.mb-cat-link.is-active, .mb-cat-pill.is-active').forEach(function (el) {
-                  el.classList.remove('is-active');
-                });
-                links.forEach(function (el) {
-                  el.classList.add('is-active');
-                  if (el.classList.contains('mb-cat-pill')) {
-                    el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
-                  }
-                });
-              }
-            }
-          }
-        });
-      }, options);
-
-      document.querySelectorAll('.mb-category-spread').forEach(function (sec) {
-        observer.observe(sec);
-      });
-    }
-
-    initScrollSpy();
-
-    // ── 4. CSS 3D Page Turn on Book Spread Scroll Reveal ───────────────
-    if (!prefersReduced) {
-      var spreadObserver = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            var turnTarget = entry.target.querySelector('[data-turn-target]');
-            if (entry.isIntersecting && turnTarget) {
-              turnTarget.classList.add('is-turned');
-            }
-          });
-        },
-        { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
-      );
-
-      document.querySelectorAll('.mb-category-spread').forEach(function (spread) {
-        spreadObserver.observe(spread);
-      });
-    }
-
-    // ── 5. Desktop Cursor Photo Reveal (pointer: fine) ─────────────────
-    if (isFinePointer && !prefersReduced && cursorReveal) {
-      var targetX = 0;
-      var targetY = 0;
-      var currentX = 0;
-      var currentY = 0;
-      var isCursorVisible = false;
-      var cursorRaf: number | null = null;
-
-      function renderCursor() {
-        if (!isCursorVisible) return;
-        currentX += (targetX - currentX) * 0.16;
-        currentY += (targetY - currentY) * 0.16;
-        if (cursorReveal) {
-          cursorReveal.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-        }
-        cursorRaf = requestAnimationFrame(renderCursor);
-      }
-
-      window.addEventListener('mousemove', function (e) {
-        targetX = e.clientX + 22;
-        targetY = e.clientY - 90;
-      }, { passive: true });
-
-      document.addEventListener('mouseover', function (e) {
-        var card = (e.target as HTMLElement)?.closest('.mb-dish-card.has-photo') as HTMLElement | null;
-        if (card && cursorReveal && cursorImg && cursorTitle && cursorPrice) {
-          var imgUrl = card.dataset.dishImg;
-          if (imgUrl) {
-            cursorImg.src = imgUrl;
-            cursorTitle.textContent = card.dataset.dishName || '';
-            cursorPrice.textContent = card.dataset.dishPrice || '';
-            cursorReveal.classList.add('is-visible');
-            if (!isCursorVisible) {
-              isCursorVisible = true;
-              currentX = targetX;
-              currentY = targetY;
-              renderCursor();
-            }
-          }
-        }
-      });
-
-      document.addEventListener('mouseout', function (e) {
-        var card = (e.target as HTMLElement)?.closest('.mb-dish-card.has-photo');
-        if (card && cursorReveal) {
-          var related = (e as MouseEvent).relatedTarget as HTMLElement | null;
-          if (!card.contains(related)) {
-            cursorReveal.classList.remove('is-visible');
-            isCursorVisible = false;
-            if (cursorRaf) {
-              cancelAnimationFrame(cursorRaf);
-              cursorRaf = null;
-            }
-          }
-        }
-      });
-    }
-
-    // ── 6. Phone Dish Bottom Sheet (Touch / Mobile Tap) ────────────────
-    function openDishSheet(card: HTMLElement) {
-      if (!sheetBackdrop || !sheetDialog) return;
-      var name = card.dataset.dishName || '';
-      var price = card.dataset.dishPrice || '';
-      var rawPrice = card.dataset.dishRawPrice || '';
-      var desc = card.dataset.dishDesc || '';
-      var cat = card.dataset.dishCat || '';
-      var img = card.dataset.dishImg || '';
-      var isVeg = card.dataset.veg === 'true';
-      var isNonVeg = card.dataset.veg === 'false';
-      var isSpicy = card.dataset.spicy === 'true';
-      var isChef = card.dataset.chef === 'true';
-      var isAlc = card.dataset.alc === 'true';
-
-      activeSheetDish = { name: name, price: rawPrice };
-
-      if (sheetTitle) sheetTitle.textContent = name;
-      if (sheetCat) sheetCat.textContent = cat;
-      if (sheetPrice) sheetPrice.textContent = price;
-      if (sheetDesc) sheetDesc.textContent = desc;
-
-      if (sheetImgWrap && sheetImg) {
-        if (img) {
-          sheetImg.src = img;
-          sheetImg.alt = name;
-          sheetImgWrap.style.display = 'block';
-        } else {
-          sheetImgWrap.style.display = 'none';
-        }
-      }
-
-      if (sheetBadges) {
-        sheetBadges.innerHTML = '';
-        if (isVeg) sheetBadges.innerHTML += '<span class="mb-sheet-badge mb-sheet-badge--veg">Veg</span>';
-        if (isNonVeg) sheetBadges.innerHTML += '<span class="mb-sheet-badge mb-sheet-badge--nonveg">Non-Veg</span>';
-        if (isSpicy) sheetBadges.innerHTML += '<span class="mb-sheet-badge mb-sheet-badge--spicy">🌶️ Spicy</span>';
-        if (isChef) sheetBadges.innerHTML += '<span class="mb-sheet-badge mb-sheet-badge--chef">Chef\'s Special</span>';
-        if (isAlc) sheetBadges.innerHTML += '<span class="mb-sheet-badge mb-sheet-badge--alc">Alcohol</span>';
-      }
-
-      var isAlreadyPicked = picks.some(function (x) { return x.n === name; });
-      updateSheetPickButton(isAlreadyPicked);
-
-      sheetBackdrop.classList.add('is-open');
-      sheetBackdrop.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeDishSheet() {
-      if (!sheetBackdrop) return;
-      sheetBackdrop.classList.remove('is-open');
-      sheetBackdrop.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      activeSheetDish = null;
-    }
-
-    function updateSheetPickButton(picked: boolean) {
-      if (!sheetPickBtn || !sheetPickLabel) return;
-      if (picked) {
-        sheetPickBtn.classList.add('is-picked');
-        sheetPickLabel.textContent = 'Picked ✓';
-      } else {
-        sheetPickBtn.classList.remove('is-picked');
-        sheetPickLabel.textContent = 'Add to Picks';
-      }
-    }
-
-    if (sheetClose) sheetClose.addEventListener('click', closeDishSheet);
-    if (sheetBackdrop) {
-      sheetBackdrop.addEventListener('click', function (e) {
-        if (e.target === sheetBackdrop) closeDishSheet();
-      });
-    }
-
-    // Touch swipe down to close bottom sheet
-    var touchStartY = 0;
-    sheetHandle?.addEventListener('touchstart', function (e) {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    sheetHandle?.addEventListener('touchmove', function (e) {
-      var dy = e.touches[0].clientY - touchStartY;
-      if (dy > 65) {
-        closeDishSheet();
-      }
-    }, { passive: true });
-
-    // Open sheet on phone when card body is tapped
-    document.addEventListener('click', function (e) {
-      var target = e.target as HTMLElement;
-      if (target.closest('.fx-add')) return; // Ignore add button
-      var card = target.closest('.mb-dish-card') as HTMLElement | null;
-      if (card && window.innerWidth <= 768) {
-        openDishSheet(card);
-      }
-    });
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        if (sheetBackdrop && sheetBackdrop.classList.contains('is-open')) {
-          closeDishSheet();
-        }
-      }
-    });
-
-    // ── 7. Picks Tray & WhatsApp Flow ──────────────────────────────────
-    var WA = '919059670033';
-
-    function updatePicksUI() {
-      if (!fxtray || !fxtrayText) return;
-      var count = picks.length;
-      fxtray.hidden = count === 0;
-      fxtrayText.textContent = count + (count === 1 ? ' pick' : ' picks');
-
-      // Sync all buttons on the page
-      document.querySelectorAll('.fx-add').forEach(function (btn) {
-        var name = btn.getAttribute('data-name');
-        var isPicked = picks.some(function (x) { return x.n === name; });
-        btn.setAttribute('aria-pressed', isPicked ? 'true' : 'false');
-      });
-
-      if (activeSheetDish) {
-        var isSheetPicked = picks.some(function (x) { return x.n === activeSheetDish?.name; });
-        updateSheetPickButton(isSheetPicked);
-      }
-    }
-
-    function togglePick(name: string, price: string) {
-      var idx = picks.findIndex(function (x) { return x.n === name; });
-      if (idx > -1) {
-        picks.splice(idx, 1);
-      } else {
-        picks.push({ n: name, p: price });
-        try {
-          if (navigator.vibrate) navigator.vibrate(12);
-        } catch (_) {}
-      }
-      updatePicksUI();
-    }
-
-    document.addEventListener('click', function (e) {
-      var btn = (e.target as HTMLElement)?.closest('.fx-add') as HTMLElement | null;
-      if (!btn) return;
-      e.stopPropagation();
-      var name = btn.getAttribute('data-name') || '';
-      var price = btn.getAttribute('data-price') || '';
-      togglePick(name, price);
-    });
-
-    if (sheetPickBtn) {
-      sheetPickBtn.addEventListener('click', function () {
-        if (!activeSheetDish) return;
-        togglePick(activeSheetDish.name, activeSheetDish.price);
-      });
-    }
-
-    if (fxtrayClear) {
-      fxtrayClear.addEventListener('click', function () {
-        picks = [];
-        updatePicksUI();
-      });
-    }
-
-    if (fxtrayGo) {
-      fxtrayGo.addEventListener('click', function () {
-        if (picks.length === 0) return;
-        var lines = ['Hi Fursat! 👋 I’d love to try:'].concat(
-          picks.map(function (x) {
-            return '• ' + x.n + (x.p ? ' (₹' + x.p + ')' : '');
-          })
-        );
-        var url = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lines.join('\n'));
-        var a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      });
-    }
-  })();
+  import '../components/menu/menu-v2';
 </script>
-
-<style is:global>
-  /* ==========================================================================
-     The Fursat Menu Book Styling Tokens (fk-*)
-     Terracotta #CF4B37 | Forest #2E4E21 | Sand #ECDEC8 | Camel #B9946B
-     ========================================================================== */
-
-  :root {
-    --fk-terracotta: #CF4B37;
-    --fk-forest: #2E4E21;
-    --fk-sand: #ECDEC8;
-    --fk-camel: #B9946B;
-    --fk-cream: #F2EEE4;
-    --fk-paper: #F8F5EE;
-    --fk-ink: #22251D;
-    --fk-muted: #646B56;
-    --fk-line: #E1DAC7;
-    --fk-bar-dark: #0D140B;
-    --fk-bar-surface: #141E11;
-    --fk-bar-border: rgba(224, 166, 60, 0.28);
-    --fk-gold: #E0A63C;
-  }
-
-  .mb-main {
-    background: var(--fk-cream);
-    color: var(--fk-ink);
-    min-height: 100vh;
-    font-family: 'Poppins', system-ui, sans-serif;
-  }
-
-  /* ── 1. Full-Screen Split Entry ─────────────────────────────────────── */
-  .mb-split-entry {
-    display: flex;
-    flex-direction: row;
-    min-height: calc(100vh - 72px);
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-  .mb-split-entry.is-hidden {
-    display: none !important;
-  }
-
-  .mb-split-half {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    overflow: hidden;
-    padding: 60px 40px;
-    outline: none;
-    transition: flex 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .mb-split-half:hover {
-    flex: 1.15;
-  }
-  .mb-split-bg {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    transform: scale(1.02);
-  }
-  .mb-split-half:hover .mb-split-bg {
-    transform: scale(1.08);
-  }
-
-  .mb-split-overlay--drinks {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(13, 20, 11, 0.88) 0%, rgba(13, 20, 11, 0.94) 100%);
-  }
-  .mb-split-overlay--food {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(207, 75, 55, 0.84) 0%, rgba(46, 78, 33, 0.92) 100%);
-  }
-
-  .mb-split-content {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    max-width: 480px;
-    color: #F4ECDA;
-  }
-  .mb-split-kicker {
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.2em;
-    color: var(--fk-gold);
-    display: inline-block;
-    margin-bottom: 12px;
-  }
-  .mb-split-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0 0 14px;
-    color: #FFF;
-    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
-  }
-  .mb-split-sub {
-    font-size: 0.9375rem;
-    color: rgba(244, 236, 218, 0.88);
-    line-height: 1.5;
-    margin: 0 0 28px;
-  }
-  .mb-split-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 30px;
-    border-radius: 999px;
-    background: #FFF;
-    color: var(--fk-ink);
-    font-size: 0.875rem;
-    font-weight: 700;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
-  }
-  .mb-split-half--drinks .mb-split-btn {
-    background: var(--fk-gold);
-    color: #12190B;
-  }
-  .mb-split-half:hover .mb-split-btn {
-    transform: translateY(-3px) scale(1.04);
-  }
-
-  @media (max-width: 768px) {
-    .mb-split-entry {
-      flex-direction: column;
-      min-height: calc(100vh - 64px);
-    }
-    .mb-split-half {
-      padding: 40px 24px;
-    }
-  }
-
-  /* ── 2. Floating Top Switcher Bar ───────────────────────────────────── */
-  .mb-top-bar {
-    display: none;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(242, 238, 228, 0.95);
-    border-bottom: 1px solid var(--fk-line);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    padding: 12px 24px 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  }
-  .mb-top-bar.is-visible {
-    display: block;
-  }
-  body.theme-bar-dark .mb-top-bar {
-    background: rgba(13, 20, 11, 0.96);
-    border-bottom: 1px solid var(--fk-bar-border);
-  }
-
-  .mb-top-bar-inner {
-    max-width: 1360px;
-    margin: 0 auto 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .mb-switch-pill {
-    display: inline-flex;
-    background: rgba(46, 78, 33, 0.08);
-    border: 1px solid var(--fk-line);
-    border-radius: 999px;
-    padding: 4px;
-  }
-  body.theme-bar-dark .mb-switch-pill {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(224, 166, 60, 0.3);
-  }
-
-  .mb-switch-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 20px;
-    border-radius: 999px;
-    border: none;
-    background: transparent;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--fk-muted);
-    cursor: pointer;
-    transition: all 0.25s ease;
-  }
-  body.theme-bar-dark .mb-switch-tab {
-    color: rgba(244, 236, 218, 0.7);
-  }
-  .mb-switch-tab.is-active {
-    background: var(--fk-forest);
-    color: #FFF;
-    font-weight: 700;
-    box-shadow: 0 4px 14px rgba(46, 78, 33, 0.3);
-  }
-  body.theme-bar-dark .mb-switch-tab.is-active {
-    background: var(--fk-gold);
-    color: #12190B;
-    box-shadow: 0 4px 14px rgba(224, 166, 60, 0.4);
-  }
-  .mb-switch-count {
-    font-size: 0.75rem;
-    opacity: 0.75;
-    background: rgba(0, 0, 0, 0.15);
-    padding: 2px 7px;
-    border-radius: 999px;
-  }
-
-  .mb-split-return-btn {
-    border: 1px solid var(--fk-line);
-    background: transparent;
-    color: var(--fk-muted);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .mb-split-return-btn:hover {
-    border-color: var(--fk-forest);
-    color: var(--fk-forest);
-  }
-  body.theme-bar-dark .mb-split-return-btn {
-    border-color: var(--fk-bar-border);
-    color: var(--fk-gold);
-  }
-
-  /* Toolbar: Search + Dietary Filters */
-  .mb-toolbar {
-    max-width: 1360px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .mb-search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 220px;
-    max-width: 440px;
-  }
-  .mb-search-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    color: var(--fk-muted);
-    pointer-events: none;
-  }
-  .mb-search-input {
-    width: 100%;
-    padding: 8px 36px 8px 36px;
-    border-radius: 999px;
-    border: 1px solid var(--fk-line);
-    background: #FFF;
-    font-size: 0.875rem;
-    color: var(--fk-ink);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .mb-search-input:focus {
-    border-color: var(--fk-forest);
-    box-shadow: 0 0 0 3px rgba(46, 78, 33, 0.12);
-  }
-  body.theme-bar-dark .mb-search-input {
-    background: var(--fk-bar-surface);
-    border-color: var(--fk-bar-border);
-    color: #F4ECDA;
-  }
-  body.theme-bar-dark .mb-search-input:focus {
-    border-color: var(--fk-gold);
-    box-shadow: 0 0 0 3px rgba(224, 166, 60, 0.2);
-  }
-  .mb-search-clear {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--fk-muted);
-    cursor: pointer;
-    font-size: 13px;
-  }
-
-  .mb-filter-chips {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .mb-filter-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--fk-line);
-    background: #FFF;
-    color: var(--fk-muted);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .mb-filter-chip:hover {
-    border-color: var(--fk-forest);
-    color: var(--fk-forest);
-  }
-  .mb-filter-chip.is-active {
-    background: var(--fk-terracotta);
-    border-color: var(--fk-terracotta);
-    color: #FFF;
-    font-weight: 700;
-  }
-  body.theme-bar-dark .mb-filter-chip {
-    background: var(--fk-bar-surface);
-    border-color: var(--fk-bar-border);
-    color: rgba(244, 236, 218, 0.8);
-  }
-  body.theme-bar-dark .mb-filter-chip.is-active {
-    background: var(--fk-gold);
-    border-color: var(--fk-gold);
-    color: #12190B;
-  }
-
-  /* ── 3. Menu Book Shell & Category Rails ────────────────────────────── */
-  .mb-book-shell {
-    display: none;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px clamp(16px, 4vw, 40px) 80px;
-  }
-  .mb-book-shell.is-open {
-    display: block;
-  }
-
-  .mb-pane {
-    display: none;
-  }
-  .mb-pane.is-active {
-    display: block;
-  }
-
-  .mb-pane-layout {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 40px;
-    align-items: start;
-  }
-
-  @media (max-width: 900px) {
-    .mb-pane-layout {
-      grid-template-columns: 1fr;
-    }
-    .mb-cat-rail--desktop {
-      display: none !important;
-    }
-  }
-
-  /* Desktop Sticky Rail (Left Column) */
-  .mb-cat-rail--desktop {
-    position: sticky;
-    top: 130px;
-    max-height: calc(100vh - 160px);
-    overflow-y: auto;
-    padding-right: 12px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--fk-camel) transparent;
-  }
-  .mb-cat-rail-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 10px;
-    margin-bottom: 12px;
-    border-bottom: 1.5px solid var(--fk-line);
-  }
-  .mb-cat-rail-title {
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    color: var(--fk-forest);
-  }
-  .mb-cat-rail--bar .mb-cat-rail-title {
-    color: var(--fk-gold);
-  }
-  .mb-cat-rail-counter {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--fk-muted);
-  }
-
-  .mb-cat-rail-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .mb-cat-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--fk-muted);
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-  .mb-cat-link:hover {
-    background: rgba(46, 78, 33, 0.06);
-    color: var(--fk-forest);
-  }
-  .mb-cat-link.is-active {
-    background: var(--fk-forest);
-    color: #FFF;
-    font-weight: 700;
-  }
-  .mb-cat-rail--bar .mb-cat-link:hover {
-    background: rgba(224, 166, 60, 0.1);
-    color: var(--fk-gold);
-  }
-  .mb-cat-rail--bar .mb-cat-link.is-active {
-    background: var(--fk-gold);
-    color: #12190B;
-  }
-  .mb-cat-count {
-    font-size: 0.75rem;
-    opacity: 0.75;
-  }
-
-  /* Phone Sticky Category Rail (Bottom Thumb-Zone) */
-  .mb-cat-rail--mobile {
-    display: none;
-  }
-  @media (max-width: 900px) {
-    .mb-cat-rail--mobile {
-      display: block;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 45;
-      background: rgba(242, 238, 228, 0.96);
-      border-top: 1.5px solid var(--fk-line);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 10px 12px;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-    }
-    .mb-cat-rail--mobile-bar {
-      background: rgba(13, 20, 11, 0.98);
-      border-top-color: var(--fk-bar-border);
-    }
-    .mb-cat-scroll-track {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 2px;
-    }
-    .mb-cat-scroll-track::-webkit-scrollbar {
-      display: none;
-    }
-    .mb-cat-pill {
-      flex: 0 0 auto;
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: #FFF;
-      border: 1px solid var(--fk-line);
-      color: var(--fk-muted);
-      font-size: 0.8125rem;
-      font-weight: 600;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .mb-cat-pill.is-active {
-      background: var(--fk-forest);
-      border-color: var(--fk-forest);
-      color: #FFF;
-      font-weight: 700;
-    }
-    .mb-cat-pill--bar {
-      background: var(--fk-bar-surface);
-      border-color: var(--fk-bar-border);
-      color: rgba(244, 236, 218, 0.8);
-    }
-    .mb-cat-pill--bar.is-active {
-      background: var(--fk-gold);
-      border-color: var(--fk-gold);
-      color: #12190B;
-    }
-  }
-
-  /* ── 4. CSS 3D Book Spread & Category Headers ───────────────────────── */
-  .mb-book-content {
-    min-width: 0;
-  }
-  .mb-book-header {
-    margin-bottom: 36px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--fk-line);
-  }
-  .mb-book-headline {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: clamp(2rem, 3.8vw, 3rem);
-    font-weight: 700;
-    color: var(--fk-forest);
-    margin: 0 0 8px;
-    line-height: 1.15;
-  }
-  .mb-book-lead {
-    font-size: 1rem;
-    color: var(--fk-muted);
-    margin: 0;
-    line-height: 1.5;
-  }
-  .mb-book-content--bar .mb-book-headline {
-    color: var(--fk-gold);
-  }
-  .mb-book-content--bar .mb-book-lead {
-    color: rgba(244, 236, 218, 0.8);
-  }
-  .mb-bar-gate-badge {
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--fk-gold);
-    display: inline-block;
-    margin-bottom: 6px;
-  }
-
-  /* Book Spread Layout */
-  .mb-category-spread {
-    margin-bottom: 56px;
-    scroll-margin-top: 140px;
-    perspective: 1200px;
-  }
-  .mb-spread-book-turn {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 28px;
-    background: #FAF8F2;
-    border: 1px solid var(--fk-line);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-    transform-origin: left center;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
-  }
-  .mb-spread-book-turn.is-turned {
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
-  }
-  body.theme-bar-dark .mb-spread-book-turn {
-    background: #111A0E;
-    border-color: var(--fk-bar-border);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  }
-
-  @media (max-width: 1024px) {
-    .mb-spread-book-turn {
-      grid-template-columns: 1fr;
-      padding: 18px;
-    }
-    .mb-spread-page--left {
-      display: none !important;
-    }
-  }
-
-  /* Left Page: Photo Leaf */
-  .mb-spread-page--left {
-    position: relative;
-    border-radius: 14px;
-    overflow: hidden;
-    background: var(--fk-sand);
-    display: flex;
-    flex-direction: column;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid var(--fk-line);
-  }
-  .mb-spread-page--bar-left {
-    background: #090E07;
-    border-color: var(--fk-bar-border);
-  }
-  .mb-spread-photo-wrap {
-    height: 100%;
-    min-height: 280px;
-    position: relative;
-    overflow: hidden;
-  }
-  .mb-spread-lead-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: brightness(0.92);
-  }
-  .mb-spread-caption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px 16px 14px;
-    background: linear-gradient(to top, rgba(34, 37, 29, 0.9) 0%, transparent 100%);
-    color: #FFF;
-  }
-  .mb-spread-leaf-badge {
-    font-size: 0.6875rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fk-gold);
-    display: block;
-    margin-bottom: 2px;
-  }
-  .mb-spread-quote {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: 0.9375rem;
-    margin: 0;
-    color: rgba(255, 255, 255, 0.92);
-  }
-
-  /* Right Page: Category Info & Dish Grid */
-  .mb-spread-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid var(--fk-forest);
-  }
-  .mb-spread-header--bar {
-    border-bottom-color: var(--fk-gold);
-  }
-  .mb-spread-kicker {
-    font-size: 0.6875rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--fk-terracotta);
-    display: block;
-    margin-bottom: 2px;
-  }
-  .mb-spread-kicker--bar {
-    color: var(--fk-gold);
-  }
-  .mb-spread-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
-    font-weight: 700;
-    color: var(--fk-ink);
-    margin: 0;
-  }
-  body.theme-bar-dark .mb-spread-title {
-    color: #F4ECDA;
-  }
-  .mb-spread-count {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--fk-muted);
-  }
-
-  /* Dishes Grid */
-  .mb-dishes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-  }
-
-  /* Dish Card */
-  .mb-dish-card {
-    background: #FFF;
-    border: 1px solid var(--fk-line);
-    border-radius: 12px;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: default;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-  .mb-dish-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-    border-color: var(--fk-camel);
-  }
-  .mb-dish-card.has-photo {
-    cursor: pointer;
-  }
-
-  body.theme-bar-dark .mb-dish-card--bar {
-    background: var(--fk-bar-surface);
-    border-color: var(--fk-bar-border);
-    color: #F4ECDA;
-  }
-  body.theme-bar-dark .mb-dish-card--bar:hover {
-    border-color: var(--fk-gold);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  }
-
-  .mb-dish-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    gap: 10px;
-  }
-  .mb-dish-badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .mb-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    border: 1.5px solid;
-    display: inline-grid;
-    place-items: center;
-  }
-  .mb-dot::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-  .mb-dot--veg {
-    border-color: #2E7D32;
-  }
-  .mb-dot--veg::after {
-    background: #2E7D32;
-  }
-  .mb-dot--nonveg {
-    border-color: #C62828;
-  }
-  .mb-dot--nonveg::after {
-    background: #C62828;
-  }
-  .mb-badge-spicy {
-    font-size: 13px;
-  }
-  .mb-badge-chef {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 2px 7px;
-    border-radius: 999px;
-    background: rgba(207, 75, 55, 0.12);
-    color: var(--fk-terracotta);
-  }
-  .mb-badge-alc {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 999px;
-    background: rgba(224, 166, 60, 0.15);
-    color: var(--fk-gold);
-  }
-  .mb-badge-sub {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(244, 236, 218, 0.7);
-  }
-
-  .mb-dish-price {
-    font-weight: 700;
-    font-size: 0.9375rem;
-    color: var(--fk-ink);
-    white-space: nowrap;
-  }
-  body.theme-bar-dark .mb-dish-price {
-    color: var(--fk-gold);
-  }
-  .mb-spirit-prices {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--fk-gold);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-  }
-  .mb-price-bullet {
-    opacity: 0.6;
-  }
-
-  .mb-dish-title {
-    font-size: 0.9375rem;
-    font-weight: 700;
-    margin: 0 0 4px;
-    color: var(--fk-ink);
-    line-height: 1.3;
-  }
-  .mb-dish-title--bar {
-    color: #F4ECDA;
-  }
-
-  .mb-dish-desc {
-    font-size: 0.8125rem;
-    color: var(--fk-muted);
-    margin: 0 0 12px;
-    line-height: 1.45;
-  }
-  .mb-dish-desc--bar {
-    color: rgba(244, 236, 218, 0.7);
-  }
-
-  .mb-dish-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 10px;
-    border-top: 1px dashed var(--fk-line);
-  }
-  body.theme-bar-dark .mb-dish-footer--bar {
-    border-top-color: rgba(224, 166, 60, 0.18);
-  }
-
-  .mb-photo-pill {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--fk-forest);
-    background: rgba(46, 78, 33, 0.08);
-    padding: 2px 8px;
-    border-radius: 999px;
-  }
-  .mb-bucket-pill {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--fk-gold);
-  }
-
-  .mb-add-pick-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: transparent;
-    border: 1px solid var(--fk-forest);
-    color: var(--fk-forest);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 11px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .mb-add-pick-btn:hover {
-    background: var(--fk-forest);
-    color: #FFF;
-  }
-  .mb-add-pick-btn[aria-pressed="true"] {
-    background: var(--fk-terracotta);
-    border-color: var(--fk-terracotta);
-    color: #FFF;
-  }
-  .mb-add-pick-btn--bar {
-    border-color: var(--fk-gold);
-    color: var(--fk-gold);
-  }
-  .mb-add-pick-btn--bar:hover {
-    background: var(--fk-gold);
-    color: #12190B;
-  }
-
-  .mb-empty-alert {
-    text-align: center;
-    padding: 40px 20px;
-    background: #FFF;
-    border: 1.5px dashed var(--fk-line);
-    border-radius: 16px;
-    color: var(--fk-muted);
-    font-size: 0.9375rem;
-    margin: 24px 0;
-  }
-  .mb-empty-alert--bar {
-    background: var(--fk-bar-surface);
-    border-color: var(--fk-bar-border);
-    color: rgba(244, 236, 218, 0.7);
-  }
-
-  /* ── 5. Desktop Cursor Photo Reveal Floating Card ──────────────────── */
-  .mb-cursor-reveal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0;
-    transform: translate3d(-999px, -999px, 0);
-    transition: opacity 0.25s ease;
-    will-change: transform, opacity;
-  }
-  .mb-cursor-reveal.is-visible {
-    opacity: 1;
-  }
-  .mb-cursor-card {
-    width: 240px;
-    background: #17200F;
-    border: 1.5px solid var(--fk-gold);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
-  }
-  .mb-cursor-img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    display: block;
-  }
-  .mb-cursor-info {
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    background: #12190B;
-  }
-  .mb-cursor-title {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: #F4ECDA;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .mb-cursor-price {
-    font-size: 0.8125rem;
-    font-weight: 800;
-    color: var(--fk-gold);
-    white-space: nowrap;
-  }
-
-  /* ── 6. Phone Dish Bottom Sheet ────────────────────────────────────── */
-  .mb-sheet-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(18, 25, 11, 0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 90;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .mb-sheet-backdrop.is-open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .mb-sheet-dialog {
-    width: 100%;
-    max-width: 520px;
-    background: #FFF;
-    border-radius: 24px 24px 0 0;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .mb-sheet-backdrop.is-open .mb-sheet-dialog {
-    transform: translateY(0);
-  }
-
-  body.theme-bar-dark .mb-sheet-dialog {
-    background: #141E11;
-    border-top: 1.5px solid var(--fk-gold);
-    color: #F4ECDA;
-  }
-
-  .mb-sheet-handle-wrap {
-    width: 100%;
-    padding: 12px 0 6px;
-    display: flex;
-    justify-content: center;
-    cursor: grab;
-    touch-action: pan-y;
-  }
-  .mb-sheet-drag-handle {
-    width: 44px;
-    height: 5px;
-    border-radius: 999px;
-    background: var(--fk-line);
-  }
-  body.theme-bar-dark .mb-sheet-drag-handle {
-    background: rgba(224, 166, 60, 0.3);
-  }
-
-  .mb-sheet-close {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--fk-line);
-    background: #FFF;
-    color: var(--fk-ink);
-    font-size: 14px;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    z-index: 5;
-  }
-  body.theme-bar-dark .mb-sheet-close {
-    background: #17200F;
-    border-color: var(--fk-bar-border);
-    color: #F4ECDA;
-  }
-
-  .mb-sheet-body {
-    overflow-y: auto;
-    padding: 8px 24px 32px;
-  }
-  .mb-sheet-img-wrap {
-    width: 100%;
-    height: 220px;
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  }
-  .mb-sheet-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .mb-sheet-category {
-    font-size: 0.6875rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fk-terracotta);
-    display: block;
-    margin-bottom: 4px;
-  }
-  body.theme-bar-dark .mb-sheet-category {
-    color: var(--fk-gold);
-  }
-  .mb-sheet-title-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-  .mb-sheet-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: 1.45rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-    color: var(--fk-ink);
-  }
-  body.theme-bar-dark .mb-sheet-title {
-    color: #F4ECDA;
-  }
-  .mb-sheet-price {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--fk-forest);
-    white-space: nowrap;
-  }
-  body.theme-bar-dark .mb-sheet-price {
-    color: var(--fk-gold);
-  }
-  .mb-sheet-desc {
-    font-size: 0.875rem;
-    color: var(--fk-muted);
-    line-height: 1.5;
-    margin: 0 0 14px;
-  }
-  body.theme-bar-dark .mb-sheet-desc {
-    color: rgba(244, 236, 218, 0.8);
-  }
-  .mb-sheet-badges {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-  .mb-sheet-badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 999px;
-  }
-  .mb-sheet-badge--veg {
-    background: #E8F5E9;
-    color: #2E7D32;
-  }
-  .mb-sheet-badge--nonveg {
-    background: #FFEBEE;
-    color: #C62828;
-  }
-  .mb-sheet-badge--spicy {
-    background: #FFF3E0;
-    color: #E65100;
-  }
-  .mb-sheet-badge--chef {
-    background: rgba(207, 75, 55, 0.12);
-    color: var(--fk-terracotta);
-  }
-  .mb-sheet-badge--alc {
-    background: rgba(224, 166, 60, 0.15);
-    color: var(--fk-gold);
-  }
-
-  .mb-sheet-pick-btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 999px;
-    background: var(--fk-forest);
-    color: #FFF;
-    border: none;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 6px 20px rgba(46, 78, 33, 0.3);
-    transition: background 0.2s, transform 0.2s;
-  }
-  .mb-sheet-pick-btn:hover {
-    background: #243D1A;
-    transform: translateY(-1px);
-  }
-  .mb-sheet-pick-btn.is-picked {
-    background: var(--fk-terracotta);
-  }
-  body.theme-bar-dark .mb-sheet-pick-btn {
-    background: var(--fk-gold);
-    color: #12190B;
-  }
-
-  /* ── 7. Drinks 21+ Age Gate Modal ──────────────────────────────────── */
-  .mb-age-gate-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: rgba(13, 20, 11, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-  .mb-age-gate-modal.is-open {
-    display: flex;
-  }
-  .mb-age-gate-modal[hidden] {
-    display: none !important;
-  }
-  .mb-age-gate-box {
-    background: #17200F;
-    border: 1.5px solid var(--fk-gold);
-    border-radius: 20px;
-    padding: 32px 28px;
-    max-width: 440px;
-    text-align: center;
-    color: #F4ECDA;
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8);
-  }
-  .mb-age-gate-icon {
-    font-size: 2.4rem;
-    display: inline-block;
-    margin-bottom: 12px;
-  }
-  .mb-age-gate-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--fk-gold);
-    margin: 0 0 10px;
-  }
-  .mb-age-gate-text {
-    font-size: 0.875rem;
-    color: rgba(244, 236, 218, 0.8);
-    line-height: 1.5;
-    margin: 0 0 24px;
-  }
-  .mb-age-gate-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .mb-age-btn {
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-size: 0.875rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .mb-age-btn--yes {
-    background: var(--fk-gold);
-    border: none;
-    color: #12190B;
-    box-shadow: 0 4px 14px rgba(224, 166, 60, 0.4);
-  }
-  .mb-age-btn--yes:hover {
-    background: #FFF;
-    transform: translateY(-1px);
-  }
-  .mb-age-btn--no {
-    background: transparent;
-    border: 1px solid var(--fk-bar-border);
-    color: rgba(244, 236, 218, 0.7);
-  }
-  .mb-age-btn--no:hover {
-    border-color: #FFF;
-    color: #FFF;
-  }
-
-  /* ── 8. PicksTray Floating Bar Overrides ────────────────────────────── */
-  .fx-tray {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 60;
-    background: #17200F;
-    border: 1.5px solid var(--fk-gold);
-    border-radius: 999px;
-    padding: 8px 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    color: #F4ECDA;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  .fx-tray[hidden] {
-    display: none !important;
-  }
-  #fxtray-t {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: var(--fk-gold);
-    padding-right: 4px;
-  }
-  #fxtray-go {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: #25D366;
-    color: #FFF;
-    border: none;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    padding: 7px 16px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-  }
-  #fxtray-go:hover {
-    background: #20BA5A;
-    transform: translateY(-1px);
-  }
-  #fxtray-go svg {
-    width: 16px;
-    height: 16px;
-  }
-  #fxtray-x {
-    background: transparent;
-    border: none;
-    color: rgba(244, 236, 218, 0.6);
-    font-size: 18px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 4px;
-    transition: color 0.2s;
-  }
-  #fxtray-x:hover {
-    color: #FFF;
-  }
-
-  @media (max-width: 768px) {
-    .fx-tray {
-      bottom: 68px; /* Above mobile sticky category rail */
-      right: 16px;
-      left: 16px;
-      justify-content: space-between;
-      border-radius: 16px;
-    }
-  }
-
-  /* ── 9. Dark Theme Body Overrides when Bar is Active ────────────────── */
-  body.theme-bar-dark {
-    background: var(--fk-bar-dark);
-    color: #F4ECDA;
-  }
-  body.theme-bar-dark .mb-main {
-    background: var(--fk-bar-dark);
-    color: #F4ECDA;
-  }
-
-  /* ── 10. Reduced Motion ─────────────────────────────────────────────── */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      transition: none !important;
-      animation: none !important;
-    }
-    .mb-spread-book-turn {
-      transform: none !important;
-    }
-    .mb-cursor-reveal {
-      display: none !important;
-    }
-    .mb-sheet-dialog {
-      transform: none !important;
-    }
-  }
-</style>

@@ -660,7 +660,6 @@
         "veg": true,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/pandu_mirchi_kodi_kebab.webp",
         "section": "Regional specials",
         "description": ""
       },
@@ -706,7 +705,6 @@
         "veg": false,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/karvepaku_kodi_vepudu.webp",
         "section": "Regional specials",
         "description": ""
       },
@@ -744,7 +742,6 @@
         "veg": false,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc08946.webp",
         "section": "Regional specials",
         "description": ""
       },
@@ -772,7 +769,6 @@
         "veg": false,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc05389.webp",
         "section": "Regional specials",
         "description": ""
       },
@@ -814,7 +810,6 @@
         "veg": true,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc03321.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -824,7 +819,6 @@
         "veg": true,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc03327.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -834,7 +828,6 @@
         "veg": false,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc03308.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -873,7 +866,6 @@
         "veg": false,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/tandoori_prawns_.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -893,7 +885,6 @@
         "veg": true,
         "spicy": false,
         "chefSpecial": true,
-        "image": "/assets/dishes/dsc05366.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -941,7 +932,6 @@
         "veg": false,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/dsc05352.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -1702,7 +1692,6 @@
         "veg": false,
         "spicy": false,
         "chefSpecial": true,
-        "image": "/assets/dishes/fursat_.webp",
         "section": "Biryani & rice",
         "description": ""
       },
@@ -1712,7 +1701,6 @@
         "veg": false,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/fursat_1_.webp",
         "section": "Biryani & rice",
         "description": ""
       },
@@ -1957,7 +1945,6 @@
         "veg": true,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/lotus_biscoff_.webp",
         "section": "Desserts",
         "description": ""
       },
