@@ -1,4 +1,5 @@
 ---
+import site from '../data/site.json';
 // restaurant-bar.astro - Fursat Restaurant & Bar (21+)
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -146,7 +147,7 @@ import BookingDialog from '../components/BookingDialog.astro';
           </details>
           <details class="rb-faq-item">
             <summary>Do you take table reservations in advance?</summary>
-            <p>Yes! We highly recommend reserving a table, especially for weekend dinner slots (Friday to Sunday, 7 PM to 11 PM). You can reserve instantly online or via WhatsApp.</p>
+            <p>Yes! We highly recommend reserving a table, especially for weekend dinner slots (Friday to Sunday). We are open {site.hours.display}. You can reserve instantly online or via WhatsApp.</p>
           </details>
           <details class="rb-faq-item">
             <summary>Are vegetarian and Jain options available?</summary>

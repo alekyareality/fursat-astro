@@ -13,7 +13,15 @@
     "_slotNote": "TODO(client): Confirm cap. 30 is a placeholder.",
     "minimumGuests": 1,
     "minimumBill": 0,
-    "daysApplicable": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    "daysApplicable": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
     "_weekendNote": "TODO(client): Is there a separate Fri–Sun offer? If yes, fill weekendOffer below.",
     "weekendOffer": null,
     "alcoholIncluded": false,
@@ -25,16 +33,5 @@
       "enabled": true
     }
   },
-  "slots": [
-    { "id": "s1", "label": "12:00 – 1:00 PM", "start": "12:00", "end": "13:00", "maxCovers": 20 },
-    { "id": "s2", "label": "1:00 – 2:00 PM",  "start": "13:00", "end": "14:00", "maxCovers": 20 },
-    { "id": "s3", "label": "2:00 – 3:00 PM",  "start": "14:00", "end": "15:00", "maxCovers": 20 },
-    { "id": "s4", "label": "3:00 – 4:00 PM",  "start": "15:00", "end": "16:00", "maxCovers": 20 },
-    { "id": "s5", "label": "4:00 – 5:00 PM",  "start": "16:00", "end": "17:00", "maxCovers": 30, "offerApplies": false },
-    { "id": "s6", "label": "5:00 – 6:00 PM",  "start": "17:00", "end": "18:00", "maxCovers": 30, "offerApplies": false },
-    { "id": "s7", "label": "6:00 – 7:00 PM",  "start": "18:00", "end": "19:00", "maxCovers": 40, "offerApplies": false },
-    { "id": "s8", "label": "7:00 – 8:00 PM",  "start": "19:00", "end": "20:00", "maxCovers": 40, "offerApplies": false },
-    { "id": "s9", "label": "8:00 – 9:00 PM",  "start": "20:00", "end": "21:00", "maxCovers": 40, "offerApplies": false },
-    { "id": "s10","label": "9:00 – 10:00 PM", "start": "21:00", "end": "22:00", "maxCovers": 30, "offerApplies": false }
-  ]
+  "_slotsNote": "Legacy per-slot list removed: hourly slots and per-slot discount now live in src/data/slots.json. This whole file is the hidden FURSAT15 offer (OFFER_ENABLED=false)."
 }
