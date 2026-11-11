@@ -1,9 +1,12 @@
 ---
-// BookingPanel.astro — "Book Your Experience" (R2 rev: static pickers, WhatsApp handler).
+// BookingPanel.astro — "Book Your Experience" (R3a: Quick · Concierge modes + live ticket; same booking object, same WhatsApp message).
+// R3a logic notes for the owner: (a) guests are a 1–12 stepper (13+ shows the /party link instead of a disabled button), (b) one added check: mobile must have 10–13 digits
+// (message text and wa.me target are unchanged), (c) date/time/zone/guests pickers write one `booking` object that Quick and Concierge share.
 // Owner-approved logic changes in this revision: (1) message gains a "• Seating:" line, (2) the "Coupon: FURSAT15" line is removed,
 // (3) the date is shown and sent as "Tue, 10 Nov" instead of the raw input value. Same wa.me/919059670033 target and field ids.
 // Stored request + staff alert are R4 and still need owner approval.
 import site from '../../data/site.json';
+import LiveTicket from './LiveTicket.astro';
 
 // ASSUMPTION (not client-confirmed): last bookable slot = 10:00 PM (90 min before the 11:30 PM close). 30-min slots.
 // TODO(client): confirm last booking time, slot length and closing time (site.json says 23:30, EazyDiner lists 10:30 PM).
@@ -22,8 +25,9 @@ const groups = [
   { name: 'Late', from: 20 * 60, to: 24 * 60 },
 ].map(g => ({ ...g, items: slots.filter(s => s.min >= g.from && s.min < g.to) })).filter(g => g.items.length);
 
-const guestOptions = Array.from({ length: 12 }, (_, i) => i + 1);
-const zones = ['The Bar', 'Dining', 'Lounge', 'Café'];
+const zones = [
+  { v: 'The Bar', img: 'bar' }, { v: 'Dining', img: 'dining' }, { v: 'Lounge', img: 'lounge' }, { v: 'Café', img: 'cafe' },
+];
 const occasions = [
   { v: 'Casual Dining', t: 'Casual dining' },
   { v: 'Date Night', t: 'Date night' },
@@ -49,74 +53,115 @@ const hoursDisplay = site.hours.display; // TODO(client): confirm closing time (
       Book Your Experience
     </h2>
 
-    <div class="rs-fgrid">
-      <label class="rs-f" id="f-date">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
-        <span class="rs-fl">Select Date</span><span class="rs-pre">Pre-filled</span>
-        <input type="date" id="res-date" class="rs-dateinp" required />
-        <span class="rs-dv" id="res-date-v" aria-hidden="true"></span>
-      </label>
-      <label class="rs-f" id="f-time">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-        <span class="rs-fl">Select Time</span><span class="rs-pre">Pre-filled</span>
-        <select id="res-time" required>
-          <option value="" disabled selected>Choose a time</option>
-          {groups.map(g => (
-            <optgroup label={g.name}>
-              {g.items.map(s => <option value={s.text} data-m={s.min}>{s.text}</option>)}
-            </optgroup>
-          ))}
-        </select>
-      </label>
-      <label class="rs-f" id="f-guests">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c0-3.2 2.4-5.5 5.5-5.5s5.5 2.3 5.5 5.5M16 6a2.8 2.8 0 0 1 0 5.4M17.5 14c2 .6 3 2.4 3 5"/></svg>
-        <span class="rs-fl">Guests</span><span class="rs-pre">Pre-filled</span>
-        <select id="res-guests">
-          {guestOptions.map(n => <option value={String(n)} selected={n === 4}>{n} {n === 1 ? 'guest' : 'guests'}</option>)}
-          <option value="13+">13 or more</option>
-        </select>
-      </label>
-      <label class="rs-f" id="f-zone">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3M4 12.5a2 2 0 0 1 2-1.5 2 2 0 0 1 2 2V15h8v-2a2 2 0 0 1 2-2 2 2 0 0 1 2 1.5V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zM6.5 18v2M17.5 18v2"/></svg>
-        <span class="rs-fl">Seating<span class="rs-long"> Preference</span></span><span class="rs-pre">Pre-filled</span>
-        <select id="res-zone">
-          <option value="">No preference</option>
-          {zones.map(z => <option value={z}>{z}</option>)}
-        </select>
-      </label>
-      <label class="rs-f" id="f-name">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg>
-        <span class="rs-fl">Your Name</span>
-        <input type="text" id="res-name" autocomplete="name" placeholder="Full name" required />
-      </label>
-      <label class="rs-f" id="f-phone">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h3l1.6 4-2 1.3a11 11 0 0 0 5.1 5.1l1.3-2 4 1.6v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2z"/></svg>
-        <span class="rs-fl">Mobile Number</span>
-        <input type="tel" id="res-phone" autocomplete="tel" inputmode="tel" placeholder="10-digit number" required />
-      </label>
-      <label class="rs-f" id="f-occasion">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/></svg>
-        <span class="rs-fl">Occasion (optional)</span><span class="rs-pre">Pre-filled</span>
-        <select id="res-occasion">
-          {occasions.map(o => <option value={o.v}>{o.t}</option>)}
-        </select>
-      </label>
-      <p class="rs-hint" id="rs-party" hidden>Party of 13 or more? <a href="/party">See party packages</a> or <a href="/banquet">the banquet hall</a>.</p>
-      <p class="rs-hint" id="rs-noslot" hidden>No more slots today. Please pick another date.</p>
+    <div class="rs-modes" role="tablist" aria-label="Booking style" id="rs-modes">
+      <span class="rs-mpill" id="rs-mpill" aria-hidden="true"></span>
+      <button type="button" class="rs-mode" role="tab" id="rs-tab-quick" aria-selected="true" aria-controls="rs-p-quick">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5.5 13.5H11L10 21l8-10.5h-5.5z"/></svg><span>Quick</span>
+      </button>
+      <button type="button" class="rs-mode" role="tab" id="rs-tab-chat" aria-selected="false" aria-controls="rs-p-chat" tabindex="-1">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg><span>Concierge</span>
+      </button>
     </div>
 
-    <p class="rs-err" id="rs-err" role="alert" aria-live="assertive">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.1"/></svg>
-      <span id="rs-err-t"></span>
-    </p>
+    <!-- ───── Quick ───── -->
+    <div class="rs-mpanel" id="rs-p-quick" role="tabpanel" aria-labelledby="rs-tab-quick">
+      <div class="rs-qgrid">
+        <div class="rs-q" id="f-date">
+          <p class="rs-ql" id="rs-ql-date"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>Select Date</p>
+          <div class="rs-chips rs-dates" id="rs-dates" role="radiogroup" aria-labelledby="rs-ql-date">
+            <label class="rs-chip rs-cal" id="rs-cal">
+              <span class="rs-cw" id="rs-cal-t">More</span>
+              <span class="rs-cd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span id="rs-cal-d"></span></span>
+              <input type="date" id="res-date" class="rs-calinp" aria-label="Pick another date" />
+            </label>
+          </div>
+        </div>
 
-    <button type="button" id="res-submit-btn" class="rs-btn rs-btn-solid rs-submit">
-      <span>Request a Table</span>
-      <svg class="rs-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.37a9.9 9.9 0 0 0 4.74 1.2c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c.01-4.54 3.7-8.24 8.24-8.24z"/></svg>
-    </button>
-    <p class="rs-cond" role="note">{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · This is a request, not a confirmed booking · Seating is a preference.</p>
-    <p class="rs-fine" id="rs-fine">Opens WhatsApp with your details.</p>
+        <div class="rs-q" id="f-time">
+          <div class="rs-qlrow">
+            <p class="rs-ql" id="rs-ql-time"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Select Time</p>
+            <div class="rs-tabs" role="tablist" aria-label="Part of the day" id="rs-tabs">
+              {groups.map(g => <button type="button" class="rs-tab" role="tab" aria-selected="false" tabindex="-1" data-g={g.name} aria-controls={`rs-t-${g.name.toLowerCase()}`}>{g.name}</button>)}
+            </div>
+          </div>
+          <div id="rs-times">
+            {groups.map(g => (
+              <div class="rs-chips rs-times" role="radiogroup" aria-label={`${g.name} times`} id={`rs-t-${g.name.toLowerCase()}`} data-g={g.name}>
+                {g.items.map(s => <button type="button" class="rs-chip" role="radio" aria-checked="false" tabindex="-1" data-m={s.min} data-t={s.text}>{s.text}</button>)}
+              </div>
+            ))}
+          </div>
+          <p class="rs-hint" id="rs-noslot" hidden>No more slots today. Please pick another date.</p>
+        </div>
+
+        <div class="rs-q rs-q-3" id="f-guests">
+          <p class="rs-ql" id="rs-ql-guests"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c0-3.2 2.4-5.5 5.5-5.5s5.5 2.3 5.5 5.5M16 6a2.8 2.8 0 0 1 0 5.4M17.5 14c2 .6 3 2.4 3 5"/></svg>Guests<span class="rs-pre">Pre-filled</span></p>
+          <div class="rs-step" role="group" aria-labelledby="rs-ql-guests">
+            <button type="button" class="rs-sbtn" id="rs-g-minus" aria-label="Fewer guests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg></button>
+            <div class="rs-sval">
+              <b id="rs-g-n" role="status" aria-live="polite">4 guests</b>
+              <span class="rs-dots" aria-hidden="true">{Array.from({ length: 12 }, () => <i></i>)}</span>
+            </div>
+            <button type="button" class="rs-sbtn" id="rs-g-plus" aria-label="More guests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg></button>
+          </div>
+        </div>
+
+        <div class="rs-q rs-q-3" id="f-occasion">
+          <label class="rs-ql" for="res-occasion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/></svg>Occasion<span class="rs-long"> (optional)</span><span class="rs-pre">Pre-filled</span></label>
+          <div class="rs-box">
+            <select id="res-occasion">
+              {occasions.map(o => <option value={o.v}>{o.t}</option>)}
+            </select>
+          </div>
+        </div>
+        <p class="rs-hint rs-q" id="rs-party" hidden>Booking for 13 or more? <a href="/party">See party packages</a> or <a href="/banquet">the banquet hall</a>.</p>
+
+        <div class="rs-q" id="f-zone">
+          <p class="rs-ql" id="rs-ql-zone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3M4 12.5a2 2 0 0 1 2-1.5 2 2 0 0 1 2 2V15h8v-2a2 2 0 0 1 2-2 2 2 0 0 1 2 1.5V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zM6.5 18v2M17.5 18v2"/></svg>Seating<span class="rs-long"> Preference</span></p>
+          <div class="rs-chips rs-zones" id="rs-zones" role="radiogroup" aria-labelledby="rs-ql-zone">
+            <button type="button" class="rs-chip" role="radio" aria-checked="true" data-v=""><span>No preference</span></button>
+            {zones.map(z => (
+              <button type="button" class="rs-chip" role="radio" aria-checked="false" tabindex="-1" data-v={z.v}>
+                <img class="rs-zt rs-ph" src={`/assets/reserve/zone-${z.img}.webp`} alt="" width="72" height="72" loading="lazy" decoding="async" /><span>{z.v}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="rs-q rs-q-3" id="f-name">
+          <label class="rs-ql" for="res-name"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg>Your Name</label>
+          <div class="rs-box"><input type="text" id="res-name" autocomplete="name" placeholder="Full name" required /></div>
+        </div>
+        <div class="rs-q rs-q-3" id="f-phone">
+          <label class="rs-ql" for="res-phone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h3l1.6 4-2 1.3a11 11 0 0 0 5.1 5.1l1.3-2 4 1.6v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2z"/></svg>Mobile<span class="rs-long"> Number</span></label>
+          <div class="rs-box"><input type="tel" id="res-phone" autocomplete="tel" inputmode="tel" placeholder="10-digit number" required /></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── Concierge ───── -->
+    <div class="rs-mpanel rs-chat" id="rs-p-chat" role="tabpanel" aria-labelledby="rs-tab-chat" hidden>
+      <div class="rs-log" id="rs-log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Table request chat" tabindex="0"></div>
+      <div class="rs-tray" id="rs-tray"></div>
+    </div>
+
+    <LiveTicket variant="inline" />
+
+    <div class="rs-foot" id="rs-foot">
+      <p class="rs-err" id="rs-err" role="alert" aria-live="assertive">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.1"/></svg>
+        <span id="rs-err-t"></span>
+      </p>
+      <button type="button" id="res-submit-btn" class="rs-btn rs-btn-solid rs-submit">
+        <span>Request a Table</span>
+        <svg class="rs-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.37a9.9 9.9 0 0 0 4.74 1.2c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c.01-4.54 3.7-8.24 8.24-8.24z"/></svg>
+      </button>
+      <p class="rs-cond" role="note">{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · This is a request, not a confirmed booking · Seating is a preference.</p>
+      <p class="rs-fine" id="rs-fine">Opens WhatsApp with your details.</p>
+    </div>
   </form>
+
+  <LiveTicket variant="aside" />
 
   <aside class="rs-perks" aria-label="At Fursat">
     <div class="rs-perk">
@@ -133,126 +178,409 @@ const hoursDisplay = site.hours.display; // TODO(client): confirm closing time (
 
 <script is:inline>
 (function () {
-  var $ = function (id) { return document.getElementById(id); };
-  var page = document.querySelector('.rs-page');
-  var panel = $('book');
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const qs = (s, r) => (r || document).querySelector(s);
+  const qsa = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const page = qs('.rs-page'), panel = $('book');
+  const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const EASE = 'cubic-bezier(0.16,1,0.3,1)';
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  /* ---- date + slots (client time) ---- */
-  function pad(n) { return (n < 10 ? '0' : '') + n; }
-  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
-  var dateEl = $('res-date'), timeEl = $('res-time'), guestsEl = $('res-guests'), occEl = $('res-occasion'), zoneEl = $('res-zone');
-  dateEl.min = todayStr();
-  dateEl.value = todayStr();
-  var DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  /* ───────── dates (client time) ───────── */
+  const pad = (n) => (n < 10 ? '0' : '') + n;
+  const ymd = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const todayStr = () => ymd(new Date());
+  const parse = (v) => { const p = (v || '').split('-'); return p.length === 3 ? new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])) : null; };
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   /* "2026-11-10" -> "Tue, 10 Nov" (year added only when it is not the current year) */
   function friendly(v) {
-    var p = (v || '').split('-'); if (p.length !== 3) return '';
-    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-    var s = DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
+    const d = parse(v); if (!d) return '';
+    const s = DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
     return d.getFullYear() === new Date().getFullYear() ? s : s + ' ' + d.getFullYear();
   }
-  var dateV = $('res-date-v');
-  function showDate() { dateV.textContent = friendly(dateEl.value) || 'Choose a date'; dateEl.setAttribute('aria-label', 'Select date, ' + (friendly(dateEl.value) || 'none chosen')); }
-  dateEl.addEventListener('input', showDate);
-  dateEl.addEventListener('click', function () { try { if (dateEl.showPicker) dateEl.showPicker(); } catch (e) {} });
-  showDate();
+  const phoneOk = (v) => { const n = String(v || '').replace(/\D/g, '').length; return n >= 10 && n <= 13; };
 
-  function refreshSlots() {
-    var isToday = dateEl.value === todayStr(), now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes();
-    var opts = timeEl.querySelectorAll('option[data-m]'), first = null, any = false;
-    for (var i = 0; i < opts.length; i++) {
-      var past = isToday && Number(opts[i].getAttribute('data-m')) < nowMin;
-      opts[i].disabled = past;
-      if (!past) { any = true; if (!first) first = opts[i]; }
-    }
-    var cur = timeEl.selectedOptions[0];
-    if (!cur || cur.disabled || !cur.value) timeEl.value = first ? first.value : '';
-    $('rs-noslot').hidden = any;
+  /* ───────── one booking object, shared by Quick and Concierge ───────── */
+  const booking = { date: todayStr(), time: '', timeMin: -1, guests: 4, zone: '', occasion: 'Casual Dining', name: '', phone: '' };
+  const slots = qsa('#rs-times .rs-chip').map((el) => ({ el, m: Number(el.dataset.m), t: el.dataset.t, g: el.closest('.rs-times').dataset.g }));
+  const groups = Array.from(new Set(slots.map((s) => s.g)));
+  const nowMin = () => { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); };
+  const availFor = (date) => slots.filter((s) => !(date === todayStr() && s.m < nowMin()));
+  function setDefaultTime() {
+    const a = availFor(booking.date);
+    if (a.some((s) => s.m === booking.timeMin)) return;
+    booking.time = a[0] ? a[0].t : ''; booking.timeMin = a[0] ? a[0].m : -1;
   }
-  dateEl.addEventListener('change', function () { showDate(); refreshSlots(); });
-  refreshSlots();
+  if (!availFor(booking.date).length) booking.date = ymd(addDays(new Date(), 1));
+  setDefaultTime();
+  let mode = 'quick', tg = (slots.find((s) => s.m === booking.timeMin) || slots[0]).g;
+  const chat = { started: false, step: '', answered: {}, editing: false, timeStale: false, period: '' };
 
-  /* ---- 13+ guests -> party page ---- */
-  var submit = $('res-submit-btn');
-  function refreshGuests() {
-    var big = guestsEl.value === '13+';
-    $('rs-party').hidden = !big;
-    submit.setAttribute('aria-disabled', big ? 'true' : 'false');
+  /* ───────── small motion helpers (WAAPI = off the main thread) ───────── */
+  function fadeIn(el) {
+    if (!el || !el.animate) return;
+    el.animate(RM.matches ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 150, easing: EASE });
   }
-  guestsEl.addEventListener('change', refreshGuests);
-  refreshGuests();
+  function pop(el) {
+    if (!el || !el.animate) return;
+    el.animate(RM.matches ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'scale(.95)' }, { opacity: 1, transform: 'none' }], { duration: 200, easing: EASE });
+  }
 
-  /* ---- clear the "Pre-filled" tag once the guest edits that field ---- */
-  ['f-date', 'f-time', 'f-guests', 'f-zone', 'f-occasion'].forEach(function (id) {
-    var f = $(id); if (!f) return;
-    f.addEventListener('change', function () { f.classList.remove('is-prefilled'); });
+  /* ───────── chip groups: roving tabindex, arrow keys, sliding selection pill ───────── */
+  const boxes = qsa('.rs-chips');
+  boxes.forEach((box) => {
+    const pill = document.createElement('i'); pill.className = 'rs-pill'; pill.setAttribute('aria-hidden', 'true'); box.insertBefore(pill, box.firstChild); box._pill = pill;
   });
+  function place(box) {
+    const pill = box._pill; if (!pill) return;
+    const on = box.querySelector('[aria-checked="true"], .rs-cal.is-on');
+    if (!on || !box.offsetParent) { pill.style.opacity = '0'; return; }
+    pill.style.width = on.offsetWidth + 'px'; pill.style.height = on.offsetHeight + 'px';
+    pill.style.transform = 'translate(' + on.offsetLeft + 'px,' + on.offsetTop + 'px)';
+    pill.style.opacity = '1';
+    box.classList.add('has-pill');
+    if (!box._live) { box._live = true; requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('is-live'))); }
+  }
+  const placeAll = () => boxes.forEach(place);
+  if ('ResizeObserver' in window) { const ro = new ResizeObserver((es) => es.forEach((e) => place(e.target))); boxes.forEach((b) => ro.observe(b)); }
+  window.addEventListener('resize', placeAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeAll);
 
-  /* ---- experience cards: prefill + scroll ---- */
-  var presets = {
-    'date-night': { guests: '2', occasion: 'Date Night' },
-    'birthday': { occasion: 'Birthday' },
-    'groups': { guests: '6', occasion: 'Casual Dining' }
-  };
-  function mark(id) { var f = $(id); if (f) f.classList.add('is-prefilled'); }
-  document.querySelectorAll('[data-xp]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var p = presets[btn.getAttribute('data-xp')]; if (!p) return;
-      if (p.guests) { guestsEl.value = p.guests; mark('f-guests'); refreshGuests(); }
-      if (p.occasion) { occEl.value = p.occasion; mark('f-occasion'); }
-      panel.scrollIntoView({ block: 'start' });
-      panel.focus({ preventScroll: true });
+  function setChecked(chip, on) { chip.setAttribute('aria-checked', on ? 'true' : 'false'); chip.tabIndex = on ? 0 : -1; }
+  function roving(box) { /* make sure one radio per group is tabbable */
+    const radios = qsa('[role="radio"]', box).filter((r) => !r.disabled);
+    if (!radios.length || radios.some((r) => r.tabIndex === 0)) return;
+    radios[0].tabIndex = 0;
+  }
+  function arrows(container, sel, activate) {
+    container.addEventListener('keydown', (e) => {
+      const k = e.key; if (['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].indexOf(k) < 0) return;
+      const items = qsa(sel, container).filter((x) => !x.disabled); if (!items.length) return;
+      let i = items.indexOf(document.activeElement); if (i < 0) return;
+      if (k === 'Home') i = 0; else if (k === 'End') i = items.length - 1; else i = (i + (k === 'ArrowRight' || k === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      e.preventDefault(); items[i].focus(); activate(items[i]);
     });
-  });
-  document.querySelectorAll('[data-scroll-book]').forEach(function (a) {
-    a.addEventListener('click', function (e) { e.preventDefault(); panel.scrollIntoView({ block: 'start' }); panel.focus({ preventScroll: true }); });
+  }
+
+  /* ───────── date chips ───────── */
+  const datesEl = $('rs-dates'), calChip = $('rs-cal'), calInput = $('res-date');
+  const dateChips = [];
+  for (let i = 0; i < 6; i++) {
+    const d = addDays(new Date(), i), v = ymd(d);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rs-chip'; b.setAttribute('role', 'radio'); b.dataset.d = v;
+    const top = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : DAYS[d.getDay()];
+    b.setAttribute('aria-label', (i < 2 ? top + ', ' : '') + friendly(v));
+    b.innerHTML = '<span class="rs-cw"></span><span class="rs-cd"></span>';
+    b.firstChild.textContent = top; b.lastChild.textContent = d.getDate() + ' ' + MONTHS[d.getMonth()];
+    datesEl.insertBefore(b, calChip); dateChips.push(b);
+    b.addEventListener('click', () => setDate(v));
+  }
+  calInput.min = todayStr();
+  calInput.addEventListener('click', () => { try { if (calInput.showPicker) calInput.showPicker(); } catch (e) {} });
+  calInput.addEventListener('change', () => setDate(calInput.value));
+  arrows(datesEl, '[role="radio"]', (c) => setDate(c.dataset.d));
+
+  function setDate(v) {
+    if (!v) return; if (v < todayStr()) v = todayStr();
+    const prev = booking.timeMin; booking.date = v; setDefaultTime();
+    chat.timeStale = !availFor(v).some((s) => s.m === prev);
+    renderAll();
+  }
+
+  /* ───────── time of day tabs + time chips ───────── */
+  const tabs = qsa('#rs-tabs .rs-tab'), timeBoxes = qsa('#rs-times .rs-times');
+  tabs.forEach((t) => t.addEventListener('click', () => { tg = t.dataset.g; renderQuick(); }));
+  arrows($('rs-tabs'), '.rs-tab', (t) => { tg = t.dataset.g; renderQuick(); });
+  slots.forEach((s) => s.el.addEventListener('click', () => { booking.time = s.t; booking.timeMin = s.m; renderAll(); }));
+  timeBoxes.forEach((b) => arrows(b, '[role="radio"]', (c) => c.click()));
+  arrows($('rs-zones'), '[role="radio"]', (c) => c.click());
+
+  /* ───────── guests stepper ───────── */
+  const gn = $('rs-g-n'), dots = qsa('.rs-dots i'), gMinus = $('rs-g-minus'), gPlus = $('rs-g-plus');
+  function setGuests(n) { if (n < 1 || n > 12) { if (n > 12) $('rs-party').hidden = false; return; } booking.guests = n; fadeIn(gn); renderAll(); }
+  gMinus.addEventListener('click', () => setGuests(booking.guests - 1));
+  gPlus.addEventListener('click', () => setGuests(booking.guests + 1));
+
+  /* ───────── zone + occasion + name + phone ───────── */
+  const zoneChips = qsa('#rs-zones .rs-chip');
+  zoneChips.forEach((c) => c.addEventListener('click', () => { booking.zone = c.dataset.v; renderAll(); }));
+  const occEl = $('res-occasion'), nameEl = $('res-name'), phoneEl = $('res-phone');
+  const occText = () => { const o = qsa('option', occEl).find((x) => x.value === booking.occasion); return o ? o.textContent : booking.occasion; };
+  occEl.addEventListener('change', () => { booking.occasion = occEl.value; $('f-occasion').classList.remove('is-prefilled'); renderAll(); });
+  nameEl.addEventListener('input', () => { booking.name = nameEl.value; clearErr(); updateTicket(); });
+  phoneEl.addEventListener('input', () => { booking.phone = phoneEl.value; clearErr(); updateTicket(); });
+  const syncInputs = () => { nameEl.value = booking.name; phoneEl.value = booking.phone; occEl.value = booking.occasion; };
+
+  /* ───────── render: Quick DOM from the booking object ───────── */
+  function renderQuick() {
+    let matched = false;
+    dateChips.forEach((c) => { const on = c.dataset.d === booking.date; matched = matched || on; setChecked(c, on); c.disabled = c.dataset.d === todayStr() && !availFor(c.dataset.d).length; });
+    calChip.classList.toggle('is-on', !matched);
+    const cd = parse(booking.date);
+    $('rs-cal-t').textContent = matched ? 'More' : DAYS[cd.getDay()];
+    $('rs-cal-d').textContent = matched ? '' : cd.getDate() + ' ' + MONTHS[cd.getMonth()];
+    calInput.value = booking.date;
+    roving(datesEl);
+
+    const avail = availFor(booking.date), aset = new Set(avail);
+    if (!avail.some((s) => s.g === tg)) tg = (avail[0] || slots[0]).g;
+    tabs.forEach((t) => { const n = avail.filter((s) => s.g === t.dataset.g).length; t.disabled = n === 0; const on = t.dataset.g === tg; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    timeBoxes.forEach((b) => { b.hidden = b.dataset.g !== tg; });
+    slots.forEach((s) => { s.el.disabled = !aset.has(s); setChecked(s.el, s.m === booking.timeMin); });
+    timeBoxes.forEach(roving);
+    $('rs-noslot').hidden = avail.length > 0;
+
+    gn.textContent = booking.guests + (booking.guests === 1 ? ' guest' : ' guests');
+    dots.forEach((d, i) => d.classList.toggle('on', i < booking.guests));
+    gMinus.setAttribute('aria-disabled', booking.guests <= 1 ? 'true' : 'false');
+    gPlus.setAttribute('aria-disabled', booking.guests >= 12 ? 'true' : 'false');
+    $('rs-party').hidden = booking.guests < 12;
+
+    zoneChips.forEach((c) => setChecked(c, c.dataset.v === booking.zone));
+    roving($('rs-zones'));
+    placeAll();
+  }
+
+  /* ───────── live ticket (both copies) ───────── */
+  const tix = qsa('[data-ticket]');
+  function setRow(k, text, on) {
+    tix.forEach((t) => {
+      const r = qs('[data-row="' + k + '"]', t), v = qs('.rs-tk-v', r), changed = v.textContent !== text;
+      v.textContent = text; v.title = text.length > 24 ? text : ''; r.classList.toggle('is-set', !!on);
+      if (changed && r._init) fadeIn(v); r._init = true;
+    });
+  }
+  function updateTicket() {
+    const vis = (k) => mode !== 'chat' || !!chat.answered[k];
+    const show = (k, text, filled) => setRow(k, vis(k) && text ? text : '—', vis(k) && filled);
+    show('date', friendly(booking.date), true);
+    show('time', booking.time, !!booking.time);
+    show('guests', booking.guests + (booking.guests === 1 ? ' guest' : ' guests'), true);
+    show('zone', booking.zone || 'No preference', true);
+    show('occasion', occText(), true);
+    show('name', booking.name.trim(), booking.name.trim().length > 0);
+    show('phone', booking.phone.trim(), phoneOk(booking.phone));
+  }
+  /* foil shimmer follows a real pointer only */
+  tix.forEach((t) => {
+    const foil = qs('.rs-foil', t); let raf = 0;
+    t.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || RM.matches) return;
+      const r = t.getBoundingClientRect(), p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { foil.style.transform = 'translateX(' + (p * 160 - 80) + '%)'; t.classList.add('is-foil'); });
+    });
+    t.addEventListener('pointerleave', () => { t.classList.remove('is-foil'); });
   });
 
-  /* ---- submit: open wa.me/919059670033 with the message (seating line added, coupon line removed, friendly date) ---- */
+  function updateFoot() { $('rs-foot').hidden = mode === 'chat' && chat.step !== 'summary'; }
+  function renderAll() { renderQuick(); updateTicket(); updateFoot(); }
+
+  /* ───────── mode switch: sliding pill (transform) + 150ms opacity cross-fade ───────── */
+  const modeTabs = qsa('#rs-modes .rs-mode'), mpill = $('rs-mpill'), pQuick = $('rs-p-quick'), pChat = $('rs-p-chat');
+  let modeTok = 0, kbd = false;
+  panel.addEventListener('keydown', () => { kbd = true; }, true);
+  panel.addEventListener('pointerdown', () => { kbd = false; }, true);
+  function setMode(m) {
+    if (m === mode) return;
+    const from = mode === 'chat' ? pChat : pQuick, to = m === 'chat' ? pChat : pQuick, my = ++modeTok;
+    mode = m;
+    modeTabs.forEach((t, i) => { const on = (i === 1) === (m === 'chat'); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; if (on) mpill.style.transform = 'translateX(' + i * 100 + '%)'; });
+    from.classList.add('is-out');
+    setTimeout(() => {
+      if (my !== modeTok) return;
+      from.hidden = true; from.classList.remove('is-out');
+      to.hidden = false; to.classList.add('is-out');
+      if (m === 'quick') syncInputs();
+      if (m === 'chat' && !chat.started) { chat.started = true; ask('date'); }
+      renderAll();
+      requestAnimationFrame(() => requestAnimationFrame(() => to.classList.remove('is-out')));
+    }, 150);
+  }
+  modeTabs.forEach((t, i) => t.addEventListener('click', () => setMode(i === 1 ? 'chat' : 'quick')));
+  arrows($('rs-modes'), '.rs-mode', (t) => setMode(t === modeTabs[1] ? 'chat' : 'quick'));
+  mpill.style.transform = 'translateX(0)';
+
+  /* ───────── Concierge: one question at a time ───────── */
+  const log = $('rs-log'), tray = $('rs-tray'); let tok = 0;
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const toBottom = () => log.scrollTo({ top: log.scrollHeight, behavior: RM.matches ? 'auto' : 'smooth' });
+  function me(text) { const b = mk('div', 'rs-b rs-b-me', text); log.appendChild(b); pop(b); toBottom(); }
+  function say(content, cb) {
+    const my = tok; tray.replaceChildren();
+    const b = mk('div', 'rs-b rs-b-bot rs-typing'); b.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(b); pop(b); toBottom();
+    setTimeout(() => {
+      if (my !== tok) return;
+      b.classList.remove('rs-typing'); b.replaceChildren(typeof content === 'string' ? document.createTextNode(content) : content); pop(b); toBottom();
+      if (cb) cb();
+    }, RM.matches ? 250 : 500);
+  }
+  function qr(label, fn, cls, aria) {
+    const b = mk('button', 'rs-qr' + (cls ? ' ' + cls : ''), label); b.type = 'button'; if (aria) b.setAttribute('aria-label', aria);
+    b.addEventListener('click', () => fn(b)); return b;
+  }
+  function showTray(nodes, focusAlways) {
+    tray.replaceChildren.apply(tray, nodes); fadeIn(tray);
+    const first = qs('button, input', tray); if (first && (kbd || focusAlways)) first.focus({ preventScroll: true });
+    requestAnimationFrame(toBottom);
+  }
+  function calReply(label) { /* "Pick another date" chip with a transparent native date input on top */
+    const l = mk('label', 'rs-qr rs-qr-cal'); l.appendChild(document.createTextNode(label));
+    const i = mk('input'); i.type = 'date'; i.min = todayStr(); i.setAttribute('aria-label', label); l.appendChild(i);
+    i.addEventListener('click', () => { try { if (i.showPicker) i.showPicker(); } catch (e) {} });
+    i.addEventListener('change', () => { if (!i.value) return; me(friendly(i.value)); pickDate(i.value); });
+    return l;
+  }
+  function pickDate(v) { setDate(v); done('date'); }
+
+  const Q = {
+    date: 'When would you like to come?', guests: 'How many of you?', period: 'Lunch, evening or late?', time: 'Which time suits you?',
+    zone: 'Where would you like to sit? It is a preference, so we cannot promise a spot.', occasion: 'Is it a special occasion?',
+    name: 'What name should we put it under?', phone: 'And your mobile number, so we can confirm on WhatsApp?',
+  };
+  const order = ['date', 'guests', 'period', 'time', 'zone', 'occasion', 'name', 'phone', 'summary'];
+  const periodsAvail = () => groups.filter((g) => availFor(booking.date).some((s) => s.g === g));
+
+  function done(key) { chat.answered[key] = true; updateTicket(); advance(key); }
+  function advance(from) {
+    if (chat.editing) {
+      if (from === 'date' && chat.timeStale) { chat.timeStale = false; booking.time = ''; booking.timeMin = -1; chat.answered.time = false; updateTicket(); return ask(periodsAvail().length > 1 ? 'period' : 'time'); }
+      if (from === 'period') return ask('time');
+      chat.editing = false; return ask('summary');
+    }
+    if (from === 'date') chat.timeStale = false;
+    let i = order.indexOf(from) + 1;
+    if (order[i] === 'period' && periodsAvail().length <= 1) { chat.period = periodsAvail()[0] || groups[0]; i++; }
+    ask(order[i]);
+  }
+  function ask(step) {
+    chat.step = step; updateFoot();
+    const greet = !log.childNodes.length;
+    if (step === 'date') {
+      say(greet ? 'Hi! Let us put your table request together. Fursat’s team confirms it on WhatsApp. ' + Q.date : Q.date, () => {
+        const now = new Date(), c = [];
+        if (availFor(todayStr()).length) c.push([now, 'Today']);
+        c.push([addDays(now, 1), 'Tomorrow']);
+        [6, 0].forEach((dow) => { for (let i = 2; i <= 8; i++) { const d = addDays(now, i); if (d.getDay() === dow) { c.push([d, DAYS[dow] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()]]); break; } } });
+        c.sort((a, b) => a[0] - b[0]);
+        showTray(c.map((x) => qr(x[1], () => { me(x[1]); pickDate(ymd(x[0])); })).concat([calReply('Another date')]));
+      });
+    } else if (step === 'guests') {
+      say(Q.guests, () => {
+        const n = []; for (let g = 1; g <= 12; g++) n.push(qr(String(g), () => { me(g + (g === 1 ? ' guest' : ' guests')); booking.guests = g; done('guests'); }, 'rs-qr-n'));
+        n.push(qr('13 or more', () => {
+          me('13 or more');
+          const w = mk('span'); w.append('That is a big group! Our team plans those properly: ');
+          const a = mk('a', null, 'party packages'); a.href = '/party'; const b = mk('a', null, 'the banquet hall'); b.href = '/banquet';
+          w.append(a, ' or ', b, '.');
+          say(w, () => showTray([qr('Choose fewer guests', () => { me('Fewer guests'); ask('guests'); })]));
+        }));
+        showTray(n);
+      });
+    } else if (step === 'period') {
+      say(Q.period, () => showTray(periodsAvail().map((g) => qr(g, () => { me(g); chat.period = g; done('period'); }))));
+    } else if (step === 'time') {
+      const g = chat.period || periodsAvail()[0] || groups[0];
+      say(Q.time, () => {
+        const nodes = availFor(booking.date).filter((s) => s.g === g).map((s) => qr(s.t, () => { me(s.t); booking.time = s.t; booking.timeMin = s.m; done('time'); }));
+        showTray(nodes);
+      });
+    } else if (step === 'zone') {
+      say(Q.zone, () => showTray(['The Bar', 'Dining', 'Lounge', 'Café', 'No preference'].map((z) => qr(z, () => { me(z); booking.zone = z === 'No preference' ? '' : z; done('zone'); }))));
+    } else if (step === 'occasion') {
+      say(Q.occasion, () => {
+        const n = qsa('option', occEl).map((o) => qr(o.textContent, () => { me(o.textContent); booking.occasion = o.value; occEl.value = o.value; done('occasion'); }));
+        n.push(qr('Skip', () => { me('Skip'); done('occasion'); }));
+        showTray(n);
+      });
+    } else if (step === 'name' || step === 'phone') {
+      say(Q[step], () => {
+        const wrap = mk('div', 'rs-compw'), row = mk('div', 'rs-comp'), err = mk('p', 'rs-comp-err'); err.setAttribute('role', 'alert');
+        const inp = mk('input'); const isP = step === 'phone';
+        inp.type = isP ? 'tel' : 'text'; inp.autocomplete = isP ? 'tel' : 'name'; if (isP) inp.inputMode = 'tel'; inp.enterKeyHint = 'send';
+        inp.placeholder = isP ? '10-digit number' : 'Full name'; inp.setAttribute('aria-label', isP ? 'Your mobile number' : 'Your name'); inp.value = isP ? booking.phone : booking.name;
+        const send = mk('button', 'rs-send'); send.type = 'button'; send.setAttribute('aria-label', 'Send');
+        send.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+        const go = () => {
+          const v = inp.value.trim();
+          if (!isP && !v) { err.textContent = 'Please enter your name.'; inp.focus(); return; }
+          if (isP && !phoneOk(v)) { err.textContent = 'Please enter a 10-digit mobile number.'; inp.focus(); return; }
+          err.textContent = ''; if (isP) booking.phone = v; else booking.name = v; me(v); done(step);
+        };
+        send.addEventListener('click', go); inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+        row.append(inp, send); wrap.append(row, err); showTray([wrap], true);
+      });
+    } else if (step === 'summary') {
+      const box = mk('div', 'rs-sumw'); box.appendChild(mk('p', null, 'Here is your request. Check it, then press Request a Table below.'));
+      const dl = mk('dl', 'rs-sum');
+      [['Date', friendly(booking.date)], ['Time', booking.time], ['Guests', booking.guests + (booking.guests === 1 ? ' guest' : ' guests')], ['Seating', booking.zone || 'No preference'], ['Occasion', occText()], ['Name', booking.name], ['Mobile', booking.phone]]
+        .forEach((r) => { dl.append(mk('dt', null, r[0]), mk('dd', null, r[1])); });
+      box.appendChild(dl);
+      say(box, () => {
+        const edit = (label, st) => qr(label, () => { me('Change ' + label.toLowerCase()); chat.editing = true; ask(st === 'time' ? (periodsAvail().length > 1 ? 'period' : 'time') : st); }, 'rs-qr-ed');
+        showTray([edit('Date', 'date'), edit('Time', 'time'), edit('Guests', 'guests'), edit('Seating', 'zone'), edit('Occasion', 'occasion'), edit('Name', 'name'), edit('Mobile', 'phone'),
+          qr('Start over', () => { tok++; log.replaceChildren(); chat.answered = {}; chat.editing = false; booking.name = ''; booking.phone = ''; syncInputs(); updateTicket(); ask('date'); }, 'rs-qr-ed')]);
+      });
+      updateFoot();
+    }
+  }
+
+  /* ───────── experience cards: prefill + scroll ───────── */
+  const presets = { 'date-night': { guests: 2, occasion: 'Date Night' }, 'birthday': { occasion: 'Birthday' }, 'groups': { guests: 6, occasion: 'Casual Dining' } };
+  const mark = (id) => { const f = $(id); if (f) f.classList.add('is-prefilled'); };
+  ['f-guests', 'f-occasion'].forEach((id) => { const f = $(id); if (f) f.addEventListener('change', () => f.classList.remove('is-prefilled')); });
+  gMinus.addEventListener('click', () => $('f-guests').classList.remove('is-prefilled'));
+  gPlus.addEventListener('click', () => $('f-guests').classList.remove('is-prefilled'));
+  qsa('[data-xp]').forEach((btn) => btn.addEventListener('click', () => {
+    const p = presets[btn.getAttribute('data-xp')]; if (!p) return;
+    if (mode !== 'quick') setMode('quick');
+    if (p.guests) { booking.guests = p.guests; mark('f-guests'); }
+    if (p.occasion) { booking.occasion = p.occasion; occEl.value = p.occasion; mark('f-occasion'); }
+    renderAll();
+    panel.scrollIntoView({ block: 'start' }); panel.focus({ preventScroll: true });
+  }));
+  qsa('[data-scroll-book]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); panel.scrollIntoView({ block: 'start' }); panel.focus({ preventScroll: true }); }));
+
+  /* ───────── submit: wa.me/919059670033 with the message (format unchanged) ───────── */
+  const submit = $('res-submit-btn');
   function showErr(msg, ids) {
     $('rs-err-t').textContent = msg; $('rs-err').classList.add('on');
-    ['f-name', 'f-phone'].forEach(function (id) { $(id).classList.toggle('is-bad', ids.indexOf(id) > -1); });
+    ['f-name', 'f-phone'].forEach((id) => $(id).classList.toggle('is-bad', ids.indexOf(id) > -1));
   }
-  function clearErr() { $('rs-err').classList.remove('on'); ['f-name', 'f-phone'].forEach(function (id) { $(id).classList.remove('is-bad'); }); }
-  ['res-name', 'res-phone'].forEach(function (id) { $(id).addEventListener('input', clearErr); });
-
-  submit.addEventListener('click', function () {
-    if (submit.getAttribute('aria-disabled') === 'true') { $('rs-party').hidden = false; return; }
-    var name = ($('res-name').value || '').trim();
-    var phone = ($('res-phone').value || '').trim();
-    var date = friendly(dateEl.value);
-    var seating = zoneEl.value || 'No preference';
-    var occasion = occEl.value || 'Dining';
-    var selectedGuests = guestsEl.value + ' Guests';
-    var selectedTime = timeEl.value;
-
+  function clearErr() { $('rs-err').classList.remove('on'); ['f-name', 'f-phone'].forEach((id) => $(id).classList.remove('is-bad')); }
+  submit.addEventListener('click', () => {
+    const name = booking.name.trim(), phone = booking.phone.trim();
     if (!name || !phone) {
       showErr('Please enter your name and mobile number.', [!name ? 'f-name' : '', !phone ? 'f-phone' : '']);
-      ($('res-' + (!name ? 'name' : 'phone'))).focus();
-      return;
+      (mode === 'quick' ? (!name ? nameEl : phoneEl) : submit).focus(); return;
     }
-    if (!selectedTime) { showErr('Please choose a time.', []); timeEl.focus(); return; }
+    if (!phoneOk(phone)) { showErr('Please enter a 10-digit mobile number.', ['f-phone']); if (mode === 'quick') phoneEl.focus(); return; }
+    if (!booking.time) { showErr('Please choose a time.', []); const t = qs('#rs-tabs .rs-tab:not(:disabled)'); if (t && mode === 'quick') t.focus(); return; }
     clearErr();
-
-    var msg = 'Hi Fursat! I would like to reserve a table:\n\n• Name: ' + name + '\n• Phone: ' + phone + '\n• Guests: ' + selectedGuests + '\n• Date: ' + date + '\n• Time: ' + selectedTime + '\n• Seating: ' + seating + '\n• Occasion: ' + occasion;
-    var url = 'https://wa.me/919059670033?text=' + encodeURIComponent(msg);
-    var w = window.open(url, '_blank');
-    var fine = $('rs-fine');
+    const date = friendly(booking.date), seating = booking.zone || 'No preference', occasion = booking.occasion || 'Dining';
+    const msg = 'Hi Fursat! I would like to reserve a table:\n\n• Name: ' + name + '\n• Phone: ' + phone + '\n• Guests: ' + booking.guests + ' Guests' + '\n• Date: ' + date + '\n• Time: ' + booking.time + '\n• Seating: ' + seating + '\n• Occasion: ' + occasion;
+    const url = 'https://wa.me/919059670033?text=' + encodeURIComponent(msg);
+    const w = window.open(url, '_blank');
+    const fine = $('rs-fine');
     fine.textContent = 'WhatsApp is open. Your request is only sent once you press Send there. ';
-    if (!w) { var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'WhatsApp didn’t open? Tap here.'; a.style.cssText = 'color:#f3c56b;text-decoration:underline'; fine.appendChild(a); }
+    if (!w) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'WhatsApp didn’t open? Tap here.'; a.style.cssText = 'color:#f3c56b;text-decoration:underline'; fine.appendChild(a); }
   });
 
-  /* ---- reveal on view (composite-only; CSS decides the motion). Deferred: later sections are parsed after this script ---- */
+  /* ───────── keep past slots honest while the page stays open ───────── */
+  function tick() { if (document.hidden) return; const before = booking.timeMin; setDefaultTime(); if (before !== booking.timeMin || mode === 'quick') renderAll(); }
+  setInterval(tick, 60000); document.addEventListener('visibilitychange', tick);
+
+  /* ───────── reveal on view (composite-only; CSS decides the motion). Deferred: later sections are parsed after this script ───────── */
   function reveal() {
-  if (page) page.classList.add('rs-anim');
-  var els = document.querySelectorAll('.rs-rise, .rs-card-in');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
-    els.forEach(function (el) { io.observe(el); });
-  } else { els.forEach(function (el) { el.classList.add('is-in'); }); }
+    if (page) page.classList.add('rs-anim');
+    const els = qsa('.rs-rise, .rs-card-in');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      els.forEach((el) => io.observe(el));
+    } else { els.forEach((el) => el.classList.add('is-in')); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal); else reveal();
+
+  syncInputs(); renderAll();
 })();
 </script>

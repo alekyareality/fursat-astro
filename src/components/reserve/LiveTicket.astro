@@ -1,0 +1,32 @@
+---
+// LiveTicket.astro — boarding-pass style summary that fills in as the guest answers (R3a).
+// Decorative mirror of the form (aria-hidden): the real state lives in the form fields. Rendered twice (aside ≥1041px, inline ≤1040px); JS updates both.
+// Honest: it says REQUEST, never CONFIRMED, and it shows no availability.
+interface Props { variant: 'aside' | 'inline'; }
+const { variant } = Astro.props;
+const rows = [
+  { k: 'date', l: 'Date' }, { k: 'time', l: 'Time' }, { k: 'guests', l: 'Guests' },
+  { k: 'zone', l: 'Seating' }, { k: 'occasion', l: 'Occasion' }, { k: 'name', l: 'Name' }, { k: 'phone', l: 'Mobile' },
+];
+---
+<div class={`rs-tk rs-tk-${variant}`} aria-hidden="true" data-ticket>
+  <i class="rs-foil"></i>
+  <div class="rs-tk-head">
+    <span class="rs-tk-kicker">Table request</span>
+    <b class="rs-tk-brand">Fursat Kitchen | Bar</b>
+    <span class="rs-tk-loc">Capital Park, Madhapur</span>
+  </div>
+  <ul class="rs-tk-rows">
+    {rows.map(r => (
+      <li class="rs-tk-row" data-row={r.k}>
+        <span class="rs-tk-mk">
+          <svg class="m-off" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></svg>
+          <svg class="m-on" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.7 2.7L16 9.6"/></svg>
+        </span>
+        <span class="rs-tk-l">{r.l}</span>
+        <span class="rs-tk-v">—</span>
+      </li>
+    ))}
+  </ul>
+  <p class="rs-tk-stub">Not confirmed until we reply on WhatsApp.</p>
+</div>
