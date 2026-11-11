@@ -1,29 +1,20 @@
 ---
 // BookingPanel.astro — "Book Your Experience" (R3a: Quick · Concierge modes + live ticket; same booking object, same WhatsApp message).
-// R3a logic notes for the owner: (a) guests are a 1–12 stepper (13+ shows the /party link instead of a disabled button), (b) one added check: mobile must have 10–13 digits
+// R3a logic notes (guests stepper, 10–13 digit mobile check, shared booking object):
+// R3b: message gains "• Offer: N% off (8 PM slot)" only when that slot has a discount. R3a notes: (a) guests are a 1–12 stepper (13+ shows the /party link instead of a disabled button), (b) one added check: mobile must have 10–13 digits
 // (message text and wa.me target are unchanged), (c) date/time/zone/guests pickers write one `booking` object that Quick and Concierge share.
 // Owner-approved logic changes in this revision: (1) message gains a "• Seating:" line, (2) the "Coupon: FURSAT15" line is removed,
 // (3) the date is shown and sent as "Tue, 10 Nov" instead of the raw input value. Same wa.me/919059670033 target and field ids.
 // Stored request + staff alert are R4 and still need owner approval.
 import site from '../../data/site.json';
 import LiveTicket from './LiveTicket.astro';
+import slotData from '../../data/slots.json';
 
-// ASSUMPTION (not client-confirmed): last bookable slot = 10:00 PM (90 min before the 11:30 PM close). 30-min slots.
-// TODO(client): confirm last booking time, slot length and closing time (site.json says 23:30, EazyDiner lists 10:30 PM).
-const LAST_SLOT = '22:00';
-const SLOT_STEP = 30;
-const toMin = (hhmm: string) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
-const label = (min: number) => {
-  const h = Math.floor(min / 60), m = min % 60, h12 = h % 12 === 0 ? 12 : h % 12;
-  return `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
-};
-const slots: { min: number; text: string }[] = [];
-for (let t = toMin(site.hours.open); t <= toMin(LAST_SLOT); t += SLOT_STEP) slots.push({ min: t, text: label(t) });
-const groups = [
-  { name: 'Lunch', from: 0, to: 16 * 60 },
-  { name: 'Evening', from: 16 * 60, to: 20 * 60 },
-  { name: 'Late', from: 20 * 60, to: 24 * 60 },
-].map(g => ({ ...g, items: slots.filter(s => s.min >= g.from && s.min < g.to) })).filter(g => g.items.length);
+// Time slots + discount come from src/data/slots.json (owner edits that file, no code): [{ "time": "8 PM", "discount": 10 }, ...].
+// Hourly slots, same every day, each slot = 1 hour. discount > 0 shows "N% off" on the chip, the live ticket and the WhatsApp message; 0 shows nothing.
+// TODO(client): what the discount applies to + conditions (no terms text is shown yet). FURSAT15 stays hidden.
+const toMin = (t: string) => { const m = /^(\d{1,2})\s*(AM|PM)$/i.exec(t.trim()); const h = Number(m![1]) % 12 + (m![2].toUpperCase() === 'PM' ? 12 : 0); return h * 60; };
+const slots = (slotData as { time: string; discount: number }[]).map(s => ({ min: toMin(s.time), text: s.time, discount: Math.max(0, Number(s.discount) || 0) }));
 
 const zones = [
   { v: 'The Bar', img: 'bar' }, { v: 'Dining', img: 'dining' }, { v: 'Lounge', img: 'lounge' }, { v: 'Café', img: 'cafe' },
@@ -77,17 +68,12 @@ const conditions: string[] = [];
         </div>
 
         <div class="rs-q" id="f-time">
-          <div class="rs-qlrow">
-            <p class="rs-ql" id="rs-ql-time"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Select Time</p>
-            <div class="rs-tabs" role="tablist" aria-label="Part of the day" id="rs-tabs">
-              {groups.map(g => <button type="button" class="rs-tab" role="tab" aria-selected="false" tabindex="-1" data-g={g.name} aria-controls={`rs-t-${g.name.toLowerCase()}`}>{g.name}</button>)}
-            </div>
-          </div>
-          <div id="rs-times">
-            {groups.map(g => (
-              <div class="rs-chips rs-times" role="radiogroup" aria-label={`${g.name} times`} id={`rs-t-${g.name.toLowerCase()}`} data-g={g.name}>
-                {g.items.map(s => <button type="button" class="rs-chip" role="radio" aria-checked="false" tabindex="-1" data-m={s.min} data-t={s.text}>{s.text}</button>)}
-              </div>
+          <p class="rs-ql" id="rs-ql-time"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Select Time</p>
+          <div class="rs-chips rs-times" id="rs-times" role="radiogroup" aria-labelledby="rs-ql-time">
+            {slots.map(s => (
+              <button type="button" class="rs-chip" role="radio" aria-checked="false" tabindex="-1" data-m={s.min} data-t={s.text} data-d={s.discount}>
+                <span class="rs-tm">{s.text}</span>{s.discount > 0 && <span class="rs-off">{s.discount}% off</span>}
+              </button>
             ))}
           </div>
           <p class="rs-hint" id="rs-noslot" hidden>No more slots today. Please pick another date.</p>
@@ -202,8 +188,9 @@ const conditions: string[] = [];
 
   /* ───────── one booking object, shared by Quick and Concierge ───────── */
   const booking = { date: todayStr(), time: '', timeMin: -1, guests: 4, zone: '', occasion: 'Casual Dining', name: '', phone: '' };
-  const slots = qsa('#rs-times .rs-chip').map((el) => ({ el, m: Number(el.dataset.m), t: el.dataset.t, g: el.closest('.rs-times').dataset.g }));
-  const groups = Array.from(new Set(slots.map((s) => s.g)));
+  const slots = qsa('#rs-times .rs-chip').map((el) => ({ el, m: Number(el.dataset.m), t: el.dataset.t, d: Number(el.dataset.d) || 0 }));
+  const slotOf = () => slots.find((s) => s.m === booking.timeMin);
+  const offerOf = () => { const s = slotOf(); return s && s.d > 0 ? s.d + '% off (' + s.t + ' slot)' : ''; };
   const nowMin = () => { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); };
   const availFor = (date) => slots.filter((s) => !(date === todayStr() && s.m < nowMin()));
   function setDefaultTime() {
@@ -213,8 +200,8 @@ const conditions: string[] = [];
   }
   if (!availFor(booking.date).length) booking.date = ymd(addDays(new Date(), 1));
   setDefaultTime();
-  let mode = 'quick', tg = (slots.find((s) => s.m === booking.timeMin) || slots[0]).g;
-  const chat = { started: false, step: '', answered: {}, editing: false, timeStale: false, period: '' };
+  let mode = 'quick';
+  const chat = { started: false, step: '', answered: {}, editing: false, timeStale: false };
 
   /* ───────── small motion helpers (WAAPI = off the main thread) ───────── */
   function fadeIn(el) {
@@ -287,12 +274,10 @@ const conditions: string[] = [];
     renderAll();
   }
 
-  /* ───────── time of day tabs + time chips ───────── */
-  const tabs = qsa('#rs-tabs .rs-tab'), timeBoxes = qsa('#rs-times .rs-times');
-  tabs.forEach((t) => t.addEventListener('click', () => { tg = t.dataset.g; renderQuick(); }));
-  arrows($('rs-tabs'), '.rs-tab', (t) => { tg = t.dataset.g; renderQuick(); });
+  /* ───────── time chips (hourly, from slots.json) ───────── */
+  const timeBox = $('rs-times');
   slots.forEach((s) => s.el.addEventListener('click', () => { booking.time = s.t; booking.timeMin = s.m; renderAll(); }));
-  timeBoxes.forEach((b) => arrows(b, '[role="radio"]', (c) => c.click()));
+  arrows(timeBox, '[role="radio"]', (c) => c.click());
   arrows($('rs-zones'), '[role="radio"]', (c) => c.click());
 
   /* ───────── guests stepper ───────── */
@@ -323,11 +308,8 @@ const conditions: string[] = [];
     roving(datesEl);
 
     const avail = availFor(booking.date), aset = new Set(avail);
-    if (!avail.some((s) => s.g === tg)) tg = (avail[0] || slots[0]).g;
-    tabs.forEach((t) => { const n = avail.filter((s) => s.g === t.dataset.g).length; t.disabled = n === 0; const on = t.dataset.g === tg; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
-    timeBoxes.forEach((b) => { b.hidden = b.dataset.g !== tg; });
     slots.forEach((s) => { s.el.disabled = !aset.has(s); setChecked(s.el, s.m === booking.timeMin); });
-    timeBoxes.forEach(roving);
+    roving(timeBox);
     $('rs-noslot').hidden = avail.length > 0;
 
     gn.textContent = booking.guests + (booking.guests === 1 ? ' guest' : ' guests');
@@ -351,13 +333,15 @@ const conditions: string[] = [];
     });
   }
   function updateTicket() {
-    const vis = (k) => mode !== 'chat' || !!chat.answered[k];
+    const vis = (k) => mode !== 'chat' || !!chat.answered[k === 'offer' ? 'time' : k];
     const show = (k, text, filled) => setRow(k, vis(k) && text ? text : '—', vis(k) && filled);
     show('date', friendly(booking.date), true);
     show('time', booking.time, !!booking.time);
     show('guests', booking.guests + (booking.guests === 1 ? ' guest' : ' guests'), true);
     show('zone', booking.zone || 'No preference', true);
     show('occasion', occText(), true);
+    show('offer', offerOf(), true);
+    tix.forEach((t) => { const r = qs('[data-row="offer"]', t), on = vis('offer') && !!offerOf(); r.hidden = !on; });
     show('name', booking.name.trim(), booking.name.trim().length > 0);
     show('phone', booking.phone.trim(), phoneOk(booking.phone));
   }
@@ -433,23 +417,20 @@ const conditions: string[] = [];
   function pickDate(v) { setDate(v); done('date'); }
 
   const Q = {
-    date: 'When would you like to come?', guests: 'How many of you?', period: 'Lunch, evening or late?', time: 'Which time suits you?',
+    date: 'When would you like to come?', guests: 'How many of you?', time: 'Which time suits you?',
     zone: 'Where would you like to sit? It is a preference, so we cannot promise a spot.', occasion: 'Is it a special occasion?',
     name: 'What name should we put it under?', phone: 'And your mobile number, so we can confirm on WhatsApp?',
   };
-  const order = ['date', 'guests', 'period', 'time', 'zone', 'occasion', 'name', 'phone', 'summary'];
-  const periodsAvail = () => groups.filter((g) => availFor(booking.date).some((s) => s.g === g));
+  const order = ['date', 'guests', 'time', 'zone', 'occasion', 'name', 'phone', 'summary'];
 
   function done(key) { chat.answered[key] = true; updateTicket(); advance(key); }
   function advance(from) {
     if (chat.editing) {
-      if (from === 'date' && chat.timeStale) { chat.timeStale = false; booking.time = ''; booking.timeMin = -1; chat.answered.time = false; updateTicket(); return ask(periodsAvail().length > 1 ? 'period' : 'time'); }
-      if (from === 'period') return ask('time');
+      if (from === 'date' && chat.timeStale) { chat.timeStale = false; booking.time = ''; booking.timeMin = -1; chat.answered.time = false; updateTicket(); return ask('time'); }
       chat.editing = false; return ask('summary');
     }
     if (from === 'date') chat.timeStale = false;
     let i = order.indexOf(from) + 1;
-    if (order[i] === 'period' && periodsAvail().length <= 1) { chat.period = periodsAvail()[0] || groups[0]; i++; }
     ask(order[i]);
   }
   function ask(step) {
@@ -476,12 +457,9 @@ const conditions: string[] = [];
         }));
         showTray(n);
       });
-    } else if (step === 'period') {
-      say(Q.period, () => showTray(periodsAvail().map((g) => qr(g, () => { me(g); chat.period = g; done('period'); }))));
     } else if (step === 'time') {
-      const g = chat.period || periodsAvail()[0] || groups[0];
       say(Q.time, () => {
-        const nodes = availFor(booking.date).filter((s) => s.g === g).map((s) => qr(s.t, () => { me(s.t); booking.time = s.t; booking.timeMin = s.m; done('time'); }));
+        const nodes = availFor(booking.date).map((s) => qr(s.t + (s.d > 0 ? ' · ' + s.d + '% off' : ''), () => { me(s.t); booking.time = s.t; booking.timeMin = s.m; done('time'); }, null, s.t + (s.d > 0 ? ', ' + s.d + ' percent off' : '')));
         showTray(nodes);
       });
     } else if (step === 'zone') {
@@ -512,11 +490,11 @@ const conditions: string[] = [];
     } else if (step === 'summary') {
       const box = mk('div', 'rs-sumw'); box.appendChild(mk('p', null, 'Here is your request. Check it, then press Request a Table below.'));
       const dl = mk('dl', 'rs-sum');
-      [['Date', friendly(booking.date)], ['Time', booking.time], ['Guests', booking.guests + (booking.guests === 1 ? ' guest' : ' guests')], ['Seating', booking.zone || 'No preference'], ['Occasion', occText()], ['Name', booking.name], ['Mobile', booking.phone]]
+      [['Date', friendly(booking.date)], ['Time', booking.time], ['Guests', booking.guests + (booking.guests === 1 ? ' guest' : ' guests')], ['Seating', booking.zone || 'No preference'], ['Occasion', occText()]].concat(offerOf() ? [['Offer', offerOf()]] : [], [['Name', booking.name], ['Mobile', booking.phone]])
         .forEach((r) => { dl.append(mk('dt', null, r[0]), mk('dd', null, r[1])); });
       box.appendChild(dl);
       say(box, () => {
-        const edit = (label, st) => qr(label, () => { me('Change ' + label.toLowerCase()); chat.editing = true; ask(st === 'time' ? (periodsAvail().length > 1 ? 'period' : 'time') : st); }, 'rs-qr-ed');
+        const edit = (label, st) => qr(label, () => { me('Change ' + label.toLowerCase()); chat.editing = true; ask(st); }, 'rs-qr-ed');
         showTray([edit('Date', 'date'), edit('Time', 'time'), edit('Guests', 'guests'), edit('Seating', 'zone'), edit('Occasion', 'occasion'), edit('Name', 'name'), edit('Mobile', 'phone'),
           qr('Start over', () => { tok++; log.replaceChildren(); chat.answered = {}; chat.editing = false; booking.name = ''; booking.phone = ''; syncInputs(); updateTicket(); ask('date'); }, 'rs-qr-ed')]);
       });
@@ -554,10 +532,10 @@ const conditions: string[] = [];
       (mode === 'quick' ? (!name ? nameEl : phoneEl) : submit).focus(); return;
     }
     if (!phoneOk(phone)) { showErr('Please enter a 10-digit mobile number.', ['f-phone']); if (mode === 'quick') phoneEl.focus(); return; }
-    if (!booking.time) { showErr('Please choose a time.', []); const t = qs('#rs-tabs .rs-tab:not(:disabled)'); if (t && mode === 'quick') t.focus(); return; }
+    if (!booking.time) { showErr('Please choose a time.', []); const t = qs('#rs-times .rs-chip:not(:disabled)'); if (t && mode === 'quick') t.focus(); return; }
     clearErr();
     const date = friendly(booking.date), seating = booking.zone || 'No preference', occasion = booking.occasion || 'Dining';
-    const msg = 'Hi Fursat! I would like to reserve a table:\n\n• Name: ' + name + '\n• Phone: ' + phone + '\n• Guests: ' + booking.guests + ' Guests' + '\n• Date: ' + date + '\n• Time: ' + booking.time + '\n• Seating: ' + seating + '\n• Occasion: ' + occasion;
+    const msg = 'Hi Fursat! I would like to reserve a table:\n\n• Name: ' + name + '\n• Phone: ' + phone + '\n• Guests: ' + booking.guests + ' Guests' + '\n• Date: ' + date + '\n• Time: ' + booking.time + '\n• Seating: ' + seating + '\n• Occasion: ' + occasion + (offerOf() ? '\n• Offer: ' + offerOf() : '');
     const url = 'https://wa.me/919059670033?text=' + encodeURIComponent(msg);
     const w = window.open(url, '_blank');
     const fine = $('rs-fine');

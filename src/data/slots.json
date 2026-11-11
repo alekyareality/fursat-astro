@@ -1,0 +1,14 @@
+[
+  { "time": "12 PM", "discount": 10 },
+  { "time": "1 PM", "discount": 10 },
+  { "time": "2 PM", "discount": 10 },
+  { "time": "3 PM", "discount": 10 },
+  { "time": "4 PM", "discount": 10 },
+  { "time": "5 PM", "discount": 10 },
+  { "time": "6 PM", "discount": 10 },
+  { "time": "7 PM", "discount": 10 },
+  { "time": "8 PM", "discount": 10 },
+  { "time": "9 PM", "discount": 10 },
+  { "time": "10 PM", "discount": 10 },
+  { "time": "11 PM", "discount": 10 }
+]

@@ -1,3 +1,6 @@
+---
+import slots from '../data/slots.json';
+---
 <section class="fxhero" id="top" aria-label="Fursat Kitchen | Bar">
  <!-- ambient background, anchored to the viewport edges -->
  <div class="fx-bg" aria-hidden="true">
@@ -29,7 +32,7 @@
   </div>
 
   <div class="askdock rv" style="--d:.85s"></div>
-  <aside class="fx-info rv" style="--d:1.05s" aria-label="Visit Fursat"><i class="fi-d" aria-hidden="true"></i><span class="fi-a"><b>Table slots 12 PM – 10 PM</b><small>Capital Park, Madhapur · +91 90596 70033</small></span></aside>
+  <aside class="fx-info rv" style="--d:1.05s" aria-label="Visit Fursat"><i class="fi-d" aria-hidden="true"></i><span class="fi-a"><b>Table slots {slots[0].time} – {slots[slots.length - 1].time}</b><small>Capital Park, Madhapur · +91 90596 70033</small></span></aside>
 
   <section class="fx-sig" id="signature" aria-labelledby="sigh">
    
