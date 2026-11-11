@@ -9,6 +9,8 @@
 import site from '../../data/site.json';
 import LiveTicket from './LiveTicket.astro';
 import slotData from '../../data/slots.json';
+import PanoramicViewer from '../PanoramicViewer.astro';
+import { ZONES, IMGS, smallImg } from '../tour/spaces.js';
 
 // Time slots + discount come from src/data/slots.json (owner edits that file, no code): [{ "time": "8 PM", "discount": 10 }, ...].
 // Hourly slots, same every day, each slot = 1 hour. discount > 0 shows "N% off" on the chip, the live ticket and the WhatsApp message; 0 shows nothing.
@@ -50,6 +52,9 @@ const conditions: string[] = [];
       </button>
       <button type="button" class="rs-mode" role="tab" id="rs-tab-chat" aria-selected="false" aria-controls="rs-p-chat" tabindex="-1">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg><span>Concierge</span>
+      </button>
+      <button type="button" class="rs-mode" role="tab" id="rs-tab-pick" aria-selected="false" aria-controls="rs-p-pick" tabindex="-1">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span>Pick <span class="rs-long">your </span>spot</span>
       </button>
     </div>
 
@@ -128,6 +133,29 @@ const conditions: string[] = [];
     <div class="rs-mpanel rs-chat" id="rs-p-chat" role="tabpanel" aria-labelledby="rs-tab-chat" hidden>
       <div class="rs-log" id="rs-log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Table request chat" tabindex="0"></div>
       <div class="rs-tray" id="rs-tray"></div>
+    </div>
+
+    <!-- ───── Pick your spot (R3c): the home panorama engine, loaded only when this tab opens ───── -->
+    <div class="rs-mpanel rs-pick" id="rs-p-pick" role="tabpanel" aria-labelledby="rs-tab-pick" hidden>
+      <div class="rs-pickview" id="rs-pickview"><PanoramicViewer embed /></div>
+      <div class="rs-pickbar" id="rs-pickbar">
+        <p class="rs-pk-t" id="rs-pk-t" aria-live="polite">Tap a spot in the room</p>
+        <button type="button" class="rs-btn rs-btn-line rs-btn-sm" id="rs-pk-book" disabled>Book here</button>
+      </div>
+      <p class="rs-hint rs-pk-note" id="rs-pk-note">Seating is a preference, not a guaranteed table. <button type="button" class="rs-link" id="rs-pk-photos">Show photos instead</button></p>
+      <div class="rs-spots" id="rs-spots" hidden>
+        <p class="rs-hint" id="rs-spots-note">Choose where you would like to sit. Seating is a preference, not a guaranteed table.</p>
+        <div class="rs-spotgrid">
+          {ZONES.map(z => (
+            <figure class="rs-spot">
+              <img class="rs-ph" src={smallImg(IMGS[z.pin])} alt={`${z.name} at Fursat`} width="540" height="720" loading="lazy" decoding="async" />
+              <figcaption><b>{z.name}</b><span>{z.line}</span></figcaption>
+              <button type="button" class="rs-btn rs-btn-line rs-btn-sm" data-spot={z.name}>Book here</button>
+            </figure>
+          ))}
+        </div>
+        <button type="button" class="rs-link" id="rs-pk-3d" hidden>Look around in 360° instead</button>
+      </div>
     </div>
 
     <LiveTicket variant="inline" />
@@ -356,19 +384,20 @@ const conditions: string[] = [];
     t.addEventListener('pointerleave', () => { t.classList.remove('is-foil'); });
   });
 
-  function updateFoot() { $('rs-foot').hidden = mode === 'chat' && chat.step !== 'summary'; }
+  function updateFoot() { $('rs-foot').hidden = (mode === 'chat' && chat.step !== 'summary') || mode === 'pick'; }
   function renderAll() { renderQuick(); updateTicket(); updateFoot(); }
 
   /* ───────── mode switch: sliding pill (transform) + 150ms opacity cross-fade ───────── */
-  const modeTabs = qsa('#rs-modes .rs-mode'), mpill = $('rs-mpill'), pQuick = $('rs-p-quick'), pChat = $('rs-p-chat');
+  const modeTabs = qsa('#rs-modes .rs-mode'), mpill = $('rs-mpill'), pQuick = $('rs-p-quick'), pChat = $('rs-p-chat'), pPick = $('rs-p-pick');
+  const MODES = ['quick', 'chat', 'pick'], panels = { quick: pQuick, chat: pChat, pick: pPick };
   let modeTok = 0, kbd = false;
   panel.addEventListener('keydown', () => { kbd = true; }, true);
   panel.addEventListener('pointerdown', () => { kbd = false; }, true);
   function setMode(m) {
     if (m === mode) return;
-    const from = mode === 'chat' ? pChat : pQuick, to = m === 'chat' ? pChat : pQuick, my = ++modeTok;
+    const from = panels[mode], to = panels[m], my = ++modeTok;
     mode = m;
-    modeTabs.forEach((t, i) => { const on = (i === 1) === (m === 'chat'); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; if (on) mpill.style.transform = 'translateX(' + i * 100 + '%)'; });
+    modeTabs.forEach((t, i) => { const on = MODES[i] === m; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; if (on) mpill.style.transform = 'translateX(' + i * 100 + '%)'; });
     from.classList.add('is-out');
     setTimeout(() => {
       if (my !== modeTok) return;
@@ -376,12 +405,13 @@ const conditions: string[] = [];
       to.hidden = false; to.classList.add('is-out');
       if (m === 'quick') syncInputs();
       if (m === 'chat' && !chat.started) { chat.started = true; ask('date'); }
+      if (m === 'pick') openPick();
       renderAll();
       requestAnimationFrame(() => requestAnimationFrame(() => to.classList.remove('is-out')));
     }, 150);
   }
-  modeTabs.forEach((t, i) => t.addEventListener('click', () => setMode(i === 1 ? 'chat' : 'quick')));
-  arrows($('rs-modes'), '.rs-mode', (t) => setMode(t === modeTabs[1] ? 'chat' : 'quick'));
+  modeTabs.forEach((t, i) => t.addEventListener('click', () => setMode(MODES[i])));
+  arrows($('rs-modes'), '.rs-mode', (t) => setMode(MODES[modeTabs.indexOf(t)]));
   mpill.style.transform = 'translateX(0)';
 
   /* ───────── Concierge: one question at a time ───────── */
@@ -501,6 +531,51 @@ const conditions: string[] = [];
       updateFoot();
     }
   }
+
+  /* ───────── Pick your spot: lazy 360° (existing tour engine) or four real zone photos ───────── */
+  const ZN = ['The Bar', 'Dining', 'Lounge', 'Café'], pickView = $('rs-pickview'), pickBar = $('rs-pickbar'), pkBook = $('rs-pk-book'), pkT = $('rs-pk-t'), spots = $('rs-spots');
+  let pickState = '', pickZone = '', watching = false, touched = false;
+  const webglOK = () => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } };
+  function showSpots(calm) {
+    pickState = 'photos'; pickView.hidden = true; pickBar.hidden = true; $('rs-pk-note').hidden = true; spots.hidden = false;
+    $('rs-pk-3d').hidden = !(calm && webglOK());
+  }
+  function showPanorama() {
+    pickState = 'loading'; spots.hidden = true; pickView.hidden = false; pickBar.hidden = false; $('rs-pk-note').hidden = false;
+    let tries = 0;
+    (function wait() {
+      if (window.__pvLoad) { Promise.resolve().then(() => window.__pvLoad()).then(watch).catch(() => showSpots(false)); }
+      else if (tries++ < 50) setTimeout(wait, 100); else showSpots(false);
+    })();
+  }
+  function openPick() {
+    if (pickState) return;
+    const sd = navigator.connection && navigator.connection.saveData;
+    if (!webglOK()) return showSpots(false);
+    if (RM.matches || sd) return showSpots(true);
+    showPanorama();
+  }
+  function updatePick() {
+    const a = touched ? qs('#tour .pv-zone.is-active') : null, k = a ? Number(a.dataset.z) : -1; if (k >= 0) pickZone = ZN[k]; /* sticky once chosen: passing the entrance must not disable the button */
+    pkT.textContent = pickZone ? 'Looking at: ' + pickZone : 'Tap a spot in the room';
+    pkBook.disabled = !pickZone; pkBook.setAttribute('aria-label', pickZone ? 'Book here: ' + pickZone : 'Book here');
+  }
+  function watch() {
+    if (watching) return; watching = true;
+    const mo = new MutationObserver(updatePick); qsa('#tour .pv-zone').forEach((z) => mo.observe(z, { attributes: true, attributeFilter: ['class'] }));
+    new MutationObserver(() => { if ($('tour').classList.contains('is-nogl')) showSpots(false); }).observe($('tour'), { attributes: true, attributeFilter: ['class'] });
+    $('tour').addEventListener('click', (e) => { if (e.target.closest('.pv-zone,.pv-pin,.pv-arrow')) { touched = true; updatePick(); } });
+    updatePick();
+  }
+  function bookZone(name) {
+    if (!name) return; booking.zone = name; renderAll();
+    pkT.textContent = 'Seating set: ' + name;
+    setTimeout(() => setMode('quick'), RM.matches ? 250 : 650);
+  }
+  pkBook.addEventListener('click', () => bookZone(pickZone));
+  qsa('[data-spot]').forEach((b) => b.addEventListener('click', () => bookZone(b.dataset.spot)));
+  $('rs-pk-photos').addEventListener('click', () => showSpots(false));
+  $('rs-pk-3d').addEventListener('click', showPanorama);
 
   /* ───────── experience cards: prefill + scroll ───────── */
   const presets = { 'date-night': { guests: 2, occasion: 'Date Night' }, 'birthday': { occasion: 'Birthday' }, 'groups': { guests: 6, occasion: 'Casual Dining' } };

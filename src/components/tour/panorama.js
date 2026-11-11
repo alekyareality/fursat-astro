@@ -5,7 +5,7 @@
 // Root state classes: pv-js, is-seen, is-inside, is-focus, is-pov, is-end, is-paused, is-vid, is-nogl, is-lite, is-360, is-imm, is-dragged.
 import { SPACES as S, IMGS, smallImg, EMI, CLIPS, HOT, PAL, POV, MUSIC, ZONES } from './spaces.js';
 
-export function initTour(root) {
+export function initTour(root, opts = {}) { // opts.auto === false: no auto-enter into the story walk (used by the /reserve Pick-your-spot embed)
   if (!root || root.dataset.pvInit) return;
   root.dataset.pvInit = '1';
   root.classList.remove('pv-nojs');
@@ -100,6 +100,7 @@ export function initTour(root) {
   let started = false, autoTimer = 0, enterFn = null, pauseVids = null, stopTilt = null, immersive = false;
   function maybeAutoEnter() {
     clearTimeout(autoTimer);
+    if (opts.auto === false) return;
     if (!shown || !enterFn || has('inside') || ratio < 0.55) return;
     autoTimer = setTimeout(() => { if (ratio >= 0.55 && enterFn) enterFn(); }, reduce ? 200 : 700);
   }
