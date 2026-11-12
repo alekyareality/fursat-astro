@@ -1,5 +1,6 @@
 ---
 import ld from '../data/ld.json';
+import site from '../data/site.json';
 import '../styles/01.css';
 import '../styles/02.css';
 import '../styles/03.css';
@@ -11,6 +12,23 @@ import '../styles/08.css';
 import '../styles/09.css';
 import '../styles/10.css';
 import '../styles/motion.css';
+
+// JSON-LD. Every page keeps the existing Restaurant + WebSite graph from ld.json. The home page and /reserve get the full Restaurant
+// (hours, reservations, menu) built from site.json. No ratings or reviews: none are confirmed.
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const fullSchema = path === '/' || path === '/reserve';
+const phone = '+' + site.phonePlain;
+const graph = (ld as any[]).map((node: any) => {
+  if (!fullSchema || node['@type'] !== 'Restaurant') return node;
+  return {
+    ...node,
+    telephone: phone,
+    address: { ...node.address, postalCode: site.address.pin },
+    openingHoursSpecification: site.hours.schedule.map((h: any) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.dayOfWeek, opens: h.opens, closes: h.closes })),
+    acceptsReservations: true,
+    menu: site.domain + '/menu/',
+  };
+});
 
 interface PreloadImage {
   href: string;
@@ -74,7 +92,7 @@ const {
   />
 ))}
 <link rel="icon" href="/assets/9a3bba811b.webp">
-<script type="application/ld+json" is:inline set:html={JSON.stringify(ld)}></script>
+<script type="application/ld+json" is:inline set:html={JSON.stringify(graph)}></script>
 <style is:global>
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:cubic-bezier(.23,1,.32,1)}

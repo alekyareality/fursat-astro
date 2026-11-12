@@ -18,8 +18,8 @@
   "hours": {
     "open": "12:00",
     "schedule": [
-      { "days": "Sun–Thu", "open": "12 PM", "close": "12 AM" },
-      { "days": "Fri–Sat", "open": "12 PM", "close": "1 AM" }
+      { "days": "Sun–Thu", "open": "12 PM", "close": "12 AM", "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "12:00", "closes": "24:00" },
+      { "days": "Fri–Sat", "open": "12 PM", "close": "1 AM", "dayOfWeek": ["Friday", "Saturday"], "opens": "12:00", "closes": "01:00" }
     ],
     "display": "Sun–Thu 12 PM – 12 AM · Fri–Sat 12 PM – 1 AM"
   },
