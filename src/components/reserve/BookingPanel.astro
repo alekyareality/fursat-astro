@@ -9,6 +9,9 @@
 import site from '../../data/site.json';
 import LiveTicket from './LiveTicket.astro';
 import slotData from '../../data/slots.json';
+import ld from '../../data/ld.json';
+// R3d: success screen. Directions use the repo's existing Google Maps link (ld.json hasMap).
+const mapsUrl = (ld as any)[0].hasMap as string;
 import PanoramicViewer from '../PanoramicViewer.astro';
 import { ZONES, IMGS, smallImg } from '../tour/spaces.js';
 
@@ -40,7 +43,7 @@ const conditions: string[] = [];
   </div>
 
   <form class="rs-pform" id="res-form" novalidate onsubmit="return false;">
-    <h2 id="rs-book-h">
+    <h2 id="rs-book-h" tabindex="-1">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15l2 2 4-4"/></svg>
       Book Your Experience
     </h2>
@@ -171,6 +174,21 @@ const conditions: string[] = [];
       </button>
       <p class="rs-cond" role="note">{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · This is a request, not a confirmed booking · Seating is a preference.</p>
       <p class="rs-fine" id="rs-fine">Opens WhatsApp with your details.</p>
+      <noscript><p class="rs-fine"><a href="https://wa.me/919059670033?text=Hi%20Fursat!%20I%20would%20like%20to%20reserve%20a%20table." target="_blank" rel="noopener">No JavaScript? Request a table on WhatsApp.</a></p></noscript>
+    </div>
+
+    <!-- ───── Request sent (R3d) ───── -->
+    <div class="rs-done" id="rs-done" hidden>
+      <h3 class="rs-stamp" id="rs-done-h" tabindex="-1">Request sent</h3>
+      <dl class="rs-sum rs-done-sum" id="rs-done-sum"></dl>
+      <p class="rs-done-note">We’ll confirm on WhatsApp shortly. Didn’t open? <a id="rs-resend" href="https://wa.me/919059670033" target="_blank" rel="noopener">Send again</a></p>
+      <div class="rs-done-actions">
+        <button type="button" class="rs-btn rs-btn-line" id="rs-ics"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13v4M10 15h4"/></svg>Add to calendar</button>
+        <a class="rs-btn rs-btn-line" id="rs-dir" href={mapsUrl} target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Get directions<span class="rs-sr"> (opens Google Maps in a new tab)</span></a>
+        <button type="button" class="rs-btn rs-btn-line" id="rs-story"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M12 8v6M9.5 11.5 12 8l2.5 3.5"/></svg>Share to Story</button>
+        <button type="button" class="rs-btn rs-btn-line" id="rs-again"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>Make another booking</button>
+      </div>
+      <p class="rs-done-s" id="rs-done-s" role="status" aria-live="polite"></p>
     </div>
   </form>
 
@@ -615,7 +633,92 @@ const conditions: string[] = [];
     const w = window.open(url, '_blank');
     const fine = $('rs-fine');
     fine.textContent = 'WhatsApp is open. Your request is only sent once you press Send there. ';
-    if (!w) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'WhatsApp didn’t open? Tap here.'; a.style.cssText = 'color:#f3c56b;text-decoration:underline'; fine.appendChild(a); }
+    showDone(url); // WhatsApp stays exactly as before; the panel now switches to "Request sent"
+  });
+
+  /* ───────── R3d: Request sent screen ───────── */
+  const doneEl = $('rs-done'), doneH = $('rs-done-h'), doneS = $('rs-done-s'); let sent = null;
+  const day = (v) => friendly(v).replace(',', ''); /* "Wed, 11 Nov" -> "Wed 11 Nov" */
+  const guestsTxt = (n) => n + (n === 1 ? ' guest' : ' guests');
+  function showDone(url) {
+    sent = { date: booking.date, time: booking.time, timeMin: booking.timeMin, guests: booking.guests, zone: booking.zone, occasion: booking.occasion, offer: offerOf(), occText: occText() };
+    $('rs-resend').href = url;
+    const dl = $('rs-done-sum'); dl.replaceChildren();
+    [['Date', friendly(sent.date)], ['Time', sent.time], ['Guests', guestsTxt(sent.guests)], ['Seating', sent.zone || 'No preference'], ['Occasion', sent.occText]].concat(sent.offer ? [['Offer', sent.offer]] : [])
+      .forEach((r) => { dl.append(mk('dt', null, r[0]), mk('dd', null, r[1])); });
+    doneS.textContent = '';
+    panel.classList.add('is-done'); doneEl.hidden = false;
+    doneH.classList.remove('is-stamped'); void doneH.offsetWidth; doneH.classList.add('is-stamped');
+    if (panel.getBoundingClientRect().top < 0) panel.scrollIntoView({ block: 'start' });
+    doneH.focus({ preventScroll: true });
+    confetti();
+  }
+  function confetti() { /* <1s gold/ember burst; skipped under reduced motion */
+    if (RM.matches) return;
+    const cv = mk('canvas', 'rs-confetti'); cv.setAttribute('aria-hidden', 'true'); panel.appendChild(cv);
+    const pr = panel.getBoundingClientRect(), hr = doneH.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = pr.width * dpr; cv.height = pr.height * dpr; const c = cv.getContext('2d'); c.scale(dpr, dpr);
+    const ox = hr.left - pr.left + hr.width / 2, oy = hr.top - pr.top + hr.height / 2, cols = ['#f3c56b', '#e0a63c', '#ffe2a6', '#e8581a', '#c2431a'];
+    const ps = Array.from({ length: 70 }, () => { const a = Math.random() * Math.PI * 2, v = 160 + Math.random() * 360; return { x: ox, y: oy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 220, r: Math.random() * 6, vr: (Math.random() - .5) * 14, w: 5 + Math.random() * 6, h: 3 + Math.random() * 4, c: cols[(Math.random() * cols.length) | 0] }; });
+    const T = 900, t0 = performance.now();
+    (function f(now) {
+      const t = now - t0, dt = 1 / 60; c.clearRect(0, 0, pr.width, pr.height);
+      if (t >= T) { cv.remove(); return; }
+      ps.forEach((p) => { p.vy += 900 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .985; p.r += p.vr * dt; c.save(); c.globalAlpha = t > T * .6 ? 1 - (t - T * .6) / (T * .4) : 1; c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); c.restore(); });
+      requestAnimationFrame(f);
+    })(t0);
+  }
+  /* Add to calendar (.ics). Hyderabad is IST (UTC+5:30, no daylight saving), so the time is right on any device clock. */
+  function icsText() {
+    const [y, m, d] = sent.date.split('-').map(Number), start = Date.UTC(y, m - 1, d, 0, sent.timeMin, 0) - 330 * 60000, end = start + 3600000;
+    const z = (ms) => { const t = new Date(ms); return t.getUTCFullYear() + pad(t.getUTCMonth() + 1) + pad(t.getUTCDate()) + 'T' + pad(t.getUTCHours()) + pad(t.getUTCMinutes()) + '00Z'; };
+    const esc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    const fold = (l) => { let o = '', r = l; while (r.length > 60) { o += r.slice(0, 60) + '\r\n '; r = r.slice(60); } return o + r; };
+    const desc = ['Not confirmed until Fursat replies on WhatsApp.', 'Guests: ' + sent.guests, 'Seating preference: ' + (sent.zone || 'No preference')].concat(sent.offer ? ['Offer: ' + sent.offer] : []).join('\n');
+    return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fursat Kitchen & Bar//Table request//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
+      'UID:fursat-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '@fursatind.in', 'DTSTAMP:' + z(Date.now()), 'DTSTART:' + z(start), 'DTEND:' + z(end),
+      'SUMMARY:Fursat table request (pending)', 'LOCATION:' + esc('Fursat Kitchen & Bar, Capital Park, Madhapur, Hyderabad'), 'DESCRIPTION:' + esc(desc), 'STATUS:TENTATIVE', 'END:VEVENT', 'END:VCALENDAR'].map(fold).join('\r\n') + '\r\n';
+  }
+  function save(blob, name) { const a = mk('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+  $('rs-ics').addEventListener('click', () => { if (!sent) return; save(new Blob([icsText()], { type: 'text/calendar;charset=utf-8' }), 'fursat-table-request.ics'); doneS.textContent = 'Calendar file downloaded. It is marked pending.'; });
+  /* Share to Story: 1080x1920 canvas, a real Fursat photo + the logo + the booking line. No name or phone. */
+  const photoFor = { 'The Bar': 'bar', 'Dining': 'dining', 'Lounge': 'lounge', 'Café': 'garden-window' };
+  const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+  async function storyBlob() {
+    try { await Promise.all([document.fonts.load('700 80px "Playfair Display"'), document.fonts.load('500 44px Poppins')]); } catch (e) {}
+    const [ph, logo] = await Promise.all([loadImg('/assets/tour/img/' + (photoFor[sent.zone] || 'entrance') + '.webp'), loadImg('/assets/c86f49db5a.webp')]);
+    const W = 1080, H = 1920, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d');
+    const k = Math.max(W / ph.width, H / ph.height); c.drawImage(ph, (W - ph.width * k) / 2, (H - ph.height * k) / 2, ph.width * k, ph.height * k);
+    let g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(5,12,0,.55)'); g.addColorStop(.28, 'rgba(5,12,0,.05)'); g.addColorStop(.55, 'rgba(5,12,0,.25)'); g.addColorStop(1, 'rgba(5,12,0,.92)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+    const pw = 440, ph2 = 340, px = (W - pw) / 2, py = 150, rr = 36; /* cream plate so the green wordmark reads */
+    c.beginPath(); c.roundRect(px, py, pw, ph2, rr); c.fillStyle = '#f6efdd'; c.fill(); c.lineWidth = 5; c.strokeStyle = '#e0a63c'; c.stroke();
+    const lk = Math.min((pw - 70) / logo.width, (ph2 - 60) / logo.height); c.drawImage(logo, px + (pw - logo.width * lk) / 2, py + (ph2 - logo.height * lk) / 2, logo.width * lk, logo.height * lk);
+    const line1 = 'Table for ' + sent.guests + ' · ' + day(sent.date) + ' · ' + sent.time; let fs = 84; c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    do { c.font = '700 ' + fs + 'px "Playfair Display", Georgia, serif'; fs -= 2; } while (c.measureText(line1).width > 940 && fs > 40);
+    c.fillStyle = '#fff2d4'; c.shadowColor = 'rgba(0,0,0,.55)'; c.shadowBlur = 24; c.fillText(line1, W / 2, 1560); c.shadowBlur = 0;
+    c.fillStyle = '#e0a63c'; c.fillRect(W / 2 - 70, 1614, 140, 4);
+    c.font = '500 44px Poppins, system-ui, sans-serif'; c.fillStyle = '#f3c56b'; if ('letterSpacing' in c) c.letterSpacing = '3px'; c.fillText('Fursat Kitchen & Bar, Madhapur', W / 2, 1690);
+    return await new Promise((ok) => cv.toBlob(ok, 'image/png'));
+  }
+  $('rs-story').addEventListener('click', async () => {
+    if (!sent) return; const b = $('rs-story'); b.disabled = true; doneS.textContent = 'Making your Story image…';
+    try {
+      const blob = await storyBlob(), file = new File([blob], 'fursat-story.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file] }); doneS.textContent = 'Story image ready to share.'; } catch (e) { doneS.textContent = e && e.name === 'AbortError' ? '' : 'Could not open sharing. Downloading instead.'; if (!e || e.name !== 'AbortError') save(blob, 'fursat-story.png'); } }
+      else { save(blob, 'fursat-story.png'); doneS.textContent = 'Story image downloaded (1080 × 1920).'; }
+    } catch (e) { doneS.textContent = 'Sorry, the Story image could not be made.'; }
+    b.disabled = false;
+  });
+  function resetAll() {
+    tok++; log.replaceChildren(); tray.replaceChildren(); chat.started = false; chat.answered = {}; chat.editing = false; chat.step = ''; chat.timeStale = false;
+    booking.date = todayStr(); if (!availFor(booking.date).length) booking.date = ymd(addDays(new Date(), 1)); booking.timeMin = -1; booking.time = ''; setDefaultTime();
+    booking.guests = 4; booking.zone = ''; booking.occasion = 'Casual Dining'; booking.name = ''; booking.phone = ''; touched = false; pickZone = ''; updatePick();
+    ['f-guests', 'f-occasion'].forEach((id) => $(id).classList.remove('is-prefilled')); clearErr(); $('rs-fine').textContent = 'Opens WhatsApp with your details.'; syncInputs();
+  }
+  $('rs-again').addEventListener('click', () => {
+    panel.classList.remove('is-done'); doneEl.hidden = true; sent = null; resetAll();
+    if (mode !== 'quick') setMode('quick'); else renderAll();
+    $('rs-book-h').focus({ preventScroll: true });
   });
 
   /* ───────── keep past slots honest while the page stays open ───────── */
