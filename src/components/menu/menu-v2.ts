@@ -1,6 +1,7 @@
 // /menu client script: picks, side switching, 21+ notice, search + filters, scroll-spy,
-// sticky chips, scroll entrance, cursor photo reveal. No framework, no animation library.
-import { reducer, money, total, count, waLink, type Line, type MenuItem } from './cart';
+// sticky chips, scroll entrance, cursor photo reveal, phone dish sheet, sliding active pill.
+// No framework, no animation library.
+import { reducer, keyOf, money, total, count, waLink, type Line, type MenuItem } from './cart';
 
 const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => [...r.querySelectorAll<T>(s)];
@@ -20,12 +21,13 @@ function init(root: HTMLElement) {
   try { lines = JSON.parse(sessionStorage.getItem(KEY) || '[]'); } catch { lines = []; }
   const cnt = $('#mv-cnt')!, sub = $('#mv-sub')!, wa = $<HTMLAnchorElement>('#mv-wa')!, listEl = $('#mv-picks-list')!;
   const panel = $('#mv-picks-panel')!, toggle = $('#mv-picks-toggle')!, bag = $('#mv-bag')!, picksEl = $('#mv-picks')!;
+  const cntMini = $('#mv-cnt-mini')!, bagMini = $('#mv-bag-mini')!;
 
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
   function render(pop = false) {
-    cnt.textContent = String(count(lines));
+    cnt.textContent = cntMini.textContent = String(count(lines));
     sub.textContent = money(total(lines));
-    if (pop && !reduce) { cnt.classList.add('is-pop'); setTimeout(() => cnt.classList.remove('is-pop'), 90); }
+    if (pop && !reduce) { [cnt, cntMini].forEach((c) => c.classList.add('is-pop')); setTimeout(() => [cnt, cntMini].forEach((c) => c.classList.remove('is-pop')), 90); }
     const has = lines.length > 0;
     wa.setAttribute('aria-disabled', has ? 'false' : 'true');
     wa.href = has ? waLink(lines) : '#';
@@ -34,6 +36,7 @@ function init(root: HTMLElement) {
       ? lines.map((l) => `<li><span>${esc(l.item.n)}</span><span class="q"><button type="button" data-dec="${esc(l.key)}" aria-label="One less ${esc(l.item.n)}">−</button><b class="num">${l.qty}</b><button type="button" data-inc="${esc(l.key)}" aria-label="One more ${esc(l.item.n)}">+</button></span><b class="num">${money(l.item.p * l.qty)}</b></li>`).join('')
       : '<li style="grid-template-columns:1fr"><span>Nothing here yet. Tap + on any dish or drink.</span></li>';
     try { sessionStorage.setItem(KEY, JSON.stringify(lines)); } catch { /* private mode */ }
+    root.dispatchEvent(new CustomEvent('mv:picks'));
   }
   render();
 
@@ -45,7 +48,7 @@ function init(root: HTMLElement) {
   const FLY = 450;
   function fly(from: HTMLElement, item: MenuItem) {
     if (reduce) return;
-    const r = from.getBoundingClientRect(), t = bag.getBoundingClientRect();
+    const r = from.getBoundingClientRect(), t = (picksEl.classList.contains('is-compact') ? bagMini : bag).getBoundingClientRect();
     if (!t.width) return;
     const el = document.createElement('div'); el.className = 'mv-fly';
     const dot = document.createElement('i');
@@ -68,6 +71,7 @@ function init(root: HTMLElement) {
     if (add && Number.isFinite(Number(add.dataset.p))) {
       const item = itemFrom(add);
       lines = reducer(lines, { t: 'add', item });
+      if (add.hasAttribute('data-nofly')) { render(true); return; } // the phone sheet sits above the bag: no flight
       fly(add, item);
       setTimeout(() => render(true), reduce ? 0 : FLY);
       return;
@@ -91,6 +95,19 @@ function init(root: HTMLElement) {
   });
   wa.addEventListener('click', (e) => { if (wa.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
 
+  // Collapse the pill to bag + count while the page scrolls; expand 700ms after it stops.
+  // Never while the list panel is open or focus is inside the pill (keyboard users keep the full bar).
+  let compactTimer = 0, lastY = scrollY, holdUntil = 0;
+  const expand = () => picksEl.classList.remove('is-compact');
+  addEventListener('scroll', () => {
+    if (Math.abs(scrollY - lastY) < 6) return;
+    lastY = scrollY;
+    if (performance.now() > holdUntil && panel.hasAttribute('hidden') && !picksEl.matches(':focus-within')) picksEl.classList.add('is-compact');
+    clearTimeout(compactTimer); compactTimer = window.setTimeout(expand, 700);
+  }, { passive: true });
+  picksEl.addEventListener('focusin', expand);
+  $('#mv-picks-mini')!.addEventListener('click', () => { holdUntil = performance.now() + 1500; expand(); });
+
   // The picks pill is fixed to the viewport; fade it out while the footer is on screen.
   const footer = $('footer');
   if (footer && 'IntersectionObserver' in window) {
@@ -108,16 +125,19 @@ function init(root: HTMLElement) {
     $$('[data-rail]').forEach((ul) => ul.toggleAttribute('hidden', ul.dataset.rail !== side));
     $$('[data-schips]').forEach((d) => d.toggleAttribute('hidden', d.dataset.schips !== side));
     $$('[data-seg]').forEach((b) => b.classList.toggle('is-on', b.dataset.seg === side));
+    placeSlides(true);
   }
   function centerIn(btn: HTMLElement | null) {
     const box = btn?.parentElement;
     if (!btn || !box || box.scrollWidth <= box.clientWidth) return;
-    box.scrollTo({ left: btn.offsetLeft - box.clientWidth / 2 + btn.offsetWidth / 2 - box.offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+    const left = btn.getBoundingClientRect().left - box.getBoundingClientRect().left + box.scrollLeft - box.clientWidth / 2 + btn.offsetWidth / 2;
+    box.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
   }
   function mark(id: string | null) {
     $$('.mv-rw').forEach((b) => b.classList.toggle('is-on', b.dataset.go === id));
     $$('.mv-chip').forEach((b) => b.classList.toggle('is-on', (b.dataset.chip === 'all' && !id) || b.dataset.chip === id));
     $$('.mv-schip').forEach((b) => { const on = b.dataset.go === id; b.classList.toggle('is-on', on); if (on && b.offsetParent) centerIn(b); });
+    placeSlides(true);
   }
   const scrollTo = (el: Element | null) => el?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   function need21(side: Side, run: () => void) {
@@ -142,6 +162,49 @@ function init(root: HTMLElement) {
     if (dlg.returnValue === 'yes') { try { localStorage.setItem(AGE, '1'); } catch { /* ignore */ } const run = pending; pending = null; run?.(); }
     else if (dlg.returnValue === 'no') { pending = null; go('f-biryani', 'food'); }
     dlg.returnValue = '';
+  });
+
+  /* ── sliding active pill (rail, chips, toggle): one clipped fill moves under the labels ── */
+  type Slide = { box: HTMLElement; el: HTMLElement; sel: string; placed: boolean };
+  const slides: Slide[] = [];
+  function placeSlides(animate: boolean) {
+    slides.forEach((sl) => {
+      const { box, el } = sl;
+      if (!box.offsetWidth) { sl.placed = false; return; } // hidden side: place when it shows
+      const on = box.querySelector<HTMLElement>(sl.sel + '.is-on');
+      if (!on) { el.style.clipPath = 'inset(0 100% 100% 0)'; return; }
+      const W = box.scrollWidth, H = box.scrollHeight, b = box.getBoundingClientRect(), r = on.getBoundingClientRect();
+      const l = r.left - b.left + box.scrollLeft - box.clientLeft, t = r.top - b.top + box.scrollTop - box.clientTop;
+      const rad = Math.min(parseFloat(getComputedStyle(on).borderTopLeftRadius) || 0, r.height / 2);
+      el.style.width = W + 'px'; el.style.height = H + 'px';
+      el.classList.toggle('no-anim', !animate || !sl.placed);
+      el.style.clipPath = `inset(${t}px ${W - l - r.width}px ${H - t - r.height}px ${l}px round ${rad}px)`;
+      sl.placed = true;
+    });
+  }
+  if (!reduce) { // reduced motion keeps the plain colour change on the chip itself
+    [['.mv-rail-list', '.mv-rw', false], ['.mv-chips', '.mv-chip', false], ['.mv-schips', '.mv-schip', true], ['.mv-seg', '.mv-seg-b', false]].forEach(([bs, sel, tint]) => {
+      $$(bs as string).forEach((box) => {
+        const el = document.createElement('span');
+        el.className = 'mv-slide' + (tint ? ' mv-slide--tint' : ''); el.setAttribute('aria-hidden', 'true');
+        box.prepend(el); box.classList.add('has-slide');
+        slides.push({ box, el, sel: sel as string, placed: false });
+        if ('ResizeObserver' in window) new ResizeObserver(() => placeSlides(false)).observe(box);
+      });
+    });
+    requestAnimationFrame(() => placeSlides(false));
+    document.fonts?.ready.then(() => placeSlides(false));
+  }
+
+  /* ── edge fades on the two chip rows (no hard cut against the toggle or the screen edge) ── */
+  $$('.mv-chips, .mv-schips').forEach((el) => {
+    const upd = () => {
+      el.style.setProperty('--fl', el.scrollLeft > 4 ? '22px' : '0px');
+      el.style.setProperty('--fr', el.scrollLeft + el.clientWidth < el.scrollWidth - 4 ? '22px' : '0px');
+    };
+    el.addEventListener('scroll', upd, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(upd).observe(el);
+    upd();
   });
 
   /* ── scroll-spy: keeps rail, chips and sticky chips on the group in view ── */
@@ -225,25 +288,34 @@ function init(root: HTMLElement) {
     below.forEach((r) => io.observe(r));
   }
 
-  /* ── cursor photo reveal (fine pointers, rows with a real photo) ── */
+  /* ── cursor photo reveal (fine pointers, ≥1280px, rows with a real photo) ──
+     The photo sits in a gutter right of the list and follows the cursor's height only,
+     so it never covers a name, a price or a + button. */
   const rev = $('#mv-reveal');
   const revImg = rev?.querySelector('img');
+  const wide = matchMedia('(min-width: 1280px) and (hover: hover) and (pointer: fine)');
   if (rev && revImg && finePointer && !reduce) {
-    let tx = 0, ty = 0, x = 0, y = 0, vx = 0, raf = 0, on = false;
+    let ty = 0, y = 0, vy = 0, gx = 0, raf = 0, on = false;
     const W = 220, H = 160;
+    const listIn = $('.mv-list-in')!, sticky = $('#mv-sticky')!;
     const place = () => {
-      x += (tx - x) * 0.15; y += (ty - y) * 0.15;
-      const tilt = Math.max(-8, Math.min(8, vx * 0.35)); vx *= 0.85;
-      rev.style.transform = `translate(${x}px,${y}px) rotate(${tilt}deg)`;
+      y += (ty - y) * 0.15;
+      const tilt = Math.max(-4, Math.min(4, vy * 0.2)); vy *= 0.85;
+      rev.style.transform = `translate(${gx}px,${y}px) rotate(${tilt}deg)`;
       raf = on ? requestAnimationFrame(place) : 0;
     };
     const aim = (e: PointerEvent) => {
-      const nx = e.clientX + 28 + W > innerWidth ? e.clientX - 28 - W : e.clientX + 28;
-      vx = e.movementX; tx = nx; ty = Math.min(innerHeight - H - 12, Math.max(12, e.clientY - H / 2));
+      const r = listIn.getBoundingClientRect();
+      gx = Math.round(r.right - parseFloat(getComputedStyle(listIn).paddingRight) + 24);
+      const pill = picksEl.getBoundingClientRect();
+      const floor = Math.min(innerHeight - H - 12, (pill.width && !picksEl.classList.contains('is-hidden') ? pill.top : innerHeight) - H - 12);
+      const ceil = sticky.getBoundingClientRect().bottom + 12;
+      vy = e.movementY; ty = Math.max(ceil, Math.min(floor, e.clientY - H / 2));
     };
     const show = (e: PointerEvent, src: string) => {
+      if (!wide.matches) return;
       if (revImg.getAttribute('src') !== src) revImg.setAttribute('src', src);
-      aim(e); if (!on) { x = tx; y = ty; }
+      aim(e); if (!on) y = ty;
       on = true; rev.classList.add('is-on'); if (!raf) raf = requestAnimationFrame(place);
     };
     const hide = () => { on = false; rev.classList.remove('is-on'); };
@@ -265,6 +337,125 @@ function init(root: HTMLElement) {
     new MutationObserver(() => kick(500)).observe(header, { attributes: true, attributeFilter: ['class'] });
     addEventListener('scroll', () => kick(80), { passive: true });
     sync();
+  }
+
+  /* ── dish detail sheet (phones): tap a dish, drag down / Esc / back / X to close ── */
+  const sheet = $<HTMLDialogElement>('#mv-sheet');
+  if (sheet) {
+    const phone = matchMedia('(max-width: 720px)');
+    const panelEl = $('#mv-sheet-panel')!, dragEl = $('#mv-sheet-drag')!, phEl = $('#mv-sheet-ph')!;
+    const secEl = $('#mv-sheet-sec')!, nameEl = $('#mv-sheet-name')!, tagsEl = $('#mv-sheet-tags')!, descEl = $('#mv-sheet-desc')!;
+    const noteEl = $('#mv-sheet-note')!, priceEl = $('#mv-sheet-price')!, statEl = $('#mv-sheet-status')!;
+    const addBtn = $<HTMLButtonElement>('#mv-sheet-add')!, xBtn = $('#mv-sheet-x')!;
+    const opens = $$<HTMLButtonElement>('.mv-open');
+    const syncInert = () => opens.forEach((b) => b.toggleAttribute('inert', !phone.matches));
+    syncInert();
+    let opener: HTMLElement | null = null, pushed = false, closing = false, flashing = false, flashT = 0, closeT = 0;
+
+    const el = (tag: string, cls: string, text = '') => { const n = document.createElement(tag); n.className = cls; if (text) n.textContent = text; return n; };
+    function status() {
+      const key = keyOf(itemFrom(addBtn)); const q = lines.find((l) => l.key === key)?.qty || 0;
+      statEl.textContent = q ? `${flashing ? 'Added · ' : ''}${q} in Picks` : '';
+    }
+    function fill(li: HTMLElement) {
+      const row = $<HTMLElement>('[data-add]', li);
+      const nm = orig.get(names.get(li)!) || '', ds = descs.get(li) ? orig.get(descs.get(li)!)! : '';
+      secEl.textContent = li.dataset.sec || '';
+      nameEl.textContent = nm; descEl.textContent = ds; noteEl.textContent = $('.mv-note', li)?.textContent || '';
+      // photo, or a typographic card (real photos only: no stand-in food images)
+      phEl.replaceChildren();
+      if (li.dataset.img) {
+        const im = document.createElement('img'); im.src = li.dataset.img; im.alt = `Photo of ${nm}`; im.decoding = 'async'; im.draggable = false; phEl.appendChild(im);
+      } else {
+        const c = el('div', 'mv-sheet-card'); c.setAttribute('aria-hidden', 'true');
+        const g = el('span', 'mv-ghost', nm.trim()[0] || ''); const o = el('span', 'mv-orn'); o.appendChild(document.createElement('b'));
+        c.append(g, o); phEl.appendChild(c);
+      }
+      // tags: veg mark + label, chef's special, spicy
+      const vm = $('.mv-vm', li)?.cloneNode(true) as HTMLElement | undefined;
+      tagsEl.replaceChildren(...[vm, document.createTextNode(li.dataset.veg === '1' ? 'Vegetarian' : 'Non-vegetarian'), $('.mv-chefmark', li)?.cloneNode(true), $('.mv-spice', li)?.cloneNode(true)].filter(Boolean) as Node[]);
+      // price(s) exactly as in the list
+      const pr = $('.mv-item-price', li);
+      priceEl.innerHTML = pr && row ? pr.innerHTML : '';
+      // Add to Picks carries the row's own data (same item, same price, same message line)
+      ['n', 'p', 'c', 'k', 'v', 'a'].forEach((k) => { if (row?.dataset[k] != null) addBtn.dataset[k] = row.dataset[k]; else delete addBtn.dataset[k]; });
+      if (li.dataset.img) addBtn.dataset.img = li.dataset.img; else delete addBtn.dataset.img;
+      addBtn.hidden = !row; addBtn.setAttribute('aria-label', `Add ${row?.dataset.n || nm} to Picks`);
+      addBtn.classList.remove('is-added'); flashing = false; status();
+    }
+    function openSheet(li: HTMLElement) {
+      if (sheet!.open || closing) return;
+      opener = $('.mv-open', li);
+      fill(li);
+      $('.mv-sheet-scroll', sheet!)!.scrollTop = 0;
+      panelEl.style.transform = ''; panelEl.classList.remove('is-drag');
+      history.pushState({ mvSheet: 1 }, ''); pushed = true;
+      sheet!.showModal(); void panelEl.offsetHeight; sheet!.classList.add('is-in');
+    }
+    function closeSheet(fromPop = false) {
+      if (!sheet!.open || closing) return;
+      closing = true;
+      panelEl.classList.remove('is-drag'); panelEl.style.transform = ''; sheet!.classList.remove('is-in');
+      const done = () => {
+        clearTimeout(closeT); panelEl.removeEventListener('transitionend', onEnd);
+        sheet!.close(); closing = false;
+        opener?.focus({ preventScroll: true });
+        const back = pushed && !fromPop; pushed = false;
+        if (back && history.state?.mvSheet) history.back();
+      };
+      const onEnd = (e: TransitionEvent) => { if (e.target === panelEl) done(); };
+      panelEl.addEventListener('transitionend', onEnd);
+      closeT = window.setTimeout(done, 320);
+    }
+
+    $('#mv-list')?.addEventListener('click', (e) => {
+      if (!phone.matches) return;
+      const t = e.target as HTMLElement;
+      if (t.closest('[data-add]') || getSelection()?.toString()) return;
+      const li = t.closest<HTMLElement>('[data-row]'); if (li) openSheet(li);
+    });
+    dragEl.addEventListener('dragstart', (e) => e.preventDefault()); // a native image drag would cancel our pointer drag
+    // explicit focus trap: Tab cycles X <-> Add to Picks instead of leaving for browser chrome
+    sheet.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const f = [xBtn, addBtn].filter((b) => !b.hidden);
+      const first = f[0], last = f[f.length - 1], cur = document.activeElement;
+      if (e.shiftKey && (cur === first || !f.includes(cur as HTMLButtonElement))) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (cur === last || !f.includes(cur as HTMLButtonElement))) { e.preventDefault(); first.focus(); }
+    });
+    xBtn.addEventListener('click', () => closeSheet());
+    sheet.addEventListener('cancel', (e) => { e.preventDefault(); closeSheet(); }); // Escape
+    sheet.addEventListener('click', (e) => { if (e.target === sheet) closeSheet(); }); // outside the panel
+    addEventListener('popstate', () => { if (sheet.open) closeSheet(true); });      // back button / swipe-back
+    phone.addEventListener('change', () => { syncInert(); if (!phone.matches && sheet.open) closeSheet(); });
+    root.addEventListener('mv:picks', () => { if (sheet.open) status(); });
+    addBtn.addEventListener('click', () => {
+      flashing = true; addBtn.classList.add('is-added'); clearTimeout(flashT);
+      flashT = window.setTimeout(() => { flashing = false; addBtn.classList.remove('is-added'); status(); }, 1400);
+    });
+
+    // drag down from the grabber or the photo; a flick (> 0.11 px/ms) is enough
+    let sy = 0, dy = 0, pid = -1, dragging = false, trail: [number, number][] = [];
+    dragEl.addEventListener('pointerdown', (e) => {
+      if (dragging || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      dragging = true; pid = e.pointerId; sy = e.clientY; dy = 0; trail = [[e.timeStamp, e.clientY]];
+      dragEl.setPointerCapture(pid); panelEl.classList.add('is-drag');
+    });
+    dragEl.addEventListener('pointermove', (e) => {
+      if (!dragging || e.pointerId !== pid) return;
+      const raw = e.clientY - sy; dy = raw > 0 ? raw : Math.max(raw / 8, -24); // friction above the resting edge
+      panelEl.style.transform = `translateY(${dy}px)`;
+      trail.push([e.timeStamp, e.clientY]); while (trail.length > 2 && e.timeStamp - trail[0][0] > 100) trail.shift();
+    });
+    const endDrag = (e: PointerEvent) => {
+      if (!dragging || e.pointerId !== pid) return;
+      dragging = false; try { dragEl.releasePointerCapture(pid); } catch { /* already released */ }
+      const a = trail[0], b = trail[trail.length - 1], v = b[0] > a[0] ? (b[1] - a[1]) / (b[0] - a[0]) : 0;
+      if (e.type !== 'pointercancel' && (dy > panelEl.offsetHeight * 0.3 || (v > 0.11 && dy > 8))) closeSheet();
+      else { panelEl.classList.remove('is-drag'); panelEl.style.transform = ''; }
+    };
+    dragEl.addEventListener('pointerup', endDrag);
+    dragEl.addEventListener('pointercancel', endDrag);
   }
 
   /* ── one-time sheen on primary buttons (a transition, removed after it plays) ── */

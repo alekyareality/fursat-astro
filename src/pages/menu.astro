@@ -231,15 +231,22 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
           ))}
         </div>
         <div class="mv-picks" id="mv-picks" data-count="0">
-          <button class="mv-picks-btn" type="button" id="mv-picks-toggle" aria-expanded="false" aria-controls="mv-picks-panel">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" id="mv-bag"><path d="M5 8h14l-1 12H6L5 8zM9 8a3 3 0 0 1 6 0"/></svg>
-            <span>Your Picks (<b class="num" id="mv-cnt">0</b>)</span>
-          </button>
-          <span class="mv-sep" aria-hidden="true"></span>
-          <a class="mv-wa" id="mv-wa" href="#" aria-disabled="true" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2z"/></svg>
-            <span><span class="mv-wa-long">Send on </span>WhatsApp</span> <span aria-hidden="true">→</span>
-          </a>
+          <div class="mv-picks-bar" id="mv-picks-bar">
+            <button class="mv-picks-btn" type="button" id="mv-picks-toggle" aria-expanded="false" aria-controls="mv-picks-panel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" id="mv-bag"><path d="M5 8h14l-1 12H6L5 8zM9 8a3 3 0 0 1 6 0"/></svg>
+              <span class="mv-picks-lbl">Your Picks (<b class="num" id="mv-cnt">0</b>)</span>
+            </button>
+            <span class="mv-sep" aria-hidden="true"></span>
+            <a class="mv-wa" id="mv-wa" href="#" aria-disabled="true" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2z"/></svg>
+              <span class="mv-wa-txt"><span class="mv-wa-long">Send on </span>WhatsApp</span><span class="mv-wa-arr" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <!-- Collapsed form while the page scrolls: bag + count. Pointer-only; the bar above holds the real controls. -->
+          <span class="mv-picks-mini" id="mv-picks-mini" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" id="mv-bag-mini"><path d="M5 8h14l-1 12H6L5 8zM9 8a3 3 0 0 1 6 0"/></svg>
+            <b class="num" id="mv-cnt-mini">0</b>
+          </span>
           <div class="mv-picks-panel" id="mv-picks-panel" hidden>
             <ul id="mv-picks-list"></ul>
             <div class="mv-picks-foot"><span>Subtotal <b class="num" id="mv-sub">₹0</b> <small>taxes extra</small></span><button type="button" class="mv-link" id="mv-clear">Clear all</button></div>
@@ -276,11 +283,11 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
                     {g.sections.length > 1 && <p class="mv-sec-h">{sec.section}</p>}
                     <ul class="mv-items">
                       {sec.items.map((i) => (
-                        <li class="mv-item" data-row data-veg={i.veg ? '1' : '0'} data-spicy={i.spicy ? '1' : '0'} data-text={`${titleCase(i.name)} ${i.description ?? ''} ${i.section}`.toLowerCase()} {...(i.image ? { 'data-img': i.image } : {})}>
+                        <li class="mv-item" data-row data-sec={i.section} data-veg={i.veg ? '1' : '0'} data-spicy={i.spicy ? '1' : '0'} data-text={`${titleCase(i.name)} ${i.description ?? ''} ${i.section}`.toLowerCase()} {...(i.image ? { 'data-img': i.image } : {})}>
                           <div class="mv-item-main">
                             <span class={vegMark(i.veg)} role="img" aria-label={i.veg ? 'Vegetarian' : 'Non-vegetarian'}></span>
                             <div>
-                              <h4 class="mv-item-name"><span class="mv-iname">{titleCase(i.name)}</span>{i.chefSpecial && <em class="mv-chefmark">Chef's special</em>}{i.spicy && <em class="mv-spice">Spicy</em>}</h4>
+                              <h4 class="mv-item-name"><button class="mv-open" type="button" aria-haspopup="dialog" inert><span class="mv-iname">{titleCase(i.name)}</span></button>{i.chefSpecial && <em class="mv-chefmark">Chef's special</em>}{i.spicy && <em class="mv-spice">Spicy</em>}</h4>
                               {i.description && <p class="mv-idesc">{i.description}</p>}
                               {i.note && <p class="mv-note">{i.note}</p>}
                             </div>
@@ -308,6 +315,35 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
         <p class="mv-fine">Prices in ₹, taxes extra.</p>
       </div>
     </section>
+
+    <!-- Dish detail sheet (phones). Native dialog: focus trap, Esc and inert background come with it. -->
+    <dialog class="mv-sheet" id="mv-sheet" aria-labelledby="mv-sheet-name" aria-describedby="mv-sheet-desc">
+      <div class="mv-sheet-panel" id="mv-sheet-panel">
+        <div class="mv-sheet-drag" id="mv-sheet-drag">
+          <span class="mv-sheet-grab" aria-hidden="true"></span>
+          <div class="mv-sheet-ph" id="mv-sheet-ph"></div>
+        </div>
+        <button class="mv-sheet-x" type="button" id="mv-sheet-x" aria-label="Close dish details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <div class="mv-sheet-scroll">
+          <p class="mv-lab" id="mv-sheet-sec"></p>
+          <h2 class="mv-nm" id="mv-sheet-name"></h2>
+          <p class="mv-meta" id="mv-sheet-tags"></p>
+          <p class="mv-sheet-desc" id="mv-sheet-desc"></p>
+          <p class="mv-note" id="mv-sheet-note"></p>
+          <p class="mv-sheet-price num" id="mv-sheet-price"></p>
+        </div>
+        <div class="mv-sheet-foot">
+          <button class="mv-btn" type="button" id="mv-sheet-add" data-add data-nofly>
+            <span class="mv-ic" aria-hidden="true">
+              <svg class="mv-ic-a" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+              <svg class="mv-ic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+            </span>
+            <span>Add to Picks</span>
+          </button>
+          <p class="mv-sheet-status" id="mv-sheet-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </dialog>
   </main>
 
   <!-- Cursor photo reveal (desktop, rows that have a real photo) -->
