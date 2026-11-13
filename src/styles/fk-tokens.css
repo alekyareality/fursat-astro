@@ -91,12 +91,10 @@
 .fk-organic__body { position: relative; z-index: 1; }
 
 /* Plaster surface for whole pages: seamless tile under the grain. */
-.fk-plaster {
-  background-color: var(--fk-cream);
-  background-image: var(--fk-grain), url(/assets/surface/plaster-tile.webp);
-  background-size: 220px 220px, 900px 900px;
-  background-blend-mode: multiply, normal;
-}
+/* v5.6 one plaster for every page without background art (menu, banquet, events, catering, order, terms):
+   the tile multiplied onto a warm base lands on the same peach cream as the hybrid art (#eed4b2 measured) */
+:root{--fk-plaster-base:#f6e4c9;--fk-plaster:#f6e4c9 url(/assets/surface/plaster-tile.webp) 0 0/900px 900px;}
+.fk-plaster{background:var(--fk-plaster);background-blend-mode:multiply}
 
 /* ===================================================================================
    HYBRID STAGES (v4, Nov 13): textless background art (scripts/prep-bg.py) + live HTML.
@@ -287,7 +285,9 @@ body:has(.sh-plaster){--sans:var(--fk-sans)}
 
 /* ═════ v4.6 CREAM CONTENT PAGES — banquet, events, catering, order, terms (no background art yet) ═════
    Plaster surface + room for the fixed cream header. Each page's own stylesheet maps its colours to the roles above. */
-.bq-page,.ev-page,.ct-page,.od-page,.tr-page{flex:none;background-color:var(--fk-cream);background-image:var(--fk-grain),url(/assets/surface/plaster-tile.webp);background-size:220px 220px,900px 900px;background-blend-mode:multiply,normal;color:#2b2416;}
+.bq-page,.ev-page,.ct-page,.od-page,.tr-page{flex:none;background:var(--fk-plaster);background-blend-mode:multiply;color:#2b2416;}
+/* the page body under these pages is the same plaster (the old site cream #F2EEE4 showed at the edges) */
+html:has(:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page)),body:has(:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page)){background:var(--fk-plaster);background-blend-mode:multiply}
 /* top room for the fixed header: beats each page's own padding shorthand */
 main:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page){padding-top:clamp(92px,9.5vw,148px)}
 @media (max-width:767px){.bq-hero-overlay{background:rgba(248,234,216,.9)!important}.bq-kicker{white-space:normal;letter-spacing:.12em}}

@@ -1,0 +1,209 @@
+{
+  "_note": "Real Fursat dish photos linked to menu rows by exact item name. Only photos whose picture matches the dish (checked by eye 13 Nov). Do not add dsc*/fursat* repo files, any ask/dishes file (8 of 15 are mismatched; the 4 drinks now come full-size from dishes/new), or dishes/drinks-to-confirm/ (client naming them). 'todo' = client to confirm. Menu rows only, never the ring or a hero: life-fursat-bhai (hand), chicken-fry-piece-pulao (chef), classic-paneer-tikka and tiramisu (hands).",
+  "photos": {
+    "CAFE LATTE": {
+      "src": "/assets/dishes/new/cafe-latte.webp",
+      "sm": "/assets/dishes/sm/cafe-latte-sm.webp",
+      "xs": "/assets/dishes/sm/cafe-latte-xs.webp",
+      "w": 1268,
+      "h": 1600
+    },
+    "CAFE MOCHA": {
+      "src": "/assets/dishes/new/cafe-mocha.webp",
+      "sm": "/assets/dishes/sm/cafe-mocha-sm.webp",
+      "xs": "/assets/dishes/sm/cafe-mocha-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "CAPPUCCINO": {
+      "src": "/assets/dishes/new/cappuccino.webp",
+      "sm": "/assets/dishes/sm/cappuccino-sm.webp",
+      "xs": "/assets/dishes/sm/cappuccino-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Tiramisu": {
+      "src": "/assets/dishes/new/tiramisu.webp",
+      "sm": "/assets/dishes/sm/tiramisu-sm.webp",
+      "xs": "/assets/dishes/sm/tiramisu-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Apricot Delight": {
+      "src": "/assets/dishes/new/apricot-delight.webp",
+      "sm": "/assets/dishes/sm/apricot-delight-sm.webp",
+      "xs": "/assets/dishes/sm/apricot-delight-xs.webp",
+      "w": 1144,
+      "h": 1600
+    },
+    "Biscoff Cheesecake": {
+      "src": "/assets/dishes/new/biscoff-cheesecake.webp",
+      "sm": "/assets/dishes/sm/biscoff-cheesecake-sm.webp",
+      "xs": "/assets/dishes/sm/biscoff-cheesecake-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Tres Leches": {
+      "src": "/assets/dishes/new/tres-leches.webp",
+      "sm": "/assets/dishes/sm/tres-leches-sm.webp",
+      "xs": "/assets/dishes/sm/tres-leches-xs.webp",
+      "w": 1067,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "OG French Toast": {
+      "src": "/assets/dishes/new/og-french-toast.webp",
+      "sm": "/assets/dishes/sm/og-french-toast-sm.webp",
+      "xs": "/assets/dishes/sm/og-french-toast-xs.webp",
+      "w": 1107,
+      "h": 1600
+    },
+    "Korean Bun": {
+      "src": "/assets/dishes/new/korean-bun.webp",
+      "sm": "/assets/dishes/sm/korean-bun-sm.webp",
+      "xs": "/assets/dishes/sm/korean-bun-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Guntur Karam Wings": {
+      "src": "/assets/dishes/new/guntur-karam-wings.webp",
+      "sm": "/assets/dishes/sm/guntur-karam-wings-sm.webp",
+      "xs": "/assets/dishes/sm/guntur-karam-wings-xs.webp",
+      "w": 1138,
+      "h": 1600
+    },
+    "Nalla Karam Kodi Vepudu": {
+      "src": "/assets/dishes/new/nalla-karam-kodi-vepudu.webp",
+      "sm": "/assets/dishes/sm/nalla-karam-kodi-vepudu-sm.webp",
+      "xs": "/assets/dishes/sm/nalla-karam-kodi-vepudu-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Jeedi Pappu Kodi Pakodi": {
+      "src": "/assets/dishes/new/jeedi-pappu-kodi-pakodi.webp",
+      "sm": "/assets/dishes/sm/jeedi-pappu-kodi-pakodi-sm.webp",
+      "xs": "/assets/dishes/sm/jeedi-pappu-kodi-pakodi-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Chicken Tikka (Angara/ Malai/ Hariyali)": {
+      "src": "/assets/dishes/new/chicken-tikka-angara.webp",
+      "sm": "/assets/dishes/sm/chicken-tikka-angara-sm.webp",
+      "xs": "/assets/dishes/sm/chicken-tikka-angara-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Classic Paneer Tikka": {
+      "src": "/assets/dishes/new/classic-paneer-tikka.webp",
+      "sm": "/assets/dishes/sm/classic-paneer-tikka-sm.webp",
+      "xs": "/assets/dishes/sm/classic-paneer-tikka-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Ustad Special Nalli Gosht Biryani": {
+      "src": "/assets/dishes/new/nalli-gosht-biryani-half.webp",
+      "sm": "/assets/dishes/sm/nalli-gosht-biryani-half-sm.webp",
+      "xs": "/assets/dishes/sm/nalli-gosht-biryani-half-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Chicken Fry Piece Pulao": {
+      "src": "/assets/dishes/new/chicken-fry-piece-pulao.webp",
+      "sm": "/assets/dishes/sm/chicken-fry-piece-pulao-sm.webp",
+      "xs": "/assets/dishes/sm/chicken-fry-piece-pulao-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "Rice / Noodles (Veg)": {
+      "src": "/assets/dishes/new/rice-spicy-coriander.webp",
+      "sm": "/assets/dishes/sm/rice-spicy-coriander-sm.webp",
+      "xs": "/assets/dishes/sm/rice-spicy-coriander-xs.webp",
+      "w": 1030,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "Rice / Noodles (Egg)": {
+      "src": "/assets/dishes/new/rice-spicy-coriander.webp",
+      "sm": "/assets/dishes/sm/rice-spicy-coriander-sm.webp",
+      "xs": "/assets/dishes/sm/rice-spicy-coriander-xs.webp",
+      "w": 1030,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "Rice / Noodles (Chicken)": {
+      "src": "/assets/dishes/new/rice-spicy-coriander.webp",
+      "sm": "/assets/dishes/sm/rice-spicy-coriander-sm.webp",
+      "xs": "/assets/dishes/sm/rice-spicy-coriander-xs.webp",
+      "w": 1030,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "Rice / Noodles (Mix)": {
+      "src": "/assets/dishes/new/rice-spicy-coriander.webp",
+      "sm": "/assets/dishes/sm/rice-spicy-coriander-sm.webp",
+      "xs": "/assets/dishes/sm/rice-spicy-coriander-xs.webp",
+      "w": 1030,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "Mexican Grilled Veggie Fried Burger": {
+      "src": "/assets/dishes/new/mexican-veggie-burger.webp",
+      "sm": "/assets/dishes/sm/mexican-veggie-burger-sm.webp",
+      "xs": "/assets/dishes/sm/mexican-veggie-burger-xs.webp",
+      "w": 1059,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "CREAMY BISCOFF SHAKE": {
+      "src": "/assets/dishes/new/creamy-biscoff-shake.webp",
+      "sm": "/assets/dishes/sm/creamy-biscoff-shake-sm.webp",
+      "xs": "/assets/dishes/sm/creamy-biscoff-shake-xs.webp",
+      "w": 1082,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "MIX BERRY SMOOTHIE": {
+      "src": "/assets/dishes/new/mix-berry-smoothie.webp",
+      "sm": "/assets/dishes/sm/mix-berry-smoothie-sm.webp",
+      "xs": "/assets/dishes/sm/mix-berry-smoothie-xs.webp",
+      "w": 1090,
+      "h": 1600,
+      "todo": "TODO(client): confirm this photo shows this dish"
+    },
+    "Jamaican Jerk Chicken with Fries": {
+      "src": "/assets/ask/dishes/jamaican-jerk-with-fries.webp",
+      "sm": "/assets/dishes/sm/jamaican-jerk-with-fries-sm.webp",
+      "xs": "/assets/dishes/sm/jamaican-jerk-with-fries-xs.webp",
+      "w": 1200,
+      "h": 1593
+    },
+    "LIFE FURSAT BHAI": {
+      "src": "/assets/dishes/new/life-fursat-bhai.webp",
+      "sm": "/assets/dishes/sm/life-fursat-bhai-sm.webp",
+      "xs": "/assets/dishes/sm/life-fursat-bhai-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "FURSAT RAHASYAM": {
+      "src": "/assets/dishes/new/fursat-rahasyam.webp",
+      "sm": "/assets/dishes/sm/fursat-rahasyam-sm.webp",
+      "xs": "/assets/dishes/sm/fursat-rahasyam-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "ICED LATTE": {
+      "src": "/assets/dishes/new/iced-latte.webp",
+      "sm": "/assets/dishes/sm/iced-latte-sm.webp",
+      "xs": "/assets/dishes/sm/iced-latte-xs.webp",
+      "w": 1067,
+      "h": 1600
+    },
+    "GONGURA MUCHATLU": {
+      "src": "/assets/dishes/new/gongura-muchatlu.webp",
+      "sm": "/assets/dishes/sm/gongura-muchatlu-sm.webp",
+      "xs": "/assets/dishes/sm/gongura-muchatlu-xs.webp",
+      "w": 1067,
+      "h": 1600
+    }
+  }
+}

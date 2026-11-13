@@ -1,0 +1,15 @@
+{
+  "_note": "Dishes on the rotating table (/menu, food side), in ring order. One hero per section, chosen by the owner 13 Nov. Name = exact menu name; the photo comes from dish-photos.json. 'clip' = optional spin video (/assets/clips/...mp4), used when present. 'todo' = stand-in until the right photo exists.",
+  "dishes": [
+    { "name": "Ustad Special Nalli Gosht Biryani", "label": "Biryani" },
+    { "name": "Guntur Karam Wings", "label": "Regional" },
+    { "name": "Chicken Tikka (Angara/ Malai/ Hariyali)", "label": "Tandoori", "title": "Angara Chicken Tikka" },
+    { "name": "Jamaican Jerk Chicken with Fries", "label": "Continental" },
+    { "name": "Nalla Karam Kodi Vepudu", "label": "Regional", "todo": "TODO(client): stand-in for Asian (Loose Prawns) until a correct photo exists" },
+    { "name": "Jeedi Pappu Kodi Pakodi", "label": "Regional", "todo": "TODO(client): stand-in for South Indian (Muddapappu Avakaya Annam) until a correct photo exists" },
+    { "name": "Korean Bun", "label": "Finger bites", "todo": "TODO(client): stand-in for Pasta (Spaghetti Aglio) until a correct photo exists" },
+    { "name": "OG French Toast", "label": "Breakfast", "todo": "TODO(client): stand-in for Momos (Chicken Momos) until a correct photo exists" },
+    { "name": "Biscoff Cheesecake", "label": "Dessert" },
+    { "name": "CAPPUCCINO", "label": "Coffee", "title": "Cappuccino" }
+  ]
+}

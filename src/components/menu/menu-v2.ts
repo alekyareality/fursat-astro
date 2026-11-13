@@ -25,7 +25,7 @@ function init(root: HTMLElement) {
 
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
   function render(pop = false) {
-    cnt.textContent = cntMini.textContent = String(count(lines));
+    cnt.textContent = cntMini.textContent = picksEl.dataset.count = String(count(lines));
     sub.textContent = money(total(lines));
     if (pop && !reduce) { [cnt, cntMini].forEach((c) => c.classList.add('is-pop')); setTimeout(() => [cnt, cntMini].forEach((c) => c.classList.remove('is-pop')), 90); }
     const has = lines.length > 0;
@@ -414,6 +414,12 @@ function init(root: HTMLElement) {
       if (t.closest('[data-add]') || getSelection()?.toString()) return;
       const li = t.closest<HTMLElement>('[data-row]'); if (li) openSheet(li);
     });
+    // the rotating table (menu-doors.ts) opens a dish's sheet by its exact menu name, on any screen
+    document.addEventListener('mv:open', (e) => {
+      const name = (e as CustomEvent<string>).detail;
+      const li = $$<HTMLElement>('[data-row]').find((r) => $<HTMLElement>('[data-add]', r)?.dataset.n === name);
+      if (li) openSheet(li);
+    });
     dragEl.addEventListener('dragstart', (e) => e.preventDefault()); // a native image drag would cancel our pointer drag
     // explicit focus trap: Tab cycles X <-> Add to Picks instead of leaving for browser chrome
     sheet.addEventListener('keydown', (e) => {
@@ -437,7 +443,7 @@ function init(root: HTMLElement) {
     // drag down from the grabber or the photo; a flick (> 0.11 px/ms) is enough
     let sy = 0, dy = 0, pid = -1, dragging = false, trail: [number, number][] = [];
     dragEl.addEventListener('pointerdown', (e) => {
-      if (dragging || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      if (dragging || (e.pointerType === 'mouse' && e.button !== 0) || !phone.matches) return; // drag-to-close is a phone gesture
       dragging = true; pid = e.pointerId; sy = e.clientY; dy = 0; trail = [[e.timeStamp, e.clientY]];
       dragEl.setPointerCapture(pid); panelEl.classList.add('is-drag');
     });

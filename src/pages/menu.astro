@@ -1,18 +1,24 @@
 ---
+import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import foodData from '../data/food.json';
 import drinksData from '../data/drinks.json';
 import featured from '../data/menu-featured.json';
+import dishPhotos from '../data/dish-photos.json';
+import tableData from '../data/menu-table.json';
+import barData from '../data/menu-bar.json';
 import { FOOD_GROUPS, DRINK_GROUPS, CHIPS, ICONS, type Group } from '../components/menu/menuGroups';
 import { money } from '../components/menu/cart';
+import MenuDoors from '../components/menu/MenuDoors.astro';
+import '../styles/fk-tokens.css';
 import '../styles/menu-v2.css';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type Raw = {
   name: string; section: string; description?: string; price: number | null;
-  veg?: boolean; spicy?: boolean; chefSpecial?: boolean; image?: string; alc?: boolean;
+  veg?: boolean; spicy?: boolean; chefSpecial?: boolean; image?: string; thumb?: string; alc?: boolean;
   price30ml?: number; priceGlass?: number | null; priceBottle?: number; priceBucket?: number;
   price500ml?: number; price330ml?: number; pricePitcher?: number; priceTower?: number;
   note?: string;
@@ -22,6 +28,15 @@ type Section = { section: string; items: Item[] };
 
 const food: Section[] = (foodData as { section: string; items: Raw[] }[]).map((s) => ({ section: s.section, items: s.items.map((i) => ({ ...i, kind: 'food' as const })) }));
 const drinks: Section[] = (drinksData as { section: string; items: Raw[] }[]).map((s) => ({ section: s.section, items: s.items.map((i) => ({ ...i, kind: 'drink' as const })) }));
+// real dish photos by exact menu name (dish-photos.json); the build fails on a missing file or name
+type DishPhoto = { src: string; sm: string; xs: string; w: number; h: number; todo?: string };
+const PHOTOS = dishPhotos.photos as Record<string, DishPhoto>;
+const allNames = new Set([...food, ...drinks].flatMap((s) => s.items.map((i) => i.name)));
+for (const [n, ph] of Object.entries(PHOTOS)) {
+  if (!allNames.has(n)) throw new Error(`dish-photos.json: "${n}" is not a menu item`);
+  for (const f of [ph.src, ph.sm, ph.xs]) if (!fs.existsSync(`${process.cwd()}/public${f}`)) throw new Error(`dish-photos.json: missing ${f}`);
+}
+[...food, ...drinks].forEach((s) => s.items.forEach((i) => { const ph = PHOTOS[i.name]; if (ph) { i.image = ph.src; i.thumb = ph.xs; } }));
 const byName = new Map<string, Section>();
 [...food, ...drinks].forEach((s) => byName.set(s.section, s));
 
@@ -63,6 +78,14 @@ const addAttrs = (i: Item) => {
     'data-c': i.section, 'data-k': i.kind, 'data-v': i.veg ? 'v' : 'n', ...(i.alc ? { 'data-a': '1' } : {}),
   };
 };
+// rotating table (menu-table.json): every dish must exist and have a real photo
+const tableDishes = tableData.dishes.map((d) => {
+  const it = all.find((i) => i.name === d.name);
+  const ph = PHOTOS[d.name];
+  if (!it || !ph) throw new Error(`menu-table.json: "${d.name}" needs a menu item and a photo`);
+  const a = addAttrs(it);
+  return { title: (d as { title?: string }).title ?? titleCase(it.name), label: d.label, price: money(it.price ?? 0), dn: a['data-n'], sm: ph.sm, clip: (d as { clip?: string }).clip ?? '' };
+});
 const vegMark = (veg?: boolean) => (veg ? 'mv-vm mv-vm--v' : 'mv-vm mv-vm--n');
 
 // ── SEO: Menu / MenuSection / MenuItem schema (same text and prices as the visible list) ──
@@ -104,12 +127,13 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
   ogImageAlt="Fursat Kitchen | Bar dining room"
   preloadImages={[
     { href: '/assets/menu/hero-bar-1400.webp', media: '(min-width: 721px)' },
-    { href: '/assets/menu/hero-table-1400.webp', media: '(min-width: 721px)' },
   ]}
 >
-  <SiteHeader active="menu" />
+  <SiteHeader active="menu" variant="plaster" />
 
   <main class="mv" id="main" data-side="drinks">
+    <MenuDoors foodCount={foodCount} drinkCount={drinkCount} foodSections={food.length} drinkSections={drinks.length} dishes={tableDishes} bar={barData} />
+
     <section class="mv-stage" aria-label="Menu overview">
       <!-- Toolbar -->
       <div class="mv-tools">
@@ -123,28 +147,6 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
           <button class="mv-pill" type="button" data-diet="spicy" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 3c-1 3-4 4-6 4C8 7 5 9 5 13c0 4 3 7 7 7 5 0 8-4 8-9 0-3-1-6-3-8z"/></svg>Spicy</button>
         </div>
         <button class="mv-pill mv-age-pill" type="button" id="mv-age-open" aria-haspopup="dialog">21+ <span aria-hidden="true">ⓘ</span><span class="mv-sr"> bar menu age notice</span></button>
-      </div>
-
-      <!-- Split hero (Take B: framed windows) -->
-      <div class="mv-hero" id="mv-hero">
-        <article class="mv-win mv-win--bar">
-          <div class="mv-win-ph"><img src="/assets/menu/hero-bar-1400.webp" srcset="/assets/menu/hero-bar-800.webp 800w, /assets/menu/hero-bar-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1074" alt="The Fursat bar: backlit hexagon shelves of bottles beside the glowing Fursat sign" fetchpriority="high" decoding="async" /></div>
-          <span class="mv-sweep" aria-hidden="true"></span>
-          <div class="mv-win-cap">
-            <span class="mv-eyebrow">The Bar</span>
-            <h2 class="mv-hl">Sip. Socialize. <span>Unwind.</span></h2>
-            <button class="mv-btn" type="button" data-side-go="drinks">Explore Drinks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          </div>
-        </article>
-        <article class="mv-win mv-win--table">
-          <div class="mv-win-ph"><img src="/assets/menu/hero-table-1400.webp" srcset="/assets/menu/hero-table-800.webp 800w, /assets/menu/hero-table-1400.webp 1400w" sizes="(max-width:720px) 100vw, 50vw" width="1400" height="1008" alt="A Fursat lounge corner with a cream sofa, two leather chairs and a round table" loading="lazy" decoding="async" /></div>
-          <span class="mv-sweep" aria-hidden="true"></span>
-          <div class="mv-win-cap">
-            <span class="mv-eyebrow">The Table</span>
-            <h2 class="mv-hl">Dine. Delight. <span>Repeat.</span></h2>
-            <button class="mv-btn" type="button" data-side-go="food">Explore Food <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          </div>
-        </article>
       </div>
 
       <!-- Rail + featured + chef's pick -->
@@ -166,7 +168,7 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
 
         <section class="mv-card mv-feat" aria-labelledby="mv-feat-name">
           <div class="mv-feat-ph">
-            <img src={featured.featuredDrink.image} alt={featured.featuredDrink.imageAlt} width="1200" height="1637" loading="lazy" decoding="async" />
+            <img src={featured.featuredDrink.image} alt={featured.featuredDrink.imageAlt} width="1082" height="1600" loading="lazy" decoding="async" />
           </div>
           <div class="mv-feat-txt">
             <span class="mv-lab">Featured drink</span>
@@ -284,7 +286,8 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
                     <ul class="mv-items">
                       {sec.items.map((i) => (
                         <li class="mv-item" data-row data-sec={i.section} data-veg={i.veg ? '1' : '0'} data-spicy={i.spicy ? '1' : '0'} data-text={`${titleCase(i.name)} ${i.description ?? ''} ${i.section}`.toLowerCase()} {...(i.image ? { 'data-img': i.image } : {})}>
-                          <div class="mv-item-main">
+                          <div class={i.thumb ? 'mv-item-main has-thumb' : 'mv-item-main'}>
+                            {i.thumb && <img class="mv-thumb" src={i.thumb} alt="" width="56" height="56" loading="lazy" decoding="async" />}
                             <span class={vegMark(i.veg)} role="img" aria-label={i.veg ? 'Vegetarian' : 'Non-vegetarian'}></span>
                             <div>
                               <h4 class="mv-item-name"><button class="mv-open" type="button" aria-haspopup="dialog" inert><span class="mv-iname">{titleCase(i.name)}</span></button>{i.chefSpecial && <em class="mv-chefmark">Chef's special</em>}{i.spicy && <em class="mv-spice">Spicy</em>}</h4>
@@ -368,4 +371,5 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
 
 <script>
   import '../components/menu/menu-v2';
+  import '../scripts/fk-motion';
 </script>

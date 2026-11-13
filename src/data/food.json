@@ -62,7 +62,7 @@
     "section": "Finger bites",
     "items": [
       {
-        "name": "Korean bun",
+        "name": "Korean Bun",
         "description": "Soft bun filled with rich ream and cheese,Garlic butter.",
         "price": 429,
         "veg": true,
@@ -732,7 +732,6 @@
         "veg": false,
         "spicy": false,
         "chefSpecial": true,
-        "image": "/assets/dishes/karvepaku_kodi_vepudu.webp",
         "section": "Regional specials",
         "description": ""
       },
@@ -814,7 +813,7 @@
         "description": ""
       },
       {
-        "name": "Classic paneer tikka",
+        "name": "Classic Paneer Tikka",
         "price": 465,
         "veg": true,
         "spicy": false,
@@ -837,7 +836,6 @@
         "veg": false,
         "spicy": false,
         "chefSpecial": false,
-        "image": "/assets/dishes/angaraa_chicken_tikka_.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -982,7 +980,6 @@
         "veg": false,
         "spicy": true,
         "chefSpecial": false,
-        "image": "/assets/dishes/jamicon_jerk_chicken_with_fires.webp",
         "section": "Appetizers",
         "description": ""
       },
@@ -1308,7 +1305,7 @@
         "description": ""
       },
       {
-        "name": "ExoticVeg Momos",
+        "name": "Exotic Veg Momos",
         "price": 355,
         "veg": true,
         "spicy": false,
@@ -1918,7 +1915,7 @@
     "section": "Desserts",
     "items": [
       {
-        "name": "Crème Brulee",
+        "name": "Creme Brulee",
         "price": 355,
         "veg": true,
         "spicy": false,
@@ -1945,7 +1942,7 @@
         "description": ""
       },
       {
-        "name": "Bluberry cheese cake",
+        "name": "Blueberry Cheesecake",
         "price": 385,
         "veg": true,
         "spicy": false,
@@ -1954,7 +1951,7 @@
         "description": ""
       },
       {
-        "name": "Strawberry cheese cake",
+        "name": "Strawberry Cheesecake",
         "price": 385,
         "veg": true,
         "spicy": false,
@@ -1963,7 +1960,7 @@
         "description": ""
       },
       {
-        "name": "Viral Kunafa Cheese Cake",
+        "name": "Viral Kunafa Cheesecake",
         "price": 395,
         "veg": true,
         "spicy": false,
@@ -1981,7 +1978,7 @@
         "description": ""
       },
       {
-        "name": "Tres leches",
+        "name": "Tres Leches",
         "price": 395,
         "veg": true,
         "spicy": false,

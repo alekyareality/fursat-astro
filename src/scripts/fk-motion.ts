@@ -16,10 +16,10 @@
  *   [data-fx-par]         photo inside a frame: drifts slowly with scroll (depth)
  *   [data-fx-tilt]        card/plate that tilts toward the pointer with a spring
  * v4.5 (no markup needed, keyed off shared classes):
- *   section titles        .xp-sec-h .pa-sec-h .rs-title h2 .hy-h2[data-fx-reveal] → masked word rise in view
+ *   section titles        .xp-sec-h .pa-sec-h .rs-title h2 .hy-h2[data-fx-reveal] .mv-side-h h2 .mv-grp-h → masked word rise in view
  *   photo frames          .hy-win img → settle from a deeper zoom and darker tone the first time they show
  *   magnetic actions      green main buttons drift toward the pointer with a spring
- *   card spotlight        .fk-card gets --mx/--my so a soft cream light follows the pointer
+ *   card spotlight        .fk-card / .mv-card get --mx/--my so a soft cream light follows the pointer
  *   scroll progress       gold hairline under the plaster header fills with page scroll
  * Everything is skipped under prefers-reduced-motion (content is visible by default).
  */
@@ -149,7 +149,7 @@ function tilts() {
   });
 }
 
-const TITLE_SEL = '.xp-sec-h, .pa-sec-h, .rs-title h2, .st-vh, .hy-h2[data-fx-reveal]';
+const TITLE_SEL = '.xp-sec-h, .pa-sec-h, .rs-title h2, .st-vh, .hy-h2[data-fx-reveal], .mv-side-h h2, .mv-grp-h';
 function titles() {
   document.querySelectorAll<HTMLElement>(TITLE_SEL).forEach((el) => {
     if (el.closest('[data-fx-hero]')) return;
@@ -178,7 +178,7 @@ function frames() {
   });
 }
 
-const MAG_SEL = '.sh-plaster .sh-reserve-btn, .fk-btn--solid, .rs-submit, .pa .pa-wa';
+const MAG_SEL = '.sh-plaster .sh-reserve-btn, .fk-btn--solid, .rs-submit, .pa .pa-wa, .mv .mv-btn:not(.mv-btn--ghost), .md-btn';
 function magnets() {
   if (!fine) return;
   document.querySelectorAll<HTMLElement>(MAG_SEL).forEach((el) => {
@@ -197,7 +197,7 @@ function magnets() {
 
 function spotlights() {
   if (!fine) return;
-  document.querySelectorAll<HTMLElement>('.fk-card').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('.fk-card, .mv-card').forEach((el) => {
     el.addEventListener('pointermove', (e) => {
       const r = el.getBoundingClientRect();
       el.style.setProperty('--mx', `${e.clientX - r.left}px`);

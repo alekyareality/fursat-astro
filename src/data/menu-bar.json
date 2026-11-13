@@ -1,0 +1,14 @@
+{
+  "_note": "Drinks side of /menu: bar image + hexagon hotspots (owner's 5 groups, 13 Nov). x/y = centre of the shelf as a fraction of the image; r = hotspot radius as a fraction of image width. 'go' = menu group id (menuGroups.ts). TODO: swap image to the owner's Modern_Fursat_Kitchen_Bar_Interior.png (1024x1536) and re-map x/y when it arrives; overlay the real vector logo on the sign.",
+  "image": "/assets/menu/hero-bar-1400.webp",
+  "srcset": "/assets/menu/hero-bar-800.webp 800w, /assets/menu/hero-bar-1400.webp 1400w",
+  "w": 1400, "h": 1074, "posY": 0.52,
+  "alt": "The Fursat bar: backlit hexagon shelves of bottles beside the glowing Fursat sign",
+  "spots": [
+    { "label": "Whisky & Spirits", "go": "d-whisky", "x": 0.755, "y": 0.49, "r": 0.075 },
+    { "label": "Signature Cocktails", "go": "d-cocktails", "x": 0.462, "y": 0.70, "r": 0.06 },
+    { "label": "Classics & Long Island", "go": "d-cocktails", "x": 0.075, "y": 0.68, "r": 0.05 },
+    { "label": "Wine, Beer & Shooters", "go": "d-winebeer", "x": 0.955, "y": 0.75, "r": 0.04 },
+    { "label": "Mocktails, Coffee & Shakes", "go": "d-mocktails", "x": 0.262, "y": 0.55, "r": 0.07 }
+  ]
+}

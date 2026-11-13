@@ -3,8 +3,9 @@
   "featuredDrink": {
     "name": "CREAMY BISCOFF SHAKE",
     "kind": "drink",
-    "image": "/assets/dishes/lotus_biscoff_.webp",
-    "imageAlt": "Creamy Biscoff shake topped with a Biscoff cookie"
+    "image": "/assets/dishes/new/creamy-biscoff-shake.webp",
+    "imageAlt": "Creamy Biscoff shake topped with a Biscoff cookie",
+    "TODO(client)": "Photo is one of the owner's new photos still to confirm (13 Nov)."
   },
   "chefPicks": [
     {
@@ -20,7 +21,6 @@
     }
   ],
   "TODO(client)": [
-    "fursat_.webp and dsc08946.webp are cocktails of unknown name: identify, then they can join the featured drink.",
     "Peri Peri Cottage Cheese Sandwich (395 vs 240) and Sriracha Paneer Tikka Burger: price conflict, data untouched.",
     "Martini, Fursat Rahasyam and Nalla Gosht Biryani return once real photos exist."
   ]

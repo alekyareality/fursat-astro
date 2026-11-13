@@ -313,7 +313,7 @@
         "veg": true
       },
       {
-        "name": "OLD FASHION",
+        "name": "OLD FASHIONED",
         "description": "Bourbon whiskey, orange bitters, sugar cube",
         "price": 549,
         "alc": true,
@@ -323,7 +323,7 @@
         "veg": true
       },
       {
-        "name": "NIGRONI",
+        "name": "NEGRONI",
         "description": "Gin, Sweet vermouth and Campari.",
         "price": 549,
         "alc": true,
@@ -577,7 +577,7 @@
         "veg": true
       },
       {
-        "name": "MONKEY SHOLDER",
+        "name": "MONKEY SHOULDER",
         "price": 699,
         "price30ml": 699,
         "priceBottle": 14999,
@@ -590,7 +590,7 @@
         "veg": true
       },
       {
-        "name": "INDIRI",
+        "name": "INDRI",
         "price": 599,
         "price30ml": 599,
         "priceBottle": 12999,
@@ -1099,7 +1099,7 @@
         "veg": true
       },
       {
-        "name": "SULA CHINEN BLANC",
+        "name": "SULA CHENIN BLANC",
         "price": 799,
         "priceGlass": 799,
         "priceBottle": 3499,
@@ -1207,7 +1207,7 @@
         "veg": true
       },
       {
-        "name": "HEINIKEN",
+        "name": "HEINEKEN",
         "price": 549,
         "priceBottle": 549,
         "priceBucket": 2699,
@@ -1442,8 +1442,7 @@
         "section": "Milk Shakes",
         "description": "",
         "spicy": false,
-        "chefSpecial": false,
-        "image": "/assets/dishes/lotus_biscoff_.webp"
+        "chefSpecial": false
       },
       {
         "name": "BROWNIE CHOCOLATE SHAKE",
@@ -1486,7 +1485,7 @@
         "chefSpecial": false
       },
       {
-        "name": "BLACK CURRENT SHAKE",
+        "name": "BLACK CURRANT SHAKE",
         "price": 279,
         "alc": false,
         "veg": true,
@@ -1521,7 +1520,7 @@
         "chefSpecial": false
       },
       {
-        "name": "BLUE BERRY & COOKIE SMOOTHIE",
+        "name": "BLUEBERRY & COOKIE SMOOTHIE",
         "price": 299,
         "alc": false,
         "veg": true,
@@ -1601,7 +1600,7 @@
         "chefSpecial": false
       },
       {
-        "name": "AFFAGATO",
+        "name": "AFFOGATO",
         "price": 249,
         "alc": false,
         "veg": true,
@@ -1634,7 +1633,7 @@
         "chefSpecial": false
       },
       {
-        "name": "HAZALNUT LATTE",
+        "name": "HAZELNUT LATTE",
         "price": 239,
         "alc": false,
         "veg": true,
@@ -1938,7 +1937,7 @@
         "chefSpecial": false
       },
       {
-        "name": "WATER BOTTEL",
+        "name": "WATER BOTTLE",
         "price": 30,
         "alc": false,
         "veg": true,
