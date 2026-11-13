@@ -346,6 +346,10 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 .pa .pa-tabs button[aria-pressed="true"]{background:var(--fk-selected-bg)!important;color:var(--fk-selected-fg)!important;box-shadow:var(--fk-selected-shadow)!important}
 .pa .pa-wa{gap:10px;background:var(--fk-action-bg)!important;color:var(--fk-action-fg)!important;border:1px solid var(--fk-action-rim);box-shadow:var(--fk-action-shadow)}
 @media (hover:hover) and (pointer:fine){.pa .pa-wa:hover{box-shadow:var(--fk-action-shadow-hover)}}
+/* dish menus inside "Choose your dishes": readable on the cream panel (were pale cream text from the old dark theme) */
+.pa .pa-cols{color:#2b2416}
+.pa .pa-cols h3{color:#74501a;font:var(--fk-t-label);letter-spacing:var(--fk-ls-label);text-transform:uppercase;margin:0 0 8px}
+.pa .pa-cols li{color:#3b3326;font-size:.95rem;line-height:1.5}
 /* party cards use the shared .fk-card shape */
 .pa .pk.fk-card{margin:0;background:linear-gradient(180deg,#fbf3e7,#f6e7d2)}
 .pa .pk-face.fk-card__b{background:transparent!important;border:0!important;box-shadow:none!important;color:inherit!important;padding:0 20px 18px!important;transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .3s cubic-bezier(.2,0,0,1)}

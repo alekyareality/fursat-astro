@@ -548,3 +548,93 @@
 /* v4.5 type floor: micro labels to 12px (date weekday 11.5px to fit 68px chips) */
 .rs-off,.rs-pre,.rs-tk-l,.rs-tk-kicker,.rs-hours b{font-size:.75rem}
 .rs-cw{font-size:.72rem}
+
+/* ═════ v5.2 RESERVE — complete booking form on the first desktop screen ═════
+   Wide art (cream panel stretched, scripts/bg-specs/reserve-deskw.out.json): top segment 465u tall = 635px at 1366 wide.
+   Form in two columns inside the cream panel; hero text compact on the photo; ticket + perks hidden here. */
+@container (min-width:1180px){
+  .rs-seg--top{aspect-ratio:1000/464.9;background-image:url(/assets/bg/reserve-deskw-0.webp)}
+  .rs-hy .rs-hero{left:0;top:calc(77.2 * var(--u));width:calc(296 * var(--u));height:calc(327.6 * var(--u))}
+  .rs-hy .rs-hero-in{padding:calc(42 * var(--u)) calc(26 * var(--u)) calc(20 * var(--u)) calc(30 * var(--u));justify-content:center}
+  .rs-hy .rs-h1{font-size:calc(31 * var(--u));line-height:1.05}
+  .rs-hy .rs-sub{font-size:calc(12 * var(--u));margin-top:6px!important}
+  .rs-hy .rs-hero .rs-orn{margin:8px 0 0}
+  .rs-hy .rs-hero .rs-cta{margin-top:calc(12 * var(--u));gap:8px;flex-wrap:wrap}
+  .rs-hy .rs-hero .rs-cta > *{min-height:40px;padding:0 14px;font-size:clamp(12.5px,calc(10.5 * var(--u)),15px)}
+  .rs-hy .rs-hero .rs-tk-aside{display:none}
+  .rs-hy .rs-panel-frame{left:calc(300 * var(--u));top:calc(104 * var(--u));width:calc(668 * var(--u))}
+  .rs-hy .rs-perks{display:none}
+  /* heading left, booking style right */
+  .rs-hy .rs-pform{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;align-items:center;max-width:none;width:auto;margin:0}
+  .rs-hy .rs-pform > .rs-phead{grid-column:1;margin:0}
+  .rs-hy .rs-pform > .rs-modes{grid-column:2;margin:0}
+  .rs-hy .rs-pform > :not(.rs-phead):not(.rs-modes){grid-column:1 / -1}
+  .rs-hy .rs-phead .rs-hrule{display:none}
+  .rs-hy .rs-pform .rs-htxt h2{font-size:clamp(1.5rem,calc(24 * var(--u)),2.3rem)}
+  .rs-hy .rs-htxt .rs-psub{font-size:.95rem}
+  .rs-hy .rs-mpanel{margin-top:14px}
+  /* two columns: date + time | guests, occasion, seating, name, phone */
+  .rs-hy .rs-qgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 14px;align-items:start;
+    grid-template-areas:"date date guests occ" "time time zone zone" "time time name phone" "party party party party"}
+  .rs-hy #f-date{grid-area:date}.rs-hy #f-time{grid-area:time}.rs-hy #f-guests{grid-area:guests}.rs-hy #f-occasion{grid-area:occ}
+  .rs-hy #f-zone{grid-area:zone}.rs-hy #f-name{grid-area:name}.rs-hy #f-phone{grid-area:phone}.rs-hy #rs-party{grid-area:party}
+  .rs-hy .rs-qgrid > .rs-q{grid-column:auto;margin:0}
+  /* foot: note left, button right */
+  .rs-hy .rs-foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;align-items:center;margin-top:12px}
+  .rs-hy .rs-foot > *{grid-column:1 / -1}
+  .rs-hy .rs-foot > .rs-cond{grid-column:1;grid-row:2;margin:0;text-align:left}
+  .rs-hy .rs-foot > .rs-submit{grid-column:2;grid-row:2;margin:0}
+  .rs-hy .rs-foot > .rs-fine{grid-column:1;grid-row:3;text-align:left}
+}
+@container (min-width:1180px){
+  .rs-hy .rs-dates .rs-chip{padding-inline:2px}
+  .rs-hy .rs-zones{gap:6px}
+  .rs-hy .rs-zones .rs-chip{padding-right:8px;gap:6px}
+  .rs-hy .rs-zones .rs-zt{width:26px;height:26px}
+}
+
+/* ═════ v5.2 RESERVE PHONE — complete booking form on the first phone screen ═════
+   Photo hero hidden on phone Reserve only (the form opens with "Book Your Experience"); form as a cream card right under
+   the header; times + seating swipe in one row; guests|occasion and name|mobile side by side; ticket + perks hidden. */
+@container (max-width:767.98px){
+  .rs-seg--top{background:none!important;padding:84px 0 18px!important}
+  .rs-seg--top .hy-win,.rs-seg--top .hy-shade,.rs-hy .rs-hero{display:none!important}
+  .rs-hy .rs-panel-frame{margin:0 12px;background:linear-gradient(180deg,#fbf3e7,#f6e7d2);border:1px solid var(--fk-edge);border-radius:24px;box-shadow:0 18px 36px -20px rgba(90,60,20,.35)}
+  .rs-hy .rs-panel{padding:14px 14px 16px}
+  .rs-hy .rs-phead{column-gap:10px;row-gap:6px;margin-bottom:10px}
+  .rs-hy .rs-hicon{width:36px;border-radius:11px;margin-top:2px}
+  .rs-hy .rs-pform .rs-htxt h2{font-size:1.4rem;line-height:1.1}
+  .rs-hy .rs-htxt .rs-psub{font-size:.82rem;margin-top:2px!important}
+  .rs-hy .rs-phead .rs-hrule{display:none}
+  .rs-hy .rs-modes{margin-bottom:10px}
+  .rs-hy .rs-mode{min-height:42px}
+  .rs-hy .rs-qgrid{gap:10px 10px}
+  .rs-hy .rs-q-3{grid-column:span 3}
+  .rs-hy .rs-page .rs-ql, .rs-page .rs-hy .rs-ql{margin-bottom:5px}
+  .rs-hy .rs-times,.rs-hy .rs-zones{display:flex;overflow-x:auto;overscroll-behavior-x:contain;touch-action:pan-x pan-y;scrollbar-width:none;margin:0 -14px;padding:2px 14px 4px}
+  .rs-hy .rs-times::-webkit-scrollbar,.rs-hy .rs-zones::-webkit-scrollbar{display:none}
+  .rs-hy .rs-dates{margin:0 -14px;padding:2px 14px 4px}
+  .rs-hy .rs-dates .rs-chip{min-height:54px}
+  .rs-hy .rs-times .rs-chip{flex:0 0 76px;min-height:50px}
+  .rs-hy .rs-zones .rs-chip{flex:0 0 auto;min-height:44px}
+  .rs-hy .rs-step{min-height:48px}
+  .rs-hy .rs-box,.rs-hy .rs-box input,.rs-hy .rs-box select{min-height:48px}
+  .rs-hy .rs-tk-inline,.rs-hy .rs-perks{display:none!important}
+  .rs-hy .rs-submit{margin-top:10px;min-height:50px}
+}
+@container (max-width:767.98px){ .rs-hy .rs-mode{min-height:44px} }
+/* narrow or short phones: the heading says it all, drop the subtitle line */
+@media (max-width:380px), (max-height:740px) and (max-width:767px){ .rs-hy .rs-htxt .rs-psub{display:none} .rs-hy .rs-phead{margin-bottom:8px} }
+@media (max-height:700px) and (max-width:767px){ .rs-hy .rs-qgrid{gap:8px} .rs-hy .rs-dates .rs-chip{min-height:48px} .rs-hy .rs-times .rs-chip{min-height:46px} .rs-hy .rs-step,.rs-hy .rs-box,.rs-hy .rs-box input,.rs-hy .rs-box select{min-height:46px} .rs-seg--top{padding-top:80px!important} }
+@container (max-width:767.98px){
+  .rs-hy .rs-step{gap:2px;padding:2px}
+  .rs-hy .rs-sval{font-size:.9rem;white-space:nowrap;text-align:center}
+  .rs-hy .rs-box select{padding-left:12px;padding-right:30px;background-position:right 10px center}
+}
+@container (max-width:767.98px){
+  .rs-hy .rs-sval b{font-size:.88rem}
+  .rs-hy .rs-dots{gap:3px}
+  .rs-hy .rs-dots i{width:5px;height:5px}
+}
+@container (max-width:767.98px){ .rs-hy .rs-dots{display:none} }
+@media (max-width:380px){ .rs-hy .rs-sval b{font-size:.8rem} .rs-hy .rs-step{gap:0} }

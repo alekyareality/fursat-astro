@@ -5,7 +5,8 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import HyWindows from '../components/hybrid/HyWindows.astro';
-import rDesk from '../../scripts/bg-specs/reserve-desk.out.json';
+// wide desktop hero: the plain middle of the cream panel is stretched so the whole booking form fits a laptop screen
+import rDesk from '../../scripts/bg-specs/reserve-deskw.out.json';
 import rPhone from '../../scripts/bg-specs/reserve-phone.out.json';
 import OrganicClip from '../components/fx/OrganicClip.astro';
 import ReserveHero from '../components/reserve/ReserveHero.astro';
@@ -62,7 +63,7 @@ const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fur
         if (seg.clientWidth < 1180) { p.style.zoom = ''; return; }
         var z = parseFloat(p.style.zoom) || 1;
         var natural = p.getBoundingClientRect().height / z;
-        var avail = seg.clientWidth * 0.6;
+        var avail = seg.clientWidth * 0.312;   // cream panel height below the header (wide art)
         var nz = Math.min(1, avail / natural);
         if (Math.abs(nz - z) > 0.005) p.style.zoom = nz.toFixed(3);
       };
