@@ -54,18 +54,20 @@ const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fur
   <script is:inline>
     (function () {
       // fit the live booking form inside the carved cream blob of the desktop art (zoom, never above 1)
+      // zoom the form INSIDE the positioned frame: zoom on the frame itself also scales its left/top and drifts it over the headline
       var seg = document.querySelector('.rs-seg--top'), f = document.querySelector('.rs-hy .rs-panel-frame');
-      if (!seg || !f) return;
+      var p = f && f.querySelector('.rs-panel');
+      if (!seg || !p) return;
       var fit = function () {
-        if (innerWidth < 1180) { f.style.zoom = ''; return; }
-        var z = parseFloat(f.style.zoom) || 1;
-        var natural = f.getBoundingClientRect().height / z;
+        if (seg.clientWidth < 980) { p.style.zoom = ''; return; }
+        var z = parseFloat(p.style.zoom) || 1;
+        var natural = p.getBoundingClientRect().height / z;
         var avail = seg.clientWidth * 0.6;
         var nz = Math.min(1, avail / natural);
-        if (Math.abs(nz - z) > 0.005) f.style.zoom = nz.toFixed(3);
+        if (Math.abs(nz - z) > 0.005) p.style.zoom = nz.toFixed(3);
       };
       fit(); addEventListener('resize', fit);
-      if ('ResizeObserver' in window) new ResizeObserver(fit).observe(f.querySelector('.rs-panel') || f);
+      if ('ResizeObserver' in window) new ResizeObserver(fit).observe(p);
     })();
   </script>
 </Base>

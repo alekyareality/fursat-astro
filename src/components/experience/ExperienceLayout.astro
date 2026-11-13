@@ -47,6 +47,8 @@ const deskPhotos = [hero, p.big, p.bottom, p.top];        // exp-desk: hero, big
 const phonePhotos = [p.big, hero, p.top, p.bottom];       // exp-phone: wide, hero, small-left, small-right
 const rings = [{ x: 153, y: 770 }, { x: 384, y: 770 }, { x: 615, y: 770 }, { x: 843, y: 770 }];
 const ringsM = [{ x: 257, y: 1429 }, { x: 717, y: 1429 }, { x: 257, y: 1584 }, { x: 717, y: 1584 }];
+// Google FAQ rich results, from the same questions shown on the page
+const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: p.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
 ---
 
 <SiteHeader active={p.active} variant="plaster" />
@@ -126,6 +128,7 @@ const ringsM = [{ x: 257, y: 1429 }, { x: 717, y: 1429 }, { x: 257, y: 1584 }, {
     </section>
   )}
 
+  <script type="application/ld+json" is:inline set:html={faqLd}></script>
   <section class="xp-faq" aria-labelledby="xp-faq-h">
     <h2 class="xp-sec-h" id="xp-faq-h">{p.faqTitle}</h2>
     <div class="xp-faq-list" data-fx-pop>
@@ -148,7 +151,7 @@ const ringsM = [{ x: 257, y: 1429 }, { x: 717, y: 1429 }, { x: 257, y: 1584 }, {
   .xp :where(ul) { list-style: none; }
   .xp-stage { aspect-ratio: 1000 / 1499; background: url(/assets/bg/exp-desk-0.webp) top / 100% auto no-repeat #f6e6d1; }
 
-  .xp-hero { z-index: 3; left: calc(70 * var(--u)); top: calc(222 * var(--u)); width: calc(340 * var(--u)); display: grid; gap: calc(18 * var(--u)); }
+  .xp-hero { z-index: 3; left: calc(70 * var(--u)); top: calc(160 * var(--u)); width: calc(362 * var(--u)); display: grid; gap: calc(14 * var(--u)); }
   .xp-hero .hy-btns { flex-wrap: nowrap; gap: calc(12 * var(--u)); }
   .xp-hero .fk-btn { padding: 0 calc(20 * var(--u)); font-size: clamp(13px, calc(15 * var(--u)), 1.05rem); white-space: nowrap; }
   .xp-h1 { font-size: calc(58 * var(--u)); }
@@ -192,7 +195,7 @@ const ringsM = [{ x: 257, y: 1429 }, { x: 717, y: 1429 }, { x: 257, y: 1584 }, {
   @media (max-width: 767px) {
     .xp-stage { aspect-ratio: 1000 / 3392.5; background-image: url(/assets/bg/exp-phone-0.webp); }
     .xp-hero { left: calc(64 * var(--u)); top: calc(228 * var(--u)); width: calc(810 * var(--u)); gap: calc(22 * var(--u)); }
-    .hy-kicker { font-size: 11px; }
+    .hy-kicker { font-size: 12px; letter-spacing: .14em; }
     .xp-h1 { font-size: calc(105 * var(--u)); }
     .xp-h1 .hl { display: inline; }
     .xp-lead { max-width: none; font-size: 13.5px; line-height: 1.5; }

@@ -9,6 +9,8 @@ interface Props {
 }
 const { active = 'home', variant = 'dark' } = Astro.props;
 const plaster = variant === 'plaster';
+// live "Open now" badge: hours come only from site.json (schedule with dayOfWeek/opens/closes, IST)
+const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWeek, o: s.opens, c: s.closes, ol: s.open, cl: s.close })));
 ---
 <header class:list={["sh-header", { "sh-plaster": plaster }]} id="site-header">
   <div class="sh-inner">
@@ -83,6 +85,7 @@ const plaster = variant === 'plaster';
 
     <!-- Header Actions -->
     <div class="sh-actions">
+      {plaster && <span class="sh-open" data-hours={hoursData} hidden></span>}
       <a href="https://wa.me/919059670033" target="_blank" rel="noopener" class="sh-wa" aria-label="WhatsApp Fursat">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.3C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
       </a>
@@ -136,11 +139,39 @@ const plaster = variant === 'plaster';
       </div>
       <div class="sh-mp-cta">
         <a href="/reserve" class="sh-mp-reserve" data-open="book" aria-current={active === 'reserve' ? 'page' : undefined}>Reserve a Table</a>
-        <p class="sh-mp-time">{site.hours.display} · Capital Park, Madhapur</p>
+        <p class="sh-mp-time"><span class="sh-open sh-open--panel" data-hours={hoursData} hidden></span>{site.hours.display} · Capital Park, Madhapur</p>
       </div>
     </div>
   </div>
 </header>
+
+<script is:inline>
+  // Open-now badge + time-of-day mood, both in India time (Asia/Kolkata) whatever the visitor's clock says.
+  (function () {
+    var now = new Date();
+    var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now);
+    var get = function (t) { var p = parts.find(function (x) { return x.type === t; }); return p ? p.value : ''; };
+    var day = get('weekday'), mins = parseInt(get('hour'), 10) * 60 + parseInt(get('minute'), 10);
+    var h = Math.floor(mins / 60);
+    document.documentElement.dataset.daypart = h >= 6 && h < 12 ? 'morning' : h >= 12 && h < 17 ? 'day' : 'evening';
+    var badges = document.querySelectorAll('.sh-open[data-hours]');
+    if (!badges.length) return;
+    var sched = JSON.parse(badges[0].getAttribute('data-hours'));
+    var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var toM = function (s) { var a = s.split(':'); return parseInt(a[0], 10) * 60 + parseInt(a[1], 10); };
+    var ruleFor = function (d) { return sched.find(function (r) { return r.d.indexOf(d) > -1; }); };
+    var today = ruleFor(day), yest = ruleFor(DAYS[(DAYS.indexOf(day) + 6) % 7]);
+    var open = false, until = '';
+    if (yest && toM(yest.c) < toM(yest.o) && mins < toM(yest.c)) { open = true; until = yest.cl; }
+    else if (today) {
+      var o = toM(today.o), c = toM(today.c);
+      if (c <= o) c += 1440;
+      if (mins >= o && mins < c) { open = true; until = today.cl; }
+    }
+    var text = open ? 'Open now · until ' + until : 'Closed · opens ' + (today && mins < toM(today.o) ? today.ol : (ruleFor(DAYS[(DAYS.indexOf(day) + 1) % 7]) || {}).ol || '');
+    badges.forEach(function (b) { b.textContent = text; b.classList.toggle('is-open', open); b.hidden = false; });
+  })();
+</script>
 
 <style is:global>
   .sh-header {
@@ -286,8 +317,8 @@ const plaster = variant === 'plaster';
   .sh-wa {
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     color: #25D366;
     background: rgba(37, 211, 102, 0.12);
@@ -348,8 +379,8 @@ const plaster = variant === 'plaster';
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     padding: 4px;
     box-sizing: border-box;
   }
@@ -516,6 +547,15 @@ const plaster = variant === 'plaster';
   .sh-header.sh-plaster.sh-scrolled .sh-inner { padding-top: 8px; padding-bottom: 8px; }
   @media (max-width: 1040px) { .sh-plaster .sh-mobile-panel { box-shadow: 0 24px 40px rgba(60, 40, 10, .15); } }
   @media (max-width: 760px) { .sh-plaster .sh-reserve-btn { display: none; } .sh-plaster .sh-logo img { height: 54px; } }
+
+  /* live open badge (plaster header): quiet text, green dot when open */
+  .sh-open { display: inline-flex; align-items: center; gap: 7px; font: 500 .8rem/1 var(--fk-sans, Poppins, sans-serif); color: #5a5040; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .sh-open::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #a8731c; box-shadow: 0 0 0 3px rgba(168, 115, 28, .18); }
+  .sh-open.is-open::before { background: #1f7a3a; box-shadow: 0 0 0 3px rgba(31, 122, 58, .18); }
+  .sh-open[hidden] { display: none !important; }
+  .sh-open--panel { display: flex; margin-bottom: 6px; font-size: .85rem; }
+  .sh-actions > .sh-open { margin-right: 6px; }
+  @media (max-width: 1399px), (max-height: 746px) { .sh-actions > .sh-open { display: none; } }
 </style>
 
 <script is:inline>

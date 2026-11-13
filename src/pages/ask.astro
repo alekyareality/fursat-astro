@@ -271,13 +271,13 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 .as-ctl{position:absolute;z-index:3;right:calc(var(--bleed) + var(--u)*40);top:calc(var(--u)*336);display:flex;align-items:center;gap:calc(var(--u)*6);padding:5px 6px 5px 16px;border-radius:999px;background:rgb(247 240 223/.92);box-shadow:0 6px 18px rgb(var(--as-sh)/.2)}
 .as-capn{margin:0 6px 0 0;min-width:11ch;font:500 max(13px,calc(var(--u)*13))/1 var(--as-serif);color:var(--as-green);white-space:nowrap}
 .as-dots{display:flex}
-.as-dot{all:unset;box-sizing:border-box;display:grid;place-items:center;width:20px;height:40px;cursor:pointer;touch-action:manipulation}
+.as-dot{all:unset;box-sizing:border-box;display:grid;place-items:center;width:24px;height:44px;cursor:pointer;touch-action:manipulation}
 .as-dot i{position:relative;display:block;width:12px;height:3px;border-radius:2px;background:var(--as-line);overflow:hidden}
 .as-dot[aria-current=true] i{width:22px}
 .as-dot[aria-current=true] i::after{content:"";position:absolute;inset:0;background:var(--as-gold-lo);transform-origin:0 50%;animation:sl-p var(--sl-t,5s) linear both}
 @keyframes sl-p{from{transform:scaleX(0)}}
 .as-photo[data-paused] .as-dot i::after{animation-play-state:paused}
-.as-sb{all:unset;box-sizing:border-box;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;color:var(--as-green);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--as-ease),background-color .15s var(--as-ease)}
+.as-sb{all:unset;box-sizing:border-box;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;color:var(--as-green);cursor:pointer;touch-action:manipulation;transition:transform .15s var(--as-ease),background-color .15s var(--as-ease)}
 .as-sb svg{width:16px;height:16px}
 .as-sb:active{transform:scale(.97)}
 .as-sb .i-play,.as-sb[aria-pressed=true] .i-pause{display:none}
@@ -314,10 +314,10 @@ html.fx2 .ac{transition:opacity .8s var(--as-ease),translate .8s var(--as-ease)}
 .mc-img img{display:block;width:100%;height:100%;object-fit:cover}
 .mc-ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--as-cream);background:radial-gradient(60% 60% at 30% 25%,rgb(255 255 255/.16),transparent 70%),linear-gradient(150deg,var(--c2),var(--c1))}
 .mc-ph svg{width:34%;height:34%;opacity:.92}
-.mc-seal{position:absolute;bottom:0;left:calc(var(--u)*8);translate:0 34%;display:grid;place-items:center;align-content:center;width:max(54px,calc(var(--u)*66));height:max(54px,calc(var(--u)*66));border-radius:50%;background:linear-gradient(150deg,#F0CB78,#C9983F);color:#1B2A15;box-shadow:0 calc(var(--u)*6) calc(var(--u)*14) rgb(var(--as-sh)/.28),inset 0 0 0 2px rgb(255 248 224/.55);font-family:var(--as-serif);line-height:1;text-align:center}
+.mc-seal{position:absolute;bottom:0;left:calc(var(--u)*8);translate:0 34%;display:grid;place-items:center;align-content:center;width:max(60px,calc(var(--u)*66));height:max(60px,calc(var(--u)*66));border-radius:50%;background:linear-gradient(150deg,#F0CB78,#C9983F);color:#1B2A15;box-shadow:0 calc(var(--u)*6) calc(var(--u)*14) rgb(var(--as-sh)/.28),inset 0 0 0 2px rgb(255 248 224/.55);font-family:var(--as-serif);line-height:1;text-align:center}
 .mc:nth-child(even) .mc-seal{left:auto;right:calc(var(--u)*8);translate:0 34%}
 .mc-seal b{font-weight:500;font-size:max(16px,calc(var(--u)*18))}
-.mc-seal small{font:600 max(9px,calc(var(--u)*8.5))/1 var(--as-sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.mc-seal small{font:600 max(12px,calc(var(--u)*8.5))/1 var(--as-sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
 .mc-b{display:flex;flex-direction:column;gap:calc(var(--u)*7);padding:calc(var(--u)*30) calc(var(--u)*4) 0}
 .mc-n{display:flex;align-items:flex-start;gap:8px;margin:0;font:400 max(19px,calc(var(--u)*21))/1.18 var(--as-serif);color:var(--as-green);text-wrap:balance}
 .mc-vg{flex:none;width:13px;height:13px;margin-top:.32em;border:1.5px solid currentColor;border-radius:3px;display:grid;place-items:center}
@@ -420,6 +420,11 @@ html.fx2 .ac{transition:opacity .8s var(--as-ease),translate .8s var(--as-ease)}
   .mc-n{font-size:1.0625rem}
 }
 @media(prefers-reduced-motion:reduce){.as-photo img.sl:not(.sl-d){animation:none}}
+
+.ac-tabs button{min-width:44px}
+.as-sb{flex:none}.as-dot{flex:none}
+/* phones: 9 dots + 3 buttons cannot fit at 44px; Previous/Next/Pause do the same job */
+@media (max-width:480px){.as-dots{display:none}}
 </style>
 <script is:inline>
 (function(){var ph=document.getElementById("as-photo");if(!ph)return;

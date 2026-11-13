@@ -452,7 +452,7 @@
 /* ===================================================================================
    v4 HYBRID (Nov 13): textless background art (public/assets/bg/reserve-*) + the live
    hero, booking panel and cards on top. Logic untouched; only placement and skin.
-   Desktop art ≥1180px; below that the tall phone art with stretchable bands.
+   Desktop art when the stage is ≥980px wide (container queries); below that the tall phone art with stretchable bands.
    =================================================================================== */
 .rs-page{background:#f6e6d1}
 .rs-page > .rs-leaf{display:none}
@@ -465,7 +465,7 @@
 .rs-close em{color:#eda05a}
 
 /* desktop: hero text on the photo, booking form inside the cream blob */
-@media (min-width:1180px){
+@container (min-width:980px){
   .rs-hy .rs-stage{position:absolute;inset:0;display:block;padding:0;max-width:none;margin:0;z-index:3}
   .rs-hy .rs-hero{position:absolute;left:0;top:calc(132.8 * var(--u));width:calc(509 * var(--u));height:calc(563.5 * var(--u))}
   .rs-hy .rs-hero-frame{height:100%;min-height:0}
@@ -482,7 +482,7 @@
 }
 
 /* tablet + phone: tall phone art, the cream blob stretches around the form */
-@media (max-width:1179px){
+@container (max-width:979.98px){
   .rs-hy .hy-d{display:none!important}
   .rs-hy .hy-m{display:block!important}
   .rs-seg--top{aspect-ratio:auto;padding-top:calc(560 * var(--u));padding-bottom:calc(150 * var(--u));
@@ -505,14 +505,14 @@
 /* hero photo: warm dark vignette so the live headline reads like the mock */
 .rs-hy .hy-win::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(14,22,12,.82) 0%,rgba(14,22,12,.55) 48%,rgba(14,22,12,.12) 85%),linear-gradient(0deg,rgba(14,22,12,.55),transparent 45%)}
 .rs-hy .hy-win img{filter:saturate(1.05) sepia(.28) contrast(1.05) brightness(.78)}
-@media (min-width:1180px){.rs-hy .rs-hero .rs-tk-aside{zoom:.72;width:calc(400 * var(--u))}.rs-hy .rs-h1{font-size:calc(46 * var(--u))}}
-@media (max-width:1179px){
+@container (min-width:980px){.rs-hy .rs-hero .rs-tk-aside{zoom:.72;width:calc(400 * var(--u))}.rs-hy .rs-h1{font-size:calc(46 * var(--u))}}
+@container (max-width:979.98px){
   .rs-hy .rs-hero-in{padding:calc(215 * var(--u)) calc(90 * var(--u)) 0 calc(60 * var(--u));justify-content:flex-start}
   .rs-hy .rs-hero .rs-hk,.rs-hy .rs-hero .rs-sub{display:none}
   .rs-hy .rs-h1{font-size:calc(66 * var(--u));line-height:1.05;margin-top:0!important}
 }
-@media (min-width:768px) and (max-width:1179px){.rs-hy .rs-h1{font-size:calc(60 * var(--u))}.rs-hy .rs-panel-frame{margin:0 calc(90 * var(--u))}}
-@media (max-width:1179px){.rs-hy .rs-hero{z-index:3}.rs-hy .rs-panel-frame{position:relative;z-index:2}}
+@container (min-width:768px) and (max-width:979.98px){.rs-hy .rs-h1{font-size:calc(60 * var(--u))}.rs-hy .rs-panel-frame{margin:0 calc(90 * var(--u))}}
+@container (max-width:979.98px){.rs-hy .rs-hero{z-index:3}.rs-hy .rs-panel-frame{position:relative;z-index:2}}
 /* cards: shared .fk-card shape (fk-tokens.css); neutralise the old green card skin */
 .rs-xrow.fk-cards,.rs-mrow.fk-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,2vw,26px);overflow:visible;padding:6px 2px 10px}
 .rs-xcard.fk-card,.rs-mcard.fk-card{background:linear-gradient(180deg,#fbf3e7,#f6e7d2);color:#2b2416;min-height:0;aspect-ratio:auto;padding:0}
