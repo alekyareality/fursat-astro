@@ -59,7 +59,7 @@ const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fur
       var p = f && f.querySelector('.rs-panel');
       if (!seg || !p) return;
       var fit = function () {
-        if (seg.clientWidth < 980) { p.style.zoom = ''; return; }
+        if (seg.clientWidth < 1180) { p.style.zoom = ''; return; }
         var z = parseFloat(p.style.zoom) || 1;
         var natural = p.getBoundingClientRect().height / z;
         var avail = seg.clientWidth * 0.6;

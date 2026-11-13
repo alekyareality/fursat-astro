@@ -298,30 +298,8 @@ main:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page){padding-top:clamp(92px,9.5
 .bq-form-field,.ct-field{min-width:0}
 .bq-page ::placeholder,.ct-page ::placeholder,.od-page ::placeholder{color:#8a7a5e}
 
-/* ═════ v4.7 FIT TO SCREEN — hero buttons visible on opening, on any desktop screen ═════
-   The desktop art is tall and scales with the stage width (1u = width/1000). On wide, short screens that pushed the
-   hero below the fold. Rule (same on every page, so the header is identical everywhere):
-   stage width = screen width, capped at 1.5 × screen height, never under 980px. The header scales with the stage.
-   Measured hero buttons: Story 433u, Party 561u, Reserve 604u, Café/Bar 672u → all inside 650px at a 1000px stage. */
-:root { --stage-w: 100vw; }
-@media (min-width: 900px) {
-  body:has(.hy) { --stage-w: min(100vw, max(980px, 150svh)); }
-  /* Reserve: the booking form must stay readable (zoom ≥ ~0.8), so its stage never drops under 1300px */
-  body:has(.rs-hy) { --stage-w: min(100vw, max(1300px, 150svh)); }
-  /* the stage carries its own cream into the gutters (clipped to its height), so wrapper colours never show beside it */
-  .hy { width: min(100%, var(--stage-w)); margin-inline: auto; box-shadow: 0 0 0 100vmax var(--fk-cream); clip-path: inset(0 -100vmax); }
-  body:has(.hy) .sh-plaster .sh-inner { max-width: var(--stage-w); margin-inline: auto; padding-inline: clamp(16px, calc(var(--stage-w) * .045), 72px); }
-  body:has(.hy) .sh-plaster .sh-logo img { height: clamp(56px, calc(var(--stage-w) * .076), 112px); }
-  body:has(.hy) .sh-plaster .sh-link { font-size: clamp(.85rem, calc(var(--stage-w) * .0105), 1rem); margin: 0 clamp(3px, calc(var(--stage-w) * .007), 10px); }
-  body:has(.hy) .sh-plaster .sh-reserve-btn { padding: 0 clamp(14px, calc(var(--stage-w) * .016), 24px); font-size: clamp(.88rem, calc(var(--stage-w) * .0105), 1.02rem); }
-}
-/* when the wall shows beside the stage, melt the art's side edges into it */
-@media (min-width: 981px) and (min-aspect-ratio: 3/2) {
-  .hy::after { content: ""; position: absolute; inset: 0; z-index: 60; pointer-events: none;
-    background: linear-gradient(90deg, var(--fk-cream) 0, rgba(248, 234, 216, 0) 48px, rgba(248, 234, 216, 0) calc(100% - 48px), var(--fk-cream) 100%); }
-}
-/* short desktop screens (stage under ~1120px): keep every header item on one line */
-@media (min-width: 1041px) and (max-height: 746px), (min-width: 1041px) and (max-width: 1120px) {
+/* narrow desktop screens: keep every header item on one line */
+@media (min-width: 1041px) and (max-width: 1200px) {
   body:has(.hy) .sh-plaster .sh-link, body:has(.hy) .sh-plaster .sh-reserve-btn { white-space: nowrap; }
   body:has(.hy) .sh-plaster .sh-link .sh-pill { display: none; }
   body:has(.hy) .sh-plaster .sh-nav { gap: 0; }
@@ -333,3 +311,7 @@ main:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page){padding-top:clamp(92px,9.5
 .hy::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 75cqw; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent); mask-image: linear-gradient(180deg, #000 60%, transparent); }
 html[data-daypart="morning"] .hy::before { opacity: 1; background: radial-gradient(120% 70% at 15% 0%, rgba(255, 252, 240, .22), transparent 60%); mix-blend-mode: screen; }
 html[data-daypart="evening"] .hy::before { opacity: 1; background: radial-gradient(130% 85% at 85% 0%, rgba(214, 130, 50, .26), transparent 62%), linear-gradient(180deg, rgba(130, 70, 20, .10), rgba(70, 35, 10, .06)); mix-blend-mode: multiply; }
+
+/* buttons keep their text width (the shine needs overflow:hidden, so a squeezed button would clip its label) */
+.fk-btn, .sh-reserve-btn, .rs-submit, .pa-wa { flex-shrink: 0; }
+.hy-btns { flex-wrap: wrap; }

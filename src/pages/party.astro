@@ -7,6 +7,8 @@ import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import HyWindows from '../components/hybrid/HyWindows.astro';
 import pDesk from '../../scripts/bg-specs/party-desk.out.json';
+// wide desktop hero: the plain plaster band of the hero art is stretched so the hero fits a laptop screen at full width
+import pDeskW from '../../scripts/bg-specs/party-deskw.out.json';
 import pPhone from '../../scripts/bg-specs/party-phone.out.json';
 import '../styles/fk-tokens.css';
 // v4 hybrid: textless background art (public/assets/bg/party-*) + live HTML; motion in src/scripts/fk-motion.ts.
@@ -49,7 +51,7 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
   <script is:inline>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.add('fx-pre'); setTimeout(function () { document.documentElement.classList.remove('fx-pre'); }, 3500); }</script>
   <div class="hy pa-hy">
     <div class="hy-slice hy-top" aria-hidden="true"></div><div class="hy-slice hy-mid" aria-hidden="true"></div><div class="hy-slice hy-bot" aria-hidden="true"></div>
-    <HyWindows data={pDesk} slice={0} photos={[heroPhoto, { src: '/assets/interior/tour-lounge.webp', alt: '', w: 1050, h: 1400 }]} view="d" />
+    <HyWindows data={pDeskW} slice={0} photos={[heroPhoto, { src: '/assets/interior/tour-lounge.webp', alt: '', w: 1050, h: 1400 }]} view="d" />
     <HyWindows data={pPhone} slice={0} photos={[{ ...heroPhoto, pos: '50% 70%' }, { src: '/assets/interior/tour-lounge.webp', alt: '', w: 1050, h: 1400 }]} view="m" />
     <HyWindows data={pDesk} slice={2} photos={[closePhoto]} view="d" anchor="bottom" />
 
@@ -282,12 +284,12 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 
 /* ───────── v4 hybrid stage ───────── */
 .pa{flex:none;background:#f6e6d1;color:var(--fk-ink);font-family:var(--fk-sans)}
-.pa-hy{--top:url(/assets/bg/party-desk-0.webp);--mid:url(/assets/bg/party-desk-1.webp);--bot:url(/assets/bg/party-desk-2.webp);--th:649.9;--bh:500;background:#f6e6d1}
-.pa-flow{padding:calc(560 * var(--u)) 0 calc(520 * var(--u));z-index:3}
-.pa-hero{z-index:3;left:calc(70 * var(--u));top:calc(176 * var(--u));width:calc(350 * var(--u));display:grid;gap:calc(18 * var(--u))}
-.pa-h1{font-size:calc(64 * var(--u))}
+.pa-hy{--top:url(/assets/bg/party-deskw-0.webp);--mid:url(/assets/bg/party-desk-1.webp);--bot:url(/assets/bg/party-desk-2.webp);--th:476.04;--bh:500;background:#f6e6d1}
+.pa-flow{padding:calc(438 * var(--u)) 0 calc(520 * var(--u));z-index:3}
+.pa-hero{z-index:3;left:calc(70 * var(--u));top:calc(118 * var(--u));width:calc(500 * var(--u));display:grid;gap:calc(14 * var(--u))}
+.pa-h1{font-size:calc(56 * var(--u))}
 .pa-h1 .hl{display:block}
-.pa-lead{max-width:calc(320 * var(--u))}
+.pa-lead{max-width:calc(440 * var(--u))}
 .pa-ctas{flex-wrap:nowrap;gap:calc(12 * var(--u))}
 .pa-ctas .fk-btn{padding:0 calc(20 * var(--u));font-size:clamp(13px,calc(15 * var(--u)),1.05rem);white-space:nowrap}
 .pa .pa-main{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
@@ -360,7 +362,7 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 /* ───────── v4.1 party middle: clean, aligned, equal cards ───────── */
 .pa-hy .hy-mid{background-size:100% 100%}
 .pa-hy .hy-mid::after{content:"";position:absolute;inset:0;background:url(/assets/surface/plaster-tile.webp) 0 0/900px 900px;mix-blend-mode:multiply;opacity:.55}
-.pa-flow{padding-top:calc(612 * var(--u))}
+.pa-flow{padding-top:calc(438 * var(--u))}
 .pa .pa-main{max-width:1240px}
 .pa .pa-host{margin:0 auto -6px}
 .pa .pa-sec-h{font:var(--fk-t-h2);letter-spacing:var(--fk-ls-h);color:#1b3a26;margin:4px 0 14px}
