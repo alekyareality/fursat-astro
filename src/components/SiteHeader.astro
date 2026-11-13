@@ -4,10 +4,13 @@ import site from '../data/site.json';
 // Structure: Menu ▾ | Celebrate ▾ | Order | Ask Fursat | Story  +  gold Reserve button
 interface Props {
   active?: string;
+  /** 'plaster' = cream header that sits on the embossed plaster surface (restyle pages). Default stays dark until P1. */
+  variant?: 'dark' | 'plaster';
 }
-const { active = 'home' } = Astro.props;
+const { active = 'home', variant = 'dark' } = Astro.props;
+const plaster = variant === 'plaster';
 ---
-<header class="sh-header" id="site-header">
+<header class:list={["sh-header", { "sh-plaster": plaster }]} id="site-header">
   <div class="sh-inner">
     <!-- Brand Logo -->
     <a href="/" class="sh-logo" aria-label="Fursat Kitchen | Bar Home">
@@ -27,7 +30,7 @@ const { active = 'home' } = Astro.props;
             <span class="sh-si-t">All Categories</span>
             <small>North Indian, Asian, Continental & Kebabs</small>
           </a>
-          <a href="/restaurant-bar#bar-menu" class="sh-sub-item">
+          <a href="/restaurant-bar#cocktails" class="sh-sub-item">
             <span class="sh-si-t">Bar & Mixology</span>
             <small>Artisanal Cocktails, Single Malts & Beers</small>
           </a>
@@ -44,11 +47,15 @@ const { active = 'home' } = Astro.props;
 
       <!-- Celebrate Dropdown -->
       <div class="sh-drop">
-        <button class:list={["sh-link", "sh-drop-btn", { active: active === 'celebrate' || active === 'banquet' || active === 'events' }]} type="button" aria-expanded="false">
+        <button class:list={["sh-link", "sh-drop-btn", { active: active === 'celebrate' || active === 'banquet' || active === 'events' || active === 'party' }]} type="button" aria-expanded="false">
           <span>Celebrate</span>
           <svg class="sh-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="sh-menu">
+          <a href="/party" class="sh-sub-item">
+            <span class="sh-si-t">Party Packages</span>
+            <small>Bar parties, elite buffets and banquet spreads</small>
+          </a>
           <a href="/banquet" class="sh-sub-item">
             <span class="sh-si-t">The Grand Banquet Hall</span>
             <small>Capacity 50–350 guests with AV & live stage</small>
@@ -82,8 +89,17 @@ const { active = 'home' } = Astro.props;
 
       <!-- Gold Reserve Button -->
       <a href="/reserve" class:list={["sh-reserve-btn", { "is-current": active === 'reserve' }]} data-open="book" aria-current={active === 'reserve' ? 'page' : undefined}>
-        <span>Reserve</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        {plaster ? (
+          <>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14h1M11.5 14h1M14.5 14h1M8.5 17h1M11.5 17h1"/></svg>
+            <span>Reserve a Table</span>
+          </>
+        ) : (
+          <>
+            <span>Reserve</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </>
+        )}
       </a>
 
       <!-- Mobile Hamburger -->
@@ -107,6 +123,7 @@ const { active = 'home' } = Astro.props;
       </div>
       <div class="sh-mp-group">
         <span class="sh-mp-label">Occasions & Spaces</span>
+        <a href="/party" class="sh-mp-link">Party Packages</a>
         <a href="/banquet" class="sh-mp-link">The Banquet Hall (50–350 Pax)</a>
         <a href="/events" class="sh-mp-link">Birthdays, Kitty & Bar Bashes</a>
         <a href="/catering" class="sh-mp-link">Outdoor Catering</a>
@@ -469,6 +486,36 @@ const { active = 'home' } = Astro.props;
       pointer-events: auto !important;
     }
   }
+  /* ── Plaster variant (restyle pages): cream header on the embossed surface, like the mocks ── */
+  .sh-header.sh-plaster { position: fixed; width: 100%; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom: 1px solid transparent; }
+  .sh-plaster .sh-inner { max-width: 1600px; padding: clamp(10px, 1.4vw, 20px) clamp(16px, 4.5vw, 72px); }
+  .sh-plaster .sh-logo img { height: clamp(64px, 7.6vw, 112px); mix-blend-mode: multiply; transition: height .3s var(--fk-ease, ease); }
+  .sh-plaster .sh-link { font-family: var(--fk-serif, "Playfair Display", Georgia, serif); font-weight: 400; font-size: clamp(.9rem, 1.05vw, 1rem); letter-spacing: .005em; color: #1c2a18; background: none; border-radius: 0; padding: 8px 2px; margin: 0 clamp(4px, .7vw, 10px); box-shadow: inset 0 -1.5px 0 transparent; transition: color .15s ease, box-shadow .15s ease; }
+  .sh-plaster .sh-link:hover, .sh-plaster .sh-link.active { color: #b5632a; background: none; box-shadow: inset 0 -1.5px 0 currentColor; }
+  .sh-plaster .sh-nav { gap: 0; }
+  .sh-plaster .sh-pill { background: rgba(201, 154, 67, .14); color: #74501a; border-color: rgba(201, 154, 67, .45); }
+  .sh-plaster .sh-menu { background: #fbf5ec; border-color: rgba(201, 154, 67, .4); box-shadow: 0 24px 48px rgba(60, 40, 10, .18); }
+  .sh-plaster .sh-sub-item:hover { background: rgba(201, 154, 67, .14); }
+  .sh-plaster .sh-si-t { color: #14301c; }
+  .sh-plaster .sh-sub-item:hover .sh-si-t { color: #b5632a; }
+  .sh-plaster .sh-sub-item small { color: #5a5040; }
+  .sh-plaster .sh-wa { color: #1f7a3a; background: rgba(31, 122, 58, .1); }
+  .sh-plaster .sh-reserve-btn { gap: 10px; padding: 0 clamp(16px, 1.6vw, 24px); min-height: 48px; color: #fbf5e6; font-family: var(--fk-serif, "Playfair Display", Georgia, serif); font-weight: 400; font-size: clamp(.92rem, 1.05vw, 1.02rem); background: linear-gradient(180deg, #21492b 0%, #12301c 100%); border: 1px solid rgba(201, 154, 67, .55); box-shadow: 0 10px 22px rgba(14, 34, 20, .3), 0 2px 4px rgba(14, 34, 20, .2), inset 0 1px 0 rgba(255, 255, 255, .16); }
+  .sh-plaster .sh-reserve-btn svg { width: 20px; height: 20px; color: #e6c27a; }
+  .sh-plaster .sh-reserve-btn:hover svg { transform: none; }
+  .sh-plaster .sh-reserve-btn.is-current { background: linear-gradient(180deg, #21492b 0%, #12301c 100%); color: #fbf5e6; }
+  .sh-plaster .sh-burger span { background: #1c2a18; }
+  .sh-plaster .sh-mobile-panel { background: #fbf5ec; border-top-color: rgba(201, 154, 67, .3); }
+  .sh-plaster .sh-mp-link { color: #14301c; }
+  .sh-plaster .sh-mp-label { color: #74501a; }
+  .sh-plaster .sh-mp-time { color: #5a5040; }
+  .sh-plaster .sh-mp-cta { border-top-color: rgba(60, 40, 10, .12); }
+  .sh-plaster .sh-mp-reserve { background: linear-gradient(180deg, #21492b 0%, #12301c 100%); color: #fbf5e6; }
+  .sh-header.sh-plaster.sh-scrolled { background: rgba(250, 243, 233, .9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: rgba(201, 154, 67, .28); box-shadow: 0 10px 28px rgba(60, 40, 10, .1); }
+  .sh-header.sh-plaster.sh-scrolled .sh-logo img { height: clamp(40px, 4.2vw, 54px); }
+  .sh-header.sh-plaster.sh-scrolled .sh-inner { padding-top: 8px; padding-bottom: 8px; }
+  @media (max-width: 1040px) { .sh-plaster .sh-mobile-panel { box-shadow: 0 24px 40px rgba(60, 40, 10, .15); } }
+  @media (max-width: 760px) { .sh-plaster .sh-reserve-btn { display: none; } .sh-plaster .sh-logo img { height: 54px; } }
 </style>
 
 <script is:inline>

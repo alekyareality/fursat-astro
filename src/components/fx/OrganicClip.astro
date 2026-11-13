@@ -1,0 +1,16 @@
+---
+// Renders one hidden <clipPath> per organic path so any element can use
+// clip-path:url(#fk-<name>), e.g. url(#fk-blob-entrance). Place once per page.
+import { organicPaths } from './organic-paths';
+const kebab = (s: string) => s.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase());
+const names = Object.keys(organicPaths) as (keyof typeof organicPaths)[];
+---
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    {names.map((n) => (
+      <clipPath id={`fk-${kebab(n)}`} clipPathUnits="objectBoundingBox">
+        <path d={organicPaths[n]} />
+      </clipPath>
+    ))}
+  </defs>
+</svg>

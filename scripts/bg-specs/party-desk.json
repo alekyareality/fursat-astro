@@ -1,0 +1,31 @@
+{
+ "src": "design/textless-bg/party-desk.png",
+ "name": "party-desk",
+ "width": 2048,
+ "erase": [
+  [
+   28,
+   680,
+   1004,
+   1036
+  ]
+ ],
+ "cuts": [
+  [
+   0,
+   650,
+   "fixed"
+  ],
+  [
+   650,
+   1000,
+   "flex"
+  ],
+  [
+   1000,
+   1500,
+   "fixed"
+  ]
+ ],
+ "flatmid": true
+}

@@ -1,0 +1,30 @@
+{
+ "src": "design/textless-bg/reserve-desk.png",
+ "name": "reserve-desk",
+ "width": 2048,
+ "erase": [
+  [
+   22,
+   840,
+   1004,
+   1196
+  ]
+ ],
+ "cuts": [
+  [
+   0,
+   800,
+   "fixed"
+  ],
+  [
+   800,
+   1190,
+   "flex"
+  ],
+  [
+   1190,
+   1500,
+   "fixed"
+  ]
+ ]
+}

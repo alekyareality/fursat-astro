@@ -2,6 +2,36 @@
 import Base from '../layouts/Base.astro';
 import data from '../data/party.json';
 import PartyStage from '../components/party/PartyStage';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+import HyWindows from '../components/hybrid/HyWindows.astro';
+import pDesk from '../../scripts/bg-specs/party-desk.out.json';
+import pPhone from '../../scripts/bg-specs/party-phone.out.json';
+import '../styles/fk-tokens.css';
+// v4 hybrid: textless background art (public/assets/bg/party-*) + live HTML; motion in src/scripts/fk-motion.ts.
+// P5 restyle: one real photo per package group (TODO(client): real banquet-hall and party photos).
+const heroPhoto = { src: '/assets/interior/fursat_space_07.webp', alt: 'The Fursat dining hall set for guests', w: 1920, h: 2560, pos: '50% 60%', eager: true };
+const closePhoto = { src: '/assets/interior/tour-high-tables.webp', alt: 'High tables at Fursat ready for a party', w: 1050, h: 1400, pos: '50% 55%' };
+const elephant = 'M109.5 10.2 L100.2 6.0 L81.5 4.0 L70.5 8.0 L61.0 18.5 L60.0 24.2 L62.8 30.5 L69.5 34.8 L76.2 34.8 L81.8 31.2 L83.5 27.2 L79.5 24.0 L76.2 27.0 L71.8 25.2 L71.8 22.5 L79.5 16.8 L88.2 16.8 L92.5 18.8 L98.0 25.5 L98.0 32.2 L88.2 44.0 L73.5 52.0 L64.5 58.0 L55.0 67.5 L51.0 74.5 L48.0 83.5 L48.0 98.2 L52.2 108.5 L57.5 112.8 L69.5 118.8 L80.2 119.8 L88.2 116.8 L92.8 110.2 L92.8 105.5 L94.5 104.0 L96.0 106.5 L96.0 114.2 L89.2 123.0 L82.2 126.0 L66.5 126.0 L56.5 122.0 L50.2 118.0 L43.8 110.2 L40.2 102.0 L29.5 107.0 L20.2 114.2 L14.0 123.5 L5.2 139.2 L13.2 138.0 L13.0 150.2 L12.0 160.2 L13.0 166.2 L14.5 170.8 L35.2 170.8 L35.8 163.5 L39.8 157.2 L48.2 155.8 L53.0 160.5 L54.5 170.8 L74.2 170.8 L74.8 161.5 L78.2 157.0 L86.2 155.8 L92.0 161.5 L92.5 170.8 L117.8 170.2 L116.8 159.5 L115.8 142.5 L117.8 127.5 L125.8 114.2 L130.8 103.2 L133.8 94.2 L135.8 81.2 L135.8 64.5 L133.8 55.2 L128.8 39.2 L121.8 24.5Z';
+const why = [
+  { t: 'Exquisite Cuisine', i: '<path d="M3 20h18"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4M10 4h4"/>' },
+  { t: 'Elegant Ambience', i: '<path d="M9 3h6l2 6H7z"/><path d="M12 9v9M8 21h8"/><path d="M5 9h14"/>' },
+  { t: 'Warm Hospitality', i: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>' },
+  { t: 'Prime Location', i: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>' },
+];
+const cardPhotos: Record<string, string[]> = {
+  bar: ['/assets/interior/bar-front.webp', '/assets/interior/bar-back.webp', '/assets/interior/tour-bar.webp', '/assets/tour/img/sm/bar.webp'],
+  elite: ['/assets/tour/img/sm/dining.webp', '/assets/tour/img/sm/lounge.webp'],
+  banquet: ['/assets/tour/img/sm/booths.webp', '/assets/tour/img/sm/high-tables.webp', '/assets/tour/img/sm/sofa-corner.webp', '/assets/tour/img/sm/table-for-two.webp', '/assets/tour/img/sm/garden-window.webp'],
+};
+const groupIcon: Record<string, string> = {
+  bar: '<path d="M4 4h16l-8 9z"/><path d="M12 13v7M8 20h8"/>',
+  elite: '<path d="M3 20h18"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4M10 4h4"/>',
+  banquet: '<path d="M8 21h8M12 15v6M7 3h10l-1 7a4 4 0 0 1-8 0z"/>',
+};
+const cardPhoto = (g: string, i: number) => (cardPhotos[g] || [])[i % (cardPhotos[g] || ['']).length] || groupPhoto[g];
+const groupPhoto: Record<string, string> = { bar: '/assets/tour/img/sm/bar.webp', elite: '/assets/tour/img/sm/dining.webp', banquet: '/assets/tour/img/sm/booths.webp' };
 // CLIENT/LEGAL TO CONFIRM: liquor brand names stay off the public page until cleared (Telangana excise advertising rules).
 const SHOW_LIQUOR_BRANDS = false;
 // ASSUMPTION TO CONFIRM: the printed prices ("4999+Taxes") read as per guest.
@@ -15,11 +45,38 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 <Base title="Party Packages — Fursat Kitchen | Bar, Madhapur" description="Party packages at Fursat, Madhapur: bar parties, elite buffet and banquet, with everything included listed. Pick one and we confirm on WhatsApp." canonical="https://fursatind.in/party/">
 <a class="skip" href="#pk-main">Skip to main content</a>
 <div class="pa">
-  <header class="pa-top"><a class="pa-back" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Back to Fursat</span></a></header>
+  <SiteHeader active="celebrate" variant="plaster" />
+  <script is:inline>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.add('fx-pre'); setTimeout(function () { document.documentElement.classList.remove('fx-pre'); }, 3500); }</script>
+  <div class="hy pa-hy">
+    <div class="hy-slice hy-top" aria-hidden="true"></div><div class="hy-slice hy-mid" aria-hidden="true"></div><div class="hy-slice hy-bot" aria-hidden="true"></div>
+    <HyWindows data={pDesk} slice={0} photos={[heroPhoto, { src: '/assets/interior/tour-lounge.webp', alt: '', w: 1050, h: 1400 }]} view="d" />
+    <HyWindows data={pPhone} slice={0} photos={[{ ...heroPhoto, pos: '50% 70%' }, { src: '/assets/interior/tour-lounge.webp', alt: '', w: 1050, h: 1400 }]} view="m" />
+    <HyWindows data={pDesk} slice={2} photos={[closePhoto]} view="d" anchor="bottom" />
+
+    <div class="pa-hero" data-fx-hero>
+      <p class="hy-kicker" data-fx-step>Party packages</p>
+      <h1 class="hy-h1 pa-h1" id="pa-h1" data-fx-step data-fx-words>Plan your party <span class="hl">at Fursat</span></h1>
+      <svg class="hy-orn--draw pa-orn" viewBox="0 0 260 24" aria-hidden="true" data-fx-step data-fx-draw>
+        <path d="M2 12 H104" /><path d="M156 12 H258" /><path d="M130 3 C122 9 122 15 130 21 C138 15 138 9 130 3 Z" /><path d="M110 12 C116 6 122 6 126 12 M150 12 C144 6 138 6 134 12" />
+      </svg>
+      <p class="hy-lead pa-lead" data-fx-step>Pick a package, tell us how many are coming, and we will confirm the rest on WhatsApp.</p>
+      <div class="hy-btns pa-ctas" data-fx-step>
+        <a class="fk-btn fk-btn--solid" href="#pk-main"><span>Explore our packages</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="fk-btn fk-btn--line" href={waHi} target="_blank" rel="noopener"><span>Chat on WhatsApp</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+
+    <div class="hy-flow pa-flow">
+      <div class="pa-intro-m hy-m">
+        <p class="hy-lead">Pick a package, tell us how many are coming, and we will confirm the rest on WhatsApp.</p>
+        <div class="hy-btns">
+          <a class="fk-btn fk-btn--solid" href="#pk-main"><span>Explore packages</span></a>
+          <a class="fk-btn fk-btn--line" href={waHi} target="_blank" rel="noopener"><span>WhatsApp us</span></a>
+        </div>
+      </div>
   <main id="pk-main" tabindex="-1" class="pa-main">
     <div class="pa-host" id="pa-host" data-pose="idle"><div class="pa-stage"><img class="pa-p pa-idle" src="/assets/ask-mascot-md.webp" alt="Fursat&rsquo;s elephant host in a gold crown and sunglasses" width="400" height="400" decoding="async"><img class="pa-p pa-cheer" src="/assets/ask-mascot-cheer-md.webp" alt="" width="400" height="400" decoding="async"></div></div>
-    <h1 class="pa-h">Plan your party at Fursat</h1>
-    <p class="pa-sub">Pick a package, tell us how many are coming, and we will confirm the rest on WhatsApp.</p>
+    <h2 class="pa-sec-h">Our Party Packages</h2>
     <div class="pa-tabs" role="group" aria-label="Choose a package type">
       {data.groups.map((g, i) => <button type="button" data-tab={g.id} aria-pressed={i === 0 ? 'true' : 'false'}>{g.label}</button>)}
     </div>
@@ -28,10 +85,10 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
         <p class="pa-blurb">{g.blurb}</p>
         <div class="pk-row">
           {data.packages.filter((p: any) => p.group === g.id).map((p: any, i: number) => (
-            <article class="pk" style={`--i:${i}`} data-id={p.id} data-price={p.price} data-name={p.name}>
-              <div class="pk-face" data-tone={p.tone}>
-                <h2 class="pk-name">{p.name}</h2>
-                <p class="pk-price"><span class="pk-amt">{inr(p.price)}</span><span class="pk-unit">+ taxes, {UNIT}</span></p>
+            <article class="pk fk-card" style={`--i:${i}`} data-id={p.id} data-price={p.price} data-name={p.name}>
+              <div class="pk-ph fk-card__ph" aria-hidden="true"><img src={cardPhoto(p.group, i)} alt="" width="540" height="720" loading="lazy" decoding="async" /><span class="fk-card__badge"><svg viewBox="0 0 24 24" set:html={groupIcon[p.group]} /></span></div>
+              <div class="pk-face fk-card__b" data-tone={p.tone}>
+                <h2 class="pk-name fk-card__t">{p.name}</h2>
                 <dl class="pk-sum">
                   {lead(p).map(([h, v]: string[]) => <div><dt>{h}</dt><dd>{v}</dd></div>)}
                   {p.drinks && <div><dt>Drinks{p.drinks.serve ? ' \u00b7 ' + p.drinks.serve : ''}</dt><dd>{p.drinks.lines.join(' \u00b7 ')}</dd></div>}
@@ -52,7 +109,10 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
                     </div>
                   )}
                 </details>
-                <button class="pk-plan" type="button" data-plan={p.id}>Plan this party</button>
+                <div class="fk-card__foot">
+                  <p class="pk-price fk-card__price"><span class="pk-amt" data-fx-count>{inr(p.price)}</span><small class="pk-unit">+ taxes, {UNIT}</small></p>
+                  <button class="pk-plan fk-card__go" type="button" data-plan={p.id} aria-label={`Plan this party: ${p.name}`} title="Plan this party"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>
+                </div>
               </div>
             </article>
           ))}
@@ -60,6 +120,7 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
       </section>
     ))}
 
+    <div class="pa-lower">
     <section class="pa-plan" id="pa-plan" aria-labelledby="pa-plan-h">
       <h2 id="pa-plan-h">Estimate your party</h2>
       <PartyStage client:visible poster="/assets/party-stage-poster.webp" />
@@ -74,6 +135,7 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
       <a class="pa-wa" id="pa-wa" href={waHi} target="_blank" rel="noopener">Send this plan on WhatsApp</a>
     </section>
 
+    <div class="pa-right">
     <section class="pa-choices" aria-labelledby="pa-ch-h">
       <h2 id="pa-ch-h">Choose your dishes</h2>
       <p class="pa-blurb">For Platinum, Gold, Silver and the Elite packages. Banquet menus list their dishes on the card.</p>
@@ -90,8 +152,36 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
       <ul class="pa-addlist">{data.addons.map((a: any) => <li><span>{a.n}</span><b>{inr(0).replace('0', a.p)}</b></li>)}</ul>
       <p class="pa-fine">Add-on prices are as printed on the Fursat party menu.</p>
     </section>
+    </div>
+    </div>
   </main>
+    </div>
+
+    <figure class="pa-quote" data-fx-reveal>
+      <svg class="pa-qm" viewBox="0 0 40 32" aria-hidden="true"><path d="M0 32V18C0 8 6 2 16 0l2 5c-6 2-9 6-9 11h8v16zm22 0V18c0-10 6-16 16-18l2 5c-6 2-9 6-9 11h8v16z"/></svg>
+      <blockquote>Good food, great company and unforgettable moments.</blockquote>
+      <div class="hy-orn pa-q-orn" aria-hidden="true"><i></i><svg viewBox="0 0 140 176"><path d={elephant} /></svg><i></i></div>
+    </figure>
+
+    <div class="pa-why">
+      <h2 class="hy-h2 pa-why-h" data-fx-reveal>Why Choose FURSAT?</h2>
+      <ul class="pa-plates" data-fx-pop>
+        {why.map((w, i) => (
+          <li class={`pa-plate pa-plate--${i + 1}`} data-fx-tilt><svg viewBox="0 0 24 24" aria-hidden="true" set:html={w.i} /><span>{w.t}</span></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="pa-close" data-fx-reveal>
+      <h2 id="pa-close-h">Let&rsquo;s Celebrate <em>Together</em></h2>
+      <p>Pick a package above and send your plan on WhatsApp. We confirm every party personally.</p>
+      <a class="fk-btn fk-btn--gold" href={waHi} target="_blank" rel="noopener"><span>Plan on WhatsApp</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
 </div>
+<SiteFooter />
+<MobileBar active="celebrate" />
+<script>import '../scripts/fk-motion';</script>
 <style is:global>
 :root{--pk-red:#A83A26;--pk-green:#34522A;--pk-cream:#F6EBD3}
 .pa{min-height:100svh;background:var(--rl-bg);color:var(--rl-ink)}
@@ -126,7 +216,6 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 .pk-face[data-tone="green"]{background:var(--pk-green)}
 .pk-name{margin:0 0 8px;transform:translateZ(18px);font:700 clamp(1.5rem,5vw,1.875rem)/1.1 var(--sans,"Manrope",system-ui,sans-serif);text-wrap:balance}
 .pk-price{margin:0 0 20px;display:grid;gap:2px;transform:translateZ(34px)}
-.pk-amt{font:500 2.25rem/1.05 var(--serif,"Playfair Display",Georgia,serif)}
 .pk-unit{font:500 .875rem/1.3 var(--sans,"Manrope",system-ui,sans-serif)}
 .pk-sum{margin:0 0 16px;text-align:left;display:grid;gap:10px}
 .pk-sum div{padding-top:10px;border-top:1px solid color-mix(in srgb,var(--pk-cream) 40%,transparent)}
@@ -165,6 +254,154 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 @media(min-width:900px){.pk-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));overflow:visible;margin:0;padding:8px 0 28px;gap:24px}.pk{flex:none}}
 @media(hover:hover){.pa-wa:hover{background:var(--rl-ink)}.pk-plan:hover{background:transparent;color:var(--pk-cream)}.pa-tabs button:hover:not([aria-pressed="true"]){background:color-mix(in srgb,var(--rl-gold) 20%,transparent)}.pa-back:hover svg{transform:translateX(-4px)}.pa-step button:hover{border-color:var(--rl-gold)}}
 @media(prefers-reduced-motion:reduce){.pk,.pa-star,.pa-host[data-pose="cheer"] .pa-cheer{animation:none!important}.pa-star{display:none}.pk-face{transition:none}}
+/* ───────── P5 restyle: plaster, baked hero stage, embossed package cards ───────── */
+.pa-main{max-width:1240px;padding-top:clamp(8px,2vw,24px)}
+.pa-sec-h{margin:0 0 6px;display:flex;align-items:center;gap:clamp(14px,2vw,28px);justify-content:center;font:500 clamp(1.9rem,3.4vw,2.9rem)/1.15 var(--fk-serif);color:var(--fk-forest-900)}
+.pa-sec-h::before,.pa-sec-h::after{content:"";flex:0 1 clamp(60px,16vw,240px);height:1.5px;background:linear-gradient(90deg,transparent,#c0632a)}
+.pa-sec-h::after{background:linear-gradient(270deg,transparent,#c0632a)}
+.pa-blurb{color:#5a5040}
+.pa-tabs{border-color:rgba(201,154,67,.45);background:linear-gradient(180deg,#f1e3cf,#f8eee2);box-shadow:inset 0 2px 5px rgba(122,78,24,.14),inset 0 -1px 0 rgba(255,255,255,.9)}
+.pa-tabs button{color:var(--fk-forest-800);font-family:var(--fk-sans)}
+.pa-tabs button[aria-pressed="true"]{background:linear-gradient(180deg,#21492b,#12301c);color:#fbf5e6;box-shadow:0 5px 12px rgba(14,34,20,.28)}
+.pa .pk{position:relative;inset:auto;z-index:auto;display:block;visibility:visible;align-items:initial;justify-content:initial}
+@media(min-width:768px){.pa .pk-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));overflow:visible;margin:0;padding:8px 0 28px;gap:18px}.pa .pk{flex:none}}
+.pk-unit,.pk-sum dt{color:#74501a!important}
+.pk-sum dd,.pk-sec p{color:#4a4232!important}
+.pa-plan,.pa-acc,.pa-addlist{background:var(--fk-cream-100);border-radius:26px;border:0;box-shadow:0 0 0 1px rgba(201,154,67,.4),0 0 0 6px #f6ead8,0 0 0 7px rgba(255,255,255,.8),0 22px 40px rgba(42,27,8,.16),inset 0 2px 3px rgba(255,255,255,.9)}
+.pa-plan{padding:clamp(20px,3vw,36px);margin:clamp(32px,4vw,56px) 7px 0}
+.pa-plan h2,.pa-choices h2,.pa-add h2{font-family:var(--fk-serif);color:var(--fk-forest-900)}
+.pa-wa{background:linear-gradient(180deg,#21492b,#12301c)!important;color:#fbf5e6!important;border-radius:999px!important}
+.pa-acc{margin:12px 7px}.pa-addlist{padding:16px 22px;margin:0 7px}
+.sf-footer{background:var(--fk-forest-900)}
+.pa-fields label{color:#74501a;font:600 .78rem/1.3 var(--fk-sans);letter-spacing:.12em;text-transform:uppercase}
+.pa-fields select,.pa-step input{color:var(--fk-ink);background:#fcf7f0;border:1px solid rgba(201,154,67,.5);border-radius:14px;box-shadow:inset 0 2px 4px rgba(122,78,24,.12)}
+.pa-step button{color:var(--fk-forest-900);background:linear-gradient(180deg,#fffaf3,#f3e4cf);border:1px solid rgba(201,154,67,.5);border-radius:50%}
+.pa-total{color:var(--fk-forest-900);font-family:var(--fk-serif)}
+.pa-fine{color:#5a5040}
+@media(max-width:767px){.pa-sec-h::before,.pa-sec-h::after{display:none}}
+
+/* ───────── v4 hybrid stage ───────── */
+.pa{flex:none;background:#f6e6d1;color:var(--fk-ink);font-family:var(--fk-sans)}
+.pa-hy{--top:url(/assets/bg/party-desk-0.webp);--mid:url(/assets/bg/party-desk-1.webp);--bot:url(/assets/bg/party-desk-2.webp);--th:649.9;--bh:500;background:#f6e6d1}
+.pa-flow{padding:calc(560 * var(--u)) 0 calc(520 * var(--u));z-index:3}
+.pa-hero{z-index:3;left:calc(70 * var(--u));top:calc(176 * var(--u));width:calc(350 * var(--u));display:grid;gap:calc(18 * var(--u))}
+.pa-h1{font-size:calc(64 * var(--u))}
+.pa-h1 .hl{display:block}
+.pa-lead{max-width:calc(320 * var(--u))}
+.pa-ctas{flex-wrap:nowrap;gap:calc(12 * var(--u))}
+.pa-ctas .fk-btn{padding:0 calc(20 * var(--u));font-size:clamp(13px,calc(15 * var(--u)),1.05rem);white-space:nowrap}
+.pa .pa-main{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+.pa .pa-sec-h{margin-top:0}
+.pa .pa-sec-h::before,.pa .pa-sec-h::after{display:none}
+.pa-quote{z-index:3;margin:0;left:calc(70 * var(--u));bottom:calc(270 * var(--u));width:calc(340 * var(--u));color:#fbf3e6;display:grid;gap:calc(14 * var(--u))}
+.pa-qm{width:calc(34 * var(--u));min-width:22px;height:auto;fill:#e8a85a}
+.pa-quote blockquote{margin:0;font:italic 500 calc(31 * var(--u))/1.25 var(--fk-serif);color:#fbf3e6;text-wrap:balance}
+.pa-q-orn{width:calc(220 * var(--u))}
+.pa-q-orn svg{fill:#e8c27a}
+.pa-why{z-index:3;left:calc(520 * var(--u));bottom:calc(270 * var(--u));width:calc(460 * var(--u));height:calc(200 * var(--u))}
+.pa-why-h{position:absolute;left:0;right:0;top:calc(-6 * var(--u));text-align:center;font-size:calc(30 * var(--u))}
+.pa-plates{list-style:none;margin:0;padding:0;position:absolute;inset:0}
+.pa-plate{position:absolute;top:calc(63 * var(--u));width:calc(104 * var(--u));height:calc(128 * var(--u));translate:-50% 0;display:grid;place-content:center;justify-items:center;gap:calc(8 * var(--u));text-align:center}
+.pa-plate--1{left:calc(58 * var(--u))}.pa-plate--2{left:calc(170 * var(--u))}.pa-plate--3{left:calc(280 * var(--u))}.pa-plate--4{left:calc(392 * var(--u))}
+.pa-plate svg{width:calc(32 * var(--u));min-width:18px;height:auto;fill:none;stroke:#1b3a26;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.pa-plate span{font:500 max(10px,calc(14 * var(--u)))/1.15 var(--fk-serif);color:#1b3a26;max-width:calc(84 * var(--u))}
+.pa-close{z-index:3;left:calc(60 * var(--u));bottom:calc(46 * var(--u));width:calc(470 * var(--u));display:grid;gap:calc(14 * var(--u));justify-items:start;color:#fbf3e6}
+.pa-close h2{margin:0;font:italic 500 calc(44 * var(--u))/1.1 var(--fk-serif);color:#fbf3e6}
+.pa-close h2 em{color:#eda05a}
+.pa-close p{margin:0;font:400 clamp(12.5px,calc(15 * var(--u)),1.15rem)/1.55 var(--fk-sans);color:rgba(246,234,214,.86);max-width:44ch}
+@media(max-width:767px){
+  .pa-hy{--top:url(/assets/bg/party-phone-0.webp);--mid:url(/assets/bg/party-phone-1.webp);--bot:url(/assets/bg/party-phone-2.webp);--th:620.37;--bh:878.7}
+  .pa-flow{padding:calc(570 * var(--u)) 0 calc(900 * var(--u))}
+  .pa-hero{left:calc(70 * var(--u));top:calc(282 * var(--u));width:calc(820 * var(--u));gap:calc(10 * var(--u))}
+  .pa-hero .hy-kicker{color:#f6d692;font-size:12px;letter-spacing:.14em}
+  .pa-h1{font-size:calc(80 * var(--u));color:#fbf3e6;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+  .pa-h1 .hl{display:inline;color:#f0a45c}
+  .pa-orn,.pa-lead,.pa-ctas{display:none!important}
+  .pa-quote{left:calc(90 * var(--u));right:calc(90 * var(--u));width:auto;bottom:calc(612 * var(--u));justify-items:center;text-align:center;gap:2px}
+  .pa-qm{display:none}
+  .pa-quote blockquote{font-size:calc(43 * var(--u))}
+  .pa-q-orn{width:calc(360 * var(--u))}
+  .pa-why{left:0;width:100%;bottom:calc(318 * var(--u));height:calc(222 * var(--u))}
+  .pa-why-h{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .pa-plate{top:calc(22 * var(--u));width:calc(220 * var(--u));height:calc(190 * var(--u));gap:3px}
+  .pa-plate--1{left:calc(157 * var(--u))}.pa-plate--2{left:calc(388 * var(--u))}.pa-plate--3{left:calc(613 * var(--u))}.pa-plate--4{left:calc(840 * var(--u))}
+  .pa-plate span{font-size:12px;line-height:1.1;max-width:calc(200 * var(--u))}
+  .pa-plate svg{min-width:15px}
+  .pa-close{left:0;width:100%;bottom:calc(4 * var(--u));justify-items:center;text-align:center;gap:6px}
+  .pa-close h2{font-size:calc(56 * var(--u))}
+  .pa-close p{display:none}
+  .pa-intro-m{padding:0 20px 18px;text-align:center}
+  .pa-intro-m .hy-lead{font-size:14px}
+  .pa-intro-m .hy-btns{justify-content:center;margin-top:12px;gap:8px}
+  .pa-intro-m .fk-btn{min-height:44px;padding:0 16px;font-size:14px}
+}
+
+/* v4.5 type: one sans on this page; unit line at label size */
+.pa{--sans:var(--fk-sans)}
+.pa .pa-sec-h{display:block;text-align:center}
+.pa .pk-unit{font:400 .75rem/1.3 var(--fk-sans)}
+/* v4.4 colour roles: selected tab = gold, main action = green */
+.pa .pa-tabs button[aria-pressed="true"]{background:var(--fk-selected-bg)!important;color:var(--fk-selected-fg)!important;box-shadow:var(--fk-selected-shadow)!important}
+.pa .pa-wa{gap:10px;background:var(--fk-action-bg)!important;color:var(--fk-action-fg)!important;border:1px solid var(--fk-action-rim);box-shadow:var(--fk-action-shadow)}
+@media (hover:hover) and (pointer:fine){.pa .pa-wa:hover{box-shadow:var(--fk-action-shadow-hover)}}
+/* party cards use the shared .fk-card shape */
+.pa .pk.fk-card{margin:0;background:linear-gradient(180deg,#fbf3e7,#f6e7d2)}
+.pa .pk-face.fk-card__b{background:transparent!important;border:0!important;box-shadow:none!important;color:inherit!important;padding:0 20px 18px!important;transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .3s cubic-bezier(.2,0,0,1)}
+.pa .pk-name.fk-card__t{font:var(--fk-t-h3)!important;letter-spacing:-.01em;color:#1f2a1a!important;text-align:left}
+.pa .pk-price{margin:0!important;text-align:left}
+.pa .pk-amt{font:var(--fk-t-price);color:#a8261b}
+.pa .pk-sum{padding-top:10px;margin:2px 0 8px}
+.pa .pk.fk-card{perspective:none}
+.pa .pk-face.fk-card__b{transform-style:flat;border-radius:0;position:relative;z-index:1}
+.pa .pk-name.fk-card__t,.pa .pk-price{transform:none}
+.pa .pk-name.fk-card__t{margin:0 0 4px!important;padding-top:4px}
+.pa .pk-plan.fk-card__go{width:42px;min-height:42px;height:42px;padding:0;border:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3d6b43,#22442a);color:#fbf3e7;flex:none}
+@media(hover:hover){.pa .pk-plan.fk-card__go:hover{background:radial-gradient(circle at 35% 30%,#47794d,#2b4a2f);color:#fbf3e7}}
+/* ───────── v4.1 party middle: clean, aligned, equal cards ───────── */
+.pa-hy .hy-mid{background-size:100% 100%}
+.pa-hy .hy-mid::after{content:"";position:absolute;inset:0;background:url(/assets/surface/plaster-tile.webp) 0 0/900px 900px;mix-blend-mode:multiply;opacity:.55}
+.pa-flow{padding-top:calc(612 * var(--u))}
+.pa .pa-main{max-width:1240px}
+.pa .pa-host{margin:0 auto -6px}
+.pa .pa-sec-h{font:var(--fk-t-h2);letter-spacing:var(--fk-ls-h);color:#1b3a26;margin:4px 0 14px}
+.pa .pa-tabs{margin:0 auto}
+.pa .pa-blurb{text-align:center;margin:14px 0 26px;color:#5a5040}
+@media(min-width:768px){
+  .pa .pk-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:20px;padding:10px 8px 30px;margin:0;overflow:visible}
+  .pa .pk{flex:1 1 220px;min-width:220px;max-width:280px;display:flex;flex-direction:column;margin:0}
+  .pa .pk-face{flex:1;display:flex;flex-direction:column}
+  .pa .pk-more{margin-bottom:16px}
+}
+.pa .pa .pk-sum{display:grid;gap:10px;margin:0 0 14px;padding-top:14px;border-top:1px solid rgba(214,170,90,.35)}
+.pa .pk-sum dt{font:var(--fk-t-label)!important;letter-spacing:.06em}
+.pa .pk-sum dd{margin:2px 0 0;font-size:.88rem;line-height:1.45}
+.pa .pk-more summary{font-size:.85rem;color:#1b3a26;cursor:pointer}
+
+.pa-lower{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,3vw,44px);align-items:start;margin:clamp(20px,3vw,40px) 0 0}
+.pa .pa-plan{margin:0;position:sticky;top:96px}
+.pa .pa-plan h2{font-size:1.7rem;margin:0 0 16px}
+.pa .pa-fields{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center}
+.pa .pa-fields select{min-height:46px;padding:0 14px;width:100%}
+.pa .pa-step{display:grid;grid-template-columns:46px 1fr 46px;gap:8px}
+.pa .pa-step button{width:46px;height:46px}
+.pa .pa-step input{min-height:46px;text-align:center}
+.pa .pa-total{font-size:1.9rem!important;margin:18px 0 4px!important}
+.pa .pa-wa{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;margin-top:16px;text-decoration:none;font-weight:600}
+.pa-right{display:grid;gap:clamp(22px,3vw,36px)}
+.pa .pa-choices,.pa .pa-add{margin:0}
+.pa .pa-choices h2,.pa .pa-add h2{font-size:1.7rem;margin:0 0 6px}
+.pa .pa-choices .pa-blurb{text-align:left;margin:0 0 14px}
+.pa .pa-acc{margin:0 0 10px;border-radius:18px}
+.pa .pa-acc summary{padding:15px 48px 15px 22px;font:var(--fk-t-faq);color:#1b3a26;cursor:pointer;list-style:none;position:relative}
+.pa .pa-acc summary::-webkit-details-marker{display:none}
+.pa .pa-acc summary::after{content:"+";position:absolute;right:20px;top:50%;translate:0 -50%;font:400 1.4rem/1 var(--fk-sans);color:#c0632a;transition:rotate .2s}
+.pa .pa-acc[open] summary::after{rotate:45deg}
+.pa .pa-cols{padding:0 22px 18px}
+.pa .pa-addlist{margin:10px 0 0;list-style:none;padding:14px 22px}
+.pa .pa-addlist li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px dashed rgba(214,170,90,.4)}
+.pa .pa-addlist li:last-child{border-bottom:0}
+@media(max-width:900px){.pa-lower{grid-template-columns:1fr}.pa .pa-plan{position:static}}
+@media(max-width:767px){.pa-flow{padding-top:calc(640 * var(--u))}.pa .pa-lower,.pa .pa-right{min-width:0}.pa .pa-acc,.pa .pa-addlist,.pa .pa-plan{margin-left:0;margin-right:0}.pa .pa-sec-h{font-size:1.8rem}}
 </style>
 <script is:inline src="/js/party.js"></script>
 <script is:inline src="/js/motion-kit.js"></script>

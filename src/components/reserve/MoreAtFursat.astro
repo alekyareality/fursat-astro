@@ -7,17 +7,26 @@ const items = [
   { t: 'Catering', p: 'Fursat food, served at your venue.', href: '/catering', img: 'entrance' }, // GAP: neutral venue crop until real catering photos arrive
   { t: 'Fursat Café', p: 'Specialty brews, shakes and bakes.', href: '/cafe', img: 'garden-window' }, // GAP: neutral crop (cane chairs, plants) until real Café photos arrive
 ];
+const mIcons = [
+  '<path d="M4 4h16l-8 9z"/><path d="M12 13v7M8 20h8"/>',
+  '<path d="M8 21h8M12 15v6M7 3h10l-1 7a4 4 0 0 1-8 0z"/>',
+  '<path d="M3 20h18"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4M10 4h4"/>',
+  '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/>',
+];
 ---
 <section aria-labelledby="rs-m-h" class="rs-vis">
   <div class="rs-title"><i aria-hidden="true"></i><h2 id="rs-m-h">More at Fursat</h2><i aria-hidden="true"></i></div>
-  <div class="rs-mrow">
+  <div class="rs-mrow fk-cards">
     {items.map((m, i) => (
-      <a class="rs-mcard rs-card-in" href={m.href} style={`--i:${i}`}>
-        <img class="rs-ph" src={`/assets/tour/img/sm/${m.img}.webp`} alt="" width="540" height="720" loading="lazy" decoding="async" />
-        <div class="rs-mbody">
-          <h3>{m.t}</h3>
-          <p>{m.p}</p>
-          <span>Know More <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      <a class="rs-mcard rs-card-in fk-card" href={m.href} style={`--i:${i}`}>
+        <div class="fk-card__ph">
+          <img src={`/assets/tour/img/sm/${m.img}.webp`} alt="" width="540" height="405" loading="lazy" decoding="async" />
+          <span class="fk-card__badge" aria-hidden="true"><svg viewBox="0 0 24 24" set:html={mIcons[i]}></svg></span>
+        </div>
+        <div class="fk-card__b">
+          <h3 class="fk-card__t">{m.t}</h3>
+          <p class="fk-card__p">{m.p}</p>
+          <div class="fk-card__foot"><span class="fk-card__more">Know more</span><span class="fk-card__go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
         </div>
       </a>
     ))}

@@ -1,12 +1,10 @@
 ---
 import site from '../data/site.json';
-// restaurant-bar.astro - Fursat Restaurant & Bar (21+)
+// restaurant-bar.astro — Fursat Bar & Kitchen (P6 restyle: shared ExperienceLayout on the baked plaster stage).
+// Content is the page's existing copy, cocktails, prices and dish photos. Removed per handoff §4: the weekly
+// live-music section (not confirmed) and "reserve instantly" (bookings are requests confirmed on WhatsApp).
 import Base from '../layouts/Base.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
-import MobileBar from '../components/MobileBar.astro';
-import MascotOfferModal from '../components/MascotOfferModal.astro';
-import BookingDialog from '../components/BookingDialog.astro';
+import ExperienceLayout from '../components/experience/ExperienceLayout.astro';
 ---
 <Base
   title="Restaurant & Bar — Fursat Kitchen | Bar | Madhapur"
@@ -15,472 +13,44 @@ import BookingDialog from '../components/BookingDialog.astro';
   ogImage="https://fursatind.in/assets/fursat_space_03.webp"
   ogImageAlt="Fursat Restaurant & Bar — craft cocktails and Indian kitchen"
 >
-  <SiteHeader active="restaurant-bar" />
-
-  <main class="rb-page" id="main">
-    <!-- Hero Section -->
-    <section class="rb-hero">
-      <div class="rb-hero-bg">
-        <img src="/assets/interior/fursat_space_08.webp" alt="Fursat Bar & Kitchen" class="rb-hero-img mot-reveal-img" />
-        <div class="rb-hero-overlay"></div>
-      </div>
-      <div class="rb-hero-content">
-        <span class="rb-kicker">CRAFT MIXOLOGY & CULINARY INTENTION</span>
-        <h1 class="rb-title mot-headline">The Bar & Kitchen at Fursat</h1>
-        <p class="rb-sub">
-          Where slow afternoons melt into electric evenings. Barrel-aged spirits, artisanal cocktails, and live charcoal kebabs crafted for Hyderabad’s most discerning palates.
-        </p>
-        <div class="rb-hero-actions">
-          <a href="/reserve" class="rb-btn-gold" data-open="book">Reserve a Table</a>
-          <a href="#cocktails" class="rb-btn-ghost">Explore Signature Cocktails</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bar Highlights 21+ -->
-    <section class="rb-highlights" id="cocktails">
-      <div class="rb-container">
-        <div class="rb-section-head">
-          <span class="rb-sec-kicker">ARTISANAL MIXOLOGY (21+)</span>
-          <h2 class="rb-sec-title mot-headline">Signature Sips & Spirits</h2>
-          <p class="rb-sec-desc">Every cocktail is poured with intention—botanical syrups infused in-house, clear ice blocks, and locally inspired infusions.</p>
-        </div>
-
-        <div class="rb-drinks-grid">
-          <div class="rb-drink-card">
-            <span class="rb-dc-tag">Cocktail Special</span>
-            <div class="rb-dc-head">
-              <h3>Life Fursat Bhai</h3>
-              <b class="rb-dc-price">₹629</b>
-            </div>
-            <p>Single-estate vodka, French elderflower liqueur, cold-pressed green apple, and crisp citric wash.</p>
-          </div>
-
-          <div class="rb-drink-card">
-            <span class="rb-dc-tag">Deccan Inspired</span>
-            <div class="rb-dc-head">
-              <h3>Gongura Muchatlu</h3>
-              <b class="rb-dc-price">₹629</b>
-            </div>
-            <p>Sorrel leaf extract, charred green chilli tincture, fine grain vodka, rimmed with roasted cumin sea salt.</p>
-          </div>
-
-          <div class="rb-drink-card">
-            <span class="rb-dc-tag">Zero-Proof Elixir</span>
-            <div class="rb-dc-head">
-              <h3>Fursat Rahasyam</h3>
-              <b class="rb-dc-price">₹299</b>
-            </div>
-            <p>Barman’s secret mocktail creation: botanical citrus blend, star anise smoke, and pomegranate pearls.</p>
-          </div>
-
-          <div class="rb-drink-card">
-            <span class="rb-dc-tag">Smoky Classic</span>
-            <div class="rb-dc-head">
-              <h3>Nizam's Old Fashioned</h3>
-              <b class="rb-dc-price">₹675</b>
-            </div>
-            <p>Aged Bourbon, Kashmiri saffron bitters, demerara reduction, smoked with dry apple wood chips.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Kitchen & Tandoor Signatures -->
-    <section class="rb-kitchen">
-      <div class="rb-container">
-        <div class="rb-split">
-          <div class="rb-kitchen-text">
-            <span class="rb-sec-kicker">FROM THE CHARCOAL PIT</span>
-            <h2 class="rb-sec-title mot-headline">Bold Flavors from the Royal Tandoor</h2>
-            <p>
-              Our culinary philosophy centers on patience. Whole spices stone-pounded daily, meats marinated for 24 hours in aged curd and secret Deccan herbs, slow-roasted over fragrant charcoal.
-            </p>
-            <ul class="rb-dish-list">
-              <li>
-                <b>Angaraa Chicken Tikka</b> — Fiery Kashmiri chilli, crushed coriander seeds, mint emulsification.
-              </li>
-              <li>
-                <b>Ustad Nalli Gosht Biryani</b> — Fragrant Joha rice layered with slow-braised mutton shanks.
-              </li>
-              <li>
-                <b>Tandoori Prawns</b> — Jumbo Bay of Bengal prawns flash-seared with yellow mustard and hung curd.
-              </li>
-            </ul>
-            <a href="/menu" class="rb-link-more">View Full Food Menu & Pricing →</a>
-          </div>
-
-          <div class="rb-kitchen-gallery">
-            <img src="/assets/dishes/angaraa_chicken_tikka_.webp" alt="Angaraa Chicken Tikka" class="rb-kg-img main" />
-            <img src="/assets/dishes/tandoori_prawns_.webp" alt="Tandoori Prawns" class="rb-kg-img sub" />
-            <img src="/assets/dishes/dsc03308.webp" alt="Fursat Signature Kebab" class="rb-kg-img sub" />
-            <img src="/assets/dishes/dsc05366.webp" alt="Chef's Special Starter" class="rb-kg-img sub" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Live Music & Acoustic Nights -->
-    <section class="rb-live">
-      <div class="rb-container">
-        <div class="rb-live-box">
-          <div class="rb-live-info">
-            <span class="rb-live-pill">WEEKEND VIBES</span>
-            <h2>Live Acoustic & Sufi Evenings</h2>
-            <p>Every Friday, Saturday & Sunday from 8:00 PM onwards, experience soulful unplugged live music in an intimate acoustic setting.</p>
-          </div>
-          <div class="rb-live-action">
-            <a href="/reserve" class="rb-btn-gold" data-open="book">Book a Weekend Table</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="rb-faq">
-      <div class="rb-container rb-faq-inner">
-        <h2 class="rb-sec-title text-center">Frequently Asked Questions</h2>
-        <div class="rb-faq-grid">
-          <details class="rb-faq-item">
-            <summary>What is the minimum age policy for the bar?</summary>
-            <p>Alcoholic beverage service is strictly restricted to guests aged 21 and above, as per Telangana excise regulations. Valid government ID may be requested.</p>
-          </details>
-          <details class="rb-faq-item">
-            <summary>Do you take table reservations in advance?</summary>
-            <p>Yes! We highly recommend reserving a table, especially for weekend dinner slots (Friday to Sunday). We are open {site.hours.display}. You can reserve instantly online or via WhatsApp.</p>
-          </details>
-          <details class="rb-faq-item">
-            <summary>Are vegetarian and Jain options available?</summary>
-            <p>Absolutely. Fursat offers an extensive pure-vegetarian selection including Paneer Tikka, Tandoori Broccoli, Dal Makhani, Veg Biryani, and Jain-customizable preparations.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <MascotOfferModal />
-  <BookingDialog />
-  <SiteFooter />
-<MobileBar active="menu" />
-<script is:inline src="/js/motion-kit.js"></script>
+  <ExperienceLayout
+    active="restaurant-bar"
+    kicker="Craft mixology & culinary intention"
+    h1a="The Bar & Kitchen"
+    h1b="at Fursat"
+    lead="Where slow afternoons melt into electric evenings. Barrel-aged spirits, artisanal cocktails, and live charcoal kebabs crafted for Hyderabad’s most discerning palates."
+    ctas={[
+      { label: 'Reserve a Table', href: '/reserve', primary: true, book: true },
+      { label: 'Signature Cocktails', href: '#cocktails' },
+    ]}
+    hero={{ src: '/assets/interior/bar-front.webp', alt: 'The bar at Fursat Kitchen | Bar', w: 1200, h: 1600, pos: '50% 50%' }}
+    pillars={[
+      { icon: 'cocktail', title: 'Artisanal Mixology', line: 'Botanical syrups infused in-house. 21+.' },
+      { icon: 'flame', title: 'From the Charcoal Pit', line: 'Meats marinated for 24 hours.' },
+      { icon: 'glass', title: 'Zero-Proof Elixirs', line: 'Mocktails as crafted as the cocktails.' },
+      { icon: 'menu', title: 'Vegetarian & Jain', line: 'Paneer Tikka to Veg Biryani.' },
+    ]}
+    momentsA="Bold Flavors from the"
+    momentsB="Royal Tandoor"
+    momentsText="Our culinary philosophy centers on patience. Whole spices stone-pounded daily, meats marinated for 24 hours in aged curd and secret Deccan herbs, slow-roasted over fragrant charcoal."
+    momentsCta={{ label: 'View Full Food Menu', href: '/menu' }}
+    big={{ src: '/assets/dishes/angaraa_chicken_tikka_.webp', alt: 'Angaraa Chicken Tikka', w: 1200, h: 1200 }}
+    top={{ src: '/assets/dishes/tandoori_prawns_.webp', alt: 'Tandoori Prawns', w: 1200, h: 1200 }}
+    bottom={{ src: '/assets/dishes/dsc03308.webp', alt: 'Fursat Signature Kebab', w: 1200, h: 1200 }}
+    cardsId="cocktails"
+    cardsKicker="Artisanal mixology (21+)"
+    cardsTitle="Signature Sips & Spirits"
+    cards={[
+      { tag: 'Cocktail Special', name: 'Life Fursat Bhai', price: '₹629', text: 'Single-estate vodka, French elderflower liqueur, cold-pressed green apple, and crisp citric wash.' },
+      { tag: 'Deccan Inspired', name: 'Gongura Muchatlu', price: '₹629', text: 'Sorrel leaf extract, charred green chilli tincture, fine grain vodka, rimmed with roasted cumin sea salt.' },
+      { tag: 'Zero-Proof Elixir', name: 'Fursat Rahasyam', price: '₹299', text: 'Barman’s secret mocktail creation: botanical citrus blend, star anise smoke, and pomegranate pearls.' },
+      { tag: 'Smoky Classic', name: "Nizam's Old Fashioned", price: '₹675', text: 'Aged Bourbon, Kashmiri saffron bitters, demerara reduction, smoked with dry apple wood chips.' },
+    ]}
+    faqTitle="Frequently Asked Questions"
+    faq={[
+      { q: 'What is the minimum age policy for the bar?', a: 'Alcoholic beverage service is strictly restricted to guests aged 21 and above, as per Telangana excise regulations. Valid government ID may be requested.' },
+      { q: 'Do you take table reservations in advance?', a: `Yes. We recommend requesting a table ahead, especially for weekend dinner slots (Friday to Sunday). We are open ${site.hours.display}. Send a request online or on WhatsApp and we confirm it on WhatsApp.` },
+      { q: 'Are vegetarian and Jain options available?', a: 'Absolutely. Fursat offers an extensive pure-vegetarian selection including Paneer Tikka, Tandoori Broccoli, Dal Makhani, Veg Biryani, and Jain-customizable preparations.' },
+    ]}
+  />
 </Base>
-
-<style is:global>
-  .rb-page {
-    background: #17200F;
-    color: #F4ECDA;
-    font-family: var(--sans, "Manrope", system-ui, sans-serif);
-  }
-  .rb-container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 clamp(16px, 4vw, 40px);
-  }
-  .rb-hero {
-    position: relative;
-    min-height: 75vh;
-    display: flex;
-    align-items: center;
-    padding: clamp(60px, 10vw, 120px) clamp(16px, 4vw, 40px);
-    overflow: hidden;
-  }
-  .rb-hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-  .rb-hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .rb-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(23, 32, 15, 0.75) 0%, rgba(13, 19, 8, 0.95) 100%);
-  }
-  .rb-hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 720px;
-  }
-  .rb-kicker {
-    font-size: 0.8125rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    color: #E0A63C;
-    display: block;
-    margin-bottom: 12px;
-  }
-  .rb-title {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
-    font-size: clamp(2.5rem, 6vw, 4.4rem);
-    font-weight: 600;
-    line-height: 1.1;
-    color: #F4ECDA;
-    margin: 0 0 20px;
-    text-wrap: balance;
-  }
-  .rb-sub {
-    font-size: clamp(1rem, 2vw, 1.15rem);
-    color: rgba(244, 236, 218, 0.85);
-    line-height: 1.6;
-    margin: 0 0 32px;
-  }
-  .rb-hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  .rb-btn-gold {
-    padding: 14px 28px;
-    border-radius: 999px;
-    background: #E0A63C;
-    color: #1A1608;
-    font-weight: 800;
-    text-decoration: none;
-    transition: transform 0.16s ease, background 0.16s ease;
-  }
-  .rb-btn-gold:hover {
-    background: #F4ECDA;
-    transform: translateY(-2px);
-  }
-  .rb-btn-ghost {
-    padding: 14px 26px;
-    border-radius: 999px;
-    background: rgba(244, 236, 218, 0.08);
-    border: 1px solid rgba(224, 166, 60, 0.4);
-    color: #F4ECDA;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background 0.16s ease;
-  }
-  .rb-btn-ghost:hover {
-    background: rgba(224, 166, 60, 0.15);
-  }
-
-  /* Highlights Section */
-  .rb-highlights {
-    padding: clamp(60px, 8vw, 100px) 0;
-    background: #12190B;
-  }
-  .rb-sec-kicker {
-    font-size: 0.8125rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    color: #E0A63C;
-    display: block;
-    margin-bottom: 8px;
-  }
-  .rb-sec-title {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 600;
-    color: #F4ECDA;
-    margin: 0 0 12px;
-  }
-  .rb-sec-desc {
-    font-size: 1rem;
-    color: rgba(244, 236, 218, 0.75);
-    max-width: 620px;
-    margin: 0 0 40px;
-  }
-  .rb-drinks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-  }
-  .rb-drink-card {
-    background: rgba(244, 236, 218, 0.04);
-    border: 1px solid rgba(224, 166, 60, 0.25);
-    border-radius: 20px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-  }
-  .rb-drink-card:hover {
-    transform: translateY(-4px);
-    border-color: #E0A63C;
-  }
-  .rb-dc-tag {
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #E0A63C;
-  }
-  .rb-dc-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .rb-dc-head h3 {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
-    font-size: 1.35rem;
-    margin: 0;
-    color: #F4ECDA;
-  }
-  .rb-dc-price {
-    font-size: 1.1rem;
-    color: #E0A63C;
-    font-weight: 800;
-  }
-  .rb-drink-card p {
-    font-size: 0.9rem;
-    color: rgba(244, 236, 218, 0.75);
-    margin: 4px 0 0;
-    line-height: 1.45;
-  }
-
-  /* Kitchen Split Section */
-  .rb-kitchen {
-    padding: clamp(60px, 8vw, 110px) 0;
-    background: #17200F;
-  }
-  .rb-split {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 48px;
-    align-items: center;
-  }
-  @media (min-width: 900px) {
-    .rb-split {
-      grid-template-columns: 1.1fr 1fr;
-    }
-  }
-  .rb-kitchen-text p {
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: rgba(244, 236, 218, 0.85);
-    margin: 0 0 24px;
-  }
-  .rb-dish-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .rb-dish-list li {
-    font-size: 0.95rem;
-    color: rgba(244, 236, 218, 0.8);
-    padding-left: 20px;
-    position: relative;
-  }
-  .rb-dish-list li::before {
-    content: "✦";
-    position: absolute;
-    left: 0;
-    color: #E0A63C;
-    font-size: 0.8rem;
-    top: 2px;
-  }
-  .rb-dish-list b {
-    color: #E0A63C;
-  }
-  .rb-link-more {
-    color: #E0A63C;
-    font-weight: 800;
-    text-decoration: none;
-    border-bottom: 1.5px solid #E0A63C;
-    padding-bottom: 2px;
-  }
-  .rb-kitchen-gallery {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  .rb-kg-img {
-    width: 100%;
-    height: 280px;
-    object-fit: cover;
-    border-radius: 20px;
-    border: 1.5px solid rgba(224, 166, 60, 0.3);
-  }
-  .rb-kg-img.main {
-    height: 340px;
-    margin-top: -20px;
-  }
-
-  /* Live Section */
-  .rb-live {
-    padding: 0 0 clamp(60px, 8vw, 100px);
-  }
-  .rb-live-box {
-    background: radial-gradient(circle at 10% 50%, #2A381B 0%, #17200F 100%);
-    border: 2px solid rgba(224, 166, 60, 0.4);
-    border-radius: 28px;
-    padding: clamp(32px, 5vw, 54px);
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: flex-start;
-  }
-  @media (min-width: 860px) {
-    .rb-live-box {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
-  .rb-live-pill {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 999px;
-    background: rgba(224, 166, 60, 0.2);
-    border: 1px solid #E0A63C;
-    color: #E0A63C;
-    font-size: 0.75rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
-  .rb-live-info h2 {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-    color: #F4ECDA;
-    margin: 0 0 8px;
-  }
-  .rb-live-info p {
-    font-size: 1rem;
-    color: rgba(244, 236, 218, 0.8);
-    margin: 0;
-    max-width: 580px;
-  }
-
-  /* FAQ */
-  .rb-faq {
-    padding: clamp(60px, 8vw, 100px) 0;
-    background: #12190B;
-  }
-  .rb-faq-inner {
-    max-width: 800px;
-  }
-  .rb-faq-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 36px;
-  }
-  .rb-faq-item {
-    background: rgba(244, 236, 218, 0.04);
-    border: 1px solid rgba(224, 166, 60, 0.2);
-    border-radius: 14px;
-    padding: 16px 20px;
-  }
-  .rb-faq-item summary {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #E0A63C;
-    cursor: pointer;
-    outline: none;
-  }
-  .rb-faq-item p {
-    font-size: 0.95rem;
-    color: rgba(244, 236, 218, 0.8);
-    margin: 12px 0 0;
-    line-height: 1.5;
-  }
-</style>

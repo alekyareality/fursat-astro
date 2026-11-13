@@ -22,7 +22,6 @@ export const GET: APIRoute = () => {
     `- [Menu](${d}/menu/): kitchen dishes and bar drinks`,
     `- [Reserve a table](${d}/reserve/): request a table by date, time and number of guests`,
     `- [Party packages](${d}/party/): bar parties, elite buffet and banquet packages`,
-    `- [Party estimate](${d}/parties/): choose a guest count and package to see a sample estimate`,
     '',
     '## More',
     `- [Restaurant & Bar](${d}/restaurant-bar/)`,

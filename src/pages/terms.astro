@@ -1,6 +1,7 @@
 ---
 // terms.astro - Fursat Offer Terms, House Rules & Privacy Policy
 import Base from '../layouts/Base.astro';
+import '../styles/fk-tokens.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
@@ -10,7 +11,7 @@ import MobileBar from '../components/MobileBar.astro';
   description="Terms and conditions, privacy policy, FSSAI compliance, and booking policies for Fursat Kitchen | Bar, Madhapur, Hyderabad."
   canonical="https://fursatind.in/terms/"
 >
-  <SiteHeader active="terms" />
+  <SiteHeader active="terms" variant="plaster" />
 
   <main class="tr-page" id="main">
     <div class="tr-container">
@@ -105,104 +106,88 @@ import MobileBar from '../components/MobileBar.astro';
 
 <style is:global>
   .tr-page {
-    background: #17200F;
-    color: #F4ECDA;
+    background: transparent;
+    color: #1f2a1a;
     padding: clamp(50px, 7vw, 90px) 0;
-    font-family: var(--sans, "Manrope", system-ui, sans-serif);
-  }
+    font-family:var(--fk-sans)}
   .tr-container {
     max-width: 960px;
     margin: 0 auto;
-    padding: 0 clamp(16px, 4vw, 40px);
-  }
+    padding: 0 clamp(16px, 4vw, 40px)}
   .tr-doc-card {
-    background: #12190B;
-    border: 1.5px solid rgba(224, 166, 60, 0.35);
+    background: #f3e3cb;
+    border: 1.5px solid rgba(201,154,67,0.55);
     border-radius: 28px;
     padding: clamp(28px, 5vw, 56px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  }
+    box-shadow: 0 20px 60px rgba(90,60,20,0.22)}
   .tr-kicker {
     font-size: 0.8125rem;
-    font-weight: 800;
+    font-weight:600;
     letter-spacing: 0.16em;
-    color: #E0A63C;
+    color: #74501a;
     display: block;
-    margin-bottom: 8px;
-  }
+    margin-bottom: 8px}
   .tr-title {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-family:var(--fk-serif);
     font-size: clamp(2rem, 4.5vw, 3rem);
-    color: #F4ECDA;
+    color: #1f2a1a;
     margin: 0 0 8px;
-    line-height: 1.2;
-  }
+    line-height: 1.2}
   .tr-updated {
     font-size: 0.85rem;
-    color: rgba(244, 236, 218, 0.55);
+    color: #4a4232;
     margin: 0 0 36px;
-    border-bottom: 1px solid rgba(244, 236, 218, 0.1);
-    padding-bottom: 16px;
-  }
+    border-bottom: 1px solid rgba(122,78,24,.18);
+    padding-bottom: 16px}
   .tr-section {
-    margin-bottom: 36px;
-  }
+    margin-bottom: 36px}
   .tr-section h2 {
-    font-family: var(--serif, "Playfair Display", Georgia, serif);
+    font-family:var(--fk-serif);
     font-size: 1.45rem;
-    color: #E0A63C;
-    margin: 0 0 14px;
-  }
+    color: #74501a;
+    margin: 0 0 14px}
   .tr-section p {
     font-size: 0.95rem;
-    color: rgba(244, 236, 218, 0.8);
+    color: #4a4232;
     line-height: 1.6;
-    margin: 0 0 12px;
-  }
+    margin: 0 0 12px}
   .tr-section ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-  }
+    gap: 12px}
   .tr-section li {
     font-size: 0.9375rem;
-    color: rgba(244, 236, 218, 0.8);
+    color: #4a4232;
     line-height: 1.55;
     padding-left: 20px;
-    position: relative;
-  }
+    position: relative}
   .tr-section li::before {
     content: "✦";
     position: absolute;
     left: 0;
-    color: #E0A63C;
+    color: #74501a;
     font-size: 0.8rem;
-    top: 2px;
-  }
+    top: 2px}
   .tr-section b {
-    color: #F4ECDA;
-  }
+    color: #1f2a1a}
   .tr-section code {
-    background: rgba(224, 166, 60, 0.2);
-    color: #FFD56B;
+    background: rgba(214,170,90,0.26);
+    color: #9c4f1c;
     padding: 2px 6px;
     border-radius: 4px;
-    font-weight: 700;
-  }
+    font-weight: 700}
   .tr-contact-box {
     margin-top: 40px;
     padding: 20px;
-    background: rgba(224, 166, 60, 0.08);
-    border: 1px dashed rgba(224, 166, 60, 0.4);
+    background: rgba(214,170,90,0.14);
+    border: 1px dashed rgba(201,154,67,0.60);
     border-radius: 16px;
     font-size: 0.9rem;
-    color: rgba(244, 236, 218, 0.85);
-    line-height: 1.6;
-  }
+    color: #4a4232;
+    line-height: 1.6}
   .tr-contact-box a {
-    color: #E0A63C;
-  }
+    color: #74501a}
 </style>

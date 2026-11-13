@@ -1,0 +1,31 @@
+{
+ "src": "design/textless-bg/party-phone.png",
+ "name": "party-phone",
+ "width": 1080,
+ "erase": [
+  [
+   12,
+   520,
+   832,
+   1118
+  ]
+ ],
+ "cuts": [
+  [
+   0,
+   620,
+   "fixed"
+  ],
+  [
+   620,
+   1340,
+   "flex"
+  ],
+  [
+   1340,
+   2218.52,
+   "fixed"
+  ]
+ ],
+ "flatmid": true
+}

@@ -16,19 +16,22 @@ const icons: Record<string,string> = {
 ---
 <section aria-labelledby="rs-x-h">
   <div class="rs-title"><i aria-hidden="true"></i><h2 id="rs-x-h">Choose Your Experience</h2><i aria-hidden="true"></i></div>
-  <div class="rs-xrow">
+  <div class="rs-xrow fk-cards">
     {cards.map((c, i) => (
-      <article class="rs-xcard rs-card-in" style={`--i:${i}`}>
-        <div class="rs-xphoto">
-          <img class="rs-ph" src={`/assets/tour/img/sm/${c.img}.webp`} alt="" width="540" height="720" loading="lazy" decoding="async" />
-          <span class="rs-xicon" aria-hidden="true"><svg viewBox="0 0 24 24" set:html={icons[c.icon]}></svg></span>
+      <article class="rs-xcard rs-card-in fk-card" style={`--i:${i}`}>
+        <div class="fk-card__ph">
+          <img src={`/assets/tour/img/sm/${c.img}.webp`} alt="" width="540" height="405" loading="lazy" decoding="async" />
+          <span class="fk-card__badge" aria-hidden="true"><svg viewBox="0 0 24 24" set:html={icons[c.icon]}></svg></span>
         </div>
-        <div class="rs-xbody">
-          <h3>{c.title}</h3>
-          <p>{c.text}</p>
-          {c.href
-            ? <a class="rs-btn rs-btn-line rs-btn-sm" href={c.href}><span>{c.cta}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            : <button class="rs-btn rs-btn-line rs-btn-sm" type="button" data-xp={c.id}><span>{c.cta}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>}
+        <div class="fk-card__b">
+          <h3 class="fk-card__t">{c.title}</h3>
+          <p class="fk-card__p">{c.text}</p>
+          <div class="fk-card__foot">
+            <span class="fk-card__more">{c.cta}</span>
+            {c.href
+              ? <a class="fk-card__go" href={c.href} aria-label={c.cta}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              : <button class="fk-card__go" type="button" data-xp={c.id} aria-label={c.cta}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>}
+          </div>
         </div>
       </article>
     ))}

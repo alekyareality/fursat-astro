@@ -1,0 +1,11 @@
+{
+ "src": "design/textless-bg/cafe-bar-desk.png",
+ "name": "exp-desk",
+ "width": 2048,
+ "merge": [
+  [
+   0,
+   2
+  ]
+ ]
+}

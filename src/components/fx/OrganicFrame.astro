@@ -1,0 +1,76 @@
+---
+// OrganicFrame v2 — a box shaped by an organic path, with a carved plaster LIP lit from a ridge (height) map.
+// The lip is an SVG stroke whose blurred alpha is used as a height map for feDiffuseLighting + feSpecularLighting,
+// so it reads as raised, glossy plaster (like mock-home / mock-about), with a warm glow around it.
+// Paths are drawn in real pixels (fk-ridge script below) so blur and lighting never stretch.
+// Place <OrganicClip /> once on the page if the content uses clip-path:url(#fk-<name>).
+import { organicPaths } from './organic-paths';
+interface Props {
+  shape: keyof typeof organicPaths; tag?: 'figure' | 'div'; class?: string;
+  glow?: boolean;            // warm halo outside the lip (default on)
+  fill?: boolean;            // cream plaster fill inside (panels); photos leave it off
+  lip?: number;              // lip width in px (default 18)
+}
+const { shape, tag = 'div', class: cls = '', glow = true, fill = false, lip = 16 } = Astro.props;
+const d = organicPaths[shape];
+const Tag = tag;
+---
+<Tag class={`fk-organic fk-ridge ${fill ? 'fk-ridge--fill' : ''} ${cls}`} data-ridge={d} style={`--lip:${lip}px`}>
+  <svg class="fk-ridge__back" aria-hidden="true" focusable="false">
+    {glow && <path class="fk-ridge__glow" d={d} />}
+    <path class="fk-ridge__shadow" d={d} />
+    <path class="fk-ridge__fill" d={d} />
+  </svg>
+  <slot />
+  <svg class="fk-ridge__front" aria-hidden="true" focusable="false">
+    <defs>
+      <filter class="fk-ridge__f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4.4" result="h" />
+        <feDiffuseLighting in="h" surfaceScale="6.5" diffuseConstant="1.05" lighting-color="#fff6e6" result="d">
+          <feDistantLight azimuth="235" elevation="38" />
+        </feDiffuseLighting>
+        <feSpecularLighting in="h" surfaceScale="6.5" specularConstant="0.95" specularExponent="22" lighting-color="#ffffff" result="s">
+          <feDistantLight azimuth="235" elevation="52" />
+        </feSpecularLighting>
+        <feComponentTransfer in="d" result="d2">
+          <feFuncR type="linear" slope="0.5" intercept="0.5" /><feFuncG type="linear" slope="0.52" intercept="0.47" /><feFuncB type="linear" slope="0.56" intercept="0.4" />
+        </feComponentTransfer>
+        <feComposite in="d2" in2="SourceAlpha" operator="in" result="dl" />
+        <feComposite in="s" in2="SourceAlpha" operator="in" result="sl" />
+        <feColorMatrix in="dl" type="matrix" values="1 0 0 0 0  0 0.97 0 0 0  0 0 0.9 0 0  0 0 0 1 0" result="tint" />
+        <feComposite in="sl" in2="tint" operator="arithmetic" k2="0.7" k3="1" result="lip" />
+        <feMerge><feMergeNode in="lip" /></feMerge>
+      </filter>
+    </defs>
+    <path class="fk-ridge__inset" d={d} />
+    <path class="fk-ridge__lip" d={d} />
+  </svg>
+</Tag>
+
+<script>
+  // Redraw each frame's paths in pixel space (viewBox = element size) so lighting and blur stay round.
+  const scale = (d: string, w: number, h: number) => {
+    let i = 0;
+    return d.replace(/-?\d*\.?\d+(?:e-?\d+)?/g, (n) => ((i++ % 2 ? h : w) * parseFloat(n)).toFixed(1));
+  };
+  let uid = 0;
+  const draw = (el: HTMLElement) => {
+    const w = el.clientWidth, h = el.clientHeight, d = el.dataset.ridge;
+    if (!w || !h || !d) return;
+    const pd = scale(d, w, h);
+    el.querySelectorAll<SVGSVGElement>(':scope > svg').forEach((svg) => {
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.querySelectorAll('path').forEach((p) => p.setAttribute('d', pd));
+    });
+  };
+  const frames = document.querySelectorAll<HTMLElement>('.fk-ridge');
+  frames.forEach((el) => {
+    const f = el.querySelector('.fk-ridge__f');
+    if (f) { const id = 'fk-ridge-f' + uid++; f.id = id; el.querySelector('.fk-ridge__lip')?.setAttribute('filter', `url(#${id})`); }
+    draw(el);
+  });
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver((es) => es.forEach((e) => draw(e.target as HTMLElement)));
+    frames.forEach((el) => ro.observe(el));
+  }
+</script>

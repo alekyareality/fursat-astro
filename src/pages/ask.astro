@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import '../styles/fk-tokens.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
@@ -34,8 +35,7 @@ const chips = {
   ogImage="https://fursatind.in/og-image.jpg"
   ogImageAlt="Ask Fursat — the elephant mascot helps you pick your meal"
 >
-<SiteHeader active="ask" />
-<link rel="preload" href="/assets/fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<SiteHeader active="ask" variant="plaster" />
 <link rel="preload" href="/assets/fonts/sacramento-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <a class="skip" href="#ask-main">Skip to main content</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol><symbol id="i-leaf-solid" viewBox="0 0 24 24"><path d="M21 3C11 3 4.5 8.5 4.5 15.5c0 1.4.3 2.7.9 3.8C7 13.5 10 10 14 8c-3 2.7-5.5 6.4-6.8 11.7.8.6 1.8 1 3 1C18 20.7 21.5 14 21 3Z" fill="currentColor"/></symbol><symbol id="i-mark" viewBox="0 0 24 24"><path d="M12 2.2c1.9 2.1 2.7 3.9 2.7 5.8 0 1.9-1.1 3.3-2.7 4.2-1.6-.9-2.7-2.3-2.7-4.2 0-1.9.8-3.7 2.7-5.8Z" fill="var(--as-gold,#C9983F)"/><path d="M3.6 8.2c2.6-.5 4.8.4 5.8 2.6-.4 1.7-1.8 2.8-3.7 2.9-1.6-.2-2.6-2.2-2.1-5.5ZM20.4 8.2c-2.6-.5-4.8.4-5.8 2.6.4 1.7 1.8 2.8 3.7 2.9 1.6-.2 2.6-2.2 2.1-5.5Z" fill="var(--as-gold-lo,#A97C2C)"/><path d="M11.4 21.6c-.3-3.3-2.2-5.4-7-5.6.2 3.4 2.9 5.4 7 5.6ZM12.6 21.6c.3-3.3 2.2-5.4 7-5.6-.2 3.4-2.9 5.4-7 5.6Z" fill="currentColor"/><path d="M12 12.4V22.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
@@ -102,12 +102,10 @@ const chips = {
   <img class="as-endg" src={A + 'end-green.webp'} width="256" height="174" alt="" decoding="async" loading="lazy">
 </div>
 <style is:global>
-@font-face{font-family:"Newsreader";src:url(/assets/fonts/newsreader-latin-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"Newsreader";src:url(/assets/fonts/newsreader-latin-500-normal.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:"Sacramento";src:url(/assets/fonts/sacramento-latin-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
-:root{--as-paper:#F2EBDB;--as-chip:#EEE7D3;--as-field:#FCF9EE;--as-green:#1F4129;--as-green-deep:#142B1B;--as-leaf:#5C6B2E;--as-ink:#1F2A21;--as-mute:#66685A;--as-gold:#C9983F;--as-gold-hi:#E3B55E;--as-gold-lo:#A97C2C;--as-line:#DCCFAE;--as-cream:#F7F0DF;--as-photo:#2B2216;--as-edge:rgb(49,66,41);--as-sh:70 50 15;--as-serif:"Newsreader","Playfair Display",Georgia,serif;--as-sans:var(--sans,"Manrope",system-ui,sans-serif);--as-script:"Sacramento","Snell Roundhand",cursive;--as-ease:cubic-bezier(.16,1,.3,1);--u:min(calc(100vw / 896),1.6px);--bleed:max(0px,calc((100vw - 896 * var(--u)) / 2))}
+:root{--as-paper:#F8EAD8;--as-chip:#EEE7D3;--as-field:#FCF9EE;--as-green:#1F4129;--as-green-deep:#142B1B;--as-leaf:#5C6B2E;--as-ink:#1F2A21;--as-mute:#66685A;--as-gold:#C9983F;--as-gold-hi:#E3B55E;--as-gold-lo:#A97C2C;--as-line:#DCCFAE;--as-cream:#F7F0DF;--as-photo:#2B2216;--as-edge:rgb(49,66,41);--as-sh:70 50 15;--as-serif:var(--fk-serif);--as-sans:var(--fk-sans);--as-script:"Sacramento","Snell Roundhand",cursive;--as-ease:cubic-bezier(.16,1,.3,1);--u:min(calc(100vw / 896),1.6px);--bleed:max(0px,calc((100vw - 896 * var(--u)) / 2))}
 html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
-.as{position:relative;min-height:100svh;overflow-x:clip;background:var(--as-paper);color:var(--as-ink);font-family:var(--as-sans)}
+.as{position:relative;min-height:100svh;overflow-x:clip;padding-top:clamp(88px,9vw,140px);background:var(--as-paper);color:var(--as-ink);font-family:var(--as-sans)}
 :where(.as) svg{display:block}
 .as a:focus-visible,.as button:focus-visible,.as input:focus-visible{outline:2px solid var(--as-green);outline-offset:3px}
 .as-hero{position:relative;z-index:1;height:calc(var(--u)*540)}
@@ -131,7 +129,7 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 .as-reserve svg{width:calc(var(--u)*12);height:calc(var(--u)*12);min-width:12px}
 .as-reserve:active,.ac-chips button:active,.ac-skipchip:active,.ac-go:active,.rs-wa:active{transform:scale(.97)}
 .as-intro{position:absolute;left:calc(var(--u)*70);top:calc(var(--u)*116);width:calc(var(--u)*380)}
-.as-eyebrow{margin:0;font:500 max(9px,calc(var(--u)*8.5))/1.4 var(--as-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--as-mute);white-space:nowrap}
+.as-eyebrow{margin:0;font:500 max(12px,calc(var(--u)*8.5))/1.4 var(--as-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--as-mute);white-space:nowrap}
 .as-eyebrow i{font-style:normal;margin:0 .45em}
 .as-h{margin:calc(var(--u)*14) 0 0;font:400 calc(var(--u)*52)/calc(var(--u)*58) var(--as-serif);color:var(--as-green);letter-spacing:-.01em}
 .as-h span{display:block;white-space:nowrap}
@@ -147,7 +145,7 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
 .ac-title{position:absolute;left:calc(var(--u)*171);top:calc(var(--u)*13);width:calc(var(--u)*270);margin:0;font-weight:400;display:flex;flex-direction:column;align-items:center}
 .ac-ask{position:absolute;left:calc(var(--u)*8);top:calc(var(--u)*-18);font:400 calc(var(--u)*88)/1 var(--as-script);-webkit-text-stroke:calc(var(--u)*.7) currentColor;color:var(--as-gold);transform:rotate(-7deg);transform-origin:left bottom}
 .ac-name{margin-top:calc(var(--u)*54);font:500 calc(var(--u)*40)/1 var(--as-serif);letter-spacing:.16em;padding-left:.16em;color:var(--as-green)}
-.ac-cap{margin-top:calc(var(--u)*4);font:500 max(8px,calc(var(--u)*9))/1 var(--as-sans);letter-spacing:.34em;padding-left:.34em;text-transform:uppercase;color:var(--as-mute);white-space:nowrap}
+.ac-cap{margin-top:calc(var(--u)*4);font:500 max(12px,calc(var(--u)*9))/1 var(--as-sans);letter-spacing:.34em;padding-left:.34em;text-transform:uppercase;color:var(--as-mute);white-space:nowrap}
 .ac-form{position:absolute;left:calc(var(--u)*60);top:calc(var(--u)*139);width:calc(var(--u)*546);height:calc(var(--u)*58);min-height:48px;display:flex;align-items:center;gap:calc(var(--u)*12);padding:0 calc(var(--u)*8) 0 calc(var(--u)*25);border-radius:999px;background:var(--as-field);box-shadow:0 calc(var(--u)*5) calc(var(--u)*16) rgb(var(--as-sh)/.14);transition:box-shadow .15s var(--as-ease)}
 .ac-form:focus-within{box-shadow:0 0 0 3px var(--as-gold),0 calc(var(--u)*5) calc(var(--u)*16) rgb(var(--as-sh)/.14)}
 .ac-lead{flex:none;width:calc(var(--u)*24);height:calc(var(--u)*24);color:var(--as-green)}
@@ -194,13 +192,13 @@ html:has(.as),body:has(.as){overflow-x:clip;background:var(--as-paper)}
   .as-nav{position:relative;order:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
   .as-logo,.as-reserve{position:static}.as-logo span{font-size:1.25rem}.as-logo svg{width:26px;height:26px}.as-links{display:none}.as-reserve{width:auto;padding:0 16px;font-size:.8125rem}.as-reserve svg{width:14px;height:14px}
   .as-intro{position:relative;order:1;left:auto;top:auto;width:auto;padding:20px 24px 0}
-  .as-eyebrow{font-size:.625rem;white-space:normal}.as-h{font-size:clamp(2.25rem,11vw,3.25rem);line-height:1.08;margin-top:12px}.as-h span{white-space:normal;display:inline}.as-rule{margin:16px 0 14px}.as-rule svg{width:20px;height:20px}.as-rule span{width:70px}.as-sub{max-width:30ch;font-size:1rem;line-height:1.45}
+  .as-eyebrow{font-size:.75rem;white-space:normal}.as-h{font-size:clamp(2.25rem,11vw,3.25rem);line-height:1.08;margin-top:12px}.as-h span{white-space:normal;display:inline}.as-rule{margin:16px 0 14px}.as-rule svg{width:20px;height:20px}.as-rule span{width:70px}.as-sub{max-width:30ch;font-size:1rem;line-height:1.45}
   .as-photo{position:relative;right:auto;order:2;height:auto;margin:24px 16px 0;aspect-ratio:4/3.2;border-radius:32px 32px 32px 90px}
   .as-photo img{position:static;width:100%;height:100%;object-fit:cover;object-position:34% 50%}
   .ac{width:auto;height:auto;max-width:calc(100% - 24px);margin:-28px auto 0;padding:34px 18px 20px;border-radius:44px 22px 44px 44px;background:#F7F2E2;border:1px solid #E4D9BC;box-shadow:0 10px 24px rgb(var(--as-sh)/.16);text-align:center}
   .ac-bg,.ac-decor{display:none}
   .ac-title{position:relative;left:auto;top:auto;width:auto;display:flex}
-  .ac-ask{position:absolute;left:calc(50% - 7.5rem);top:-1.4rem;font-size:3.5rem}.ac-name{margin-top:1rem;font-size:2.125rem;padding-left:.16em}.ac-cap{font-size:.625rem}
+  .ac-ask{position:absolute;left:calc(50% - 7.5rem);top:-1.4rem;font-size:3.5rem}.ac-name{margin-top:1rem;font-size:2.125rem;padding-left:.16em}.ac-cap{font-size:.75rem;letter-spacing:.2em}
   .ac-form{position:relative;left:auto;top:auto;width:auto;height:56px;margin-top:22px;padding:0 6px 0 18px;gap:8px}.ac-lead{width:22px;height:22px}.ac-input{font-size:.875rem}.ac-go{width:44px;height:44px}
   .ac-chips{position:relative;left:auto;top:auto;width:auto;gap:10px;margin-top:18px}.ac-chips button{margin-bottom:0}.ac-chips button{height:44px;padding:0 16px;gap:8px;font-size:.875rem}.ac-chips svg{width:18px;height:18px}
   .ac-skip,.ac-br{display:none!important}
@@ -353,7 +351,7 @@ html.fx2 .ac{transition:opacity .8s var(--as-ease),translate .8s var(--as-ease)}
 .as-left{position:relative;z-index:3;display:flex;flex-direction:column;gap:clamp(18px,2vw,26px);min-width:0}
 .as-sp-tl{display:none}
 .as-intro{position:static;left:auto;top:auto;width:auto}
-.as-eyebrow{font-size:.6875rem;white-space:normal}
+.as-eyebrow{font-size:.75rem;white-space:normal}
 .as-h{margin:12px 0 0;font:400 clamp(2.4rem,4.2vw,3.6rem)/1.04 var(--as-serif)}
 .as-h span{display:block;white-space:normal}
 .as-rule{margin:14px 0 10px}.as-rule svg{width:20px;height:20px}.as-rule span{width:70px}
@@ -364,7 +362,7 @@ html.fx2 .ac{transition:opacity .8s var(--as-ease),translate .8s var(--as-ease)}
 .ac-title{position:relative;left:auto;top:auto;width:auto;display:flex;flex-direction:column;align-items:center}
 .ac-ask{position:absolute;left:calc(50% - 9.25rem);top:-1.5rem;font-size:4rem}
 .ac-name{margin-top:1.15rem;font-size:2.5rem;padding-left:.16em}
-.ac-cap{font-size:.6875rem}
+.ac-cap{font-size:.75rem;letter-spacing:.2em}
 .ac-form{position:relative;left:auto;top:auto;width:auto;height:58px;margin-top:22px;padding:0 6px 0 20px;gap:10px}
 .ac-lead{width:24px;height:24px}.ac-input{font-size:.9375rem}.ac-go{width:44px;height:44px}
 .ac-chips{position:relative;left:auto;top:auto;width:auto;gap:10px;margin-top:16px}

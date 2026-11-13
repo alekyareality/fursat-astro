@@ -1,0 +1,40 @@
+{
+ "src": "design/textless-bg/reserve-phone.png",
+ "name": "reserve-phone",
+ "width": 1080,
+ "erase": [
+  [
+   12,
+   1140,
+   832,
+   1456
+  ]
+ ],
+ "cuts": [
+  [
+   0,
+   660,
+   "fixed"
+  ],
+  [
+   660,
+   1200,
+   "flex"
+  ],
+  [
+   1200,
+   1420,
+   "fixed"
+  ],
+  [
+   1420,
+   1710,
+   "flex"
+  ],
+  [
+   1710,
+   2223.15,
+   "fixed"
+  ]
+ ]
+}

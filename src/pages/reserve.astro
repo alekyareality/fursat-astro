@@ -1,14 +1,20 @@
 ---
-// reserve.astro — Fursat /reserve (R2: reference layout, existing header/footer, CURRENT WhatsApp booking logic unchanged).
+// reserve.astro — Fursat /reserve (P3 restyle: embossed cream, forest and gold). Logic unchanged: booking flow, slots.json, WhatsApp message, success screen.
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
+import HyWindows from '../components/hybrid/HyWindows.astro';
+import rDesk from '../../scripts/bg-specs/reserve-desk.out.json';
+import rPhone from '../../scripts/bg-specs/reserve-phone.out.json';
+import OrganicClip from '../components/fx/OrganicClip.astro';
 import ReserveHero from '../components/reserve/ReserveHero.astro';
 import ExperienceCards from '../components/reserve/ExperienceCards.astro';
 import BookingPanel from '../components/reserve/BookingPanel.astro';
 import MoreAtFursat from '../components/reserve/MoreAtFursat.astro';
+import '../styles/fk-tokens.css';
 import '../styles/reserve.css';
+const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fursat in the evening', w: 780, h: 1040, pos: '50% 60%', eager: true };
 ---
 <Base
   title="Reserve a Table — Fursat Kitchen | Bar, Madhapur"
@@ -18,17 +24,48 @@ import '../styles/reserve.css';
   ogImageAlt="Reserve a table at Fursat Kitchen | Bar"
   preloadImage={{ href: '/assets/tour/img/lounge.webp', type: 'image/webp' }}
 >
-  <SiteHeader active="reserve" />
+  <SiteHeader active="reserve" variant="plaster" />
+  <OrganicClip />
+  <script is:inline>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.add('fx-pre'); setTimeout(function () { document.documentElement.classList.remove('fx-pre'); }, 3500); }</script>
   <main class="rs-page" id="main">
-    <ReserveHero />
-    <div class="rs-wrap">
-      <ExperienceCards />
-      <BookingPanel />
-      <MoreAtFursat />
+    <div class="hy rs-hy">
+      <section class="hy-flow rs-seg rs-seg--top">
+        <HyWindows data={rDesk} slice={0} photos={[heroPhoto]} view="d" />
+        <HyWindows data={rPhone} slice={0} photos={[heroPhoto]} view="m" />
+        <div class="rs-stage">
+          <ReserveHero />
+          <BookingPanel />
+        </div>
+      </section>
+      <section class="hy-flow rs-seg rs-seg--mid">
+        <div class="rs-wrap">
+          <ExperienceCards />
+          <MoreAtFursat />
+        </div>
+      </section>
+      <div class="hy-flow rs-seg rs-seg--bot">
+        <p class="rs-close" data-fx-reveal>Good Food. <em>Great Company.</em></p>
+      </div>
     </div>
-    <img class="rs-leaf rs-leaf-br" src="/assets/tour/leaves/leaf-br.webp" alt="" width="205" height="151" loading="lazy" decoding="async" />
-    <img class="rs-leaf rs-leaf-bl" src="/assets/tour/leaves/leaf-bl.webp" alt="" width="164" height="267" loading="lazy" decoding="async" />
   </main>
   <SiteFooter />
   <MobileBar active="reserve" />
+  <script>import '../scripts/fk-motion';</script>
+  <script is:inline>
+    (function () {
+      // fit the live booking form inside the carved cream blob of the desktop art (zoom, never above 1)
+      var seg = document.querySelector('.rs-seg--top'), f = document.querySelector('.rs-hy .rs-panel-frame');
+      if (!seg || !f) return;
+      var fit = function () {
+        if (innerWidth < 1180) { f.style.zoom = ''; return; }
+        var z = parseFloat(f.style.zoom) || 1;
+        var natural = f.getBoundingClientRect().height / z;
+        var avail = seg.clientWidth * 0.6;
+        var nz = Math.min(1, avail / natural);
+        if (Math.abs(nz - z) > 0.005) f.style.zoom = nz.toFixed(3);
+      };
+      fit(); addEventListener('resize', fit);
+      if ('ResizeObserver' in window) new ResizeObserver(fit).observe(f.querySelector('.rs-panel') || f);
+    })();
+  </script>
 </Base>

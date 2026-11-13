@@ -1,0 +1,23 @@
+{
+ "src": "design/textless-bg/cafe-bar-phone.png",
+ "name": "exp-phone",
+ "width": 1080,
+ "merge": [
+  [
+   1,
+   2
+  ]
+ ],
+ "stretch": [
+  [
+   30,
+   230,
+   700
+  ],
+  [
+   985,
+   1062,
+   560
+  ]
+ ]
+}

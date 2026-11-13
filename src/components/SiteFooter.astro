@@ -25,17 +25,20 @@ import site from '../data/site.json';
       <div class="sf-links-grid">
         <div class="sf-link-group">
           <h3 class="sf-group-title">Dining & Drinks</h3>
+          <a href="/reserve">Reserve a Table</a>
           <a href="/menu">Full Menu</a>
           <a href="/restaurant-bar">Restaurant & Bar (21+)</a>
           <a href="/cafe">Fursat Café</a>
           <a href="/ask">Ask Fursat (Mood Search)</a>
           <a href="/order">Order Online <small>(Phase 2)</small></a>
+          <a href="/story">Our Story</a>
         </div>
 
         <div class="sf-link-group">
           <h3 class="sf-group-title">Celebrations</h3>
+          <a href="/party">Party Packages</a>
           <a href="/banquet">The Banquet Hall</a>
-          <a href="/events#birthdays">Birthdays & Anniversaries</a>
+          <a href="/events#birthday">Birthdays & Anniversaries</a>
           <a href="/events#corporate">Corporate Gatherings</a>
           <a href="/events#kitty">Kitty Parties & Socials</a>
           <a href="/catering">Outdoor Catering</a>
@@ -251,4 +254,12 @@ import site from '../data/site.json';
   .sf-legal-links a:hover {
     color: #E0A63C;
   }
+
+  /* v4.6: footer in the brand system — forest green, gold hairline, serif group titles, one sans */
+  .sf-footer { position: relative; background: linear-gradient(180deg, #14321e 0%, #0f2617 100%); color: #f1e6d2; font-family: var(--fk-sans); border-top: 0; }
+  .sf-footer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, #d9b36a 20%, #e8c886 50%, #d9b36a 80%, transparent); }
+  .sf-group-title { font-family: var(--fk-serif); font-weight: 500; font-size: 1.15rem; letter-spacing: 0; text-transform: none; color: #e8c886; }
+  .sf-link-group a { color: rgba(241, 230, 210, .86); font-size: .9375rem; }
+  .sf-tagline, .sf-info-p { color: rgba(241, 230, 210, .78); }
+  @media (hover: hover) { .sf-link-group a:hover { color: #e8c886; } }
 </style>

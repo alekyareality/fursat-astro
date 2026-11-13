@@ -8,6 +8,7 @@
 // Stored request + staff alert are R4 and still need owner approval.
 import site from '../../data/site.json';
 import LiveTicket from './LiveTicket.astro';
+import OrganicFrame from '../fx/OrganicFrame.astro';
 import slotData from '../../data/slots.json';
 import ld from '../../data/ld.json';
 // R3d: success screen. Directions use the repo's existing Google Maps link (ld.json hasMap).
@@ -34,19 +35,17 @@ const occasions = [
 // TODO(client): booking conditions (minimum spend, time limit, deposit, offer terms). Empty = renders "No conditions".
 const conditions: string[] = [];
 ---
-<section id="book" class="rs-panel" tabindex="-1" aria-labelledby="rs-book-h">
-  <div class="rs-pphoto" aria-hidden="true">
-    <img class="rs-ph" src="/assets/tour/img/sm/bar.webp" alt="" width="540" height="720" loading="lazy" decoding="async" />
-    <p class="rs-script">Good Food.<br />Great Company.
-      <svg viewBox="0 0 160 12" preserveAspectRatio="none"><path d="M2 8c30-6 70-7 120-4 14 1 26 2 36 1"/></svg>
-    </p>
-  </div>
-
+<OrganicFrame shape="blobBooking" class="rs-panel-frame" fill lip={16}>
+<section id="book" class="rs-panel fk-organic__body" tabindex="-1" aria-labelledby="rs-book-h">
   <form class="rs-pform" id="res-form" novalidate onsubmit="return false;">
-    <h2 id="rs-book-h" tabindex="-1">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15l2 2 4-4"/></svg>
-      Book Your Experience
-    </h2>
+    <header class="rs-phead">
+      <span class="rs-hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M9 14.5l2 2 4-4"/></svg></span>
+      <div class="rs-htxt">
+        <h2 id="rs-book-h" tabindex="-1">Book Your Experience</h2>
+        <p class="rs-psub">Reserve your table and let us take care of the rest.</p>
+      </div>
+      <i class="rs-hrule" aria-hidden="true"></i>
+    </header>
 
     <div class="rs-modes" role="tablist" aria-label="Booking style" id="rs-modes">
       <span class="rs-mpill" id="rs-mpill" aria-hidden="true"></span>
@@ -169,10 +168,11 @@ const conditions: string[] = [];
         <span id="rs-err-t"></span>
       </p>
       <button type="button" id="res-submit-btn" class="rs-btn rs-btn-solid rs-submit">
+        <svg class="rs-cta-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M9 14.5l2 2 4-4"/></svg>
         <span>Request a Table</span>
-        <svg class="rs-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.37a9.9 9.9 0 0 0 4.74 1.2c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c.01-4.54 3.7-8.24 8.24-8.24z"/></svg>
+        <svg class="rs-cta-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
-      <p class="rs-cond" role="note">{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · This is a request, not a confirmed booking · Seating is a preference.</p>
+      <p class="rs-cond" role="note">A request, not a confirmed booking. Not confirmed until we reply on WhatsApp.<br />{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · Seating is a preference.</p>
       <p class="rs-fine" id="rs-fine">Opens WhatsApp with your details.</p>
       <noscript><p class="rs-fine"><a href="https://wa.me/919059670033?text=Hi%20Fursat!%20I%20would%20like%20to%20reserve%20a%20table." target="_blank" rel="noopener">No JavaScript? Request a table on WhatsApp.</a></p></noscript>
     </div>
@@ -192,8 +192,6 @@ const conditions: string[] = [];
     </div>
   </form>
 
-  <LiveTicket variant="aside" />
-
   <aside class="rs-perks" aria-label="At Fursat">
     <div class="rs-perk">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 17.5h17M5 17.5a7 7 0 0 1 14 0M12 8.5v-2M10.5 6.5h3M2.5 20h19"/></svg>
@@ -206,6 +204,7 @@ const conditions: string[] = [];
     <div class="rs-hours"><b>Open</b>{site.hours.schedule.map(h => <span>{h.days}<br />{h.open} – {h.close}</span>)}</div>
   </aside>
 </section>
+</OrganicFrame>
 
 <script is:inline>
 (function () {

@@ -1,0 +1,16 @@
+{
+ "src": "design/textless-bg/about-phone.png",
+ "name": "about-phone",
+ "width": 1080,
+ "stretch": [
+  [
+   930,
+   1030,
+   720,
+   [
+    0,
+    150
+   ]
+  ]
+ ]
+}
