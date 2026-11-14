@@ -43,8 +43,18 @@ const inr = (n: number) => '\u20b9' + n.toLocaleString('en-IN');
 const lead = (p: any) => p.sections.slice(0, 4).map((s: any) => [s.h, s.rule || (s.lines || []).join(' \u00b7 ')]);
 const waBase = 'https://wa.me/' + WA + '?text=';
 const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a party.');
+// "Pick your occasion": text comes from party.json group blurbs and prices only (no extra claims).
+const groupOf = (id: string) => data.groups.find((g: any) => g.id === id)!;
+const fromPrice = (id: string) => Math.min(...data.packages.filter((p: any) => p.group === id).map((p: any) => p.price));
+const occasions = [
+  { id: 'birthday', t: 'Birthdays & anniversaries', g: 'elite', base: '/assets/venue/interior/long-table-dining', sized: true, w: 1200, h: 1600, alt: 'A long table set for a group celebration at Fursat' },
+  { id: 'corporate', t: 'Corporate gatherings', g: 'banquet', base: '/assets/venue/banquet/banquet-tables-03', sized: true, w: 1200, h: 1600, alt: 'The banquet hall in a U-shaped layout for a corporate meeting', link: { href: '/banquet#enquire', label: 'Enquire about the hall' } },
+  { id: 'kitty', t: 'Kitty parties', g: 'elite', base: '/assets/venue/interior/mural-booths', sized: true, w: 1200, h: 1600, alt: 'Booths beside the Hyderabad mural wall at Fursat' },
+  { id: 'barbash', t: 'Bar bashes', g: 'bar', base: '/assets/interior/fursat_space_08', sized: false, w: 1280, h: 1706, alt: 'The bar counter at Fursat', note: 'Alcohol is served to guests aged 21 and above only.' },
+];
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<Base title="Party Packages — Fursat Kitchen | Bar, Madhapur" description="Party packages at Fursat, Madhapur: bar parties, elite buffet and banquet, with everything included listed. Pick one and we confirm on WhatsApp." canonical="https://fursatind.in/party/">
+<Base title="Parties & Events — Fursat Kitchen | Bar, Madhapur" description="Birthdays, corporate gatherings, kitty parties and bar bashes at Fursat, Madhapur. Pick your occasion, choose a package: bar parties, elite buffet or banquet. We confirm on WhatsApp." canonical="https://fursatind.in/party/">
 <a class="skip" href="#pk-main">Skip to main content</a>
 <div class="pa">
   <SiteHeader active="celebrate" variant="plaster" />
@@ -56,7 +66,7 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
     <HyWindows data={pDesk} slice={2} photos={[closePhoto]} view="d" anchor="bottom" />
 
     <div class="pa-hero" data-fx-hero>
-      <p class="hy-kicker" data-fx-step>Party packages</p>
+      <p class="hy-kicker" data-fx-step>Parties &amp; Events</p>
       <h1 class="hy-h1 pa-h1" id="pa-h1" data-fx-step data-fx-words>Plan your party <span class="hl">at Fursat</span></h1>
       <svg class="hy-orn--draw pa-orn" viewBox="0 0 260 24" aria-hidden="true" data-fx-step data-fx-draw>
         <path d="M2 12 H104" /><path d="M156 12 H258" /><path d="M130 3 C122 9 122 15 130 21 C138 15 138 9 130 3 Z" /><path d="M110 12 C116 6 122 6 126 12 M150 12 C144 6 138 6 134 12" />
@@ -76,6 +86,33 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
           <a class="fk-btn fk-btn--line" href={waHi} target="_blank" rel="noopener"><span>WhatsApp us</span></a>
         </div>
       </div>
+  <section class="pa-occ" aria-labelledby="pa-occ-h">
+    <h2 class="pa-sec-h" id="pa-occ-h">Pick your occasion</h2>
+    <p class="pa-blurb">Choose what you are celebrating. We open the package type that fits.</p>
+    <div class="fk-cards pa-occ-grid">
+      {occasions.map((o) => (
+        <article class="fk-card pa-oc" id={o.id}>
+          <div class="fk-card__ph">
+            <img
+              src={o.sized ? `${o.base}-720.webp` : `${o.base}.webp`}
+              srcset={o.sized ? `${o.base}-480.webp 480w, ${o.base}-720.webp 720w, ${o.base}.webp 1200w` : undefined}
+              sizes="(max-width: 599px) 92vw, (max-width: 999px) 46vw, 24vw"
+              alt={o.alt} width={o.w} height={o.h} loading="lazy" decoding="async" />
+          </div>
+          <div class="fk-card__b">
+            <span class="fk-card__tag">{groupOf(o.g).label}</span>
+            <h3 class="fk-card__t">{o.t}</h3>
+            <p class="fk-card__p">{groupOf(o.g).blurb}{o.note ? ' ' + o.note : ''}</p>
+            <p class="fk-card__price"><span>From {inr(fromPrice(o.g))}</span><small>+ taxes, {UNIT}</small></p>
+            <div class="pa-oc-act">
+              <button type="button" class="fk-btn fk-btn--solid" data-occ={o.g}><span>See {groupOf(o.g).label} packages</span><svg viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} /></button>
+              {o.link && <a class="fk-btn fk-btn--line" href={o.link.href}><span>{o.link.label}</span></a>}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
   <main id="pk-main" tabindex="-1" class="pa-main">
     <div class="pa-host" id="pa-host" data-pose="idle"><div class="pa-stage"><img class="pa-p pa-idle" src="/assets/ask-mascot-md.webp" alt="Fursat&rsquo;s elephant host in a gold crown and sunglasses" width="400" height="400" decoding="async"><img class="pa-p pa-cheer" src="/assets/ask-mascot-cheer-md.webp" alt="" width="400" height="400" decoding="async"></div></div>
     <h2 class="pa-sec-h">Our Party Packages</h2>
@@ -408,6 +445,19 @@ const waHi = waBase + encodeURIComponent('Hi Fursat! I would like to plan a part
 .pa .pa-addlist li:last-child{border-bottom:0}
 @media(max-width:900px){.pa-lower{grid-template-columns:1fr}.pa .pa-plan{position:static}}
 @media(max-width:767px){.pa-flow{padding-top:calc(640 * var(--u))}.pa .pa-lower,.pa .pa-right{min-width:0}.pa .pa-acc,.pa .pa-addlist,.pa .pa-plan{margin-left:0;margin-right:0}.pa .pa-sec-h{font-size:1.8rem}}
+/* ───────── v5.9.2 Pick your occasion (merged from /events) ───────── */
+.pa-occ{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px) clamp(28px,4vw,56px)}
+.pa-occ .pa-blurb{margin:0 0 22px}
+.pa-occ-grid{grid-template-columns:1fr}
+@media(min-width:600px){.pa-occ-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1000px){.pa-occ-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.pa-oc{scroll-margin-top:110px}
+.pa-oc .fk-card__t{padding-right:0}
+.pa-oc .fk-card__price{margin:4px 0 0}
+.pa-oc-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:10px}
+.pa-oc-act .fk-btn{min-height:44px;padding:0 16px;font:600 .9375rem/1.15 var(--fk-sans);text-align:center}
+.pa-oc-act .fk-btn svg{flex:none}
+.pa-oc-act .fk-btn.fk-btn--solid{flex:1 1 auto}
 </style>
 <script is:inline src="/js/party.js"></script>
 <script is:inline src="/js/motion-kit.js"></script>

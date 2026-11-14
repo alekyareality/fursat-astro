@@ -50,22 +50,18 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
 
       <!-- Celebrate Dropdown -->
       <div class="sh-drop">
-        <button class:list={["sh-link", "sh-drop-btn", { active: active === 'celebrate' || active === 'banquet' || active === 'events' || active === 'party' }]} type="button" aria-expanded="false">
+        <button class:list={["sh-link", "sh-drop-btn", { active: active === 'celebrate' || active === 'banquet' || active === 'party' }]} type="button" aria-expanded="false">
           <span>Celebrate</span>
           <svg class="sh-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="sh-menu">
           <a href="/party" class="sh-sub-item">
-            <span class="sh-si-t">Party Packages</span>
-            <small>Bar parties, elite buffets and banquet spreads</small>
+            <span class="sh-si-t">Parties &amp; Events</span>
+            <small>Birthdays, kitty parties, bar bashes and packages</small>
           </a>
           <a href="/banquet" class="sh-sub-item">
             <span class="sh-si-t">The Grand Banquet Hall</span>
             <small>Capacity 50–350 guests with AV & live stage</small>
-          </a>
-          <a href="/events" class="sh-sub-item">
-            <span class="sh-si-t">Private Celebrations</span>
-            <small>Birthdays, Anniversaries, Kitty & Bar Bashes</small>
           </a>
           <a href="/catering" class="sh-sub-item">
             <span class="sh-si-t">Outdoor Catering</span>
@@ -128,9 +124,8 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
       </div>
       <div class="sh-mp-group">
         <span class="sh-mp-label">Occasions & Spaces</span>
-        <a href="/party" class="sh-mp-link">Party Packages</a>
+        <a href="/party" class="sh-mp-link">Parties &amp; Events</a>
         <a href="/banquet" class="sh-mp-link">The Banquet Hall (50–350 Pax)</a>
-        <a href="/events" class="sh-mp-link">Birthdays, Kitty & Bar Bashes</a>
         <a href="/catering" class="sh-mp-link">Outdoor Catering</a>
       </div>
       <div class="sh-mp-group">

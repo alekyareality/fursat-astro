@@ -91,7 +91,7 @@
 .fk-organic__body { position: relative; z-index: 1; }
 
 /* Plaster surface for whole pages: seamless tile under the grain. */
-/* v5.6 one plaster for every page without background art (menu, banquet, events, catering, order, terms):
+/* v5.6 one plaster for every page without background art (menu, banquet, catering, order, terms):
    the tile multiplied onto a warm base lands on the same peach cream as the hybrid art (#eed4b2 measured) */
 :root{--fk-plaster-base:#f6e4c9;--fk-plaster:#f6e4c9 url(/assets/surface/plaster-tile.webp) 0 0/900px 900px;}
 .fk-plaster{background:var(--fk-plaster);background-blend-mode:multiply}
@@ -283,16 +283,16 @@ body:has(.sh-plaster){--sans:var(--fk-sans)}
 @keyframes fk-vt-in{from{opacity:0;transform:translateY(16px)}}
 @media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 
-/* ═════ v4.6 CREAM CONTENT PAGES — banquet, events, catering, order, terms (no background art yet) ═════
+/* ═════ v4.6 CREAM CONTENT PAGES — banquet, catering, order, terms (no background art yet) ═════
    Plaster surface + room for the fixed cream header. Each page's own stylesheet maps its colours to the roles above. */
-.bq-page,.ev-page,.ct-page,.od-page,.tr-page{flex:none;background:var(--fk-plaster);background-blend-mode:multiply;color:#2b2416;}
+.bq-page,.ct-page,.od-page,.tr-page{flex:none;background:var(--fk-plaster);background-blend-mode:multiply;color:#2b2416;}
 /* the page body under these pages is the same plaster (the old site cream #F2EEE4 showed at the edges) */
-html:has(:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page)),body:has(:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page)){background:var(--fk-plaster);background-blend-mode:multiply}
+html:has(:is(.bq-page,.ct-page,.od-page,.tr-page)),body:has(:is(.bq-page,.ct-page,.od-page,.tr-page)){background:var(--fk-plaster);background-blend-mode:multiply}
 /* top room for the fixed header: beats each page's own padding shorthand */
-main:is(.bq-page,.ev-page,.ct-page,.od-page,.tr-page){padding-top:clamp(92px,9.5vw,148px)}
+main:is(.bq-page,.ct-page,.od-page,.tr-page){padding-top:clamp(92px,9.5vw,148px)}
 @media (max-width:767px){.bq-hero-overlay{background:rgba(248,234,216,.9)!important}.bq-kicker{white-space:normal;letter-spacing:.12em}}
-.bq-page :is(h1,h2,h3),.ev-page :is(h1,h2,h3),.ct-page :is(h1,h2,h3),.od-page :is(h1,h2,h3),.tr-page :is(h1,h2,h3){font-family:var(--fk-serif);font-weight:500;color:#1b3a26;text-wrap:balance}
-.bq-page p,.ev-page p,.ct-page p,.od-page p,.tr-page p{text-wrap:pretty}
+.bq-page :is(h1,h2,h3),.ct-page :is(h1,h2,h3),.od-page :is(h1,h2,h3),.tr-page :is(h1,h2,h3){font-family:var(--fk-serif);font-weight:500;color:#1b3a26;text-wrap:balance}
+.bq-page p,.ct-page p,.od-page p,.tr-page p{text-wrap:pretty}
 .bq-page :is(input,select,textarea),.ct-page :is(input,select,textarea),.od-page :is(input,select,textarea){box-sizing:border-box;max-width:100%;min-width:0;background:#fffaf2;color:#2b2416;border-color:rgba(201,154,67,.55);font-size:max(16px,1rem)}
 .bq-page :is(input,select,textarea):focus-visible,.ct-page :is(input,select,textarea):focus-visible{outline:2px solid var(--fk-focus);outline-offset:2px}
 .bq-form-field,.ct-field{min-width:0}

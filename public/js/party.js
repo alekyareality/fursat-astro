@@ -15,9 +15,14 @@
     if(pkg){pkg.value=b.getAttribute("data-plan");update()}
     pose("cheer",1500);stars();window.dispatchEvent(new CustomEvent("fursat:plan"));var t=document.getElementById("pa-plan");if(t)t.scrollIntoView({behavior:calm?"auto":"smooth",block:"start"});if(n)n.focus({preventScroll:true})})});
   var tabs=document.querySelectorAll("[data-tab]"),groups=document.querySelectorAll("[data-group].pa-group");
-  tabs.forEach(function(t){t.addEventListener("click",function(){var id=t.getAttribute("data-tab");
-    tabs.forEach(function(x){x.setAttribute("aria-pressed",x===t?"true":"false")});
-    groups.forEach(function(g){var on=g.getAttribute("data-group")===id;g.hidden=!on;if(on){var r=g.querySelector(".pk-row");if(r)r.scrollLeft=0}})})});
+  function showGroup(id){var ok=false;tabs.forEach(function(x){if(x.getAttribute("data-tab")===id)ok=true});if(!ok)return false;
+    tabs.forEach(function(x){x.setAttribute("aria-pressed",x.getAttribute("data-tab")===id?"true":"false")});
+    groups.forEach(function(g){var on=g.getAttribute("data-group")===id;g.hidden=!on;if(on){var r=g.querySelector(".pk-row");if(r)r.scrollLeft=0}});return true}
+  tabs.forEach(function(t){t.addEventListener("click",function(){showGroup(t.getAttribute("data-tab"))})});
+  function toPackages(id,focus){if(!showGroup(id))return;var h=document.querySelector(".pa-sec-h:not(#pa-occ-h)"),t=document.querySelector('[data-tab="'+id+'"]');
+    if(h)h.scrollIntoView({behavior:calm?"auto":"smooth",block:"start"});if(focus&&t)t.focus({preventScroll:true})}
+  document.querySelectorAll("[data-occ]").forEach(function(b){b.addEventListener("click",function(){toPackages(b.getAttribute("data-occ"),true)})});
+  var qg=new URLSearchParams(location.search).get("group");if(qg)requestAnimationFrame(function(){toPackages(qg,false)});
   if(!calm&&matchMedia("(hover: hover) and (pointer: fine)").matches){
     document.querySelectorAll(".pk").forEach(function(c){var f=c.querySelector(".pk-face"),raf=0;
       c.addEventListener("pointermove",function(e){if(raf)return;raf=requestAnimationFrame(function(){raf=0;var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
