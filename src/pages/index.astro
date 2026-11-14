@@ -5,7 +5,6 @@ import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import SvgDefs from '../components/SvgDefs.astro';
 import Hero from '../components/Hero.astro';
-import TableSpread from '../components/TableSpread.astro';
 import MarqueeStrip from '../components/MarqueeStrip.astro';
 import PanoramicViewer from '../components/PanoramicViewer.astro';
 import DayNightSlider from '../components/DayNightSlider.astro';
@@ -39,13 +38,12 @@ const OFFER_ENABLED = false;
     type: 'image/webp'
   }}
 >
-<!-- SiteHeader is intentionally suppressed on Home: Hero.astro contains the original site nav (header.top.rv) driven by 01.js–19.js. Showing both would duplicate navigation. -->
+<!-- One header on Home: SiteHeader. Hero.astro still ships its legacy nav (header.top), hidden by the CSS at the bottom of this file, so only one nav shows. -->
 <SiteHeader active="home" />
 <a class="skip" href="#main">Skip to main content</a>
 <SvgDefs />
 <main id="main" tabindex="-1">
 <Hero />
-<TableSpread />
 
 <!-- ── Offer Strip ──────────────────────────────────────────────────── -->
 <div class="hm-offer-strip" hidden={!OFFER_ENABLED} style={OFFER_ENABLED ? undefined : "display:none"}>

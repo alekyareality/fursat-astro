@@ -21,6 +21,7 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
 
     <!-- Desktop Navigation -->
     <nav class="sh-nav" aria-label="Main Navigation">
+      <a href="/" class:list={["sh-link", { active: active === 'home' }]} aria-current={active === 'home' ? 'page' : undefined}>Home</a>
       <!-- Menu Dropdown -->
       <div class="sh-drop">
         <button class:list={["sh-link", "sh-drop-btn", { active: active === 'menu' }]} type="button" aria-expanded="false">
@@ -118,6 +119,7 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
   <div class="sh-mobile-panel" id="sh-mobile-panel" hidden>
     <div class="sh-mp-inner">
       <div class="sh-mp-group">
+        <a href="/" class="sh-mp-link" aria-current={active === 'home' ? 'page' : undefined}>Home</a>
         <span class="sh-mp-label">Dining & Bar</span>
         <a href="/menu" class="sh-mp-link">Explore Menu</a>
         <a href="/restaurant-bar" class="sh-mp-link">Restaurant & Bar (21+)</a>

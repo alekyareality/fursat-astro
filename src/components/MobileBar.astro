@@ -1,12 +1,19 @@
 ---
 // MobileBar.astro — Fixed bottom navigation bar for mobile screens
-// Shows on screens < 768px only. Icons: Menu | Ask | Reserve | WhatsApp
+// Shows on screens < 768px only. Icons: Home | Menu | Ask | Reserve | WhatsApp
 interface Props {
   active?: string;
 }
 const { active = '' } = Astro.props;
 ---
 <nav class="mb-bar" aria-label="Mobile quick navigation">
+  <a href="/" class:list={["mb-item", { "mb-active": active === "home" }]} aria-label="Home" aria-current={active === "home" ? "page" : undefined}>
+    <svg class="mb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/>
+    </svg>
+    <span>Home</span>
+  </a>
+
   <a href="/menu" class:list={["mb-item", { "mb-active": active === "menu" }]} aria-label="Menu">
     <svg class="mb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M5 4v8a3 3 0 0 0 3 3v5M8 4v6M11 4v8a3 3 0 0 1-3 3M17 20V4c-2 1.5-3 4-3 7h3"/>
