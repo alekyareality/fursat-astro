@@ -63,11 +63,11 @@
           to=function(i){return"circle(150% at "+(odd(i)?"0% 100%":"100% 0%")+")"};
       var tl=g.timeline({defaults:{ease:"expo.out"},onComplete:function(){g.set(cards.concat(imgs,seals,out.querySelectorAll(".mc-img img,.mc-ph svg")),{clearProps:"all"})}});
       tl.add(function(){out.classList.remove("pre")},0)
-        .from(out.querySelector(".rs-h"),{y:12,autoAlpha:0,duration:.5},0)
-        .from(cards,{y:28,autoAlpha:0,duration:.7,stagger:{each:.07,amount:.4}},.05)
+        .from(out.querySelector(".rs-h"),{y:12,opacity:0,duration:.5},0)
+        .from(cards,{y:28,opacity:0,duration:.7,stagger:{each:.07,amount:.4}},.05)
         .fromTo(imgs,{clipPath:from},{clipPath:to,duration:.9,stagger:{each:.07,amount:.4}},.08)
         .from(out.querySelectorAll(".mc-img img,.mc-ph svg"),{scale:1.18,duration:1.1,stagger:{each:.07,amount:.4}},.08)
-        .from(seals,{scale:.9,autoAlpha:0,duration:.45,stagger:{each:.07,amount:.4}},.45)})}
+        .from(seals,{scale:.9,opacity:0,duration:.45,stagger:{each:.07,amount:.4}},.45)})}
   function render(text,top,quiet){
     var sree=mode==="sree",anyAlc=top.some(function(r){return r.it.a});
     var wa="https://wa.me/919059670033?text="+encodeURIComponent("Hi Fursat! I would like to reserve a table.");
@@ -85,7 +85,7 @@
       +'<p class="rs-fine">Prices from the Fursat printed menu. Taxes extra.'+(anyAlc?" Alcohol is served to guests aged 21 and above only.":"")+"</p>";
     out.innerHTML=h;out.hidden=false;if(quiet)return;
     if(st)st.textContent=sree?top.length+(top.length===1?" item":" items")+" in Sreemukhi\u2019s special menu":top.length?top.length+(top.length===1?" result":" results")+" for "+text+". Press Tab to move through them.":"No results for "+text+".";bloom();var hd=document.getElementById("as-rh");hd.scrollIntoView({behavior:calm?"auto":"smooth",block:"start"});hd.focus({preventScroll:true})}
-  function go(){var text=q.value.trim();if(!text&&mode!=="sree"){q.focus();return}
+  function go(){var text=q.value.trim();if(!text&&mode!=="sree"){if(st)st.textContent="Type what you feel like eating, then press Enter.";q.focus();return}
     if(st)st.textContent="";out.hidden=false;out.innerHTML=calm?"":'<div class="mot-skeleton" style="height:120px;border-radius:14px;margin:16px 0;"></div><div class="mot-skeleton" style="height:120px;border-radius:14px;margin:16px 0;"></div>';
     ready.then(function(){render(text,run(text))})}
   function setMode(m){mode=m;document.querySelectorAll("[data-tab]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.tab===m?"true":"false")});
