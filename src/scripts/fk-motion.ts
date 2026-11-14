@@ -21,6 +21,11 @@
  *   magnetic actions      green main buttons drift toward the pointer with a spring
  *   card spotlight        .fk-card / .mv-card get --mx/--my so a soft cream light follows the pointer
  *   scroll progress       gold hairline under the plaster header fills with page scroll
+ * v5.12a shared reveal (tokens in fk-tokens.css):
+ *   [data-fk-reveal]      fades in + rises --fk-reveal-y (12px) when in view, once
+ *   [data-fk-stagger]     group: its direct children reveal one after another; value = step in ms
+ *                         (default 80, kept between 60 and 100; whole group capped at 400ms)
+ *   .fk-press / .fk-lift  CSS-only button press and card hover lift (see fk-tokens.css)
  * Everything is skipped under prefers-reduced-motion (content is visible by default).
  */
 import { animate as aAnimate, createTimeline, stagger, svg } from 'animejs';
@@ -216,12 +221,43 @@ function progress() {
   scroll(mAnimate(bar, { scaleX: [0, 1] }, { ease: 'linear' }));
 }
 
+// v5.12a shared reveal: opacity + translateY only. Distance and duration come from the CSS tokens.
+const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1]; // = --fk-ease-out
+function token(name: string, fallback: number, unit: 'px' | 'ms') {
+  const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+  return Number.isFinite(v) ? (unit === 'ms' ? v / 1000 : v) : fallback;
+}
+function fkReveals() {
+  const dist = token('--fk-reveal-y', 12, 'px');
+  const dur = Math.min(token('--fk-dur-3', 0.32, 'ms'), 0.4);
+  const hide = (el: HTMLElement) => { el.style.opacity = '0'; el.style.transform = `translateY(${dist}px)`; };
+  const show = (el: HTMLElement, delay = 0) => {
+    mAnimate(el, { opacity: 1, transform: 'translateY(0px)' }, { duration: dur, delay, ease: EASE_OUT })
+      .finished.then(() => requestAnimationFrame(() => { el.style.removeProperty('opacity'); el.style.removeProperty('transform'); })); // after Motion commits its end values
+  };
+  const margin = '0px 0px -8% 0px';
+  document.querySelectorAll<HTMLElement>('[data-fk-stagger]').forEach((group) => {
+    const kids = [...group.children] as HTMLElement[];
+    if (!kids.length) return;
+    const raw = parseInt(group.dataset.fkStagger || '', 10);
+    let step = Math.min(100, Math.max(60, Number.isFinite(raw) ? raw : 80));
+    if (kids.length > 1) step = Math.min(step, 400 / (kids.length - 1));
+    kids.forEach(hide);
+    inView(group, () => { kids.forEach((k, i) => show(k, (i * step) / 1000)); }, { margin });
+  });
+  document.querySelectorAll<HTMLElement>('[data-fk-reveal]').forEach((el) => {
+    if (el.parentElement?.hasAttribute('data-fk-stagger')) return; // child of a stagger group
+    hide(el);
+    inView(el, () => { show(el); }, { margin });
+  });
+}
+
 function boot() {
   const root = document.documentElement;
   root.classList.add('fx-on');
   if (reduce) { root.classList.add('fx-reduce'); root.classList.remove('fx-pre'); return; }
   // each effect is independent: one failing never blocks the rest or hides content
-  for (const fn of [heroes, titles, draws, counters, pops, reveals, frames, parallax, tilts, magnets, spotlights, progress]) {
+  for (const fn of [heroes, titles, draws, counters, pops, reveals, frames, parallax, tilts, magnets, spotlights, progress, fkReveals]) {
     try { fn(); } catch (e) { console.warn('[fk-motion]', fn.name, e); }
   }
   // hero steps start hidden (.fx-pre); always reveal them, even if a timeline failed
