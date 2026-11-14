@@ -1,0 +1,5 @@
+{
+  "_note": "Home 'What's new at Fursat'. Offers/packages below are computed from slots.json and party.json. Add owner-approved announcements and wishes here. Wishes show only between 'from' and 'to' (YYYY-MM-DD). Example wish: { \"text\": \"Happy Diwali from all of us at Fursat\", \"from\": \"2026-11-07\", \"to\": \"2026-11-09\" }",
+  "announcements": [],
+  "wishes": []
+}

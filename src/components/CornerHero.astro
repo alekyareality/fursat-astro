@@ -8,13 +8,16 @@ interface Props { page: 'cafe' | 'bar' | 'party' | 'banquet'; kicker: string; h1
 const { page, kicker, h1a, h1b, lead, ctas, alt, id = 'ch-h1' } = Astro.props;
 const h = (heroes as any)[page];
 const textRight = h.windows[0][0] < 20; // window on the left (banquet art) -> text on the right
-const src = (w: number) => `/assets/heroes/${page}-${w}.webp`;
+const src = (w: number, n = 1) => `/assets/heroes/${page}${n > 1 ? '-' + n : ''}-${w}.webp`;
+const sets = Array.from({ length: h.sets || 1 }, (_, i) => i + 1);
+const srcset = (n: number) => `${src(768, n)} 768w, ${src(1024, n)} 1024w, ${src(1536, n)} 1536w`;
 ---
 <section class:list={['ch', { 'ch--right': textRight }]} aria-labelledby={id} style={`--ch-ar:${h.w}/${h.h};--ch-lqip:url('${h.lqip}')`}>
   <div class="ch-art">
     <img class="ch-img" src={src(1024)} srcset={`${src(768)} 768w, ${src(1024)} 1024w, ${src(1536)} 1536w`} sizes="100vw"
       width={h.w} height={h.h} alt={alt} fetchpriority="high" loading="eager" decoding="async"
       onload="this.classList.add('is-in')" />
+    {sets.slice(1).map((n) => <img class="ch-img ch-alt" data-srcset={srcset(n)} sizes="100vw" width={h.w} height={h.h} alt="" aria-hidden="true" decoding="async" />)}
   </div>
   <div class="ch-copy">
     <p class="ch-kick">{kicker}</p>
@@ -31,13 +34,38 @@ const src = (w: number) => `/assets/heroes/${page}-${w}.webp`;
     </div>
   </div>
 </section>
-<script is:inline>document.querySelectorAll('.ch-img').forEach(function (i) { if (i.complete && i.naturalWidth) i.classList.add('is-in'); });</script>
+<script is:inline>
+(function () {
+  document.querySelectorAll('.ch-img:not(.ch-alt)').forEach(function (i) { if (i.complete && i.naturalWidth) i.classList.add('is-in'); });
+  /* rotate the photo sets: extra images load when the browser is idle, then cross-fade every 6 s.
+     Paused off-screen and in background tabs; no rotation under reduced motion. */
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.ch').forEach(function (hero) {
+    var alts = [].slice.call(hero.querySelectorAll('.ch-alt')); if (!alts.length) return;
+    var all = [hero.querySelector('.ch-img:not(.ch-alt)')].concat(alts), cur = 0, vis = true, timer = 0;
+    function load() { alts.forEach(function (im) { im.srcset = im.dataset.srcset; im.src = im.dataset.srcset.split(' ')[0]; }); }
+    (window.requestIdleCallback || function (f) { setTimeout(f, 1500); })(load);
+    function next() {
+      var n = (cur + 1) % all.length, im = all[n];
+      if (!im.complete || !im.naturalWidth) return;           // not loaded yet: try next tick
+      all[cur].classList.remove('is-top'); im.classList.add('is-in', 'is-top');
+      if (cur) all[cur].classList.remove('is-in');
+      cur = n;
+    }
+    function run() { clearInterval(timer); if (vis && !document.hidden) timer = setInterval(next, 6000); }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { vis = e[0].isIntersecting; run(); }).observe(hero);
+    document.addEventListener('visibilitychange', run); run();
+  });
+})();
+</script>
 <style>
 .ch { position: relative; display: grid; align-items: center; min-height: min(100svh, calc(var(--sh-h, 84px) + 100vw * 941 / 1672)); padding-top: var(--sh-h, 84px); overflow: hidden; background: #f6e4c9 var(--ch-lqip) center / cover no-repeat; isolation: isolate; }
 .ch-art { position: absolute; inset: var(--sh-h, 84px) 0 0 0; z-index: -1; }
 .ch-img { width: 100%; height: 100%; object-fit: cover; object-position: right center; display: block; opacity: 0; transition: opacity 600ms cubic-bezier(.23,1,.32,1); }
 .ch--right .ch-img { object-position: left center; }
 .ch-img.is-in { opacity: 1; }
+.ch-alt { position: absolute; inset: 0; transition-duration: 1200ms; }
+.ch-alt.is-top { z-index: 1; }
 .ch-copy { width: min(52%, 640px); margin-left: clamp(20px, 6vw, 96px); padding: clamp(24px, 4vw, 48px) 0; color: #1f2a1a; }
 .ch--right .ch-copy { margin-left: auto; margin-right: clamp(20px, 6vw, 96px); width: min(50%, 600px); }
 .ch-kick { margin: 0 0 12px; font: 600 .8rem/1.2 var(--fk-sans, Poppins, sans-serif); letter-spacing: .18em; text-transform: uppercase; color: #8a5a22; }

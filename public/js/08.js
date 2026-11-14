@@ -23,6 +23,8 @@ b.addEventListener("click",function(){
  if(want&&!A.paused){want=false;fade(ui);ui();return}
  want=true;disarm();play()});
 document.addEventListener("visibilitychange",function(){if(document.hidden){if(!A.paused){A.pause();hid=true}}else if(hid){hid=false;if(want)play()}});
+/* any "Skip" on the intro stops the voice at once (do not wait for the intro to finish removing itself) */
+document.addEventListener("click",function(e){var t=e.target&&e.target.closest&&e.target.closest("#fxskipall,#heliskip,[data-skip-intro],.intro-skip");if(!t)return;want=false;disarm();if(!A.paused)fade(ui);else ui()},true);
 /* the voice belongs to the intro: when the intro ends (or is skipped) it fades out and the button goes away */
 var iv2=setInterval(function(){if($("intro"))return;clearInterval(iv2);want=false;disarm();if(!A.paused)fade(ui);else ui()},300);
 arm();A.addEventListener("canplaythrough",function(){if(want&&A.paused&&!ended)play()},{once:true});if(want)play();else ui();

@@ -1,5 +1,6 @@
 {
  "cafe": {
+  "sets": 3,
   "w": 1672,
   "h": 941,
   "windows": [
@@ -10,9 +11,10 @@
     72.05
    ]
   ],
-  "lqip": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAABwAwCdASoYAA4APu1mqk2ppaQiMAgBMB2JQBOgDh4UX5Mt+AAA/vkVSy9rSCjSdO8Rdf/1lbxgSVtoE3oBMZ8Fa8snfEonfT6Cc/7pYaAAAA=="
+  "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAABwAwCdASoYAA4APu1mq04ppaQiMAgBMB2JQBOj+AFBbzDhGYAA/vkVSy9rSCjSdO8Rdf/1lL3dJ+qA+H8xgr3GTd3lodCGRW8XnBoVXliF2Di3OX4x0KcRRnAAAA=="
  },
  "bar": {
+  "sets": 3,
   "w": 1672,
   "h": 941,
   "windows": [
@@ -23,9 +25,10 @@
     80.23
    ]
   ],
-  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADwAwCdASoYAA4ALrV2u12jqampiYC0SyAE6ZQZLGQlMALw/Z6cO0AAAP7v4utgmqsV8L0SbI2LFC/Ic9CvXpzcAhkqzpTEWk1voF+Zc3ga99KhZRoObKLvJupMFhvFhul2m6DVJ5EH8PXdEEAAAA=="
+  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABQBACdASoYAA4APu1orU2ppqSiMAgBMB2JZACdMoR4GCnJ34CUIu+CzjagAP7nKF9dlh6ZgMDUmzyjry3Nhlxw25Qaowa6QwrrawCovaVXv7mICbO/feMyrNKimA6eWZQcJjUkkyjQ2AiyuXuMqrTnur1oUiC6L2dJgTmOnmgAAA=="
  },
  "party": {
+  "sets": 2,
   "w": 1672,
   "h": 941,
   "windows": [
@@ -45,6 +48,7 @@
   "lqip": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADwAwCdASoYAA4ALrV2u12jqampiYC0SzAE6ZQANT7e/gUu+t3pa+IAAP7yBRbcgEpY2T0w9KEKi/w6SHMRpTs9SllIJuNr2i/sAtOq25NmYgc2PKSy5vm+s5zmK53yLFkQQwBE+AAAAA=="
  },
  "banquet": {
+  "sets": 3,
   "w": 1672,
   "h": 941,
   "windows": [

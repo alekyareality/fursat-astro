@@ -77,9 +77,20 @@ export function initTour(root, opts = {}) { // opts.auto === false: no auto-ente
       if (ctx.state === 'suspended') await ctx.resume();
       await load();
       if (!on) return;
-      if (!src) { src = ctx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(gain); src.start(); }
+      if (!src) { nextAt = ctx.currentTime + 0.05; pump(); }
       fade(0.55, 1.2);
     }
+    /* smooth loop: each pass of the track fades in over XF s and, XF s before its end, the next pass starts and fades in
+       while this one fades out, so the end flows back into the start with no jump or silence */
+    const XF = 2.5; let nextAt = 0;
+    function pass(at) {
+      const d = buf.duration, s = ctx.createBufferSource(), g = ctx.createGain();
+      s.buffer = buf; s.connect(g); g.connect(gain);
+      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(1, at + XF);
+      g.gain.setValueAtTime(1, at + d - XF); g.gain.linearRampToValueAtTime(0, at + d);
+      s.start(at); s.stop(at + d + 0.05); src = s; nextAt = at + d - XF;
+    }
+    function pump() { if (!ctx || !buf) return; while (nextAt - ctx.currentTime < 6) pass(nextAt); setTimeout(pump, 1500); }
     function stop() {
       if (el) { el.pause(); return; }
       if (!ctx) return; fade(0, 0.6);

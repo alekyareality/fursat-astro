@@ -696,9 +696,9 @@ const conditions: string[] = [];
     const esc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
     const fold = (l) => { let o = '', r = l; while (r.length > 60) { o += r.slice(0, 60) + '\r\n '; r = r.slice(60); } return o + r; };
     const desc = ['Not confirmed until Fursat replies on WhatsApp.', 'Guests: ' + sent.guests, 'Seating preference: ' + (sent.zone || 'No preference')].concat(sent.offer ? ['Offer: ' + sent.offer] : []).join('\n');
-    return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fursat Kitchen & Bar//Table request//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
+    return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fursat Kitchen | Bar//Table request//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
       'UID:fursat-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '@fursatind.in', 'DTSTAMP:' + z(Date.now()), 'DTSTART:' + z(start), 'DTEND:' + z(end),
-      'SUMMARY:Fursat table request (pending)', 'LOCATION:' + esc('Fursat Kitchen & Bar, Capital Park, Madhapur, Hyderabad'), 'DESCRIPTION:' + esc(desc), 'STATUS:TENTATIVE', 'END:VEVENT', 'END:VCALENDAR'].map(fold).join('\r\n') + '\r\n';
+      'SUMMARY:Fursat table request (pending)', 'LOCATION:' + esc('Fursat Kitchen | Bar, Capital Park, Madhapur, Hyderabad'), 'DESCRIPTION:' + esc(desc), 'STATUS:TENTATIVE', 'END:VEVENT', 'END:VCALENDAR'].map(fold).join('\r\n') + '\r\n';
   }
   function save(blob, name) { const a = mk('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
   $('rs-ics').addEventListener('click', () => { if (!sent) return; save(new Blob([icsText()], { type: 'text/calendar;charset=utf-8' }), 'fursat-table-request.ics'); doneS.textContent = 'Calendar file downloaded. It is marked pending.'; });
@@ -718,7 +718,7 @@ const conditions: string[] = [];
     do { c.font = '700 ' + fs + 'px "Playfair Display", Georgia, serif'; fs -= 2; } while (c.measureText(line1).width > 940 && fs > 40);
     c.fillStyle = '#fff2d4'; c.shadowColor = 'rgba(0,0,0,.55)'; c.shadowBlur = 24; c.fillText(line1, W / 2, 1560); c.shadowBlur = 0;
     c.fillStyle = '#e0a63c'; c.fillRect(W / 2 - 70, 1614, 140, 4);
-    c.font = '500 44px Poppins, system-ui, sans-serif'; c.fillStyle = '#f3c56b'; if ('letterSpacing' in c) c.letterSpacing = '3px'; c.fillText('Fursat Kitchen & Bar, Madhapur', W / 2, 1690);
+    c.font = '500 44px Poppins, system-ui, sans-serif'; c.fillStyle = '#f3c56b'; if ('letterSpacing' in c) c.letterSpacing = '3px'; c.fillText('Fursat Kitchen | Bar, Madhapur', W / 2, 1690);
     return await new Promise((ok) => cv.toBlob(ok, 'image/png'));
   }
   $('rs-story').addEventListener('click', async () => {
