@@ -1,8 +1,11 @@
 (function(){
   var q=document.getElementById("af-q"),send=document.getElementById("af-send"),out=document.getElementById("as-results");
   if(!q||!send||!out)return;
-  window.fursatAsk=true;
-  var mode="food",calm=matchMedia("(prefers-reduced-motion: reduce)").matches,items=[],ready=fetch("/data/menu.json").then(function(r){return r.json()}).then(function(j){items=j}).catch(function(){items=[]});
+  var mode="food",calm=matchMedia("(prefers-reduced-motion: reduce)").matches,items=[],ok=null,st=document.getElementById("as-status"),
+    ready=fetch("/data/menu.json").then(function(r){return r.json()}).then(function(j){
+      try{ok=JSON.parse(document.getElementById("ask-ok").textContent)}catch(e){ok=null}
+      /* only items whose name and price match food.json / drinks.json are shown, under that name */
+      items=ok?j.filter(function(it){return ok.hasOwnProperty(it.n+"|"+it.p)}).map(function(it){var c={};for(var k in it)c[k]=it[k];c.n=ok[it.n+"|"+it.p];return c}):[]}).catch(function(){items=[]});
   var STOP=/^(i|im|i'm|am|a|an|the|and|or|for|with|me|my|to|of|in|it|its|it's|is|some|something|want|feel|like|looking|need|give|show|find|something|under|below|than|less|rs|inr|please|veg|vegetarian|nonveg|non|spicy|spice|hot|want|something|dish|food|eat|eating|good|best)$/;
   var MOODS=[
     {re:/hungry|starving|full meal|heavy|filling|lunch|dinner|big appetite/,cats:["Biryani & rice","Mains","South Indian","Regional specials"],w:3,why:"Filling"},
@@ -76,16 +79,17 @@
       var tags=[it.c,it.a?"Contains alcohol, 21+":""].filter(Boolean).join(" \u00b7 "),
           vg=it.v==="veg"?'<span class="mc-vg is-veg" role="img" aria-label="Veg"></span>':it.v==="nonveg"?'<span class="mc-vg is-nv" role="img" aria-label="Non-veg"></span>':"",
           chips=why.slice(0,2).concat(it.s&&why.indexOf("Spicy")<0?["Spicy"]:[]).slice(0,2).map(function(w){return"<li>"+esc(w)+"</li>"}).join("");
-      return '<li class="mc" data-t="'+(tn%4)+'" style="--k:'+k+'"><div class="mc-fig"><div class="mc-img">'+(it.img?'<img src="'+esc(it.img)+'" alt="'+esc(it.n)+'" width="640" height="576" loading="lazy" decoding="async">':'<span class="mc-ph">'+LEAF+'</span>')+'</div><span class="mc-seal">'+(it.f?"<small>from</small>":"")+"<b>\u20b9"+it.p+'</b></span></div><div class="mc-b"><h3 class="mc-n" translate="no">'+vg+"<span>"+esc(it.n)+'</span></h3><p class="mc-m">'+esc(tags)+"</p>"+(chips?'<ul class="mc-w" aria-label="Why this pick">'+chips+"</ul>":"")+"</div></li>"}).join("")+"</ol>"}
+      return '<li class="mc" data-t="'+(tn%4)+'" style="--k:'+k+'"><div class="mc-fig"><div class="mc-img">'+(it.img?'<img src="'+esc(it.img)+'" alt="'+esc(it.n)+'" width="640" height="576" loading="lazy" decoding="async">':'<span class="mc-ph">'+LEAF+'</span>')+'</div><span class="mc-seal">'+(it.f?"<small>from</small>":"")+"<b>\u20b9"+it.p+'</b></span></div><div class="mc-b"><h3 class="mc-n" translate="no">'+vg+'<a href=\"/menu/#dish='+encodeURIComponent(it.n)+'\"><span>'+esc(it.n)+'</span></a></h3><p class="mc-m">'+esc(tags)+"</p>"+(chips?'<ul class="mc-w" aria-label="Why this pick">'+chips+"</ul>":"")+"</div></li>"}).join("")+"</ol>"}
     else h+='<p class="rs-none">Try \u201csomething spicy under 400\u201d, \u201cdessert\u201d or \u201cchicken biryani\u201d.</p>';
     h+='<div class="rs-sep" aria-hidden="true">'+SPRIG+'</div><a class="rs-wa" href="'+wa+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.47 15.04L2 22l5.1-1.34A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.2 15.02l-.3-.18-3 .79.8-2.92-.2-.31A8.1 8.1 0 0 1 12.04 3.8zM8.6 7.4c-.2 0-.5.07-.75.35-.26.28-1 .97-1 2.37s1.03 2.75 1.17 2.94c.14.19 2 3.17 4.9 4.32 2.4.95 2.9.76 3.42.71.52-.05 1.68-.69 1.92-1.35.24-.66.24-1.23.17-1.35-.07-.12-.26-.19-.54-.33-.28-.14-1.68-.83-1.94-.92-.26-.1-.45-.14-.64.14-.19.28-.73.92-.9 1.1-.16.19-.33.21-.61.07-.28-.14-1.2-.44-2.28-1.4-.84-.75-1.41-1.68-1.58-1.96-.16-.28-.02-.43.12-.57.13-.13.28-.33.43-.5.14-.16.19-.28.28-.47.1-.19.05-.35-.02-.5-.07-.14-.62-1.55-.86-2.1-.22-.5-.45-.5-.64-.51z"/></svg><span>Reserve a table on WhatsApp</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>'
       +'<p class="rs-fine">Prices from the Fursat printed menu. Taxes extra.'+(anyAlc?" Alcohol is served to guests aged 21 and above only.":"")+"</p>";
-    out.innerHTML=h;out.hidden=false;if(quiet)return;bloom();var hd=document.getElementById("as-rh");hd.scrollIntoView({behavior:calm?"auto":"smooth",block:"start"});hd.focus({preventScroll:true})}
+    out.innerHTML=h;out.hidden=false;if(quiet)return;
+    if(st)st.textContent=sree?top.length+(top.length===1?" item":" items")+" in Sreemukhi\u2019s special menu":top.length?top.length+(top.length===1?" result":" results")+" for "+text+". Press Tab to move through them.":"No results for "+text+".";bloom();var hd=document.getElementById("as-rh");hd.scrollIntoView({behavior:calm?"auto":"smooth",block:"start"});hd.focus({preventScroll:true})}
   function go(){var text=q.value.trim();if(!text&&mode!=="sree"){q.focus();return}
-    out.hidden=false;out.innerHTML='<div class="mot-skeleton" style="height:120px;border-radius:14px;margin:16px 0;"></div><div class="mot-skeleton" style="height:120px;border-radius:14px;margin:16px 0;"></div>';
+    if(st)st.textContent="";out.hidden=false;out.innerHTML=calm?"":'<div class="mot-skeleton" style="height:120px;border-radius:14px;margin:16px 0;"></div><div class="mot-skeleton" style="height:120px;border-radius:14px;margin:16px 0;"></div>';
     ready.then(function(){render(text,run(text))})}
   function setMode(m){mode=m;document.querySelectorAll("[data-tab]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.tab===m?"true":"false")});
-    document.querySelectorAll("[data-for]").forEach(function(c){c.hidden=c.dataset.for!==m});q.placeholder=HI[m];q.value="";out.hidden=true;out.innerHTML="";
+    document.querySelectorAll("[data-for]").forEach(function(c){c.hidden=c.dataset.for!==m});q.placeholder=HI[m];q.value="";out.hidden=true;out.innerHTML="";if(st)st.textContent="";
     if(m==="sree")ready.then(function(){render("",run(""))});else preview()}
   document.querySelectorAll("[data-tab]").forEach(function(b){b.addEventListener("click",function(){setMode(b.dataset.tab)})});
   send.addEventListener("click",go);
@@ -100,5 +104,4 @@
     try{rec.start()}catch(x){rec=null;mic.setAttribute("aria-pressed","false")}})}
   function preview(){ready.then(function(){if(mode==="sree")return;var t=HI[mode];render(t,run(t).slice(0,3),true)})}
   preview();
-  window.fursatRun=function(t){return run(t).map(function(r){return r.it.n+" "+r.it.p})};
 })();

@@ -13,6 +13,8 @@ import aDesk from '../../scripts/bg-specs/about-desk.out.json';
 import aPhone from '../../scripts/bg-specs/about-phone.out.json';
 import '../styles/fk-tokens.css';
 
+// TODO(client): founder / story line (not shown until the client provides one).
+// TODO(client): FSSAI licence number and GSTIN in site.json legal.* — the rows appear automatically once filled.
 // Real facts only (handoff §3/§4). Values still TODO(client) in site.json are not shown.
 const real = (v?: string) => !!v && !v.startsWith('TODO');
 const address = `Capital Park, ${site.address.line2}, ${site.address.state} ${site.address.pin}`;
@@ -69,7 +71,6 @@ const plateM = [{ x: 303, y: 2083 }, { x: 703, y: 2083 }, { x: 303, y: 2378 }, {
         <h2 class="hy-h2 st-h2"><span>Crafted for</span> <span class="hl">Good Times</span></h2>
         <p class="hy-lead">FURSAT is more than a restaurant. It&rsquo;s a place where flavours, conversations and celebrations come together.</p>
         <p class="hy-lead">A café, a kitchen, a bar and banquet spaces under one roof at Capital Park, Madhapur. Come for a coffee, stay for dinner, bring everyone for the celebration.</p>
-        <!-- TODO(client): founder / story line -->
         <svg class="hy-orn--draw st-rule" viewBox="0 0 260 24" aria-hidden="true" data-fx-draw><path d="M2 12 H120" /><path d="M128 12 C132 6 138 6 142 12 C138 18 132 18 128 12 Z" /></svg>
         <p class="st-tag">Fursat, aur kuch nahi!</p>
       </div>
@@ -99,7 +100,6 @@ const plateM = [{ x: 303, y: 2083 }, { x: 703, y: 2083 }, { x: 303, y: 2378 }, {
         <dl>
           {legalRows.map((r) => (<div><dt>{r.k}</dt><dd>{r.v}</dd></div>))}
         </dl>
-        <!-- TODO(client): FSSAI licence number and GSTIN (site.json legal.*). Rows appear automatically once filled. -->
       </div>
     </section>
   </main>
