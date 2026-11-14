@@ -1,0 +1,53 @@
+---
+// "Visit & reserve": every fact comes from site.json. Lines still marked TODO(client) there are not shown.
+import site from '../../data/site.json';
+
+const real = (v?: string) => !!v && !v.startsWith('TODO');
+const a = site.address;
+const address = [real(a.line1) ? a.line1 : '', a.line2, `${a.state} ${a.pin}`].filter(Boolean).join(', ');
+// TODO(client): site.json address.line1 (unit number, building) is still a placeholder, so it is left out here.
+const schedule = site.hours.schedule;
+const tel = `+${site.phonePlain}`;
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<section class="hv" id="plan-visit" aria-labelledby="hv-h">
+  <div class="hv-info" data-hr>
+    <h2 class="hh2" id="hv-h">Visit &amp; reserve</h2>
+    <dl class="hv-dl">
+      <div><dt>Address</dt><dd>{address}</dd></div>
+      <div>
+        <dt>Hours</dt>
+        <dd>
+          <ul class="hv-hrs">
+            {schedule.map((s) => <li><span>{s.days}</span><span class="hv-t">{s.open} – {s.close}</span></li>)}
+          </ul>
+        </dd>
+      </div>
+      <div><dt>Phone</dt><dd><a class="hv-tel" href={`tel:${tel}`}>{site.phone}</a></dd></div>
+    </dl>
+  </div>
+  <div class="hv-btns" data-hr>
+    <button class="hb hb--pri" type="button" data-open="book">Reserve a table<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></button>
+    <a class="hb hb--ghost" href={`https://wa.me/${site.phonePlain}`} target="_blank" rel="noopener">WhatsApp</a>
+    <a class="hb hb--ghost" href={`tel:${tel}`}>Call</a>
+    <a class="hb hb--ghost" href={a.googleMaps} target="_blank" rel="noopener">Directions</a>
+  </div>
+</section>
+
+<style is:global>
+.hv{background:#F4ECDA;color:#1A1608;padding:clamp(36px,5vw,64px) clamp(12px,2vw,28px) clamp(40px,5.5vw,72px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3.4vw,56px);align-items:center}
+.hv-info{display:flex;flex-direction:column;gap:clamp(16px,2vw,24px);min-width:0}
+.hv-dl{margin:0;display:grid;gap:18px}
+.hv-dl>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:baseline}
+.hv-dl dt{font:600 12px/1.4 Poppins,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#74501a}
+.hv-dl dd{margin:0;font:400 16px/1.6 Poppins,system-ui,sans-serif}
+.hv-hrs{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.hv-hrs li{display:flex;flex-wrap:wrap;gap:2px 16px}
+.hv-hrs li>span:first-child{min-width:5.5em}
+.hv-t{font-variant-numeric:tabular-nums}
+.hv-tel{display:inline-flex;align-items:center;min-height:44px;color:#1A1608;font-variant-numeric:tabular-nums;text-underline-offset:3px}
+.hv-tel:focus-visible{outline:2px solid #C94716;outline-offset:3px;border-radius:4px}
+.hv-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:899px){.hv{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:479px){.hv-btns{grid-template-columns:minmax(0,1fr)}.hv-dl>div{grid-template-columns:minmax(0,1fr);gap:2px}}
+</style>

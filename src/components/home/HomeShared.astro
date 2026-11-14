@@ -1,0 +1,24 @@
+---
+// Shared by the H2 sections (Celebrate, Our story, Visit & reserve): buttons, section rhythm and one gentle reveal.
+// Reveal = opacity + 12px over 400ms, once, only for blocks below the fold; none under prefers-reduced-motion; content stays visible without JS.
+---
+<script is:inline>
+(function(){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches||!('IntersectionObserver' in window))return;
+  var vh=innerHeight,io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('hr-pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+  [].forEach.call(document.querySelectorAll('[data-hr]'),function(el){if(el.getBoundingClientRect().top<vh)return;el.classList.add('hr-pre');io.observe(el)});
+})();
+</script>
+<style is:global>
+.hb{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #404517;font:600 15px/1 Poppins,system-ui,sans-serif;text-decoration:none;text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;appearance:none;transition:background .2s,color .2s,transform .2s}
+.hb svg{flex:none;width:15px;height:15px}
+.hb--pri{background:#404517;color:#F8F3E6}
+.hb--ghost{background:transparent;color:#1A1608;border-color:#1A1608}
+.hb:active{transform:scale(.98)}
+.hb:focus-visible{outline:2px solid #C94716;outline-offset:3px}
+@media(hover:hover){.hb--pri:hover{background:#2c300e}.hb--ghost:hover{background:#1A1608;color:#F8F3E6}}
+.hh2{margin:0;font:500 clamp(28px,3.8vw,44px)/1.12 "Playfair Display",Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
+.hlead{margin:0;font:400 16px/1.6 Poppins,system-ui,sans-serif;color:#4a4330;max-width:60ch}
+@media(prefers-reduced-motion:no-preference){[data-hr]{transition:opacity .4s ease,transform .4s ease}.hr-pre{opacity:0;transform:translateY(12px)}}
+@media(prefers-reduced-motion:reduce){.hb{transition:none}}
+</style>

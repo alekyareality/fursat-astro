@@ -1,0 +1,65 @@
+---
+// "Celebrate at Fursat": one real banquet photo + the 3 party groups. Labels, blurbs and "From" prices come from party.json only.
+import party from '../../data/party.json';
+
+const rupee = (n: number) => `₹${n.toLocaleString('en-IN')}`;
+const groups = (party as any).groups.map((g: any) => ({
+  ...g,
+  from: rupee(Math.min(...(party as any).packages.filter((p: any) => p.group === g.id).map((p: any) => p.price))),
+}));
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<section class="hc" id="celebrate" aria-labelledby="hc-h">
+  <figure class="hc-ph" data-hr>
+    <img
+      src="/assets/venue/banquet/banquet-tables-05-720.webp"
+      srcset="/assets/venue/banquet/banquet-tables-05-480.webp 480w, /assets/venue/banquet/banquet-tables-05-720.webp 720w"
+      sizes="(min-width: 900px) 48vw, 100vw"
+      alt="The Fursat banquet hall set with a long U-shaped table dressed in red and gold under warm ceiling lights"
+      width="720" height="960" loading="lazy" decoding="async" />
+  </figure>
+  <div class="hc-body" data-hr>
+    <h2 class="hh2" id="hc-h">Celebrate at Fursat</h2>
+    <p class="hlead">Birthdays, corporate gatherings, kitty parties and bar parties.</p>
+    <ul class="hc-gl">
+      {groups.map((g: any) => (
+        <li>
+          <a class="hc-g" href={`/party?group=${g.id}`}>
+            <span class="hc-gt"><b>{g.label}</b><small>{g.blurb}</small></span>
+            <span class="hc-gp">From {g.from}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="hc-btns">
+      <a class="hb hb--pri" href="/party">Plan my party</a>
+      <a class="hb hb--ghost" href="/banquet">See the banquet hall</a>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+.hc{background:#F4ECDA;color:#1A1608;padding:clamp(36px,5vw,64px) clamp(12px,2vw,28px);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(20px,3.4vw,56px);align-items:center}
+.hc-ph{margin:0;border-radius:26px;overflow:hidden;background:#d9cdb3;aspect-ratio:4/5;max-height:600px;width:100%}
+.hc-ph img{display:block;width:100%;height:100%;object-fit:cover}
+.hc-body{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hc-gl{list-style:none;margin:8px 0 0;padding:0;border-top:1px solid rgba(116,80,26,.35)}
+.hc-g{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:72px;padding:14px 4px;border-bottom:1px solid rgba(116,80,26,.35);color:#1A1608;text-decoration:none}
+.hc-gt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hc-gt b{font:500 clamp(18px,1.6vw,21px)/1.25 "Playfair Display",Georgia,serif}
+.hc-gt small{font:400 13.5px/1.45 Poppins,system-ui,sans-serif;color:#4a4330}
+.hc-gp{display:inline-flex;align-items:center;gap:10px;font:600 15px/1 Poppins,system-ui,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hc-gp svg{width:15px;height:15px;transition:transform .25s}
+.hc-g:focus-visible{outline:2px solid #C94716;outline-offset:2px;border-radius:8px}
+@media(hover:hover){.hc-g:hover .hc-gp svg{transform:translateX(4px)}}
+.hc-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+@media(max-width:899px){
+  .hc{grid-template-columns:minmax(0,1fr)}
+  .hc-ph{aspect-ratio:4/3;max-height:none}
+}
+@media(max-width:479px){
+  .hc-btns .hb{flex:1 1 100%}
+  .hc-g{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){.hc-gp svg{transition:none}}
+</style>

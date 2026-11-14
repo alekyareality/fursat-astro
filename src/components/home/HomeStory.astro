@@ -1,0 +1,27 @@
+---
+// "Our story": two lines taken word for word from /story ("Crafted for Good Times") + one real interior photo.
+---
+<section class="hst" id="our-story" aria-labelledby="hst-h">
+  <div class="hst-body" data-hr>
+    <h2 class="hh2" id="hst-h">Our story</h2>
+    <p class="hlead">A café, a kitchen, a bar and banquet spaces under one roof at Capital Park, Madhapur.</p>
+    <p class="hlead">Come for a coffee, stay for dinner, bring everyone for the celebration.</p>
+    <div class="hst-btns"><a class="hb hb--ghost" href="/story">Read our story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+  <figure class="hst-ph" data-hr>
+    <img src="/assets/interior/fursat_space_03-720.webp" alt="Fursat interior with patterned wooden screens, green plants and a black-and-white tiled floor" width="720" height="900" loading="lazy" decoding="async" />
+  </figure>
+</section>
+
+<style is:global>
+.hst{background:#EFE4CB;color:#1A1608;padding:clamp(36px,5vw,64px) clamp(12px,2vw,28px);display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(20px,3.4vw,56px);align-items:center}
+.hst-body{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hst-btns{margin-top:8px}
+.hst-ph{margin:0;border-radius:26px;overflow:hidden;background:#d9cdb3;aspect-ratio:4/5;max-height:560px;width:100%}
+.hst-ph img{display:block;width:100%;height:100%;object-fit:cover}
+@media(max-width:899px){
+  .hst{grid-template-columns:minmax(0,1fr)}
+  .hst-ph{order:-1;aspect-ratio:4/3;max-height:none}
+}
+@media(max-width:479px){.hst-btns .hb{width:100%}}
+</style>
