@@ -19,6 +19,11 @@ function init(root: HTMLElement) {
   const KEY = 'fursat_picks_v2';
   let lines: Line[] = [];
   try { lines = JSON.parse(sessionStorage.getItem(KEY) || '[]'); } catch { lines = []; }
+  // spoken status for the picks: "2 items in Picks, subtotal ₹..." after every add / remove (the open dish card has its own status)
+  const live = document.createElement('p');
+  live.className = 'mv-sr'; live.setAttribute('role', 'status'); live.setAttribute('aria-live', 'polite');
+  root.append(live);
+  let lastN = count(lines), ready = false;
   const cnt = $('#mv-cnt')!, sub = $('#mv-sub')!, wa = $<HTMLAnchorElement>('#mv-wa')!, listEl = $('#mv-picks-list')!;
   const panel = $('#mv-picks-panel')!, toggle = $('#mv-picks-toggle')!, bag = $('#mv-bag')!, picksEl = $('#mv-picks')!;
   const cntMini = $('#mv-cnt-mini')!, bagMini = $('#mv-bag-mini')!;
@@ -37,8 +42,12 @@ function init(root: HTMLElement) {
       : '<li style="grid-template-columns:1fr"><span>Nothing here yet. Tap + on any dish or drink.</span></li>';
     try { sessionStorage.setItem(KEY, JSON.stringify(lines)); } catch { /* private mode */ }
     root.dispatchEvent(new CustomEvent('mv:picks'));
+    const n = count(lines);
+    if (ready && n !== lastN && !($<HTMLDialogElement>('#mv-sheet')?.open)) live.textContent = n ? `${n} ${n === 1 ? 'item' : 'items'} in Picks, subtotal ${money(total(lines))}` : 'Picks are empty';
+    lastN = n;
   }
   render();
+  ready = true;
 
   const itemFrom = (b: HTMLElement): MenuItem => ({
     n: b.dataset.n || '', p: Number(b.dataset.p), c: b.dataset.c || '', k: (b.dataset.k as MenuItem['k']) || 'food',
@@ -385,12 +394,15 @@ function init(root: HTMLElement) {
     }
     function openSheet(li: HTMLElement) {
       if (sheet!.open || closing) return;
-      opener = $('.mv-open', li);
+      // focus returns to whatever opened the card: its "See dish" / row button, else the row's own button
+      const ae = document.activeElement as HTMLElement | null;
+      opener = ae && ae !== document.body && !ae.closest('[inert]') && !sheet!.contains(ae) ? ae : $('.mv-open', li);
       fill(li);
       $('.mv-sheet-scroll', sheet!)!.scrollTop = 0;
       panelEl.style.transform = ''; panelEl.classList.remove('is-drag');
       history.pushState({ mvSheet: 1 }, ''); pushed = true;
       sheet!.showModal(); void panelEl.offsetHeight; sheet!.classList.add('is-in');
+      xBtn.focus({ preventScroll: true }); // focus moves into the card (the page behind is inert)
     }
     function closeSheet(fromPop = false) {
       if (!sheet!.open || closing) return;
@@ -420,6 +432,18 @@ function init(root: HTMLElement) {
       const li = $$<HTMLElement>('[data-row]').find((r) => $<HTMLElement>('[data-add]', r)?.dataset.n === name);
       if (li) openSheet(li);
     });
+    // deep link: /menu#dish=<menu name, URL-encoded> opens that dish card (same mv:open as "See dish"); unknown name = nothing
+    const openFromHash = () => {
+      const m = /^#dish=(.+)$/.exec(location.hash);
+      if (!m) return;
+      let want = '';
+      try { want = decodeURIComponent(m[1]).trim().toLowerCase(); } catch { return; }
+      const ns = $$<HTMLElement>('[data-row]').map((r) => $<HTMLElement>('[data-add]', r)?.dataset.n ?? '');
+      const hit = ns.find((n) => n.toLowerCase() === want) ?? ns.find((n) => n.replace(/ \([^)]*\)$/, '').toLowerCase() === want);
+      if (hit) document.dispatchEvent(new CustomEvent('mv:open', { detail: hit }));
+    };
+    openFromHash();
+    addEventListener('hashchange', openFromHash);
     dragEl.addEventListener('dragstart', (e) => e.preventDefault()); // a native image drag would cancel our pointer drag
     // explicit focus trap: Tab cycles X <-> Add to Picks instead of leaving for browser chrome
     sheet.addEventListener('keydown', (e) => {

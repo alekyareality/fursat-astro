@@ -72,7 +72,7 @@
 .md-cap--bar{left:var(--md-gap);bottom:clamp(28px,8svh,72px);align-items:flex-start}
 .md-cap--food{right:var(--md-gap);top:clamp(16px,3.5svh,40px);align-items:flex-end;text-align:right;gap:6px}
 .md-cap--food .md-hl{font-size:clamp(1.6rem,2.5vw,2.5rem)}
-.md-cap--food .md-btn{min-height:42px;padding:0 18px;font-size:.88rem}
+.md-cap--food .md-btn{min-height:44px;padding:0 18px;font-size:.88rem}
 .md-eyebrow{font:600 .75rem/1.2 var(--mv-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--mv-gold-hi)}
 .md-hl{font:500 clamp(1.9rem,3.2vw,3.1rem)/1.08 var(--mv-serif);letter-spacing:-.015em;color:var(--mv-text);text-wrap:balance;text-shadow:0 2px 18px rgb(0 0 0 / .45);margin:0}
 .md-hl span{font-style:italic;color:var(--mv-gold-hi)}
@@ -114,15 +114,15 @@
   .md-cap--bar{bottom:calc(100% - var(--split) + 14px)}
   .md-cap--food{top:calc(var(--split) + 12px);flex-direction:row;align-items:center;justify-content:space-between}
   .md-cap--food :is(.md-hl,.md-sub){display:none}
-  .md-cap--food .md-btn{min-height:40px;margin:0;padding:0 14px;font-size:.82rem}
+  .md-cap--food .md-btn{min-height:44px;margin:0;padding:0 14px;font-size:.82rem}
   .md-hl{font-size:clamp(1.5rem,7vw,2.1rem)}
   .md-sub{font-size:.85rem}
   .md-btn{min-height:44px;padding:0 16px;font-size:.88rem}
   .mt{left:0;right:0;width:auto;translate:none;top:calc(var(--split) + 56px);bottom:0}
   .mt-front-n{font-size:1.05rem}
   .mt-nav{bottom:10px}
-  .mt-arrow{width:40px;height:40px}
-  .mt-see{min-height:40px;font-size:.82rem}
+  .mt-arrow{width:44px;height:44px}
+  .mt-see{min-height:44px;font-size:.82rem}
   .md-seam{top:var(--split);bottom:auto;left:0;right:0;width:auto;height:2px;margin:-1px 0 0;background:linear-gradient(90deg,transparent,#f3c56b 10%,#ffe2a6 50%,#f3c56b 90%,transparent)}
   .md-flow{top:50%;left:-24%;width:24%;height:12px;margin:-6px 0 0;animation-name:md-flow-x}
   .md-x{top:var(--split);left:auto;right:14px;translate:0 -50%}
@@ -139,4 +139,5 @@
 @media (prefers-reduced-motion:reduce){
   .md-ph,.md-sweep,.md-flow,.mb-hex,.mt-drop{animation:none!important}
   .mb-hex{opacity:.7}
+  .md :is(.md-cap,.mt-front,.mt-nav,.mb-lab,.mb-hex,.md-tag,.md-x){transition:none!important}
 }

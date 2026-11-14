@@ -10,12 +10,38 @@ interface Spot { label: string; go: string; x: number; y: number; r: number }
 interface Bar { image: string; srcset: string; w: number; h: number; posY: number; alt: string; spots: Spot[] }
 interface Props { foodCount: number; drinkCount: number; foodSections: number; drinkSections: number; dishes: Dish[]; bar: Bar }
 const { foodCount, drinkCount, foodSections, drinkSections, dishes, bar } = Astro.props;
+const spots = [...bar.spots].sort((a, b) => a.x - b.x); // Tab order = left to right
 const HEX = 'polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)';
 ---
 <section class="md" id="md" aria-labelledby="md-title" style="--split:50%" data-bar-w={bar.w} data-bar-h={bar.h} data-bar-y={bar.posY}>
+  <!-- DRINKS: the bar with hexagon hotspots (clipped top layer: left on desktop, top on phone) -->
+  <div class="md-door md-door--bar" data-door="drinks">
+    <button class="md-open" type="button" data-open-side="drinks" aria-label="Open the drinks side: bar menu">Drinks</button>
+    <div class="md-ph" id="md-ph-bar">
+      <img src={bar.image} srcset={bar.srcset} sizes="(max-width:820px) 100vw, 75vw" width={bar.w} height={bar.h} alt={bar.alt} fetchpriority="high" decoding="async" style={`object-position:50% ${bar.posY * 100}%`} />
+      <span class="md-sweep" aria-hidden="true"></span>
+      <div class="mb-spots" id="mb-spots">
+        {spots.map((s) => (
+          <button class="mb-spot" type="button" data-go={s.go} data-side-of="drinks" style={`left:${s.x * 100}%;top:${s.y * 100}%;--r:${s.r * 100}`} aria-label={s.label}>
+            <i class="mb-hex" style={`clip-path:${HEX}`} aria-hidden="true"></i>
+            <span class="mb-lab">{s.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+    <span class="md-shade" aria-hidden="true"></span>
+    <div class="md-cap md-cap--bar">
+      <span class="md-eyebrow">The Bar · 21+</span>
+      <h2 class="md-hl">Sip. Socialize. <span>Unwind.</span></h2>
+      <p class="md-sub num">{drinkSections} sections · {drinkCount} drinks</p>
+      <button class="md-btn md-btn--ghost" type="button" data-side-go="drinks">Full drinks menu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+    </div>
+  </div>
+
   <!-- FOOD: the rotating table (base layer: right on desktop, bottom on phone) -->
   <div class="md-door md-door--food" data-door="food">
-    <div class="mt" id="mt" role="group" aria-roledescription="carousel" aria-label="Signature dishes on the table">
+    <button class="md-open" type="button" data-open-side="food" aria-label="Open the food side: dishes on the table">Food</button>
+    <div class="mt" id="mt" role="group" aria-roledescription="carousel" aria-label="Dishes on the table. Left and right arrows turn it, Enter opens the front dish" tabindex="0">
       <div class="mt-table" aria-hidden="true"><i></i></div>
       <ul class="mt-ring" id="mt-ring">
         {dishes.map((d, i) => (
@@ -32,9 +58,9 @@ const HEX = 'polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)';
         <span class="mt-front-p num" id="mt-p">{dishes[0].price}</span>
       </div>
       <div class="mt-nav">
-        <button class="mt-arrow" type="button" id="mt-prev" aria-label="Previous dish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-        <button class="mt-see" type="button" id="mt-see">See dish</button>
-        <button class="mt-arrow" type="button" id="mt-next" aria-label="Next dish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button class="mt-arrow" type="button" id="mt-prev" aria-label="Previous dish on the table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="mt-see" type="button" id="mt-see" aria-label={`See dish: ${dishes[0].title}`}>See dish</button>
+        <button class="mt-arrow" type="button" id="mt-next" aria-label="Next dish on the table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
     <div class="md-cap md-cap--food">
@@ -45,33 +71,27 @@ const HEX = 'polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)';
     </div>
   </div>
 
-  <!-- DRINKS: the bar with hexagon hotspots (clipped top layer: left on desktop, top on phone) -->
-  <div class="md-door md-door--bar" data-door="drinks">
-    <div class="md-ph" id="md-ph-bar">
-      <img src={bar.image} srcset={bar.srcset} sizes="(max-width:820px) 100vw, 75vw" width={bar.w} height={bar.h} alt={bar.alt} fetchpriority="high" decoding="async" style={`object-position:50% ${bar.posY * 100}%`} />
-      <span class="md-sweep" aria-hidden="true"></span>
-      <div class="mb-spots" id="mb-spots">
-        {bar.spots.map((s) => (
-          <button class="mb-spot" type="button" data-go={s.go} data-side-of="drinks" style={`left:${s.x * 100}%;top:${s.y * 100}%;--r:${s.r * 100}`} aria-label={`${s.label}: open this drinks group`}>
-            <i class="mb-hex" style={`clip-path:${HEX}`} aria-hidden="true"></i>
-            <span class="mb-lab">{s.label}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-    <span class="md-shade" aria-hidden="true"></span>
-    <div class="md-cap md-cap--bar">
-      <span class="md-eyebrow">The Bar · 21+</span>
-      <h2 class="md-hl">Sip. Socialize. <span>Unwind.</span></h2>
-      <p class="md-sub num">{drinkSections} sections · {drinkCount} drinks</p>
-      <button class="md-btn md-btn--ghost" type="button" data-side-go="drinks">Full drinks menu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
-    </div>
-  </div>
-
   <div class="md-seam" aria-hidden="true"><i class="md-flow"></i><i class="md-flow md-flow--b"></i></div>
   <h1 class="md-tag" id="md-title">Fursat menu<small aria-hidden="true">drinks · food</small></h1>
-  <button class="md-x" type="button" id="md-x" hidden>Both sides</button>
+  <button class="md-x" type="button" id="md-x" aria-label="Both sides: show drinks and food again" hidden>Both sides</button>
 </section>
+
+<style is:global>
+  /* keyboard door openers: invisible until focused, then a gold ring inside the visible part of the door */
+  .md-open{position:absolute;z-index:6;top:0;bottom:0;left:0;width:var(--split);padding:0;border:0;background:none;color:transparent;font-size:0;pointer-events:none}
+  .md-door--food .md-open{left:var(--split);width:auto;right:0}
+  .md[data-open="drinks"] .md-door--bar .md-open,.md[data-open="food"] .md-door--food .md-open{display:none}
+  .md :focus-visible{outline:3px solid var(--mv-rim)}
+  .md .mb-spot:focus-visible{box-shadow:0 0 0 6px rgb(20 13 9 / .8)}
+  .md .md-open:focus-visible{outline-offset:-6px}
+  .md-ph:has(.mb-spot:focus-visible){z-index:2} /* the focused hotspot sits above the dark shade */
+  .md .mt:focus-visible{outline-offset:-4px;border-radius:12px}
+  @media (max-width:820px){
+    .md-open,.md-door--food .md-open{left:0;right:0;width:auto}
+    .md-door--bar .md-open{top:0;bottom:auto;height:var(--split)}
+    .md-door--food .md-open{top:var(--split);bottom:0;height:auto}
+  }
+</style>
 
 <script>
   import './menu-doors';

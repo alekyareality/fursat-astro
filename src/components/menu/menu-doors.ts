@@ -35,9 +35,17 @@ function init(md: HTMLElement) {
   let landAll = () => {}; // set once the table exists
   let dragged = 0; // time of the last table drag: a click right after it is not a tap
   const setOpen = (side: Side | null, px?: number, py?: number) => {
+    const prev = open, inside = md.contains(document.activeElement);
     open = side;
     if (side) md.dataset.open = side; else delete md.dataset.open;
     xBtn.hidden = !side;
+    // the faded-out side keeps nothing to Tab to except its door opener
+    md.querySelector('.md-cap--food')?.toggleAttribute('inert', side === 'drinks');
+    md.querySelector('.md-cap--bar')?.toggleAttribute('inert', side === 'food');
+    mt.toggleAttribute('inert', side === 'drinks');
+    spots.toggleAttribute('inert', side === 'food');
+    // back to "Both sides": keyboard focus returns to the opener of the side that was open
+    if (!side && prev && inside) md.querySelector<HTMLElement>(`[data-open-side="${prev}"]`)?.focus({ preventScroll: true });
     springTo(side === 'drinks' ? 75 : side === 'food' ? 25 : 50);
     if (side && px != null && py != null && !reduce) flash(px, py);
     if (side === 'food') { wake(); landAll(); }
@@ -50,7 +58,7 @@ function init(md: HTMLElement) {
     r.animate([{ opacity: 1, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(14)' }], { duration: 750, easing: 'cubic-bezier(.23,1,.32,1)' }).finished.then(() => r.remove());
   }
   xBtn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(null); });
-  addEventListener('keydown', (e) => { if (e.key === 'Escape' && open && !document.querySelector('dialog[open]')) setOpen(null); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && open && !e.defaultPrevented && !document.querySelector('dialog[open]')) setOpen(null); });
 
   // desktop: the seam follows the pointer on a spring, as in the Richmond reference (only while nothing is open)
   md.addEventListener('pointermove', (e) => {
@@ -69,6 +77,8 @@ function init(md: HTMLElement) {
     if (open !== side) {
       e.stopPropagation(); e.preventDefault();
       setOpen(side, e.clientX || undefined, e.clientY || undefined);
+      // opened from its keyboard opener: focus moves to the first control of that side
+      if (t.closest('[data-open-side]')) (side === 'drinks' ? spots.querySelector<HTMLElement>('.mb-spot:not([hidden])') : mt)?.focus({ preventScroll: true });
     }
   }, true);
 
@@ -116,6 +126,7 @@ function init(md: HTMLElement) {
   const ring = document.getElementById('mt-ring')!;
   const dishes = [...ring.querySelectorAll<HTMLElement>('.mt-dish')];
   const N = dishes.length, STEP = 360 / N;
+  const seeBtn = document.getElementById('mt-see')!;
   const lab = document.getElementById('mt-l')!, nm = document.getElementById('mt-n')!, pr = document.getElementById('mt-p')!;
   let angle = 0; // degrees; dish i is in front when angle = i * STEP
   let geo = { W: 0, H: 0, cx: 0, cy: 0, rx: 0, ry: 0, D: 0 };
@@ -170,6 +181,7 @@ function init(md: HTMLElement) {
     const d = dishes[i];
     d.classList.add('is-front');
     lab.textContent = d.dataset.label!; nm.textContent = d.dataset.title!; pr.textContent = d.dataset.price!;
+    seeBtn.setAttribute('aria-label', `See dish: ${d.dataset.title}`);
     dishes.forEach((x, j) => x.querySelector('.mt-plate')!.setAttribute('aria-current', String(j === i)));
     // spin clip: plays on the front dish only, when the clip exists
     const clip = d.dataset.clip;
@@ -196,6 +208,8 @@ function init(md: HTMLElement) {
   mt.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') { e.preventDefault(); goBy(-1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); goBy(1); }
+    // Enter / Space on the ring itself opens the front dish (buttons inside keep their own jobs)
+    if ((e.key === 'Enter' || e.key === ' ') && e.target === mt) { e.preventDefault(); interacted(); if (open !== 'food') setOpen('food'); openDish(front); }
   });
   function openDish(i: number) {
     if (i < 0) return;

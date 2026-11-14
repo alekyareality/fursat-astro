@@ -103,7 +103,7 @@ body:has(.mv){--sans:Poppins,system-ui,sans-serif} /* one sans site-wide: Poppin
 .mv-chef{display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;color:var(--mv-ink);background:radial-gradient(90% 100% at 12% 0,var(--mv-sand-a),var(--mv-sand-b));box-shadow:0 0 0 1px rgba(224,166,60,.6),0 24px 50px -20px rgba(0,0,0,.8)}
 .mv-chef::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(120,80,40,.14) 1px,transparent 1.6px) 0 0/18px 18px;pointer-events:none}
 .mv-chef-main{position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:22px 40px 14px;min-height:0}
-.mv-chef .mv-lab{color:#b53f06}
+.mv-chef .mv-lab{color:#74501a}
 .mv-chef .mv-meta{color:rgba(42,22,8,.74)}
 .mv-ghost{position:absolute;right:20px;bottom:-30px;font:italic 600 240px/1 var(--mv-serif);color:rgba(185,148,107,.22);pointer-events:none;user-select:none}
 .mv-chef-second{position:relative;padding:0 40px 18px}
@@ -422,7 +422,7 @@ html:has(.mv){background:var(--fk-plaster-base)}
 /* fields, pills, chips, round buttons: white-cream on plaster with a gold hairline */
 .mv-search,.mv-pill,.mv-chip,.mv-add,.mv-seg,.mv-schip{background:var(--mv-field);border-color:var(--mv-hair)}
 .mv-search svg{color:var(--fk-icon-gold)}
-.mv-search input::placeholder{color:#7a6b52}
+.mv-search input::placeholder{color:#5a5040}
 .mv-pill svg{color:#b5632a}
 
 /* selected = gold fill, dark text (pills, chips, rail, Food/Drinks toggle, sliding pill) */
@@ -439,7 +439,7 @@ html:has(.mv){background:var(--fk-plaster-base)}
   .mv-chip:hover,.mv-schip:hover{border-color:var(--fk-selected-edge)}
   .mv-add:hover{background:var(--fk-action-bg);color:var(--fk-action-fg);border-color:var(--fk-action-rim)}
   .mv-item:hover{background:rgb(227 171 74 / .08)}
-  .mv-link:hover{color:#9c4f1c;border-color:#9c4f1c}
+  .mv-link:hover{color:var(--mv-text);border-color:var(--mv-text)}
 }
 
 /* main action = green with a gold rim (every Add to Picks, sheet add, dialog yes) */
@@ -450,8 +450,8 @@ html:has(.mv){background:var(--fk-plaster-base)}
 .mv-add{color:var(--fk-icon-gold)}
 
 /* small gold text: brown for contrast on cream */
-.mv-lab{color:#9c4f1c}
-.mv-spice{background:rgb(181 99 42 / .12);color:#9c4f1c}
+.mv-lab{color:var(--fk-text-gold)}
+.mv-spice{background:rgb(181 99 42 / .12);color:var(--fk-text-gold)}
 .mv-chefmark{color:var(--fk-text-gold)}
 .mv-item mark{background:rgb(227 171 74 / .35);color:#2b2416}
 
@@ -515,3 +515,17 @@ html:has(.mv){background:var(--fk-plaster-base)}
   .mv-sheet-drag{cursor:default}
   .mv-sheet-ph{max-height:44dvh}
 }
+
+/* tap targets >= 44px: the hit area grows, the look stays */
+.mv-picks-btn{min-height:44px}
+@media (max-width:720px){
+  .mv-wa{height:44px}
+  .mv-search{height:44px}
+  .mv-picks-panel .q button{width:44px;height:44px}
+  .mv-link{position:relative}
+  .mv-link::after{content:"";position:absolute;inset:-12px -8px}
+}
+
+/* 320px: long comma-only descriptions (e.g. "Spiced chickpeas,grilled tofu,...") must wrap, no sideways scroll */
+.mv-item-main>div{min-width:0}
+.mv-idesc,.mv-note{overflow-wrap:anywhere}
