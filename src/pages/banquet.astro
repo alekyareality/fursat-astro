@@ -109,7 +109,7 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
         <div class="bq-sec-head text-center">
           <span class="bq-kicker">CURATED EXPERIENCES</span>
           <h2 class="bq-sec-title mot-headline">All-Inclusive Banquet Packages</h2>
-          <p class="bq-sec-desc">Transparent pricing with no hidden hall charges on minimum guarantee guest counts.</p>
+          <p class="bq-sec-desc">Per-guest packages. We share the final quote on WhatsApp.</p>
         </div>
 
         <div class="bq-pkg-grid">
@@ -181,26 +181,27 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
           <div class="bq-eq-head">
             <span class="bq-kicker">RESERVE YOUR DATE</span>
             <h2>Banquet Booking & Date Check</h2>
-            <p>Tell us about your celebration. Our Banquet General Manager will connect within 15 minutes with availability & customized quotation.</p>
+            <p>Tell us about your celebration and we will share availability and a quotation.</p>
           </div>
 
-          <form class="bq-form" id="bq-form" action="https://wa.me/919059670033" target="_blank" data-wa-intro="Hi Fursat! I would like to enquire about the banquet hall."
-            data-utm="utm_source=website&utm_medium=cta&utm_campaign=banquet">
+          <form class="bq-form" id="bq-form" action="https://wa.me/919059670033" target="_blank" data-wa-form data-wa-intro="Hi Fursat! 👋 I would like to enquire about the banquet hall:" novalidate>
+            <p class="bq-req">Fields marked * are required.</p>
             <div class="bq-form-row">
               <div class="bq-form-field">
-                <label for="eq-name">Full Name *</label>
-                <input type="text" id="eq-name" required placeholder="e.g. Rajesh Kumar" />
+                <label for="eq-name">Full name <span aria-hidden="true">*</span></label>
+                <input type="text" id="eq-name" name="name" autocomplete="name" maxlength="40" data-l="Name" data-v="text" aria-required="true" aria-describedby="eq-name-e" data-msg="Please enter your name." placeholder="e.g. Rajesh Kumar" />
+                <p class="bq-err" id="eq-name-e" role="alert"></p>
               </div>
               <div class="bq-form-field">
-                <label for="eq-phone">Mobile / WhatsApp Number *</label>
-                <input type="tel" id="eq-phone" required placeholder="e.g. 98483 60033" />
+                <label for="eq-phone">Mobile / WhatsApp number <span aria-hidden="true">*</span></label>
+                <input type="tel" id="eq-phone" name="phone" autocomplete="tel-national" inputmode="numeric" maxlength="14" data-l="Phone" data-v="phone" aria-required="true" aria-describedby="eq-phone-e" placeholder="e.g. 98483 60033" />
+                <p class="bq-err" id="eq-phone-e" role="alert"></p>
               </div>
             </div>
-
             <div class="bq-form-row">
               <div class="bq-form-field">
-                <label for="eq-event">Occasion Type *</label>
-                <select id="eq-event">
+                <label for="eq-event">Occasion</label>
+                <select id="eq-event" name="occasion" data-l="Occasion">
                   <option value="Birthday Party">Birthday Celebration</option>
                   <option value="Wedding / Reception">Wedding / Sangeet / Reception</option>
                   <option value="Corporate Gathering">Corporate Gala / Seminar</option>
@@ -209,19 +210,20 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
                 </select>
               </div>
               <div class="bq-form-field">
-                <label for="eq-guests">Approx. Guest Count *</label>
-                <input type="number" id="eq-guests" min="30" max="400" placeholder="e.g. 100 Guests" required />
+                <label for="eq-guests">Approx. guest count <span aria-hidden="true">*</span></label>
+                <input type="number" id="eq-guests" name="guests" inputmode="numeric" min="30" max="400" data-l="Guests" data-v="count" aria-required="true" aria-describedby="eq-guests-e" placeholder="e.g. 100" />
+                <p class="bq-err" id="eq-guests-e" role="alert"></p>
               </div>
             </div>
-
             <div class="bq-form-row">
               <div class="bq-form-field">
-                <label for="eq-date">Preferred Date *</label>
-                <input type="date" id="eq-date" required />
+                <label for="eq-date">Preferred date <span aria-hidden="true">*</span></label>
+                <input type="date" id="eq-date" name="date" data-l="Date" data-v="date" aria-required="true" aria-describedby="eq-date-e" />
+                <p class="bq-err" id="eq-date-e" role="alert"></p>
               </div>
               <div class="bq-form-field">
-                <label for="eq-package">Interested Package</label>
-                <select id="eq-package">
+                <label for="eq-package">Interested package (optional)</label>
+                <select id="eq-package" name="package" data-l="Package">
                   <option value="Gold Package (₹1150/pax)">Gold Celebrations (₹1,150/pax)</option>
                   <option value="Silver Package (₹925/pax)">Silver Feast (₹925/pax)</option>
                   <option value="Platinum Package (₹1450/pax)">Platinum Gala (₹1,450/pax)</option>
@@ -229,7 +231,6 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
                 </select>
               </div>
             </div>
-
             <button type="submit" class="bq-submit-btn">
               <span>Send Enquiry via WhatsApp / Call</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -268,7 +269,46 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
   <SiteFooter />
 <MobileBar active="celebrate" />
 <script is:inline src="/js/motion-kit.js"></script>
-<script>import '../scripts/wa-form';</script>
+<script>
+  const form = document.querySelector('form[data-wa-form]');
+  if (form) {
+    const fields = Array.from(form.querySelectorAll('input, select'));
+    const digits = (v) => { let x = v.replace(/\D/g, ''); if (x.length > 10 && x.startsWith('91')) x = x.slice(2); if (x.length === 11 && x[0] === '0') x = x.slice(1); return x; };
+    const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+    const errOf = (el) => document.getElementById(el.getAttribute('aria-describedby') || '');
+    const check = (el) => {
+      const v = el.value.trim(), t = el.dataset.v;
+      if (t === 'text') return v.length < 2 ? el.dataset.msg : '';
+      if (t === 'phone') return /^[6-9]\d{9}$/.test(digits(v)) ? '' : 'Please enter a valid 10-digit mobile number.';
+      if (t === 'count') { const n = Number(v), lo = Number(el.min), hi = Number(el.max); return n >= lo && n <= hi ? '' : 'Please enter ' + lo + ' to ' + hi + ' guests.'; }
+      if (t === 'date') return v && v >= today() ? '' : 'Please choose today or a later date.';
+      return '';
+    };
+    const show = (el, msg) => { const e = errOf(el); if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); if (e) e.textContent = msg; };
+    const dateEl = form.querySelector('input[type="date"]');
+    if (dateEl) dateEl.min = today();
+    fields.forEach((el) => {
+      if (!el.dataset.v) return;
+      el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) show(el, ''); });
+      el.addEventListener('change', () => { if (el.hasAttribute('aria-invalid')) show(el, ''); });
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let first = null;
+      fields.forEach((el) => { if (!el.dataset.v) return; const m = check(el); show(el, m); if (m && !first) first = el; });
+      if (first) { first.focus(); return; }
+      const lines = [form.dataset.waIntro];
+      fields.forEach((el) => {
+        const t = el.dataset.v; let v = el.value.trim();
+        if (t === 'phone') { const x = digits(v); v = '+91 ' + x.slice(0, 5) + ' ' + x.slice(5); }
+        else if (t === 'date') v = new Date(v + 'T00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        else if (el.tagName === 'SELECT') v = el.selectedOptions[0].textContent.trim();
+        lines.push('\u2022 ' + el.dataset.l + ': ' + v);
+      });
+      window.open('https://wa.me/919059670033?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    });
+  }
+</script>
 </Base>
 
 <style is:global>
@@ -606,4 +646,11 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
     color: #4a4232;
     margin: 12px 0 0;
     line-height: 1.5}
+
+  .bq-req { margin: 0 0 4px; font-size: 0.8125rem; color: #74501a}
+  .bq-form-field input, .bq-form-field select { min-height: 48px; font-size: 1rem}
+  .bq-form-field input:focus-visible, .bq-form-field select:focus-visible { outline: 3px solid #12803C; outline-offset: 2px}
+  .bq-form-field [aria-invalid="true"] { border-color: #C4161C; box-shadow: 0 0 0 3px rgba(196,22,28,0.14)}
+  .bq-err { margin: 0; min-height: 0; font-size: 0.8125rem; font-weight: 700; line-height: 1.4; color: #A8141A}
+  .bq-submit-btn { min-height: 48px}
 </style>

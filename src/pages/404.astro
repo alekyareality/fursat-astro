@@ -1,0 +1,45 @@
+---
+// 404.astro - page not found
+import Base from '../layouts/Base.astro';
+import '../styles/fk-tokens.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileBar from '../components/MobileBar.astro';
+---
+<Base
+  title="Page not found — Fursat Kitchen | Bar, Madhapur"
+  description="This page is not on the Fursat Kitchen | Bar website."
+>
+  <SiteHeader active="" variant="plaster" />
+
+  <main class="nf-page" id="main">
+    <div class="nf-inner">
+      <p class="nf-code" aria-hidden="true">404</p>
+      <h1 class="nf-title">We can’t find that page</h1>
+      <p class="nf-line">Let’s get you back to the table.</p>
+      <div class="nf-actions">
+        <a href="/" class="nf-btn nf-btn--main">Home</a>
+        <a href="/menu" class="nf-btn nf-btn--line">Menu</a>
+        <a href="/reserve" class="nf-btn nf-btn--line">Reserve</a>
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter />
+  <MobileBar active="" />
+</Base>
+
+<style is:global>
+  .nf-page { flex: none; display: grid; place-items: center; min-height: 60vh; padding: 96px 20px 72px; background: var(--fk-plaster); background-blend-mode: multiply; color: #2b2416; text-align: center}
+  html:has(.nf-page), body:has(.nf-page) { background: var(--fk-plaster); background-blend-mode: multiply}
+  .nf-inner { width: 100%; max-width: 560px}
+  .nf-code { margin: 0; font-family: var(--fk-serif, 'Playfair Display', serif); font-size: clamp(4.5rem, 18vw, 8rem); line-height: 1; color: #9a6f2a}
+  .nf-title { margin: 8px 0 0; font-family: var(--fk-serif, 'Playfair Display', serif); font-weight: 600; font-size: clamp(1.75rem, 6vw, 2.5rem); line-height: 1.15; color: #2b2416}
+  .nf-line { margin: 12px 0 0; font-family: var(--fk-sans, 'Poppins', sans-serif); font-size: 1rem; color: #74501a}
+  .nf-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px}
+  .nf-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; min-height: 48px; padding: 0 24px; border-radius: 999px; font-family: var(--fk-sans, 'Poppins', sans-serif); font-weight: 600; font-size: 0.9375rem; text-decoration: none}
+  .nf-btn--main { background: var(--fk-action-bg); color: #fbf3e6; border: 1px solid #14321e}
+  .nf-btn--line { background: transparent; color: #74501a; border: 2px solid #c99a43}
+  .nf-btn:focus-visible { outline: 3px solid #12803C; outline-offset: 3px}
+  @media (max-width: 480px) { .nf-btn { flex: 1 1 100%}}
+</style>

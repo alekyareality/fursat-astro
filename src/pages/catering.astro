@@ -121,46 +121,48 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
             <p>Provide your event details below. Our Catering Director will connect with a curated sample menu and per-head pricing.</p>
           </div>
 
-          <form class="ct-form" action="https://wa.me/919059670033" target="_blank" data-wa-intro="Hi Fursat! I would like a catering quote."
-            data-utm="utm_source=website&utm_medium=cta&utm_campaign=catering">
+          <form class="ct-form" action="https://wa.me/919059670033" target="_blank" data-wa-form data-wa-intro="Hi Fursat! 👋 I would like a catering quote:" novalidate>
+            <p class="ct-req">Fields marked * are required.</p>
             <div class="ct-row">
               <div class="ct-field">
-                <label for="ct-f1">Host Name *</label>
-                <input id="ct-f1" type="text" required placeholder="e.g. Dr. S. Rao" />
+                <label for="ct-f1">Host name <span aria-hidden="true">*</span></label>
+                <input type="text" id="ct-f1" name="name" autocomplete="name" maxlength="40" data-l="Name" data-v="text" aria-required="true" aria-describedby="ct-f1-e" data-msg="Please enter your name." placeholder="e.g. Dr. S. Rao" />
+                <p class="ct-err" id="ct-f1-e" role="alert"></p>
               </div>
               <div class="ct-field">
-                <label for="ct-f2">Contact Number *</label>
-                <input id="ct-f2" type="tel" required placeholder="e.g. 98483 60033" />
+                <label for="ct-f2">Contact number <span aria-hidden="true">*</span></label>
+                <input type="tel" id="ct-f2" name="phone" autocomplete="tel-national" inputmode="numeric" maxlength="14" data-l="Phone" data-v="phone" aria-required="true" aria-describedby="ct-f2-e" placeholder="e.g. 98483 60033" />
+                <p class="ct-err" id="ct-f2-e" role="alert"></p>
               </div>
             </div>
-
             <div class="ct-row">
               <div class="ct-field">
-                <label for="ct-f3">Event Location / Area in Hyderabad *</label>
-                <input id="ct-f3" type="text" required placeholder="e.g. Moinabad Farmhouse / Jubilee Hills" />
+                <label for="ct-f3">Event area in Hyderabad <span aria-hidden="true">*</span></label>
+                <input type="text" id="ct-f3" name="area" maxlength="80" data-l="Area" data-v="text" aria-required="true" aria-describedby="ct-f3-e" data-msg="Please enter the event area." placeholder="e.g. Moinabad Farmhouse / Jubilee Hills" />
+                <p class="ct-err" id="ct-f3-e" role="alert"></p>
               </div>
               <div class="ct-field">
-                <label for="ct-f4">Guest Count (Min 30) *</label>
-                <input id="ct-f4" type="number" min="30" max="1500" required placeholder="e.g. 75 Guests" />
+                <label for="ct-f4">Guest count (minimum 30) <span aria-hidden="true">*</span></label>
+                <input type="number" id="ct-f4" name="guests" inputmode="numeric" min="30" max="1500" data-l="Guests" data-v="count" aria-required="true" aria-describedby="ct-f4-e" placeholder="e.g. 75" />
+                <p class="ct-err" id="ct-f4-e" role="alert"></p>
               </div>
             </div>
-
             <div class="ct-row">
               <div class="ct-field">
-                <label for="ct-f5">Event Date *</label>
-                <input id="ct-f5" type="date" required />
+                <label for="ct-f5">Event date <span aria-hidden="true">*</span></label>
+                <input type="date" id="ct-f5" name="date" data-l="Date" data-v="date" aria-required="true" aria-describedby="ct-f5-e" />
+                <p class="ct-err" id="ct-f5-e" role="alert"></p>
               </div>
               <div class="ct-field">
-                <label for="ct-f6">Preferred Cuisine Mix</label>
-                <select id="ct-f6">
-                  <option>North Indian + Royal Hyderabadi</option>
-                  <option>Pan-Asian + Continental</option>
-                  <option>Pure Vegetarian Feast</option>
-                  <option>Barbecue & Kebabs Special</option>
+                <label for="ct-f6">Preferred cuisine mix (optional)</label>
+                <select id="ct-f6" name="cuisine" data-l="Cuisine">
+                  <option value="North Indian + Royal Hyderabadi">North Indian + Royal Hyderabadi</option>
+                  <option value="Pan-Asian + Continental">Pan-Asian + Continental</option>
+                  <option value="Pure Vegetarian Feast">Pure Vegetarian Feast</option>
+                  <option value="Barbecue & Kebabs Special">Barbecue & Kebabs Special</option>
                 </select>
               </div>
             </div>
-
             <button type="submit" class="ct-submit-btn">
               <span>Request Catering Proposal via WhatsApp</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -175,7 +177,46 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
   <SiteFooter />
 <MobileBar active="celebrate" />
 <script is:inline src="/js/motion-kit.js"></script>
-<script>import '../scripts/wa-form';</script>
+<script>
+  const form = document.querySelector('form[data-wa-form]');
+  if (form) {
+    const fields = Array.from(form.querySelectorAll('input, select'));
+    const digits = (v) => { let x = v.replace(/\D/g, ''); if (x.length > 10 && x.startsWith('91')) x = x.slice(2); if (x.length === 11 && x[0] === '0') x = x.slice(1); return x; };
+    const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+    const errOf = (el) => document.getElementById(el.getAttribute('aria-describedby') || '');
+    const check = (el) => {
+      const v = el.value.trim(), t = el.dataset.v;
+      if (t === 'text') return v.length < 2 ? el.dataset.msg : '';
+      if (t === 'phone') return /^[6-9]\d{9}$/.test(digits(v)) ? '' : 'Please enter a valid 10-digit mobile number.';
+      if (t === 'count') { const n = Number(v), lo = Number(el.min), hi = Number(el.max); return n >= lo && n <= hi ? '' : 'Please enter ' + lo + ' to ' + hi + ' guests.'; }
+      if (t === 'date') return v && v >= today() ? '' : 'Please choose today or a later date.';
+      return '';
+    };
+    const show = (el, msg) => { const e = errOf(el); if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); if (e) e.textContent = msg; };
+    const dateEl = form.querySelector('input[type="date"]');
+    if (dateEl) dateEl.min = today();
+    fields.forEach((el) => {
+      if (!el.dataset.v) return;
+      el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) show(el, ''); });
+      el.addEventListener('change', () => { if (el.hasAttribute('aria-invalid')) show(el, ''); });
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let first = null;
+      fields.forEach((el) => { if (!el.dataset.v) return; const m = check(el); show(el, m); if (m && !first) first = el; });
+      if (first) { first.focus(); return; }
+      const lines = [form.dataset.waIntro];
+      fields.forEach((el) => {
+        const t = el.dataset.v; let v = el.value.trim();
+        if (t === 'phone') { const x = digits(v); v = '+91 ' + x.slice(0, 5) + ' ' + x.slice(5); }
+        else if (t === 'date') v = new Date(v + 'T00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        else if (el.tagName === 'SELECT') v = el.selectedOptions[0].textContent.trim();
+        lines.push('\u2022 ' + el.dataset.l + ': ' + v);
+      });
+      window.open('https://wa.me/919059670033?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    });
+  }
+</script>
 </Base>
 
 <style is:global>
@@ -420,4 +461,11 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
     transition: transform 0.5s ease}
   .ct-gallery-item:hover img {
     transform: scale(1.06)}
+
+  .ct-req { margin: 0 0 4px; font-size: 0.8125rem; color: #74501a}
+  .ct-field input, .ct-field select { min-height: 48px; font-size: 1rem}
+  .ct-field input:focus-visible, .ct-field select:focus-visible { outline: 3px solid #12803C; outline-offset: 2px}
+  .ct-field [aria-invalid="true"] { border-color: #C4161C; box-shadow: 0 0 0 3px rgba(196,22,28,0.14)}
+  .ct-err { margin: 0; min-height: 0; font-size: 0.8125rem; font-weight: 700; line-height: 1.4; color: #A8141A}
+  .ct-submit-btn { min-height: 48px}
 </style>
