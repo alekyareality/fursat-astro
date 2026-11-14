@@ -31,7 +31,8 @@ const walk = (x: any) => {
   else if (x && typeof x === 'object') {
     if (typeof x.name === 'string') {
       const prices = Object.entries(x).filter(([k, v]) => /^price/i.test(k) && typeof v === 'number').map(([, v]) => v as number);
-      if (prices.length) src.set(norm(x.name), { name: x.name, prices });
+      // same name can appear in more than one section (CANNED JUICE: Soft Drinks ₹99, Tea ₹119): keep every price, not just the last row
+      if (prices.length) { const k = norm(x.name), prev = src.get(k); src.set(k, { name: x.name, prices: prev ? [...prev.prices, ...prices] : prices }); }
     }
     Object.values(x).forEach(walk);
   }

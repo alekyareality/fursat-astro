@@ -230,10 +230,17 @@ function token(name: string, fallback: number, unit: 'px' | 'ms') {
 function fkReveals() {
   const dist = token('--fk-reveal-y', 12, 'px');
   const dur = Math.min(token('--fk-dur-3', 0.32, 'ms'), 0.4);
-  const hide = (el: HTMLElement) => { el.style.opacity = '0'; el.style.transform = `translateY(${dist}px)`; };
-  const show = (el: HTMLElement, delay = 0) => {
+  const pending = new Set<HTMLElement>();
+  const clear = (el: HTMLElement) => { el.style.removeProperty('opacity'); el.style.removeProperty('transform'); };
+  const hide = (el: HTMLElement) => {
+    if (el.getBoundingClientRect().bottom < 0) return false; // already scrolled past (hash link, restored scroll): never hide
+    el.style.opacity = '0'; el.style.transform = `translateY(${dist}px)`; pending.add(el); return true;
+  };
+  const show = (el: HTMLElement, delay = 0, instant = false) => {
+    if (!pending.delete(el)) return;
+    if (instant) { clear(el); return; }
     mAnimate(el, { opacity: 1, transform: 'translateY(0px)' }, { duration: dur, delay, ease: EASE_OUT })
-      .finished.then(() => requestAnimationFrame(() => { el.style.removeProperty('opacity'); el.style.removeProperty('transform'); })); // after Motion commits its end values
+      .finished.then(() => requestAnimationFrame(() => clear(el))); // after Motion commits its end values
   };
   const margin = '0px 0px -8% 0px';
   document.querySelectorAll<HTMLElement>('[data-fk-stagger]').forEach((group) => {
@@ -247,9 +254,19 @@ function fkReveals() {
   });
   document.querySelectorAll<HTMLElement>('[data-fk-reveal]').forEach((el) => {
     if (el.parentElement?.hasAttribute('data-fk-stagger')) return; // child of a stagger group
-    hide(el);
-    inView(el, () => { show(el); }, { margin });
+    if (hide(el)) inView(el, () => { show(el); }, { margin });
   });
+  // fail-safe: a very fast scroll can jump past an element without the observer firing.
+  // On every scroll check (and 2.5 s after load) anything in view reveals and anything scrolled past shows at once.
+  let ticking = false;
+  const sweep = () => {
+    ticking = false;
+    const h = innerHeight;
+    pending.forEach((el) => { const r = el.getBoundingClientRect(); if (r.bottom < 0) show(el, 0, true); else if (r.top < h) show(el); });
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(sweep); } }, { passive: true });
+  addEventListener('resize', sweep, { passive: true });
+  setTimeout(sweep, 2500);
 }
 
 function boot() {

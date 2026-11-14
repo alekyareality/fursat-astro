@@ -89,7 +89,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
   <section class="pa-occ" aria-labelledby="pa-occ-h">
     <h2 class="pa-sec-h" id="pa-occ-h">Pick your occasion</h2>
     <p class="pa-blurb">Choose what you are celebrating. We open the package type that fits.</p>
-    <div class="fk-cards pa-occ-grid">
+    <div class="fk-cards pa-occ-grid" data-fk-stagger="80">
       {occasions.map((o) => (
         <article class="fk-card pa-oc" id={o.id}>
           <div class="fk-card__ph">
@@ -460,5 +460,17 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 .pa-oc-act .fk-btn.fk-btn--solid{flex:1 1 auto}
 </style>
 <script is:inline src="/js/party.js"></script>
-<script is:inline src="/js/motion-kit.js"></script>
+<script is:inline>
+/* v5.12b authored moment: an occasion card opens its package tab with a short slide from the side the tab sits on.
+   Runs after party.js (which shows the group on the same click). Transform + opacity only; none under reduced motion. */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!Element.prototype.animate)return;
+  var tabs=[].slice.call(document.querySelectorAll('[data-tab]'));
+  document.querySelectorAll('[data-occ]').forEach(function(b){b.addEventListener('click',function(){
+    var id=b.getAttribute('data-occ'),g=document.querySelector('.pa-group[data-group="'+id+'"]');if(!g||g.hidden)return;
+    var i=tabs.findIndex(function(t){return t.getAttribute('data-tab')===id}),mid=(tabs.length-1)/2,x=i<mid?-24:i>mid?24:0;
+    g.animate([{opacity:0,transform:'translate('+x+'px,12px)'},{opacity:1,transform:'none'}],{duration:320,easing:'cubic-bezier(0.23,1,0.32,1)'});
+  })});
+})();
+</script>
 </Base>

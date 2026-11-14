@@ -8,7 +8,6 @@ import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
 import MobileBar from '../MobileBar.astro';
 import MascotOfferModal from '../MascotOfferModal.astro';
-import BookingDialog from '../BookingDialog.astro';
 import HyWindows from '../hybrid/HyWindows.astro';
 import desk from '../../../scripts/bg-specs/exp-desk.out.json';
 import phone from '../../../scripts/bg-specs/exp-phone.out.json';
@@ -140,10 +139,24 @@ const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPa
 </main>
 
 <MascotOfferModal />
-<BookingDialog />
 <SiteFooter />
 <MobileBar active={p.mobileActive ?? 'menu'} />
 <script>import '../../scripts/fk-motion';</script>
+<script is:inline>
+/* v5.12b authored moment: the first card photo opens with a clip-path wipe (top to bottom) when it enters the screen.
+   Never hides a photo already on screen or scrolled past; fast-scroll and 2.5 s fail-safe; none under reduced motion. */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+  var img=document.querySelector('.xp-cards > li:first-child img');if(!img)return;
+  var r=img.getBoundingClientRect();if(r.top<innerHeight)return;
+  img.classList.add('xp-clip');
+  function open(){if(!img.classList.contains('xp-clip'))return;img.classList.add('xp-clip-in');io.disconnect();removeEventListener('scroll',chk);
+    img.addEventListener('transitionend',function(){img.classList.remove('xp-clip','xp-clip-in')},{once:true})}
+  var io=new IntersectionObserver(function(e){if(e[0].isIntersecting)open()},{rootMargin:'0px 0px -10% 0px'});io.observe(img);
+  function chk(){var b=img.getBoundingClientRect();if(b.top<innerHeight)open()}
+  addEventListener('scroll',chk,{passive:true});setTimeout(chk,2500);
+})();
+</script>
 
 <style is:global>
   .xp { background: #10261a; color: var(--fk-ink); font-family: var(--fk-sans); overflow-x: clip; }
@@ -215,5 +228,10 @@ const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPa
     .xp-tagline { font-size: calc(76 * var(--u)); }
     .xp-orn { width: calc(560 * var(--u)); }
     .xp-cards { max-width: 420px; }
+  }
+  /* v5.12b clip-path wipe on the first card photo (see inline script) */
+  @media (prefers-reduced-motion: no-preference) {
+    .xp-clip { clip-path: inset(0 0 100% 0); }
+    .xp-clip.xp-clip-in { clip-path: inset(0 0 0 0); transition: clip-path 700ms var(--fk-ease-out, cubic-bezier(0.23,1,0.32,1)); }
   }
 </style>

@@ -1,4 +1,5 @@
 ---
+import fs from 'node:fs';
 import ld from '../data/ld.json';
 import site from '../data/site.json';
 import '../styles/01.css';
@@ -13,22 +14,68 @@ import '../styles/09.css';
 import '../styles/10.css';
 import '../styles/motion.css';
 
-// JSON-LD. Every page keeps the existing Restaurant + WebSite graph from ld.json. The home page and /reserve get the full Restaurant
-// (hours, reservations, menu) built from site.json. No ratings or reviews: none are confirmed.
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-const fullSchema = path === '/' || path === '/reserve';
-const phone = '+' + site.phonePlain;
+const DOMAIN = site.domain;
+const PUBLIC = `${process.cwd()}/public`;
+
+// Image dimensions from the file header (webp / jpeg), so og:image:width/height are true.
+function imgDims(file: string): [number, number] | null {
+  try {
+    const b = fs.readFileSync(file);
+    if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
+      const t = b.toString('ascii', 12, 16);
+      if (t === 'VP8 ') return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
+      if (t === 'VP8L') return [1 + (((b[22] & 0x3f) << 8) | b[21]), 1 + (((b[24] & 0xf) << 10) | (b[23] << 2) | ((b[22] & 0xc0) >> 6))];
+      if (t === 'VP8X') return [1 + b.readUIntLE(24, 3), 1 + b.readUIntLE(27, 3)];
+    }
+    if (b[0] === 0xff && b[1] === 0xd8) {
+      let i = 2;
+      while (i < b.length) {
+        if (b[i] !== 0xff) { i++; continue; }
+        const m = b[i + 1];
+        if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return [b.readUInt16BE(i + 7), b.readUInt16BE(i + 5)];
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+  } catch { /* fall through */ }
+  return null;
+}
+
+// Resolve a site image URL to a file that exists in public/. Pages pass /assets/fursat_space_NN.webp but the photos live in
+// /assets/interior/, so try that folder too. A missing file falls back to /og-image.jpg and warns, so a 404 never ships.
+const FALLBACK_OG = '/og-image.jpg';
+const FALLBACK_OG_ALT = 'A hammered brass bowl of biryani topped with fried onions and herbs';
+function resolveImage(url: string): string {
+  const rel = url.startsWith(DOMAIN) ? url.slice(DOMAIN.length) : url;
+  for (const c of [rel, rel.replace('/assets/', '/assets/interior/')]) {
+    if (c.startsWith('/') && fs.existsSync(PUBLIC + c)) return c;
+  }
+  console.warn(`[Base] og:image not found in public/: ${url}. Using ${FALLBACK_OG}`);
+  return FALLBACK_OG;
+}
+
+// JSON-LD. One Restaurant node built from site.json (name, phone, PIN, hours, map, menu URL) on every page, plus the WebSite node.
+// Static facts that are not in site.json (description, cuisines, street, social profiles) come from ld.json. No ratings or reviews:
+// none are confirmed. The build stops if any TODO value would reach the page.
+const restaurantBase: any = (ld as any[]).find((n: any) => n['@type'] === 'Restaurant');
+const phones = Array.from(new Set(['+' + site.phonePlain, ...[].concat(restaurantBase.telephone)]));
 const graph = (ld as any[]).map((node: any) => {
-  if (!fullSchema || node['@type'] !== 'Restaurant') return node;
+  if (node['@type'] !== 'Restaurant') return node;
   return {
     ...node,
-    telephone: phone,
-    address: { ...node.address, postalCode: site.address.pin },
+    name: site.name,
+    alternateName: site.shortName,
+    url: DOMAIN + '/',
+    image: DOMAIN + resolveImage(node.image),
+    logo: DOMAIN + resolveImage(node.logo),
+    telephone: phones,
+    address: { ...node.address, addressRegion: site.address.state, postalCode: site.address.pin },
     openingHoursSpecification: site.hours.schedule.map((h: any) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.dayOfWeek, opens: h.opens, closes: h.closes })),
     acceptsReservations: true,
-    menu: site.domain + '/menu/',
+    menu: DOMAIN + '/menu/',
   };
 });
+const ldJson = JSON.stringify(graph);
+if (/TODO/i.test(ldJson)) throw new Error('[Base] JSON-LD contains a TODO value. Fill it in ld.json / site.json or remove the field.');
 
 interface PreloadImage {
   href: string;
@@ -47,16 +94,26 @@ interface Props {
   preloadImages?: PreloadImage[];
 }
 
+// Canonical defaults to this page's own URL (with trailing slash), never to the home page.
+const ownUrl = DOMAIN + (Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/');
+
 const {
   title = 'Fursat Kitchen | Bar – Café, Bar & Banquet in Madhapur, Hyderabad',
   description = 'Fursat Kitchen | Bar at Capital Park, Madhapur, Hyderabad: a café, kitchen, bar and banquet space. Ask Fursat for dishes by mood. Party packages from ₹925 per person, buffets and bar bashes.',
-  canonical = 'https://fursatind.in/',
-  ogImage = 'https://fursatind.in/og-image.jpg',
-  ogImageAlt = 'A baby elephant sipping a pink Fursat cocktail',
+  canonical = ownUrl,
+  ogImage = DOMAIN + FALLBACK_OG,
+  ogImageAlt,
   pageType = 'website',
   preloadImage,
   preloadImages = preloadImage ? [preloadImage] : [],
 } = Astro.props;
+
+// og:image is always a real file in public/. The alt is the page's own text, except for the shared fallback photo,
+// whose alt always describes what the photo shows (pages that reuse it used to pass an elephant caption that did not match).
+const ogPath = resolveImage(ogImage);
+const ogUrl = DOMAIN + ogPath;
+const ogAlt = ogPath === FALLBACK_OG ? FALLBACK_OG_ALT : (ogImageAlt ?? title);
+const ogDims = imgDims(PUBLIC + ogPath);
 ---
 <!doctype html>
 <html lang="en">
@@ -74,11 +131,10 @@ const {
 <meta property="og:type" content={pageType}><meta property="og:site_name" content="Fursat Kitchen | Bar">
 <meta property="og:title" content={title}><meta property="og:description" content={description}>
 <meta property="og:url" content={canonical}><meta property="og:locale" content="en_IN">
-<meta property="og:image" content={ogImage}><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content={ogImageAlt}>
+<meta property="og:image" content={ogUrl}>{ogDims && <meta property="og:image:width" content={String(ogDims[0])}>}{ogDims && <meta property="og:image:height" content={String(ogDims[1])}>}
+<meta property="og:image:alt" content={ogAlt}>
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content={title}><meta name="twitter:description" content={description}>
-<meta name="twitter:image" content={ogImage}><meta name="twitter:image:alt" content={ogImageAlt}>
-<link rel="preload" href="/assets/9fbca90fa3.woff" as="font" type="font/woff" crossorigin>
+<meta name="twitter:image" content={ogUrl}><meta name="twitter:image:alt" content={ogAlt}>
 <link rel="preload" href="/assets/8da3ca8f0a.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="/assets/1233814dd2.woff" as="font" type="font/woff" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,7 +152,7 @@ const {
   />
 ))}
 <link rel="icon" href="/assets/9a3bba811b.webp">
-<script type="application/ld+json" is:inline set:html={JSON.stringify(graph)}></script>
+<script type="application/ld+json" is:inline set:html={ldJson}></script>
 <style is:global>
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:cubic-bezier(.23,1,.32,1)}

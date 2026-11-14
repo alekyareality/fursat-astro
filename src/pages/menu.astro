@@ -129,9 +129,10 @@ if (ldItems !== totalItems) throw new Error(`menu schema item count ${ldItems} !
     { href: '/assets/menu/hero-bar-1400.webp', media: '(min-width: 721px)' },
   ]}
 >
+  <a class="skip" href="#main" style="min-height:44px;display:inline-flex;align-items:center;box-sizing:border-box">Skip to main content</a>
   <SiteHeader active="menu" variant="plaster" />
 
-  <main class="mv" id="main" data-side="drinks">
+  <main class="mv" id="main" tabindex="-1" data-side="drinks">
     <MenuDoors foodCount={foodCount} drinkCount={drinkCount} foodSections={food.length} drinkSections={drinks.length} dishes={tableDishes} bar={barData} />
 
     <section class="mv-stage" aria-label="Menu overview">

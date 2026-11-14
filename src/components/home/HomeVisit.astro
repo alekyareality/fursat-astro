@@ -11,7 +11,7 @@ const tel = `+${site.phonePlain}`;
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <section class="hv" id="plan-visit" aria-labelledby="hv-h">
-  <div class="hv-info" data-hr>
+  <div class="hv-info" data-fk-reveal>
     <h2 class="hh2" id="hv-h">Visit &amp; reserve</h2>
     <dl class="hv-dl">
       <div><dt>Address</dt><dd>{address}</dd></div>
@@ -26,9 +26,9 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       <div><dt>Phone</dt><dd><a class="hv-tel" href={`tel:${tel}`}>{site.phone}</a></dd></div>
     </dl>
   </div>
-  <div class="hv-btns" data-hr>
+  <div class="hv-btns" data-fk-reveal>
     <button class="hb hb--pri" type="button" data-open="book">Reserve a table<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></button>
-    <a class="hb hb--ghost" href={`https://wa.me/${site.phonePlain}`} target="_blank" rel="noopener">WhatsApp</a>
+    <a class="hb hb--ghost" href={`https://wa.me/${site.phonePlain}?text=${encodeURIComponent("Hi Fursat! I have a question.")}`} target="_blank" rel="noopener">WhatsApp</a>
     <a class="hb hb--ghost" href={`tel:${tel}`}>Call</a>
     <a class="hb hb--ghost" href={a.googleMaps} target="_blank" rel="noopener">Directions</a>
   </div>

@@ -1,24 +1,51 @@
 ---
-// Shared by the H2 sections (Celebrate, Our story, Visit & reserve): buttons, section rhythm and one gentle reveal.
-// Reveal = opacity + 12px over 400ms, once, only for blocks below the fold; none under prefers-reduced-motion; content stays visible without JS.
+// Shared by the Home sections: buttons, section rhythm and the shared reveal.
+// Reveal (same contract as fk-motion's v5.12a reveal, without loading Motion/Anime.js on Home):
+//   [data-fk-reveal]  fades in + rises 12px once when it enters the screen
+//   [data-fk-stagger] group: direct children reveal one after another (value = step in ms, 60–100, group capped at 400ms)
+// Fail-safe: never hides blocks already on screen or scrolled past; anything in or above the viewport is shown on
+// every scroll check and 2.5 s after load, so a fast scroll can never leave a block hidden. No JS / reduced motion = visible.
 ---
 <script is:inline>
 (function(){
   if(matchMedia('(prefers-reduced-motion:reduce)').matches||!('IntersectionObserver' in window))return;
-  var vh=innerHeight,io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('hr-pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
-  [].forEach.call(document.querySelectorAll('[data-hr]'),function(el){if(el.getBoundingClientRect().top<vh)return;el.classList.add('hr-pre');io.observe(el)});
+  var pend=[],vh=function(){return innerHeight||document.documentElement.clientHeight};
+  function done(el){el.classList.remove('fk-pre');el.addEventListener('transitionend',function t(){el.style.removeProperty('transition-delay');el.removeEventListener('transitionend',t)})}
+  function show(el,instant){var i=pend.indexOf(el);if(i<0)return;pend.splice(i,1);io.unobserve(el);
+    if(instant){el.style.transitionDuration='0s';el.style.removeProperty('transition-delay');el.classList.remove('fk-pre');requestAnimationFrame(function(){el.style.removeProperty('transition-duration')})}else done(el)}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)show(e.target,false)})},{rootMargin:'0px 0px -8% 0px'});
+  function arm(el,delay){var r=el.getBoundingClientRect();if(r.top<vh())return; /* on screen or above: never hidden */
+    if(delay)el.style.transitionDelay=delay+'ms';el.classList.add('fk-pre');pend.push(el);io.observe(el)}
+  [].forEach.call(document.querySelectorAll('[data-fk-stagger]'),function(g){var k=[].slice.call(g.children),n=k.length;if(!n)return;
+    var st=parseInt(g.getAttribute('data-fk-stagger'),10);st=Math.min(100,Math.max(60,isNaN(st)?80:st));if(n>1)st=Math.min(st,400/(n-1));
+    var top=g.getBoundingClientRect().top;if(top<vh())return;
+    k.forEach(function(c,i){arm(c,Math.round(i*st))});});
+  [].forEach.call(document.querySelectorAll('[data-fk-reveal]'),function(el){if(el.parentElement&&el.parentElement.hasAttribute('data-fk-stagger'))return;arm(el,0)});
+  /* fast-scroll fail-safe: in view -> reveal, scrolled past -> show at once */
+  var ticking=false;function sweep(){ticking=false;var h=vh();pend.slice().forEach(function(el){var r=el.getBoundingClientRect();if(r.bottom<0)show(el,true);else if(r.top<h)show(el,false)})}
+  addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(sweep)}},{passive:true});
+  addEventListener('resize',sweep,{passive:true});
+  setTimeout(sweep,2500);addEventListener('pageshow',sweep);
 })();
 </script>
 <style is:global>
-.hb{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #404517;font:600 15px/1 Poppins,system-ui,sans-serif;text-decoration:none;text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;appearance:none;transition:background .2s,color .2s,transform .2s}
+.hb{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #404517;font:600 15px/1 Poppins,system-ui,sans-serif;text-decoration:none;text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;appearance:none;transition-property:background-color,color,transform;transition-duration:.2s,.2s,150ms;transition-timing-function:ease,ease,cubic-bezier(.23,1,.32,1)}
 .hb svg{flex:none;width:15px;height:15px}
 .hb--pri{background:#404517;color:#F8F3E6}
 .hb--ghost{background:transparent;color:#1A1608;border-color:#1A1608}
-.hb:active{transform:scale(.98)}
+.hb:active{transform:scale(.96)}
 .hb:focus-visible{outline:2px solid #C94716;outline-offset:3px}
 @media(hover:hover){.hb--pri:hover{background:#2c300e}.hb--ghost:hover{background:#1A1608;color:#F8F3E6}}
 .hh2{margin:0;font:500 clamp(28px,3.8vw,44px)/1.12 "Playfair Display",Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
 .hlead{margin:0;font:400 16px/1.6 Poppins,system-ui,sans-serif;color:#4a4330;max-width:60ch}
-@media(prefers-reduced-motion:no-preference){[data-hr]{transition:opacity .4s ease,transform .4s ease}.hr-pre{opacity:0;transform:translateY(12px)}}
+@media(prefers-reduced-motion:no-preference){
+  [data-fk-reveal],[data-fk-stagger]>*{transition-property:opacity,transform;transition-duration:320ms;transition-timing-function:cubic-bezier(.23,1,.32,1)}
+  .fk-pre{opacity:0;transform:translateY(12px)}
+}
+/* card hover lift (same values as .fk-lift in fk-tokens.css, which Home does not load) */
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  .fk-lift{transition-property:opacity,transform;transition-duration:320ms,200ms;transition-timing-function:cubic-bezier(.23,1,.32,1)}
+  .fk-lift:hover{transform:translateY(-3px)}
+}
 @media(prefers-reduced-motion:reduce){.hb{transition:none}}
 </style>

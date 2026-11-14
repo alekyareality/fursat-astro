@@ -1157,7 +1157,7 @@
         "priceBottle": 4999,
         "alc": true,
         "subCategory": "Sparkling Wine",
-        "note": "TODO(client): Bottle only on menu; glass served as null",
+        "note": "Bottle only",
         "section": "Wines",
         "description": "",
         "spicy": false,

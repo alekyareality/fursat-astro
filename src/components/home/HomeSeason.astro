@@ -68,16 +68,16 @@ const cards = CARDS.map((c) => ({
 }));
 ---
 <section class="hs" id="season" aria-labelledby="hs-h">
-  <div class="hs-head">
+  <div class="hs-head" data-fk-reveal>
     <h2 id="hs-h">Crafted for the Season</h2>
     <p>A few favorites, curated with intention.</p>
     <a class="hs-all" href="/menu">View full menu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
   </div>
-  <div class="hs-cards">
+  <div class="hs-cards" data-fk-stagger="80">
     {cards.map((c) => {
       const d0 = c.dishes[0];
       return (
-        <article class="hs-card" data-name={d0.name} data-price={d0.tray} data-kind={c.kind} data-dishes={JSON.stringify(c.dishes.map((d) => [d.name, d.note, d.priceText, d.tray]))} data-menus={JSON.stringify(c.dishes.map((d) => d.menuName))}>
+        <article class="hs-card fk-lift" data-name={d0.name} data-price={d0.tray} data-kind={c.kind} data-dishes={JSON.stringify(c.dishes.map((d) => [d.name, d.note, d.priceText, d.tray]))} data-menus={JSON.stringify(c.dishes.map((d) => d.menuName))}>
           <div class="hs-img">
             {c.dishes.map((d, i) => (
               <img class:list={['hs-sl', { on: i === 0 }]} src={d.img.src} srcset={d.img.srcset} sizes="(min-width: 900px) 25vw, 72vw" alt={d.alt} width={d.img.w} height={d.img.h} loading="lazy" decoding="async" />

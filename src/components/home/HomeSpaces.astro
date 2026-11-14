@@ -9,11 +9,11 @@ const TILES = [
 ];
 ---
 <section class="hw" id="spaces" aria-labelledby="hw-h">
-  <h2 id="hw-h">What brings you in?</h2>
-  <ul class="hw-row">
+  <h2 id="hw-h" data-fk-reveal>What brings you in?</h2>
+  <ul class="hw-row" data-fk-stagger="70">
     {TILES.map((t) => (
       <li>
-        <a class="hw-tile" href={t.href}>
+        <a class="hw-tile fk-lift" href={t.href}>
           <img src={t.src} alt={t.alt} loading="lazy" decoding="async" width="720" height="960" />
           <span class="hw-label">{t.label}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </a>
