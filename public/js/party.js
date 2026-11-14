@@ -7,7 +7,7 @@
   function guests(){var v=parseInt(n.value,10);return isNaN(v)?0:Math.max(0,Math.min(500,v))}
   function update(){if(!pkg||!n)return;var o=pkg.options[pkg.selectedIndex],price=+o.getAttribute("data-price"),g=guests(),name=o.textContent.split(" \u2013 ")[0];
     total.textContent=g?"About "+inr(price*g)+" + taxes":"Enter the number of guests";
-    wa.href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hi Fursat! I would like to plan a party. Package: "+name+" ("+inr(price)+" + taxes per guest). Guests: "+(g||"to be confirmed")+". Estimate: "+(g?inr(price*g)+" + taxes":"-")+".")}
+    wa.href="https://wa.me/"+WA+"?text="+encodeURIComponent(["Hi Fursat! I would like to plan a party:","\u2022 Package: "+name,"\u2022 Price: "+inr(price)+" + taxes per guest","\u2022 Guests: "+(g||"to be confirmed")].concat(g?["\u2022 Estimate: "+inr(price*g)+" + taxes"]:[]).join("\n"))}
   if(pkg&&n){pkg.addEventListener("change",function(){update();window.dispatchEvent(new CustomEvent("fursat:pkg"))});n.addEventListener("input",update);
     document.getElementById("pa-minus").addEventListener("click",function(){n.value=Math.max(1,guests()-1);update()});
     document.getElementById("pa-plus").addEventListener("click",function(){n.value=Math.min(500,guests()+1);update()});update()}

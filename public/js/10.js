@@ -44,9 +44,9 @@ document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var p
     ui()});
   if($("fxtray-x"))$("fxtray-x").addEventListener("click",function(){picks=[];[].forEach.call(document.querySelectorAll(".hs-add"),function(b){b.setAttribute("aria-pressed","false")});ui()});
   if($("fxtray-go"))$("fxtray-go").addEventListener("click",function(){
-    var lines=["Hi Fursat! 👋 I’d love to try:"].concat(picks.map(function(x){return"• "+x.n+" (Rs "+x.p+")"}));
+    var lines=["Hi Fursat! 👋 I would like to try:"].concat(picks.map(function(x){return"• "+x.n+" (\u20B9"+x.p+")"}));
     var sn;try{sn=localStorage.getItem("fz_n")}catch(_){}
-    if(sn)lines.push("— "+sn);
+    if(sn)lines.push("• Name: "+sn);
     var a=document.createElement("a");a.href="https://wa.me/"+WA+"?text="+encodeURIComponent(lines.join("\n"));a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()});
 })();
 
@@ -117,17 +117,30 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
     c.animate([{transform:"translate("+sx+"px,"+sy+"px) scale(1.2)",opacity:1},{transform:"translate("+((sx+ex)/2)+"px,"+(Math.min(sy,ey)-80)+"px) scale(.9)",opacity:1,offset:.5},{transform:"translate("+ex+"px,"+ey+"px) scale(.2)",opacity:.2}],{duration:750,easing:"cubic-bezier(.5,0,.3,1)"}).onfinish=function(){c.remove();window.__fxSparks&&window.__fxSparks(ex+32,ey+32,14,2)};c.style.left="0";c.style.top="0"},30)});
 
 /* ======================= 13. two-tap table booking -> WhatsApp ======================= */
-(function(){var dlg=$("fxbook");if(!dlg)return;var n=$("bk-n"),d=$("bk-d"),t=$("bk-t"),z=$("bk-z"),c=$("bk-c"),g=2;
-  var today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());var iso=today.toISOString().slice(0,10);d.min=iso;d.value=iso;
-  try{var sn=localStorage.getItem("fz_n");if(sn)n.value=sn}catch(_){}
-  function open(zone){if(zone)z.value=zone;if(typeof dlg.showModal==="function")dlg.showModal();else dlg.setAttribute("open","")}
+(function(){var dlg=$("fxbook");if(!dlg)return;var n=$("bk-n"),ph=$("bk-ph"),d=$("bk-d"),t=$("bk-t"),z=$("bk-z"),c=$("bk-c"),g=2;
+  function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(_){}return null}
+  function today(){var x=new Date();x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
+  function digits(v){var x=v.replace(/\D/g,"");if(x.length>10&&x.indexOf("91")===0)x=x.slice(2);if(x.length===11&&x[0]==="0")x=x.slice(1);return x}
+  function clear(){[n,ph,d].forEach(function(e){e.removeAttribute("aria-invalid");$(e.getAttribute("aria-describedby")).textContent=""})}
+  function bad(el,text){clear();el.setAttribute("aria-invalid","true");$(el.getAttribute("aria-describedby")).textContent=text;el.focus()}
+  function open(zone){clear();var iso=today();d.min=iso;d.value=iso;g=2;c.textContent=g;if(zone)z.value=zone;
+    var sn=ls("fz_n"),sm=ls("fz_m");if(sn&&!n.value)n.value=sn;if(sm&&!ph.value)ph.value=sm;
+    if(typeof dlg.showModal==="function")dlg.showModal();else dlg.setAttribute("open","");
+    setTimeout(function(){(n.value?(ph.value?t:ph):n).focus({preventScroll:true})},40)}
+  window.openFursatBook=open;
   document.addEventListener("click",function(e){var el=e.target.closest&&e.target.closest('[data-open="book"]');if(!el)return;e.preventDefault();var m=$("fxmenu");if(m&&!m.hidden)m.hidden=true;open(el.getAttribute("data-pick"))},true);
   $("bk-m").addEventListener("click",function(){g=Math.max(1,g-1);c.textContent=g});$("bk-p").addEventListener("click",function(){g=Math.min(60,g+1);c.textContent=g});
   $("fxbook-x").addEventListener("click",function(){dlg.close?dlg.close():dlg.removeAttribute("open")});
   dlg.addEventListener("click",function(e){if(e.target===dlg)dlg.close&&dlg.close()});
-  $("fxbook-f").addEventListener("submit",function(e){e.preventDefault();var nm=n.value.trim();try{nm&&localStorage.setItem("fz_n",nm)}catch(_){}
-    var dt=d.value?new Date(d.value+"T00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"}):"";
-    var msg="Hi Fursat! 👋 I'd like to reserve a table.\n• Zone: "+z.value+"\n• Date: "+dt+"\n• Time: "+t.value+"\n• Guests: "+g+(nm?"\n— "+nm:"");
+  [n,ph,d].forEach(function(e){e.addEventListener("input",clear)});
+  ph.addEventListener("input",function(){var x=ph.value.replace(/[^\d+ ]/g,"");if(x!==ph.value)ph.value=x});
+  $("fxbook-f").addEventListener("submit",function(e){e.preventDefault();var nm=n.value.trim(),x=digits(ph.value);
+    if(nm.length<2)return bad(n,"Please enter your name.");
+    if(!/^[6-9]\d{9}$/.test(x))return bad(ph,"Please enter a valid 10-digit mobile number.");
+    if(!d.value||d.value<today())return bad(d,"Please choose today or a later date.");
+    ls("fz_n",nm);ls("fz_m",x);
+    var dt=new Date(d.value+"T00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});
+    var msg=["Hi Fursat! 👋 I would like to reserve a table:","• Name: "+nm,"• Phone: +91 "+x.slice(0,5)+" "+x.slice(5),"• Date: "+dt,"• Time: "+t.value,"• Guests: "+g,"• Zone: "+z.value].join("\n");
     var a=document.createElement("a");a.href="https://wa.me/"+WA+"?text="+encodeURIComponent(msg);a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();dlg.close&&dlg.close()});
 })();
 
@@ -301,7 +314,7 @@ function viewBanq(){
 
 function plan(){
  var occs=["Wedding","Birthday","Corporate","Anniversary","Get-together"],diets=["Veg","Veg + Non-veg","Open bar + food"];
- return '<section class="cc-plan cc-in" id="cc-plan" style="--i:14"><h4>Plan my event <small>takes 20 seconds</small></h4><div class="cc-f"><label>Occasion</label><div class="cc-chips" data-grp="occ">'+occs.map(function(o){return '<button type="button" class="'+(st.occ===o?'on':'')+'" data-cc="occ" data-v="'+o+'">'+o+'</button>'}).join("")+'</div></div><div class="cc-f two"><div><label>Guests</label><div class="cc-step"><button type="button" data-cc="g-" aria-label="Fewer guests">−</button><output id="cc-g">'+st.guests+'</output><button type="button" data-cc="g+" aria-label="More guests">+</button></div></div><div><label for="cc-d">Date</label><input id="cc-d" type="date" value="'+st.date+'"></div></div><div class="cc-f"><label>Food &amp; drinks</label><div class="cc-chips" data-grp="diet">'+diets.map(function(o){return '<button type="button" class="'+(st.diet===o?'on':'')+'" data-cc="diet" data-v="'+o+'">'+o+'</button>'}).join("")+'</div></div><button class="cc-btn wa" data-cc="send">'+ic("wa")+'Send enquiry on WhatsApp'+ic("arrow")+'</button></section>'}
+ return '<section class="cc-plan cc-in" id="cc-plan" style="--i:14"><h4>Plan my event</h4><div class="cc-f"><label>Occasion</label><div class="cc-chips" data-grp="occ">'+occs.map(function(o){return '<button type="button" class="'+(st.occ===o?'on':'')+'" data-cc="occ" data-v="'+o+'">'+o+'</button>'}).join("")+'</div></div><div class="cc-f two"><div><label>Guests</label><div class="cc-step"><button type="button" data-cc="g-" aria-label="Fewer guests">−</button><output id="cc-g">'+st.guests+'</output><button type="button" data-cc="g+" aria-label="More guests">+</button></div></div><div><label for="cc-d">Date</label><input id="cc-d" type="date" value="'+st.date+'"></div></div><div class="cc-f"><label>Food &amp; drinks</label><div class="cc-chips" data-grp="diet">'+diets.map(function(o){return '<button type="button" class="'+(st.diet===o?'on':'')+'" data-cc="diet" data-v="'+o+'">'+o+'</button>'}).join("")+'</div></div><button class="cc-btn wa" data-cc="send">'+ic("wa")+'Send enquiry on WhatsApp'+ic("arrow")+'</button></section>'}
 
 function viewCater(){
  var B=buffets();
@@ -338,11 +351,11 @@ function onClick(e){var t=e.target.closest("[data-cc],[data-tab]");if(!t)return;
  else if(a==="plan"){var p=el.querySelector("#cc-plan");p&&p.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"})}
  else if(a==="occ"||a==="diet"){st[a]=t.getAttribute("data-v");[].forEach.call(t.parentNode.children,function(c){c.classList.toggle("on",c===t)})}
  else if(a==="g-"||a==="g+"){st.guests=Math.max(10,Math.min(2000,st.guests+(a==="g+"?10:-10)));el.querySelector("#cc-g").textContent=st.guests}
- else if(a==="send"){var d=el.querySelector("#cc-d");st.date=d?d.value:"";wa("Hi Fursat! I would like to plan a "+st.occ.toLowerCase()+" for about "+st.guests+" guests"+(st.date?" on "+st.date:"")+". Food and drinks: "+st.diet+". Please share hall options, availability and a quote.")}
- else if(a==="wa-cater")wa("Hi Fursat! I would like to know about buffet and catering options. Guests: ____ , date: ____ , place: ____ .");
+ else if(a==="send"){var d=el.querySelector("#cc-d");st.date=d?d.value:"";var dl=st.date?new Date(st.date+"T00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short",year:"numeric"}):"";wa(["Hi Fursat! 👋 I would like to plan an event:","• Occasion: "+st.occ,"• Guests: about "+st.guests].concat(dl?["• Date: "+dl]:[],["• Food and drinks: "+st.diet,"Please share hall options, availability and a quote."]).join("\n"))}
+ else if(a==="wa-cater")wa("Hi Fursat! I would like to know about buffet and catering options.");
  else if(a==="wa-hours")wa("Hi Fursat! Could you confirm today’s opening hours?");
  else if(a==="wa-hi")wa("Hi Fursat! I would like to know more.");
- else if(a==="book"){closeIt();var b=document.querySelector('[data-open="book"]');b&&b.click()}
+ else if(a==="book"){closeIt();window.openFursatBook&&window.openFursatBook()}
  else if(a==="dishes"){closeIt();var i=document.getElementById("af-q");if(i){i.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"});setTimeout(function(){i.focus()},400)}}
 }
 /* tilt on cards */

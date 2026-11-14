@@ -5,8 +5,8 @@ var n=$("wz-n"),m=$("wz-m"),o=$("wz-o"),pv=$("wz-pv"),er=$("wz-e"),go=$("wz-go")
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}}
 function digits(){var x=m.value.replace(/\D/g,"");if(x.length>10&&x.indexOf("91")===0)x=x.slice(2);if(x.length===11&&x[0]==="0")x=x.slice(1);return x}
 function picks(){return Array.prototype.map.call(f.querySelectorAll("input[name=wzi]:checked"),function(c){return c.value})}
-function msg(direct){if(direct)return"Hi Fursat! I would like to know more.";var p=picks(),t=["Hi Fursat! 👋 I’m "+(n.value.trim()||"…")+"."];
- t.push(p.length?"I’m interested in: "+p.join(", ")+".":"I’d like to know more about Fursat.");if(o.value.trim())t.push(o.value.trim());var x=digits();if(x)t.push("My number: +91 "+x.slice(0,5)+" "+x.slice(5));return t.join("\n")}
+function msg(direct){if(direct)return"Hi Fursat! I would like to know more.";var p=picks(),t=["Hi Fursat! 👋 I would like to know more about Fursat:","• Name: "+(n.value.trim()||"-")];
+ if(p.length)t.push("• Interested in: "+p.join(", "));if(o.value.trim())t.push("• Note: "+o.value.trim());var x=digits();if(x)t.push("• Phone: +91 "+x.slice(0,5)+" "+x.slice(5));return t.join("\n")}
 function pre(){pv.textContent=msg()}
 function bad(el,text){el.classList.remove("bad");void el.offsetWidth;el.classList.add("bad");er.textContent=text}
 function open_(pick){last=document.activeElement;f.reset();d.classList.remove("sent","out");
