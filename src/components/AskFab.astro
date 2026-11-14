@@ -1,0 +1,39 @@
+---
+// AskFab — a small "Ask Fursat" button on every page (desktop and tablet; phones already have Ask in the bottom bar).
+// Page-aware: opens /ask with a starting question that fits the page the guest is on. Not shown on /ask itself.
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const HINTS: Record<string, string> = {
+  '/cafe': 'coffee and desserts',
+  '/restaurant-bar': 'cocktails and starters',
+  '/banquet': 'party starters',
+  '/party': 'party starters',
+  '/catering': 'biryani for a group',
+  '/reserve': 'dinner for two',
+};
+const q = HINTS[path];
+const href = q ? `/ask?q=${encodeURIComponent(q)}` : '/ask';
+const show = path !== '/ask' && path !== '/404';
+const tip = q ? `Ask Fursat: ${q}` : 'Ask Fursat what to eat or drink';
+---
+{show && (
+  <a class="afab" href={href} aria-label={tip} data-fk-ask>
+    <img class="afab-img" src="/assets/ask-mascot-sm.webp" alt="" width="56" height="56" decoding="async" loading="lazy" />
+    <span class="afab-t"><b>Ask</b> <span translate="no">Fursat</span></span>
+    {q && <span class="afab-q">{q}</span>}
+  </a>
+)}
+<style>
+.afab { position: fixed; left: 20px; bottom: 20px; z-index: 8500; display: none; align-items: center; gap: 10px; padding: 6px 18px 6px 6px; border-radius: 999px; background: linear-gradient(180deg, #1f4129 0%, #13301d 100%); color: #f6ecd8; text-decoration: none; box-shadow: 0 14px 30px -14px rgb(10 30 18 / .7), inset 0 0 0 1px rgb(243 197 107 / .35); font: 500 .9rem/1.1 Poppins, system-ui, sans-serif; transition-property: transform, box-shadow; transition-duration: 200ms; transition-timing-function: cubic-bezier(.23,1,.32,1); -webkit-tap-highlight-color: transparent; }
+.afab-img { width: 44px; height: 44px; border-radius: 50%; background: #f6e4c9; object-fit: cover; }
+.afab-t b { color: #f3c56b; font-weight: 600; }
+.afab-q { display: block; max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; color: #d9c9a6; font-size: .78rem; transition-property: max-width, opacity, margin; transition-duration: 320ms; transition-timing-function: cubic-bezier(.23,1,.32,1); }
+.afab:focus-visible { outline: 3px solid #f3c56b; outline-offset: 3px; }
+.afab:active { transform: scale(.96); }
+@media (min-width: 768px) { .afab { display: inline-flex; } }
+@media (hover: hover) and (pointer: fine) {
+  .afab:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -14px rgb(10 30 18 / .75), inset 0 0 0 1px rgb(243 197 107 / .55); }
+  .afab:hover .afab-q, .afab:focus-visible .afab-q { max-width: 220px; opacity: 1; margin-left: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { .afab, .afab-q { transition: none; } }
+@media print { .afab { display: none !important; } }
+</style>

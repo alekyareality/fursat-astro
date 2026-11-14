@@ -1,0 +1,293 @@
+---
+// PackageBuilder — the five banquet packages (party.json, group "banquet") as an interactive menu builder.
+// Guests pick a package, choose dishes within each course's "Any N", set guests/date and send the menu on WhatsApp.
+// Data: names, prices and rules come only from party.json (the client's package sheets, Nov 2026). Nothing invented.
+// No JS: the first package shows as a plain list. Reduced motion: no transitions.
+import data from '../../data/party.json';
+import site from '../../data/site.json';
+
+const ORDER = ['Welcome drink', 'Soup', 'Salad', 'Veg starters', 'Non-veg starters', 'Rice, veg', 'Rice', 'Rice, non-veg', 'Veg curries', 'Non-veg curries', 'Veg fry', 'Dal', 'Indian breads', 'Desserts', 'Accompaniments'];
+const rank = (h: string) => { const i = ORDER.findIndex((o) => h.toLowerCase().startsWith(o.toLowerCase())); return i < 0 ? 99 : i; };
+const label = (h: string) => h.replace(/\s*\(mocktail\)/i, '').replace('Rice, veg', 'Veg rice').replace('Rice, non-veg', 'Non-veg rice');
+const isNonVeg = (h: string) => /non-veg/i.test(h);
+const pkgs = (data as any).packages
+  .filter((p: any) => p.group === 'banquet')
+  .map((p: any) => {
+    const courses = [...p.sections].sort((a: any, b: any) => rank(a.h) - rank(b.h)).map((s: any, i: number) => {
+      const n = parseInt(String(s.rule || '').replace(/\D/g, ''), 10);
+      return { id: `${p.id}-c${i}`, h: label(s.h), pick: Number.isFinite(n) ? n : 0, items: s.items as string[], nv: isNonVeg(s.h) };
+    });
+    const choose = courses.filter((c: any) => c.pick > 0);
+    const count = (re: RegExp) => choose.filter((c: any) => re.test(c.h)).reduce((t: number, c: any) => t + c.pick, 0);
+    const starters = count(/starters/i);
+    return {
+      id: p.id, price: p.price, veg: !!p.veg, courses, choose: choose.length,
+      kind: p.veg ? 'Veg' : 'Non-veg',
+      sum: [`${starters} starters`, `${count(/rice/i)} rice`, `${count(/curries/i)} curries`, `${count(/desserts/i)} desserts`].join(' · '),
+    };
+  })
+  .sort((a: any, b: any) => a.price - b.price);
+const inr = (n: number) => '₹' + n.toLocaleString('en-IN');
+const first = pkgs[0];
+const ICON: Record<string, string> = {
+  drink: '<path d="M6 3h12l-1.5 7a4.5 4.5 0 0 1-9 0z"/><path d="M12 14.5V21M8.5 21h7"/>',
+  bowl: '<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/>',
+  leaf: '<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19 14 10"/>',
+  flame: '<path d="M12 3c3 4 6 6.5 6 10.5a6 6 0 0 1-12 0C6 10 9 9 9 6c2 1.5 3 3 3 5"/>',
+  rice: '<path d="M4 12h16a8 8 0 0 1-16 0z"/><path d="M7 12c.5-3 2.5-5 5-5s4.5 2 5 5"/>',
+  pot: '<path d="M5 10h14v5a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5z"/><path d="M3 10h18M9 6c0-1 1-1.5 1-2.5M14 6c0-1 1-1.5 1-2.5"/>',
+  bread: '<path d="M5 9a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4c0 1.2-.8 2-2 2v8H7v-8c-1.2 0-2-.8-2-2z"/>',
+  sweet: '<path d="M7 11h10l-1.2 9H8.2z"/><path d="M6 11a6 6 0 0 1 12 0"/><circle cx="12" cy="5" r="1.5"/>',
+  plate: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/>',
+};
+const iconFor = (h: string) => /drink/i.test(h) ? ICON.drink : /soup/i.test(h) ? ICON.bowl : /salad/i.test(h) ? ICON.leaf : /starter/i.test(h) ? ICON.flame : /rice/i.test(h) ? ICON.rice : /curr|dal|fry/i.test(h) ? ICON.pot : /bread/i.test(h) ? ICON.bread : /dessert/i.test(h) ? ICON.sweet : ICON.plate;
+---
+<section class="pb" id="packages" aria-labelledby="pb-h" data-wa={site.phonePlain}>
+  <div class="pb-in">
+    <header class="pb-head">
+      <p class="pb-kick">Banquet packages</p>
+      <h2 id="pb-h" class="pb-title">Build your banquet menu</h2>
+      <p class="pb-lead">Pick a package, choose your dishes course by course, and send the menu to us on WhatsApp. Prices are per guest, plus taxes.</p>
+    </header>
+
+    <div class="pb-pkgs" role="radiogroup" aria-label="Banquet package">
+      {pkgs.map((p: any, i: number) => (
+        <button type="button" class="pb-pkg" role="radio" aria-checked={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-pkg={p.id} data-price={p.price} data-kind={p.kind}>
+          <span class={`pb-dot ${p.veg ? 'is-veg' : 'is-nv'}`} aria-hidden="true"></span>
+          <span class="pb-kind">{p.kind}</span>
+          <span class="pb-price">{inr(p.price)}</span>
+          <span class="pb-per">per guest + taxes</span>
+          <span class="pb-sum">{p.sum}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="pb-body">
+      <div class="pb-panels">
+        {pkgs.map((p: any, i: number) => (
+          <div class="pb-panel" data-panel={p.id} hidden={i !== 0 ? true : undefined}>
+            {p.courses.map((c: any) => (
+              <fieldset class={`pb-course${c.pick ? '' : ' is-incl'}`} data-course={c.id} data-pick={c.pick} data-h={c.h}>
+                <legend class="pb-ch">
+                  <span class="pb-ico" aria-hidden="true"><svg viewBox="0 0 24 24" set:html={iconFor(c.h)} /></span>
+                  <span class="pb-cn">{c.h}{c.nv && <span class="pb-nv" title="Non-vegetarian">Non-veg</span>}</span>
+                  {c.pick
+                    ? <span class="pb-rule"><b class="pb-got">0</b>/{c.pick} <span class="pb-sr">chosen</span></span>
+                    : <span class="pb-rule pb-rule--incl">Included</span>}
+                </legend>
+                {c.pick
+                  ? <div class="pb-chips">{c.items.map((it: string) => <button type="button" class="pb-chip" aria-pressed="false" data-item={it}>{it}</button>)}</div>
+                  : <p class="pb-incl">{c.items.join(' · ')}</p>}
+              </fieldset>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <aside class="pb-sum-card" aria-label="Your menu">
+        <div class="pb-sc-top">
+          <p class="pb-sc-k">Your package</p>
+          <p class="pb-sc-p"><span id="pb-sc-price">{inr(first.price)}</span> <small id="pb-sc-kind">{first.kind}</small></p>
+          <div class="pb-meter" aria-hidden="true"><i id="pb-bar"></i></div>
+          <p class="pb-sc-prog" id="pb-prog">0 of {first.choose} courses chosen</p>
+        </div>
+        <div class="pb-fields">
+          <label class="pb-f"><span>Guests</span>
+            <span class="pb-step"><button type="button" id="pb-minus" aria-label="Fewer guests">−</button><input id="pb-guests" type="number" inputmode="numeric" min="1" value="50" aria-label="Number of guests" /><button type="button" id="pb-plus" aria-label="More guests">+</button></span>
+          </label>
+          <label class="pb-f"><span>Event date <em>(optional)</em></span><input id="pb-date" type="date" /></label>
+        </div>
+        <p class="pb-est" aria-live="polite"><span>Estimate</span> <b id="pb-est">{inr(first.price * 50)}</b> <small>+ taxes</small></p>
+        <button type="button" class="pb-send" id="pb-send">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.37a9.9 9.9 0 0 0 4.74 1.2c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z"/></svg>
+          Send my menu on WhatsApp
+        </button>
+        <p class="pb-note" id="pb-note">You can send it even before every course is chosen; we will help you finish it.</p>
+        <a class="pb-alt" href="#enquire">Prefer a call back? Use the enquiry form</a>
+      </aside>
+    </div>
+    <p class="pb-live pb-sr" id="pb-live" aria-live="polite"></p>
+  </div>
+
+  <!-- phone: compact bar above the bottom navigation -->
+  <div class="pb-dock" id="pb-dock" hidden>
+    <span class="pb-dock-t"><b id="pb-dock-price">{inr(first.price)}</b> · <span id="pb-dock-prog">0/{first.choose}</span></span>
+    <button type="button" class="pb-dock-b" id="pb-dock-send">Send menu</button>
+  </div>
+</section>
+
+<script is:inline>
+(function () {
+  var root = document.getElementById('packages'); if (!root) return;
+  var q = function (s, c) { return (c || root).querySelector(s); }, qa = function (s, c) { return [].slice.call((c || root).querySelectorAll(s)); };
+  var inr = function (n) { return '₹' + Number(n).toLocaleString('en-IN'); };
+  var pkgBtns = qa('.pb-pkg'), live = q('#pb-live'), guests = q('#pb-guests'), date = q('#pb-date');
+  var cur = pkgBtns[0];
+  function panel() { return q('[data-panel="' + cur.dataset.pkg + '"]'); }
+  function courses() { return qa('.pb-course', panel()); }
+  function chosen(c) { return qa('.pb-chip[aria-pressed="true"]', c); }
+  function refresh() {
+    var cs = courses().filter(function (c) { return +c.dataset.pick > 0; }), done = 0;
+    cs.forEach(function (c) {
+      var n = chosen(c).length, pick = +c.dataset.pick; c.querySelector('.pb-got').textContent = n;
+      c.classList.toggle('is-done', n >= pick);
+      qa('.pb-chip', c).forEach(function (b) { b.classList.toggle('is-locked', n >= pick && pick > 1 && b.getAttribute('aria-pressed') !== 'true'); });
+      if (n >= pick) done++;
+    });
+    var g = Math.max(1, parseInt(guests.value, 10) || 0), price = +cur.dataset.price;
+    q('#pb-sc-price').textContent = inr(price); q('#pb-sc-kind').textContent = cur.dataset.kind;
+    q('#pb-dock-price').textContent = inr(price);
+    q('#pb-prog').textContent = done + ' of ' + cs.length + ' courses chosen';
+    q('#pb-dock-prog').textContent = done + '/' + cs.length;
+    q('#pb-bar').style.transform = 'scaleX(' + (cs.length ? done / cs.length : 0) + ')';
+    q('#pb-est').textContent = inr(price * g);
+  }
+  function selectPkg(btn, focus) {
+    cur = btn;
+    pkgBtns.forEach(function (b) { var on = b === btn; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
+    qa('.pb-panel').forEach(function (p) { p.hidden = p.dataset.panel !== btn.dataset.pkg; });
+    if (focus) btn.focus();
+    live.textContent = btn.dataset.kind + ' package, ' + inr(btn.dataset.price) + ' per guest selected';
+    refresh();
+    try { history.replaceState(null, '', '?pkg=' + btn.dataset.pkg + '#packages'); } catch (e) {}
+  }
+  pkgBtns.forEach(function (b, i) {
+    b.addEventListener('click', function () { selectPkg(b, false); });
+    b.addEventListener('keydown', function (e) {
+      var k = e.key, j = k === 'ArrowRight' || k === 'ArrowDown' ? i + 1 : k === 'ArrowLeft' || k === 'ArrowUp' ? i - 1 : k === 'Home' ? 0 : k === 'End' ? pkgBtns.length - 1 : null;
+      if (j === null) return; e.preventDefault(); selectPkg(pkgBtns[(j + pkgBtns.length) % pkgBtns.length], true);
+    });
+  });
+  root.addEventListener('click', function (e) {
+    var chip = e.target.closest && e.target.closest('.pb-chip'); if (!chip) return;
+    var c = chip.closest('.pb-course'), pick = +c.dataset.pick, on = chip.getAttribute('aria-pressed') === 'true', got = chosen(c);
+    if (on) { chip.setAttribute('aria-pressed', 'false'); }
+    else if (got.length < pick) { chip.setAttribute('aria-pressed', 'true'); }
+    else if (pick === 1) { got[0].setAttribute('aria-pressed', 'false'); chip.setAttribute('aria-pressed', 'true'); }
+    else { live.textContent = c.dataset.h + ': you already chose ' + pick + '. Remove one to change.'; c.classList.remove('is-nudge'); void c.offsetWidth; c.classList.add('is-nudge'); return; }
+    refresh();
+    var n = chosen(c).length; live.textContent = c.dataset.h + ': ' + n + ' of ' + pick + ' chosen';
+  });
+  function step(d) { guests.value = Math.max(1, (parseInt(guests.value, 10) || 0) + d); refresh(); }
+  q('#pb-minus').addEventListener('click', function () { step(-5); });
+  q('#pb-plus').addEventListener('click', function () { step(5); });
+  guests.addEventListener('input', refresh);
+  function send() {
+    var price = +cur.dataset.price, g = Math.max(1, parseInt(guests.value, 10) || 0), L = [];
+    L.push('Hi Fursat! 👋 I would like to plan a banquet.');
+    L.push('• Package: ' + inr(price) + ' ' + cur.dataset.kind + ' (per guest + taxes)');
+    L.push('• Guests: ' + g);
+    if (date.value) { var d = new Date(date.value + 'T00:00'); L.push('• Date: ' + d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })); }
+    L.push('• Estimate: ' + inr(price * g) + ' + taxes');
+    courses().forEach(function (c) {
+      if (+c.dataset.pick > 0) { var n = chosen(c).map(function (b) { return b.dataset.item; }); L.push('• ' + c.dataset.h + ': ' + (n.length ? n.join(', ') : 'please suggest')); }
+    });
+    window.open('https://wa.me/' + root.dataset.wa + '?text=' + encodeURIComponent(L.join('\n')), '_blank', 'noopener');
+  }
+  q('#pb-send').addEventListener('click', send);
+  q('#pb-dock-send').addEventListener('click', send);
+  // phone dock: visible while the builder is on screen
+  var dock = q('#pb-dock');
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { dock.hidden = !es[0].isIntersecting; }, { threshold: 0.05 }).observe(q('.pb-body'));
+  // deep link ?pkg=b1399
+  var want = new URLSearchParams(location.search).get('pkg'), hit = want && pkgBtns.filter(function (b) { return b.dataset.pkg === want; })[0];
+  if (hit) selectPkg(hit, false); else refresh();
+})();
+</script>
+
+<style>
+.pb { --pb-ink:#1f2a1a; --pb-mute:#5b5240; --pb-card:rgb(255 251 244 / .86); --pb-edge:rgb(201 154 67 / .45); padding: clamp(56px, 7vw, 96px) 0; scroll-margin-top: 96px; }
+.pb-in { max-width: 1300px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+.pb-head { text-align: center; max-width: 720px; margin: 0 auto clamp(28px, 4vw, 44px); }
+.pb-kick { margin: 0 0 10px; font: 600 .8125rem/1 var(--fk-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--fk-text-gold); }
+.pb-title { margin: 0 0 12px; font: 500 clamp(2rem, 4vw, 3rem)/1.1 var(--fk-serif); letter-spacing: -.02em; color: var(--pb-ink); text-wrap: balance; }
+.pb-lead { margin: 0; font: 400 1rem/1.6 var(--fk-sans); color: var(--pb-mute); }
+
+/* package selector */
+.pb-pkgs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: clamp(22px, 3vw, 32px); }
+.pb-pkg { position: relative; display: grid; gap: 2px; justify-items: start; text-align: left; padding: 16px 16px 14px; border-radius: 18px; border: 1.5px solid var(--pb-edge); background: var(--pb-card); color: var(--pb-ink); font: inherit; cursor: pointer; transition-property: transform, box-shadow, background-color, border-color; transition-duration: var(--fk-dur-2, 200ms); transition-timing-function: var(--fk-ease-out, ease); -webkit-tap-highlight-color: transparent; }
+.pb-pkg:active { transform: scale(.98); }
+.pb-pkg[aria-checked="true"] { background: var(--fk-selected-bg); border-color: #c99a43; box-shadow: 0 10px 26px -14px rgb(120 80 20 / .55); }
+.pb-pkg:focus-visible { outline: 3px solid var(--fk-focus, #1d5a32); outline-offset: 3px; }
+@media (hover: hover) { .pb-pkg:not([aria-checked="true"]):hover { border-color: #c99a43; transform: translateY(-2px); } }
+.pb-dot { position: absolute; top: 16px; right: 16px; width: 14px; height: 14px; border: 1.5px solid currentColor; border-radius: 3px; display: grid; place-items: center; }
+.pb-dot::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pb-dot.is-veg { color: #1f7a3a; } .pb-dot.is-nv { color: #a3341a; }
+.pb-kind { font: 600 .75rem/1.2 var(--fk-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--fk-text-gold); }
+.pb-pkg[aria-checked="true"] .pb-kind { color: #4a3208; }
+.pb-price { font: 600 clamp(1.5rem, 2.4vw, 1.9rem)/1.15 var(--fk-serif); font-variant-numeric: tabular-nums; }
+.pb-per { font: 400 .75rem/1.3 var(--fk-sans); color: var(--pb-mute); }
+.pb-sum { margin-top: 8px; font: 500 .78rem/1.4 var(--fk-sans); color: var(--pb-mute); }
+.pb-pkg[aria-checked="true"] .pb-per, .pb-pkg[aria-checked="true"] .pb-sum { color: #3d2a0c; }
+
+/* body */
+.pb-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(18px, 2.4vw, 28px); align-items: start; }
+.pb-panel[hidden] { display: none; }
+.pb-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.pb-course { margin: 0; min-width: 0; padding: 16px 16px 14px; border: 1px solid var(--pb-edge); border-radius: 18px; background: var(--pb-card); transition-property: border-color, box-shadow; transition-duration: var(--fk-dur-2, 200ms); }
+.pb-course.is-done { border-color: #2e7d4a; box-shadow: inset 0 0 0 1px rgb(46 125 74 / .25); }
+.pb-course.is-incl { grid-column: 1 / -1; background: rgb(255 251 244 / .55); }
+.pb-ch { float: left; display: flex; align-items: center; gap: 10px; width: 100%; padding: 0; margin-bottom: 12px; }
+.pb-ch + * { clear: both; }
+.pb-ico { flex: none; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: rgb(201 154 67 / .16); color: #7a5418; }
+.pb-ico svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.pb-cn { flex: 1; min-width: 0; font: 600 1.02rem/1.25 var(--fk-serif); color: var(--pb-ink); }
+.pb-nv { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: 999px; background: rgb(163 52 26 / .1); color: #8f2e16; font: 600 .66rem/1.4 var(--fk-sans); letter-spacing: .06em; text-transform: uppercase; vertical-align: 2px; }
+.pb-rule { flex: none; padding: 4px 10px; border-radius: 999px; background: #f3e6cf; color: #5a3f12; font: 600 .78rem/1.3 var(--fk-sans); font-variant-numeric: tabular-nums; }
+.pb-course.is-done .pb-rule { background: #2e7d4a; color: #fff; }
+.pb-rule--incl { background: rgb(46 125 74 / .12); color: #24603a; }
+.pb-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pb-chip { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #dcc6a0; background: #fffaf2; color: var(--pb-ink); font: 500 .9rem/1.2 var(--fk-sans); cursor: pointer; transition-property: background-color, border-color, color, transform, opacity; transition-duration: var(--fk-dur-2, 200ms); transition-timing-function: var(--fk-ease-out, ease); -webkit-tap-highlight-color: transparent; }
+.pb-chip:active { transform: scale(.96); }
+.pb-chip[aria-pressed="true"] { background: var(--fk-action-bg); border-color: #14321e; color: var(--fk-action-fg); }
+.pb-chip[aria-pressed="true"]::before { content: "✓ "; }
+.pb-chip.is-locked { opacity: .5; }
+.pb-chip:focus-visible { outline: 3px solid var(--fk-focus, #1d5a32); outline-offset: 2px; }
+@media (hover: hover) { .pb-chip:not([aria-pressed="true"]):hover { border-color: #c99a43; background: #fff4e0; } }
+.pb-incl { margin: 0; font: 400 .92rem/1.6 var(--fk-sans); color: var(--pb-mute); }
+.pb-course.is-nudge { animation: pb-nudge 360ms var(--fk-ease-out, ease); }
+@keyframes pb-nudge { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+/* summary card */
+.pb-sum-card { position: sticky; top: 96px; display: grid; gap: 14px; padding: 20px; border-radius: 22px; background: linear-gradient(180deg, #1f4129 0%, #13301d 100%); color: #f6ecd8; box-shadow: 0 24px 48px -28px rgb(10 30 18 / .7); }
+.pb-sc-k { margin: 0; font: 600 .72rem/1 var(--fk-sans); letter-spacing: .14em; text-transform: uppercase; color: #e7c27a; }
+.pb-sc-p { margin: 4px 0 0; font: 600 2rem/1.1 var(--fk-serif); font-variant-numeric: tabular-nums; }
+.pb-sc-p small { font: 500 .85rem/1 var(--fk-sans); color: #d9c9a6; margin-left: 4px; }
+.pb-meter { height: 6px; border-radius: 99px; background: rgb(255 255 255 / .14); overflow: hidden; margin-top: 12px; }
+.pb-meter i { display: block; height: 100%; background: linear-gradient(90deg, #f3c56b, #e3ab4a); transform-origin: left; transform: scaleX(0); transition: transform var(--fk-dur-3, 320ms) var(--fk-ease-out, ease); }
+.pb-sc-prog { margin: 8px 0 0; font: 500 .85rem/1.4 var(--fk-sans); color: #d9c9a6; font-variant-numeric: tabular-nums; }
+.pb-fields { display: grid; gap: 10px; }
+.pb-f { display: grid; gap: 6px; font: 500 .8rem/1.2 var(--fk-sans); color: #e9dcc1; }
+.pb-f em { font-style: normal; color: #bfae8a; }
+.pb-f input { height: 44px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .08); color: #fff; padding: 0 12px; font: 500 16px/1 var(--fk-sans); color-scheme: dark; }
+.pb-step { display: grid; grid-template-columns: 44px 1fr 44px; gap: 6px; }
+.pb-step input { text-align: center; font-variant-numeric: tabular-nums; }
+.pb-step button { height: 44px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .1); color: #fff; font: 600 20px/1 var(--fk-sans); cursor: pointer; }
+.pb-f input:focus-visible, .pb-step button:focus-visible { outline: 3px solid #f3c56b; outline-offset: 2px; }
+.pb-est { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 0; padding-top: 12px; border-top: 1px solid rgb(255 255 255 / .14); font: 500 .85rem/1 var(--fk-sans); color: #d9c9a6; }
+.pb-est b { font: 600 1.35rem/1 var(--fk-serif); color: #fff; font-variant-numeric: tabular-nums; }
+.pb-send { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border: 0; border-radius: 999px; background: linear-gradient(180deg, #f4d38c 0%, #e3ab4a 100%); color: #2a1d0c; font: 600 1rem/1 var(--fk-sans); cursor: pointer; transition-property: transform, box-shadow; transition-duration: 150ms; transition-timing-function: var(--fk-ease-out, ease); }
+.pb-send svg { width: 20px; height: 20px; }
+.pb-send:active { transform: scale(.96); }
+.pb-send:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.pb-note { margin: 0; font: 400 .8rem/1.5 var(--fk-sans); color: #bfae8a; }
+.pb-alt { font: 500 .85rem/1.4 var(--fk-sans); color: #f3d9a0; text-underline-offset: 3px; min-height: 44px; display: inline-flex; align-items: center; }
+.pb-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pb-dock { display: none; }
+
+@media (max-width: 1100px) { .pb-pkgs { grid-template-columns: repeat(5, minmax(200px, 1fr)); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; } .pb-pkg { scroll-snap-align: start; } }
+@media (max-width: 900px) {
+  .pb-body { grid-template-columns: 1fr; }
+  .pb-sum-card { position: static; }
+}
+@media (max-width: 640px) {
+  .pb-panel { grid-template-columns: 1fr; }
+  .pb-pkgs { grid-template-columns: repeat(5, minmax(168px, 1fr)); margin-inline: calc(-1 * clamp(16px, 4vw, 40px)); padding-inline: clamp(16px, 4vw, 40px); scroll-padding-inline: clamp(16px, 4vw, 40px); }
+  .pb-dock:not([hidden]) { position: fixed; left: 10px; right: 10px; bottom: calc(82px + env(safe-area-inset-bottom)); z-index: 8000; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 8px 8px 16px; border-radius: 999px; background: #13301d; color: #f6ecd8; box-shadow: 0 16px 32px -16px rgb(0 0 0 / .6); font: 500 .9rem/1 var(--fk-sans); font-variant-numeric: tabular-nums; }
+  .pb-dock-b { min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: linear-gradient(180deg, #f4d38c, #e3ab4a); color: #2a1d0c; font: 600 .9rem/1 var(--fk-sans); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pb-pkg, .pb-chip, .pb-course, .pb-meter i, .pb-send { transition: none; }
+  .pb-course.is-nudge { animation: none; }
+}
+</style>

@@ -1,4 +1,5 @@
 ---
+import AskFab from '../components/AskFab.astro';
 import fs from 'node:fs';
 import ld from '../data/ld.json';
 import site from '../data/site.json';
@@ -92,6 +93,7 @@ interface Props {
   pageType?: string;
   preloadImage?: PreloadImage;
   preloadImages?: PreloadImage[];
+  noindex?: boolean;
 }
 
 // Canonical defaults to this page's own URL (with trailing slash), never to the home page.
@@ -101,6 +103,7 @@ const {
   title = 'Fursat Kitchen | Bar – Café, Bar & Banquet in Madhapur, Hyderabad',
   description = 'Fursat Kitchen | Bar at Capital Park, Madhapur, Hyderabad: a café, kitchen, bar and banquet space. Ask Fursat for dishes by mood. Party packages from ₹925 per person, buffets and bar bashes.',
   canonical = ownUrl,
+  noindex = false,
   ogImage = DOMAIN + FALLBACK_OG,
   ogImageAlt,
   pageType = 'website',
@@ -121,7 +124,7 @@ const ogDims = imgDims(PUBLIC + ogPath);
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light"><title>{title}</title>
 <meta name="description" content={description}>
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="robots" content={noindex ? "noindex,follow" : "index,follow,max-image-preview:large,max-snippet:-1"}>
 <link rel="canonical" href={canonical}>
 <meta name="theme-color" content="#F2EEE4">
 <meta name="application-name" content="Fursat">
@@ -172,5 +175,6 @@ const ogDims = imgDims(PUBLIC + ogPath);
 </head>
 <body>
 <slot />
+<AskFab />
 </body>
 </html>

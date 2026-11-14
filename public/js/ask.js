@@ -95,6 +95,8 @@
   send.addEventListener("click",go);
   q.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();go()}});
   document.querySelectorAll("[data-mood]").forEach(function(b){b.addEventListener("click",function(){q.value=b.dataset.mood;go()})});
+  /* page-aware start: /ask?q=coffee%20and%20desserts (from the Ask Fursat button on other pages) */
+  (function(){var pq=new URLSearchParams(location.search).get("q");if(pq){q.value=pq.slice(0,80);go()}})();
   var mic=document.getElementById("af-mic"),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(mic&&SR){mic.hidden=false;var rec=null;mic.addEventListener("click",function(){
     if(rec){rec.stop();return}

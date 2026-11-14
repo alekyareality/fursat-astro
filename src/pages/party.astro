@@ -1,4 +1,5 @@
 ---
+import InstaFollow from '../components/InstaFollow.astro';
 import Base from '../layouts/Base.astro';
 import data from '../data/party.json';
 import PartyStage from '../components/party/PartyStage';
@@ -54,7 +55,7 @@ const occasions = [
 ];
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<Base title="Parties & Events — Fursat Kitchen | Bar, Madhapur" description="Birthdays, corporate gatherings, kitty parties and bar bashes at Fursat, Madhapur. Pick your occasion, choose a package: bar parties, elite buffet or banquet. We confirm on WhatsApp." canonical="https://fursatind.in/party/">
+<Base title="Parties & Events — Fursat Kitchen | Bar, Madhapur" description="Birthdays, corporate gatherings, kitty parties and bar bashes at Fursat, Madhapur. Bar party, elite buffet and banquet packages." canonical="https://fursatind.in/party/">
 <a class="skip" href="#pk-main">Skip to main content</a>
 <div class="pa">
   <SiteHeader active="celebrate" variant="plaster" />
@@ -148,6 +149,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
                     </div>
                   )}
                 </details>
+                {p.group === 'banquet' && <a class="pk-build" href={`/banquet?pkg=${p.id}#packages`}>Choose the dishes for this menu <span aria-hidden="true">→</span></a>}
                 <div class="fk-card__foot">
                   <p class="pk-price fk-card__price"><span class="pk-amt" data-fx-count>{inr(p.price)}</span><small class="pk-unit">+ taxes, {UNIT}</small></p>
                   <button class="pk-plan fk-card__go" type="button" data-plan={p.id} aria-label={`Plan this party: ${p.name}`} title="Plan this party"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>
@@ -218,6 +220,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     </div>
   </div>
 </div>
+<InstaFollow handle="fursatbanquets" />
 <SiteFooter />
 <MobileBar active="celebrate" />
 <script>import '../scripts/fk-motion';</script>
@@ -458,6 +461,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 .pa-oc-act .fk-btn{min-height:44px;padding:0 16px;font:600 .9375rem/1.15 var(--fk-sans);text-align:center}
 .pa-oc-act .fk-btn svg{flex:none}
 .pa-oc-act .fk-btn.fk-btn--solid{flex:1 1 auto}
+.pk-build{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:4px 0 6px;font:600 .85rem/1.2 var(--fk-sans);color:#74501a;text-decoration:underline;text-underline-offset:3px}
+.pk-build:focus-visible{outline:3px solid var(--fk-focus,#1d5a32);outline-offset:2px;border-radius:6px}
 </style>
 <script is:inline src="/js/party.js"></script>
 <script is:inline>

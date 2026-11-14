@@ -24,13 +24,13 @@
     "display": "Sun–Thu 12 PM – 12 AM · Fri–Sat 12 PM – 1 AM"
   },
   "legal": {
-    "name": "TODO(client): Legal entity name",
-    "gstin": "TODO(client): GSTIN",
-    "fssai": "TODO(client): FSSAI licence number",
+    "name": "Sriven Hospitality",
+    "gstin": "36AEYFS6455D1ZE",
+    "fssai": "13623013000820",
     "cin": "TODO(client): CIN if applicable"
   },
   "social": {
-    "instagram": "https://www.instagram.com/fursat.hyd/",
+    "instagram": "https://www.instagram.com/fursatind.in/",
     "youtube": "TODO(client)"
   },
   "og": {

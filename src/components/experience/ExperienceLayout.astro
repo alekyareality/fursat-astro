@@ -9,6 +9,7 @@ import SiteFooter from '../SiteFooter.astro';
 import MobileBar from '../MobileBar.astro';
 import MascotOfferModal from '../MascotOfferModal.astro';
 import HyWindows from '../hybrid/HyWindows.astro';
+import InstaFollow from '../InstaFollow.astro';
 import desk from '../../../scripts/bg-specs/exp-desk.out.json';
 import phone from '../../../scripts/bg-specs/exp-phone.out.json';
 import '../../styles/fk-tokens.css';
@@ -25,6 +26,7 @@ interface Props {
   big: Photo; top: Photo; bottom: Photo;
   cardsKicker?: string; cardsTitle?: string; cardsId?: string; cards?: Card[]; cardsLink?: Cta;
   faqTitle: string; faq: { q: string; a: string }[];
+  insta?: 'fursatind.in' | 'fursatbanquets' | 'fursat_bitesandbuffet' | 'fursatsocialclub';
 }
 const p = Astro.props;
 const icons: Record<string, string> = {
@@ -135,6 +137,7 @@ const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPa
         <details class="xp-faq-item"><summary>{f.q}</summary><p>{f.a}</p></details>
       ))}
     </div>
+    {p.insta && <InstaFollow handle={p.insta} tone="dark" />}
   </section>
 </main>
 

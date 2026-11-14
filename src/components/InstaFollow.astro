@@ -1,0 +1,47 @@
+---
+// InstaFollow — one Instagram account per page (the account that posts about that part of Fursat).
+// Accounts are the four the footer already links. Usage: <InstaFollow handle="fursatbanquets" />
+interface Props { handle: 'fursatind.in' | 'fursatbanquets' | 'fursat_bitesandbuffet' | 'fursatsocialclub'; tone?: 'light' | 'dark' }
+const ACC = {
+  'fursatind.in': { name: 'Fursat Kitchen & Bar', line: 'New dishes, drinks and evenings at Fursat, every week.' },
+  'fursatbanquets': { name: 'Fursat Banquets & Events', line: 'Hall set-ups, décor and celebrations we have hosted.' },
+  'fursat_bitesandbuffet': { name: 'Fursat Bites & Buffet', line: 'Buffet spreads and catering for your events.' },
+  'fursatsocialclub': { name: 'Fursat Social Club', line: 'Bar nights, cocktails and the social side of Fursat.' },
+} as const;
+const { handle, tone = 'light' } = Astro.props;
+const a = ACC[handle];
+const url = `https://www.instagram.com/${handle}/`;
+---
+<aside class={`ig ig--${tone}`} aria-label={`${a.name} on Instagram`}>
+  <a class="ig-card" href={url} target="_blank" rel="noopener">
+    <span class="ig-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" class="ig-dot"/></svg>
+    </span>
+    <span class="ig-txt">
+      <span class="ig-k">Follow on Instagram</span>
+      <span class="ig-h">@{handle}</span>
+      <span class="ig-l">{a.line}</span>
+    </span>
+    <span class="ig-go">Open <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+  </a>
+</aside>
+<style>
+.ig { max-width: 1300px; margin: clamp(28px, 4vw, 48px) auto; padding: 0 clamp(16px, 4vw, 40px); }
+.ig-card { display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 20px; text-decoration: none; border: 1px solid rgb(201 154 67 / .45); background: rgb(255 251 244 / .78); color: #1f2a1a; transition-property: transform, box-shadow, border-color; transition-duration: 200ms; transition-timing-function: cubic-bezier(.23,1,.32,1); }
+.ig--dark .ig-card { background: rgb(255 255 255 / .06); border-color: rgb(243 197 107 / .35); color: #f6ecd8; }
+.ig-ico { flex: none; width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color: #fff; }
+.ig-ico svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.ig-ico .ig-dot { fill: currentColor; stroke: none; }
+.ig-txt { flex: 1; min-width: 0; display: grid; gap: 2px; text-align: left; }
+.ig-k { font: 600 .7rem/1.2 Poppins, system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #74501a; }
+.ig--dark .ig-k { color: #e7c27a; }
+.ig-h { font: 600 1.15rem/1.25 "Playfair Display", Georgia, serif; overflow-wrap: anywhere; }
+.ig-l { font: 400 .88rem/1.45 Poppins, system-ui, sans-serif; color: #5b5240; }
+.ig--dark .ig-l { color: #d9c9a6; }
+.ig-go { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: linear-gradient(180deg, #24502f, #14321e); color: #fbf3e6; font: 600 .88rem/1 Poppins, system-ui, sans-serif; }
+.ig-go svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ig-card:focus-visible { outline: 3px solid #1d5a32; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .ig-card:hover { transform: translateY(-2px); border-color: #c99a43; box-shadow: 0 16px 30px -18px rgb(90 60 20 / .45); } }
+@media (max-width: 520px) { .ig-card { flex-wrap: wrap; } .ig-go { width: 100%; justify-content: center; } }
+@media (prefers-reduced-motion: reduce) { .ig-card { transition: none; } }
+</style>

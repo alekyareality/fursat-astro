@@ -1,12 +1,14 @@
 ---
 // banquet.astro - The Royal Banquet Hall at Fursat
 // Hero, photos, capacity specs, event packages, sample menu & enquiry form
+import InstaFollow from '../components/InstaFollow.astro';
 import Base from '../layouts/Base.astro';
 import '../styles/fk-tokens.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import MascotOfferModal from '../components/MascotOfferModal.astro';
+import PackageBuilder from '../components/banquet/PackageBuilder.astro';
 ---
 <Base
   title="Banquet Hall — Fursat Kitchen | Bar | Madhapur Events"
@@ -103,76 +105,7 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
       </div>
     </section>
 
-    <!-- Packages Section -->
-    <section class="bq-packages" id="packages">
-      <div class="bq-container">
-        <div class="bq-sec-head text-center">
-          <span class="bq-kicker">CURATED EXPERIENCES</span>
-          <h2 class="bq-sec-title mot-headline">All-Inclusive Banquet Packages</h2>
-          <p class="bq-sec-desc">Per-guest packages. We share the final quote on WhatsApp.</p>
-        </div>
-
-        <div class="bq-pkg-grid">
-          <!-- Silver Package -->
-          <div class="bq-pkg-card">
-            <div class="bq-pkg-head">
-              <span class="bq-pkg-badge">CLASSIC</span>
-              <h3>Silver Feast</h3>
-              <div class="bq-pkg-price">₹925 <span>/ guest + taxes</span></div>
-            </div>
-            <ul class="bq-pkg-features">
-              <li>2 Veg & 2 Non-Veg Welcome Starters</li>
-              <li>1 Soup & 2 Salads</li>
-              <li>2 Veg & 2 Non-Veg Curries</li>
-              <li>Dum Biryani (Chicken & Veg)</li>
-              <li>Assorted Tandoori Roti & Naan</li>
-              <li>2 Handcrafted Desserts</li>
-              <li>Standard Stage & Ambient Audio</li>
-            </ul>
-            <a href="#enquire" class="bq-pkg-btn">Select Silver</a>
-          </div>
-
-          <!-- Gold Package (Featured) -->
-          <div class="bq-pkg-card featured">
-            <div class="bq-pkg-ribbon">MOST POPULAR</div>
-            <div class="bq-pkg-head">
-              <span class="bq-pkg-badge">ROYAL</span>
-              <h3>Gold Celebrations</h3>
-              <div class="bq-pkg-price">₹1,150 <span>/ guest + taxes</span></div>
-            </div>
-            <ul class="bq-pkg-features">
-              <li>3 Veg & 3 Non-Veg Starters (incl. Kebabs)</li>
-              <li>2 Soups & 4 Gourmet Salads</li>
-              <li>3 Veg & 3 Non-Veg Curries (Mutton Nalli Curry)</li>
-              <li>Fursat Signature Gosht & Veg Dum Biryani</li>
-              <li>Live Tandoor & Naan Counter</li>
-              <li>3 Desserts (incl. Ice Cream Counter)</li>
-              <li>Pro DJ, Party Lights & Projector</li>
-            </ul>
-            <a href="#enquire" class="bq-pkg-btn featured">Select Gold</a>
-          </div>
-
-          <!-- Platinum Package -->
-          <div class="bq-pkg-card">
-            <div class="bq-pkg-head">
-              <span class="bq-pkg-badge">LUXURY</span>
-              <h3>Platinum Gala</h3>
-              <div class="bq-pkg-price">₹1,450 <span>/ guest + taxes</span></div>
-            </div>
-            <ul class="bq-pkg-features">
-              <li>4 Veg & 4 Non-Veg Starters (Prawns & Fish)</li>
-              <li>Live Chaat / Dim Sum Station</li>
-              <li>Slow-cooked Royal Mutton Rogan Josh</li>
-              <li>Hyderabadi Dum Gosht Biryani & Joha Pulao</li>
-              <li>Gourmet Dessert Spread (Lotus Biscoff + Halwa)</li>
-              <li>Mocktail Bar Counter & Welcome Drinks</li>
-              <li>Customized Theme Decor & Valet Coordination</li>
-            </ul>
-            <a href="#enquire" class="bq-pkg-btn">Select Platinum</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <PackageBuilder />
 
     <!-- Enquiry Form Section -->
     <section class="bq-enquiry" id="enquire">
@@ -224,9 +157,11 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
               <div class="bq-form-field">
                 <label for="eq-package">Interested package (optional)</label>
                 <select id="eq-package" name="package" data-l="Package">
-                  <option value="Gold Package (₹1150/pax)">Gold Celebrations (₹1,150/pax)</option>
-                  <option value="Silver Package (₹925/pax)">Silver Feast (₹925/pax)</option>
-                  <option value="Platinum Package (₹1450/pax)">Platinum Gala (₹1,450/pax)</option>
+                  <option value="₹925 Veg package">₹925 Veg package</option>
+                  <option value="₹1049 Veg package">₹1,049 Veg package</option>
+                  <option value="₹1299 Veg package">₹1,299 Veg package</option>
+                  <option value="₹1399 Non-veg package">₹1,399 Non-veg package</option>
+                  <option value="₹1599 Non-veg package">₹1,599 Non-veg package</option>
                   <option value="Customized Menu">Customized Menu Requirements</option>
                 </select>
               </div>
@@ -244,6 +179,7 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
     </section>
 
     <!-- FAQ -->
+<InstaFollow handle="fursatbanquets" />
     <section class="bq-faq">
       <div class="bq-container bq-faq-inner">
         <h2 class="bq-sec-title text-center">Banquet FAQs</h2>
@@ -453,92 +389,6 @@ import MascotOfferModal from '../components/MascotOfferModal.astro';
     font-weight: 700}
 
   /* Packages */
-  .bq-packages {
-    padding: clamp(60px, 8vw, 110px) 0;
-    background: #efd8b8}
-  .bq-pkg-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-    gap: 30px}
-  .bq-pkg-card {
-    background: rgba(255,250,242,0.71);
-    border: 1.5px solid rgba(201,154,67,0.50);
-    border-radius: 24px;
-    padding: 36px 28px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    transition: transform 0.2s ease, border-color 0.2s ease}
-  .bq-pkg-card.featured {
-    border-color: #d6aa5a;
-    background: rgba(214,170,90,0.14);
-    box-shadow: 0 16px 40px rgba(90,60,20,0.20), 0 0 25px rgba(201,154,67,0.12)}
-  .bq-pkg-card:hover {
-    transform: translateY(-5px)}
-  .bq-pkg-ribbon {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--fk-action-bg);
-    color: #fbf3e6;
-    font-size: 0.75rem;
-    font-weight:600;
-    letter-spacing: 0.1em;
-    padding: 4px 14px;
-    border-radius: 999px;border-color:var(--fk-action-rim);box-shadow:var(--fk-action-shadow);color:var(--fk-action-fg)}
-  .bq-pkg-badge {
-    font-size: 0.75rem;
-    font-weight:600;
-    color: #74501a;
-    letter-spacing: 0.08em}
-  .bq-pkg-head h3 {
-    font-family:var(--fk-serif);
-    font-size: 1.6rem;
-    color: #1f2a1a;
-    margin: 4px 0 12px}
-  .bq-pkg-price {
-    font-size: 2rem;
-    font-weight:600;
-    color: #74501a}
-  .bq-pkg-price span {
-    font-size: 0.85rem;
-    color: #4a4232;
-    font-weight: 500}
-  .bq-pkg-features {
-    list-style: none;
-    padding: 0;
-    margin: 24px 0 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px}
-  .bq-pkg-features li {
-    font-size: 0.925rem;
-    color: #4a4232;
-    padding-left: 22px;
-    position: relative}
-  .bq-pkg-features li::before {
-    content: "✓";
-    position: absolute;
-    left: 0;
-    color: #74501a;
-    font-weight:600}
-  .bq-pkg-btn {
-    display: block;
-    text-align: center;
-    padding: 12px;
-    border-radius: 999px;
-    background: rgba(255,250,242,0.87);
-    border: 1px solid rgba(201,154,67,0.60);
-    color: #1f2a1a;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.16s ease}
-  .bq-pkg-btn.featured, .bq-pkg-btn:hover {
-    background: var(--fk-action-bg);
-    color: #fbf3e6;
-    border-color: #d6aa5a;border-color:var(--fk-action-rim);box-shadow:var(--fk-action-shadow);color:var(--fk-action-fg)}
 
   /* Enquiry Section */
   .bq-enquiry {
