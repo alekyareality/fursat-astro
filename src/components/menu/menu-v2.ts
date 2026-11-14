@@ -148,7 +148,16 @@ function init(root: HTMLElement) {
     $$('.mv-schip').forEach((b) => { const on = b.dataset.go === id; b.classList.toggle('is-on', on); if (on && b.offsetParent) centerIn(b); });
     placeSlides(true);
   }
-  const scrollTo = (el: Element | null) => el?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  // while we scroll the page ourselves (Full food / drinks menu, hotspots, chips) the scroll-spy must not flip the side:
+  // passing through the other side's groups used to switch the list and the jump ended in the wrong menu.
+  let autoUntil = 0;
+  const scrollTo = (el: Element | null) => {
+    if (!el) return;
+    autoUntil = performance.now() + 1600;
+    const done = () => { autoUntil = 0; removeEventListener('scrollend', done); };
+    addEventListener('scrollend', done, { once: true });
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  };
   function need21(side: Side, run: () => void) {
     if (side === 'drinks' && !ageOk()) { pending = run; if (!dlg.open) dlg.showModal(); return; }
     run();
@@ -223,6 +232,7 @@ function init(root: HTMLElement) {
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((en) => (en.isIntersecting ? seen.add(en.target) : seen.delete(en.target)));
       if (window.scrollY < stage.offsetHeight * 0.5) return; // stage still in charge
+      if (performance.now() < autoUntil) return; // our own jump is running: keep the chosen side
       // the group whose top has passed the sticky offset (largest top <= 200px); else the first one in view
       const inView = groups.filter((g) => seen.has(g)).map((g) => [g, g.getBoundingClientRect().top] as const);
       const passed = inView.filter(([, t]) => t <= 200).sort((a, b) => b[1] - a[1])[0];

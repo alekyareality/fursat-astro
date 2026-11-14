@@ -588,6 +588,25 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
   /* phones: 44px Reserve button; at <=360px the header WhatsApp icon is hidden (WhatsApp stays in the phone bar) so logo + Reserve + burger fit at 320 */
   @media (max-width: 760px) { .sh-reserve-btn { min-height: 44px; } }
   @media (max-width: 360px) { .sh-wa { display: none; } .sh-actions { gap: 8px; } }
+
+  /* ── v5.16 header polish: gold hairline, sliding underline, active pill, softer shape ── */
+  .sh-plaster.sh-header { box-shadow: 0 1px 0 rgba(255,255,255,.7) inset; }
+  .sh-plaster.sh-header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(201,154,67,.65) 18%, rgba(243,197,107,.9) 50%, rgba(201,154,67,.65) 82%, transparent); opacity: 0; transition: opacity 300ms ease; }
+  .sh-plaster.sh-header.sh-scrolled::after { opacity: 1; }
+  .sh-plaster .sh-link { position: relative; box-shadow: none !important; border-radius: 999px; padding-inline: 12px;
+    transition-property: color, background-color; transition-duration: 200ms; transition-timing-function: cubic-bezier(.23,1,.32,1); }
+  .sh-plaster .sh-link::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 1.5px; border-radius: 2px;
+    background: linear-gradient(90deg, #c99a43, #9c4f1c); transform: scaleX(0); transform-origin: center;
+    transition: transform 260ms cubic-bezier(.23,1,.32,1); }
+  .sh-plaster .sh-link:hover::after, .sh-plaster .sh-link:focus-visible::after { transform: scaleX(1); }
+  .sh-plaster .sh-link.active { color: #7a3a10; background: linear-gradient(180deg, rgba(243,211,140,.45), rgba(227,171,74,.28)); box-shadow: inset 0 0 0 1px rgba(201,154,67,.45) !important; }
+  .sh-plaster .sh-link.active::after { transform: scaleX(0); }
+  .sh-plaster .sh-menu { border-radius: 18px; border: 1px solid rgba(201,154,67,.45); box-shadow: 0 24px 48px -24px rgba(74,48,16,.45), 0 2px 0 rgba(255,255,255,.8) inset; }
+  .sh-plaster .sh-sub-item { border-radius: 12px; transition-property: background-color, transform; transition-duration: 200ms; }
+  .sh-plaster .sh-sub-item:hover { background: rgba(243,211,140,.28); transform: translateX(2px); }
+  .sh-header.sh-plaster.sh-scrolled { box-shadow: 0 12px 30px -20px rgba(74,48,16,.45); }
+  @media (prefers-reduced-motion: reduce) { .sh-plaster .sh-link, .sh-plaster .sh-link::after, .sh-plaster .sh-sub-item { transition: none; } }
 </style>
 
 <script is:inline>

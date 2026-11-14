@@ -66,6 +66,7 @@ const cards = CARDS.map((c) => ({
     return { name, menuName: row.name, alt: d.alt, note, priceText, tray, img };
   }),
 }));
+const BADGE: Record<string, string> = {"drink": "<path d=\"M6 3h12l-1.5 7a4.5 4.5 0 0 1-9 0z\"/><path d=\"M12 14.5V21M8.5 21h7\"/>", "plate": "<path d=\"M3 12h18a9 9 0 0 1-18 0z\"/><path d=\"M8 8c0-1.5 1-2 1-3.5M12 8c0-1.5 1-2 1-3.5M16 8c0-1.5 1-2 1-3.5\"/>", "sweet": "<path d=\"M7 11h10l-1.2 9H8.2z\"/><path d=\"M6 11a6 6 0 0 1 12 0\"/><circle cx=\"12\" cy=\"5\" r=\"1.5\"/>", "bite": "<path d=\"M12 3c3 4 6 6.5 6 10.5a6 6 0 0 1-12 0C6 10 9 9 9 6c2 1.5 3 3 3 5\"/>"};
 ---
 <section class="hs" id="season" aria-labelledby="hs-h">
   <div class="hs-head" data-fk-reveal>
@@ -78,6 +79,7 @@ const cards = CARDS.map((c) => ({
       const d0 = c.dishes[0];
       return (
         <article class="hs-card fk-lift" data-name={d0.name} data-price={d0.tray} data-kind={c.kind} data-dishes={JSON.stringify(c.dishes.map((d) => [d.name, d.note, d.priceText, d.tray]))} data-menus={JSON.stringify(c.dishes.map((d) => d.menuName))}>
+          <span class="hs-badge" aria-hidden="true"><svg viewBox="0 0 24 24" set:html={BADGE[c.kind] || BADGE.plate} /></span>
           <div class="hs-img">
             {c.dishes.map((d, i) => (
               <img class:list={['hs-sl', { on: i === 0 }]} src={d.img.src} srcset={d.img.srcset} sizes="(min-width: 900px) 25vw, 72vw" alt={d.alt} width={d.img.w} height={d.img.h} loading="lazy" decoding="async" />
@@ -121,7 +123,10 @@ const cards = CARDS.map((c) => ({
 
 .hs-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.6vw,24px);padding:0 clamp(12px,2vw,28px)}
 .hs-card{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:26px;overflow:hidden;background:linear-gradient(180deg,#FCF8EC,#F6EEDA);border:1px solid rgba(176,146,84,.32);box-shadow:0 18px 30px -22px rgba(70,50,15,.55)}
-.hs-img{position:relative;aspect-ratio:1/1;background:#d9cdb3;overflow:hidden}
+.hs-img{position:relative;aspect-ratio:4/3.4;background:#d9cdb3;overflow:hidden;margin-bottom:-12%;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 0H100V100C99 100 95 100 91 97C86 93 84 84 77 81C70 78 62 79 50 80C36 81 18 82 0 80Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 0H100V100C99 100 95 100 91 97C86 93 84 84 77 81C70 78 62 79 50 80C36 81 18 82 0 80Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;}
+.hs-badge{position:absolute;left:14px;top:14px;z-index:3;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(251,243,231,.94);box-shadow:0 0 0 1px #d6aa5a,0 4px 12px -4px rgba(60,40,10,.25)}
+.hs-badge svg{width:21px;height:21px;fill:none;stroke:#8a5a22;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.hs-body{position:relative;z-index:1}
 .hs-sl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
 .hs-sl.on{opacity:1}
 .hs-body{padding:16px 64px 18px 18px;min-height:112px;transition:opacity .45s ease}
@@ -145,4 +150,9 @@ const cards = CARDS.map((c) => ({
   .hs-img{aspect-ratio:4/3}
 }
 @media(prefers-reduced-motion:reduce){.hs-sl,.hs-body,.hs-add,.hs-all svg{transition:none}}
+
+/* v5.16b reference card shape: a soft wave along the top edge (photo edge), as in the owner's reference.
+   Two mask layers: the wave band (top 18px) + a solid block below it. Corners stay rounded by border-radius. */
+.hs-card { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V3.2C9 0.6 20 0.4 31 2.4C42 4.4 52 6.2 64 4.6C76 3 88 0.8 100 1.6V10Z'/%3E%3C/svg%3E") 0 0 / 100% 18px no-repeat, linear-gradient(#000,#000) 0 17px / 100% calc(100% - 17px) no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V3.2C9 0.6 20 0.4 31 2.4C42 4.4 52 6.2 64 4.6C76 3 88 0.8 100 1.6V10Z'/%3E%3C/svg%3E") 0 0 / 100% 18px no-repeat, linear-gradient(#000,#000) 0 17px / 100% calc(100% - 17px) no-repeat; }
 </style>

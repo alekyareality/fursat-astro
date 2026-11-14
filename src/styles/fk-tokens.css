@@ -333,3 +333,8 @@ html[data-daypart="evening"] .hy::before { opacity: 1; background: radial-gradie
   .fk-lift{transition-property:transform;transition-duration:var(--fk-dur-2);transition-timing-function:var(--fk-ease-out)}
   @media (hover:hover) and (pointer:fine){.fk-lift:hover{transform:translateY(var(--fk-lift-y))}}
 }
+
+/* v5.16b reference card shape: a soft wave along the top edge (photo edge), as in the owner's reference.
+   Two mask layers: the wave band (top 18px) + a solid block below it. Corners stay rounded by border-radius. */
+.fk-card { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V3.2C9 0.6 20 0.4 31 2.4C42 4.4 52 6.2 64 4.6C76 3 88 0.8 100 1.6V10Z'/%3E%3C/svg%3E") 0 0 / 100% 18px no-repeat, linear-gradient(#000,#000) 0 17px / 100% calc(100% - 17px) no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V3.2C9 0.6 20 0.4 31 2.4C42 4.4 52 6.2 64 4.6C76 3 88 0.8 100 1.6V10Z'/%3E%3C/svg%3E") 0 0 / 100% 18px no-repeat, linear-gradient(#000,#000) 0 17px / 100% calc(100% - 17px) no-repeat; }
