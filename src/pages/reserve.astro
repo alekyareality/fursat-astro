@@ -15,7 +15,7 @@ import BookingPanel from '../components/reserve/BookingPanel.astro';
 import MoreAtFursat from '../components/reserve/MoreAtFursat.astro';
 import '../styles/fk-tokens.css';
 import '../styles/reserve.css';
-const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fursat in the evening', w: 780, h: 1040, pos: '50% 60%', eager: true };
+const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fursat', w: 780, h: 1040, pos: '50% 60%', eager: true };
 ---
 <Base
   title="Reserve a Table — Fursat Kitchen | Bar, Madhapur"
@@ -60,12 +60,15 @@ const heroPhoto = { src: '/assets/tour/img/lounge.webp', alt: 'The lounge at Fur
       var p = f && f.querySelector('.rs-panel');
       if (!seg || !p) return;
       var fit = function () {
-        if (seg.clientWidth < 1180) { p.style.zoom = ''; return; }
+        if (seg.clientWidth < 1180) { p.style.zoom = ''; p.style.removeProperty('--rs-z'); return; }
+        var avail = seg.clientWidth * 0.312;   // cream panel height below the header (wide art)
+        // zoom is measured with normal target sizes (same as before); --rs-z then lifts the targets so they still render at 45px
+        p.style.setProperty('--rs-z', '1');
         var z = parseFloat(p.style.zoom) || 1;
         var natural = p.getBoundingClientRect().height / z;
-        var avail = seg.clientWidth * 0.312;   // cream panel height below the header (wide art)
         var nz = Math.min(1, avail / natural);
         if (Math.abs(nz - z) > 0.005) p.style.zoom = nz.toFixed(3);
+        p.style.setProperty('--rs-z', (parseFloat(p.style.zoom) || 1).toFixed(3));
       };
       fit(); addEventListener('resize', fit);
       if ('ResizeObserver' in window) new ResizeObserver(fit).observe(p);

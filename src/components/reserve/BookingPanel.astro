@@ -37,12 +37,12 @@ const conditions: string[] = [];
 ---
 <OrganicFrame shape="blobBooking" class="rs-panel-frame" fill lip={16}>
 <section id="book" class="rs-panel fk-organic__body" tabindex="-1" aria-labelledby="rs-book-h">
-  <form class="rs-pform" id="res-form" novalidate onsubmit="return false;">
+  <form class="rs-pform" id="res-form" novalidate onsubmit="return false;" aria-labelledby="rs-book-h">
     <header class="rs-phead">
       <span class="rs-hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M9 14.5l2 2 4-4"/></svg></span>
       <div class="rs-htxt">
         <h2 id="rs-book-h" tabindex="-1">Book Your Experience</h2>
-        <p class="rs-psub">Reserve your table and let us take care of the rest.</p>
+        <p class="rs-psub">We confirm on WhatsApp. <span class="rs-reqnote">* Required</span></p>
       </div>
       <i class="rs-hrule" aria-hidden="true"></i>
     </header>
@@ -69,14 +69,14 @@ const conditions: string[] = [];
             <label class="rs-chip rs-cal" id="rs-cal">
               <span class="rs-cw" id="rs-cal-t">More</span>
               <span class="rs-cd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span id="rs-cal-d"></span></span>
-              <input type="date" id="res-date" class="rs-calinp" aria-label="Pick another date" />
+              <input type="date" id="res-date" class="rs-calinp" aria-label="More dates: pick another date" />
             </label>
           </div>
         </div>
 
         <div class="rs-q" id="f-time">
-          <p class="rs-ql" id="rs-ql-time"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Select Time</p>
-          <div class="rs-chips rs-times" id="rs-times" role="radiogroup" aria-labelledby="rs-ql-time">
+          <p class="rs-ql" id="rs-ql-time"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Select Time<span class="rs-req" aria-hidden="true"> *</span></p>
+          <div class="rs-chips rs-times" id="rs-times" role="radiogroup" aria-labelledby="rs-ql-time" aria-required="true" aria-describedby="rs-time-err">
             {slots.map(s => (
               <button type="button" class="rs-chip" role="radio" aria-checked="false" tabindex="-1" data-m={s.min} data-t={s.text} data-d={s.discount}>
                 <span class="rs-tm">{s.text}</span>{s.discount > 0 && <span class="rs-off">{s.discount}% off</span>}
@@ -84,6 +84,7 @@ const conditions: string[] = [];
             ))}
           </div>
           <p class="rs-hint" id="rs-noslot" hidden>No more slots today. Please pick another date.</p>
+          <p class="rs-ferr" id="rs-time-err" role="alert"></p>
         </div>
 
         <div class="rs-q rs-q-3" id="f-guests">
@@ -99,7 +100,7 @@ const conditions: string[] = [];
         </div>
 
         <div class="rs-q rs-q-3" id="f-occasion">
-          <label class="rs-ql" for="res-occasion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/></svg>Occasion<span class="rs-long"> (optional)</span><span class="rs-pre">Pre-filled</span></label>
+          <label class="rs-ql" for="res-occasion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/></svg>Occasion<span class="rs-sr"> (optional)</span><span class="rs-long" aria-hidden="true"> (optional)</span><span class="rs-pre">Pre-filled</span></label>
           <div class="rs-box">
             <select id="res-occasion">
               {occasions.map(o => <option value={o.v}>{o.t}</option>)}
@@ -121,12 +122,15 @@ const conditions: string[] = [];
         </div>
 
         <div class="rs-q rs-q-3" id="f-name">
-          <label class="rs-ql" for="res-name"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg>Your Name</label>
-          <div class="rs-box"><input type="text" id="res-name" autocomplete="name" placeholder="Full name" required /></div>
+          <label class="rs-ql" for="res-name"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg>Your Name<span class="rs-req" aria-hidden="true"> *</span></label>
+          <div class="rs-box"><input type="text" id="res-name" autocomplete="name" placeholder="Full name" required aria-required="true" aria-describedby="res-name-err" /></div>
+          <p class="rs-ferr" id="res-name-err" role="alert"></p>
         </div>
         <div class="rs-q rs-q-3" id="f-phone">
-          <label class="rs-ql" for="res-phone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h3l1.6 4-2 1.3a11 11 0 0 0 5.1 5.1l1.3-2 4 1.6v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2z"/></svg>Mobile<span class="rs-long"> Number</span></label>
-          <div class="rs-box"><input type="tel" id="res-phone" autocomplete="tel" inputmode="tel" placeholder="10-digit number" required /></div>
+          <label class="rs-ql" for="res-phone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h3l1.6 4-2 1.3a11 11 0 0 0 5.1 5.1l1.3-2 4 1.6v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2z"/></svg>Mobile<span class="rs-long"> Number</span><span class="rs-req" aria-hidden="true"> *</span></label>
+          <div class="rs-box"><input type="tel" id="res-phone" autocomplete="tel" inputmode="tel" placeholder="10-digit number" required aria-required="true" aria-describedby="res-phone-hint res-phone-err" /></div>
+          <span class="rs-sr" id="res-phone-hint">Enter a 10-digit mobile number.</span>
+          <p class="rs-ferr" id="res-phone-err" role="alert"></p>
         </div>
       </div>
     </div>
@@ -172,7 +176,7 @@ const conditions: string[] = [];
         <span>Request a Table</span>
         <svg class="rs-cta-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
-      <p class="rs-cond" role="note">A request, not a confirmed booking. Not confirmed until we reply on WhatsApp.<br />{conditions.length ? conditions.join(' · ') : 'No booking conditions'} · Seating is a preference.</p>
+      <p class="rs-cond" role="note">A request, not a confirmed booking. Not confirmed until we reply on WhatsApp.<br />{conditions.length ? conditions.join(' · ') + ' · ' : ''}Seating is a preference.</p>
       <p class="rs-fine" id="rs-fine">Opens WhatsApp with your details.</p>
       <noscript><p class="rs-fine"><a href="https://wa.me/919059670033?text=Hi%20Fursat!%20I%20would%20like%20to%20reserve%20a%20table." target="_blank" rel="noopener">No JavaScript? Request a table on WhatsApp.</a></p></noscript>
     </div>
@@ -181,7 +185,7 @@ const conditions: string[] = [];
     <div class="rs-done" id="rs-done" hidden>
       <h3 class="rs-stamp" id="rs-done-h" tabindex="-1">Request sent</h3>
       <dl class="rs-sum rs-done-sum" id="rs-done-sum"></dl>
-      <p class="rs-done-note">We’ll confirm on WhatsApp shortly. Didn’t open? <a id="rs-resend" href="https://wa.me/919059670033" target="_blank" rel="noopener">Send again</a></p>
+      <p class="rs-done-note">We’ll confirm on WhatsApp. Didn’t open? <a id="rs-resend" href="https://wa.me/919059670033" target="_blank" rel="noopener">Send again</a></p>
       <div class="rs-done-actions">
         <button type="button" class="rs-btn rs-btn-line" id="rs-ics"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13v4M10 15h4"/></svg>Add to calendar</button>
         <a class="rs-btn rs-btn-line" id="rs-dir" href={mapsUrl} target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Get directions<span class="rs-sr"> (opens Google Maps in a new tab)</span></a>
@@ -195,11 +199,11 @@ const conditions: string[] = [];
   <aside class="rs-perks" aria-label="At Fursat">
     <div class="rs-perk">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 17.5h17M5 17.5a7 7 0 0 1 14 0M12 8.5v-2M10.5 6.5h3M2.5 20h19"/></svg>
-      <span>Exceptional<br />Cuisine</span>
+      <span>The<br />Kitchen</span>
     </div>
     <div class="rs-perk">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4h8L10.2 11a2.7 2.7 0 0 1-5.4 0zM7.5 13.5V20M4.5 20h6M14.5 8.5h6l-.9 5.3a2.2 2.2 0 0 1-4.2 0zM17.5 16V20M14.5 20h6"/></svg>
-      <span>Signature<br />Drinks</span>
+      <span>The<br />Bar</span>
     </div>
     <div class="rs-hours"><b>Open</b>{site.hours.schedule.map(h => <span>{h.days}<br />{h.open} – {h.close}</span>)}</div>
   </aside>
@@ -337,8 +341,8 @@ const conditions: string[] = [];
   const occEl = $('res-occasion'), nameEl = $('res-name'), phoneEl = $('res-phone');
   const occText = () => { const o = qsa('option', occEl).find((x) => x.value === booking.occasion); return o ? o.textContent : booking.occasion; };
   occEl.addEventListener('change', () => { booking.occasion = occEl.value; $('f-occasion').classList.remove('is-prefilled'); renderAll(); });
-  nameEl.addEventListener('input', () => { booking.name = nameEl.value; clearErr(); updateTicket(); });
-  phoneEl.addEventListener('input', () => { booking.phone = phoneEl.value; clearErr(); updateTicket(); });
+  nameEl.addEventListener('input', () => { booking.name = nameEl.value; clearErr(['f-name']); updateTicket(); });
+  phoneEl.addEventListener('input', () => { booking.phone = phoneEl.value; clearErr(['f-phone']); updateTicket(); });
   const syncInputs = () => { nameEl.value = booking.name; phoneEl.value = booking.phone; occEl.value = booking.occasion; };
 
   /* ───────── render: Quick DOM from the booking object ───────── */
@@ -350,6 +354,7 @@ const conditions: string[] = [];
     $('rs-cal-t').textContent = matched ? 'More' : DAYS[cd.getDay()];
     $('rs-cal-d').textContent = matched ? '' : cd.getDate() + ' ' + MONTHS[cd.getMonth()];
     calInput.value = booking.date;
+    calInput.setAttribute('aria-label', matched ? 'More dates: pick another date' : DAYS[cd.getDay()] + ' ' + cd.getDate() + ' ' + MONTHS[cd.getMonth()] + ', change date');
     roving(datesEl);
 
     const avail = availFor(booking.date), aset = new Set(avail);
@@ -519,17 +524,17 @@ const conditions: string[] = [];
       });
     } else if (step === 'name' || step === 'phone') {
       say(Q[step], () => {
-        const wrap = mk('div', 'rs-compw'), row = mk('div', 'rs-comp'), err = mk('p', 'rs-comp-err'); err.setAttribute('role', 'alert');
+        const wrap = mk('div', 'rs-compw'), row = mk('div', 'rs-comp'), err = mk('p', 'rs-comp-err'); err.setAttribute('role', 'alert'); err.id = 'rs-comp-err';
         const inp = mk('input'); const isP = step === 'phone';
-        inp.type = isP ? 'tel' : 'text'; inp.autocomplete = isP ? 'tel' : 'name'; if (isP) inp.inputMode = 'tel'; inp.enterKeyHint = 'send';
+        inp.type = isP ? 'tel' : 'text'; inp.autocomplete = isP ? 'tel' : 'name'; if (isP) inp.inputMode = 'tel'; inp.enterKeyHint = 'send'; inp.setAttribute('aria-describedby', 'rs-comp-err'); inp.setAttribute('aria-required', 'true');
         inp.placeholder = isP ? '10-digit number' : 'Full name'; inp.setAttribute('aria-label', isP ? 'Your mobile number' : 'Your name'); inp.value = isP ? booking.phone : booking.name;
         const send = mk('button', 'rs-send'); send.type = 'button'; send.setAttribute('aria-label', 'Send');
         send.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
         const go = () => {
           const v = inp.value.trim();
-          if (!isP && !v) { err.textContent = 'Please enter your name.'; inp.focus(); return; }
-          if (isP && !phoneOk(v)) { err.textContent = 'Please enter a 10-digit mobile number.'; inp.focus(); return; }
-          err.textContent = ''; if (isP) booking.phone = v; else booking.name = v; me(v); done(step);
+          if (!isP && !v) { err.textContent = 'Please enter your name.'; inp.setAttribute('aria-invalid', 'true'); inp.focus(); return; }
+          if (isP && !phoneOk(v)) { err.textContent = 'Please enter a 10-digit mobile number.'; inp.setAttribute('aria-invalid', 'true'); inp.focus(); return; }
+          err.textContent = ''; inp.removeAttribute('aria-invalid'); if (isP) booking.phone = v; else booking.name = v; me(v); done(step);
         };
         send.addEventListener('click', go); inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
         row.append(inp, send); wrap.append(row, err); showTray([wrap], true);
@@ -618,19 +623,30 @@ const conditions: string[] = [];
 
   /* ───────── submit: wa.me/919059670033 with the message (format unchanged) ───────── */
   const submit = $('res-submit-btn');
-  function showErr(msg, ids) {
-    $('rs-err-t').textContent = msg; $('rs-err').classList.add('on');
-    ['f-name', 'f-phone'].forEach((id) => $(id).classList.toggle('is-bad', ids.indexOf(id) > -1));
+  /* field errors: text sits under its field (aria-describedby), role=alert announces it; chat/pick modes keep the single message above the button */
+  const FE = { 'f-name': ['res-name', 'res-name-err'], 'f-phone': ['res-phone', 'res-phone-err'], 'f-time': ['rs-times', 'rs-time-err'] };
+  function clearErr(ids) {
+    (ids || Object.keys(FE)).forEach((id) => { const e = FE[id]; $(e[1]).textContent = ''; $(e[0]).removeAttribute('aria-invalid'); $(id).classList.remove('is-bad'); });
+    if (!ids) $('rs-err').classList.remove('on');
   }
-  function clearErr() { $('rs-err').classList.remove('on'); ['f-name', 'f-phone'].forEach((id) => $(id).classList.remove('is-bad')); }
+  function showErr(items) {
+    clearErr();
+    if (mode === 'quick') items.forEach((it) => { const e = FE[it[0]]; $(e[1]).textContent = it[1]; $(e[0]).setAttribute('aria-invalid', 'true'); $(it[0]).classList.add('is-bad'); });
+    else { $('rs-err-t').textContent = items.map((it) => it[1]).join(' '); $('rs-err').classList.add('on'); }
+  }
+  timeBox.addEventListener('click', () => clearErr(['f-time']));
   submit.addEventListener('click', () => {
     const name = booking.name.trim(), phone = booking.phone.trim();
-    if (!name || !phone) {
-      showErr('Please enter your name and mobile number.', [!name ? 'f-name' : '', !phone ? 'f-phone' : '']);
-      (mode === 'quick' ? (!name ? nameEl : phoneEl) : submit).focus(); return;
+    const bad = [];
+    if (!booking.time) bad.push(['f-time', 'Please choose a time.']);
+    if (!name) bad.push(['f-name', 'Please enter your name.']);
+    if (!phone) bad.push(['f-phone', 'Please enter your mobile number.']);
+    else if (!phoneOk(phone)) bad.push(['f-phone', 'Please enter a 10-digit mobile number.']);
+    if (bad.length) {
+      showErr(bad);
+      if (mode === 'quick') { const f = bad[0][0], t = f === 'f-time' ? qs('#rs-times .rs-chip[aria-checked="true"]:not(:disabled)') || qs('#rs-times .rs-chip:not(:disabled)') : $(FE[f][0]); if (t) t.focus(); } else submit.focus();
+      return;
     }
-    if (!phoneOk(phone)) { showErr('Please enter a 10-digit mobile number.', ['f-phone']); if (mode === 'quick') phoneEl.focus(); return; }
-    if (!booking.time) { showErr('Please choose a time.', []); const t = qs('#rs-times .rs-chip:not(:disabled)'); if (t && mode === 'quick') t.focus(); return; }
     clearErr();
     const date = friendly(booking.date), seating = booking.zone || 'No preference', occasion = booking.occasion || 'Dining';
     const msg = 'Hi Fursat! I would like to reserve a table:\n\n• Name: ' + name + '\n• Phone: ' + phone + '\n• Guests: ' + booking.guests + ' Guests' + '\n• Date: ' + date + '\n• Time: ' + booking.time + '\n• Seating: ' + seating + '\n• Occasion: ' + occasion + (offerOf() ? '\n• Offer: ' + offerOf() : '');
@@ -744,3 +760,18 @@ const conditions: string[] = [];
   syncInputs(); renderAll();
 })();
 </script>
+
+<style is:global>
+  /* R1 a11y: 44px targets, field errors, required marks. Colours are existing tokens only. */
+  .rs-page .rs-hy .rs-sbtn{width:45px;height:45px}
+  .rs-page .rs-hy .rs-btn,.rs-page .rs-hy .rs-btn-sm,.rs-page .rs-hy .rs-mode{min-height:45px}
+  .rs-page .rs-hy .rs-link{display:block;min-height:44px;text-align:left}
+  /* the desktop fit-zoom scales the panel; --rs-z (set by reserve.astro) lifts targets so they still render at 45px */
+  .rs-page .rs-hy .rs-panel :is(.rs-btn,.rs-mode,.rs-chip,.rs-qr,.rs-link,.rs-send,.rs-box,.rs-box input,.rs-box select,.rs-comp input){min-height:calc(45px / var(--rs-z, 1))}
+  .rs-page .rs-hy .rs-panel .rs-sbtn{width:calc(45px / var(--rs-z, 1));height:calc(45px / var(--rs-z, 1))}
+  .rs-reqnote{white-space:nowrap}
+  .rs-ferr{margin:6px 4px 0;font-size:.84rem;line-height:1.4;color:var(--rs-danger)}
+  .rs-ferr:empty{display:none}
+  .is-bad .rs-times{border-radius:18px;box-shadow:0 0 0 2px var(--rs-danger)}
+  @media (max-width:767px){ .rs-page .rs-box input,.rs-page .rs-box select,.rs-page .rs-comp input,.rs-page .rs-calinp{font-size:16px} }
+</style>
