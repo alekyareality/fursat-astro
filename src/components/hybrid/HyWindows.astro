@@ -27,7 +27,7 @@ const pos = (w: { l: number; t: number; w: number; h: number }) =>
   <figure class={`hy-win hy-${view}`} style={`${pos(w)};clip-path:url(#${id(k)})`}>
     <img src={photos[k]!.src} alt={photos[k]!.alt} width={photos[k]!.w ?? 1200} height={photos[k]!.h ?? 1600}
       style={photos[k]!.pos ? `object-position:${photos[k]!.pos}` : undefined}
-      loading={photos[k]!.eager ? 'eager' : 'lazy'} fetchpriority={photos[k]!.eager ? 'high' : undefined} decoding="async" data-fx-par />
+      loading={photos[k]!.eager ? 'eager' : 'lazy'} fetchpriority={photos[k]!.eager ? 'high' : undefined} decoding="async" data-fx-par onload="this.parentNode.classList.add('is-loaded')" />
   </figure>
 ))}
 {s.shade && (

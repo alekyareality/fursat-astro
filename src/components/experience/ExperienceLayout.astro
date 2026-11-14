@@ -8,10 +8,8 @@ import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
 import MobileBar from '../MobileBar.astro';
 import MascotOfferModal from '../MascotOfferModal.astro';
-import HyWindows from '../hybrid/HyWindows.astro';
+import CornerHero from '../CornerHero.astro';
 import InstaFollow from '../InstaFollow.astro';
-import desk from '../../../scripts/bg-specs/exp-desk.out.json';
-import phone from '../../../scripts/bg-specs/exp-phone.out.json';
 import '../../styles/fk-tokens.css';
 
 interface Cta { label: string; href: string; primary?: boolean; book?: boolean }
@@ -29,6 +27,7 @@ interface Props {
   insta?: 'fursatind.in' | 'fursatbanquets' | 'fursat_bitesandbuffet' | 'fursatsocialclub';
 }
 const p = Astro.props;
+const heroKey = p.active === 'cafe' ? 'cafe' : 'bar';
 const icons: Record<string, string> = {
   coffee: '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/>',
   leaf: '<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19 13 11"/>',
@@ -40,14 +39,8 @@ const icons: Record<string, string> = {
   menu: '<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>',
 };
 const elephant = 'M109.5 10.2 L100.2 6.0 L81.5 4.0 L70.5 8.0 L61.0 18.5 L60.0 24.2 L62.8 30.5 L69.5 34.8 L76.2 34.8 L81.8 31.2 L83.5 27.2 L79.5 24.0 L76.2 27.0 L71.8 25.2 L71.8 22.5 L79.5 16.8 L88.2 16.8 L92.5 18.8 L98.0 25.5 L98.0 32.2 L88.2 44.0 L73.5 52.0 L64.5 58.0 L55.0 67.5 L51.0 74.5 L48.0 83.5 L48.0 98.2 L52.2 108.5 L57.5 112.8 L69.5 118.8 L80.2 119.8 L88.2 116.8 L92.8 110.2 L92.8 105.5 L94.5 104.0 L96.0 106.5 L96.0 114.2 L89.2 123.0 L82.2 126.0 L66.5 126.0 L56.5 122.0 L50.2 118.0 L43.8 110.2 L40.2 102.0 L29.5 107.0 L20.2 114.2 L14.0 123.5 L5.2 139.2 L13.2 138.0 L13.0 150.2 L12.0 160.2 L13.0 166.2 L14.5 170.8 L35.2 170.8 L35.8 163.5 L39.8 157.2 L48.2 155.8 L53.0 160.5 L54.5 170.8 L74.2 170.8 L74.8 161.5 L78.2 157.0 L86.2 155.8 L92.0 161.5 L92.5 170.8 L117.8 170.2 L116.8 159.5 L115.8 142.5 L117.8 127.5 L125.8 114.2 L130.8 103.2 L133.8 94.2 L135.8 81.2 L135.8 64.5 L133.8 55.2 L128.8 39.2 L121.8 24.5Z';
-const hero = { ...p.hero, eager: true };
 // cards without their own photo (e.g. cocktails) use real bar photos
 const cardFallback: Photo[] = [{ src: '/assets/interior/bar-front.webp', alt: '' }, { src: '/assets/interior/bar-back.webp', alt: '' }, { src: '/assets/interior/tour-bar.webp', alt: '' }, { src: '/assets/tour/img/sm/bar.webp', alt: '' }];
-// window order comes from the traced data (largest first)
-const deskPhotos = [hero, p.big, p.bottom, p.top];        // exp-desk: hero, big, lower-right, upper-right
-const phonePhotos = [p.big, hero, p.top, p.bottom];       // exp-phone: wide, hero, small-left, small-right
-const rings = [{ x: 153, y: 770 }, { x: 384, y: 770 }, { x: 615, y: 770 }, { x: 843, y: 770 }];
-const ringsM = [{ x: 257, y: 1429 }, { x: 717, y: 1429 }, { x: 257, y: 1584 }, { x: 717, y: 1584 }];
 // Google FAQ rich results, from the same questions shown on the page
 const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: p.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
 ---
@@ -56,49 +49,38 @@ const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPa
 <script is:inline>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.add('fx-pre'); setTimeout(function () { document.documentElement.classList.remove('fx-pre'); }, 3500); }</script>
 
 <main class="xp" id="main">
-  <section class="hy xp-stage" aria-labelledby="xp-h1">
-    <HyWindows data={desk} photos={deskPhotos} view="d" />
-    <HyWindows data={phone} photos={phonePhotos} view="m" />
+  <CornerHero page={heroKey} id="xp-h1" kicker={p.kicker} h1a={p.h1a} h1b={p.h1b} lead={p.lead} ctas={p.ctas} alt={p.hero.alt} />
 
-    <div class="xp-hero" data-fx-hero>
-      <p class="hy-kicker" data-fx-step>{p.kicker}</p>
-      <h1 class="hy-h1 xp-h1" id="xp-h1" data-fx-step data-fx-words>{p.h1a} <span class="hl">{p.h1b}</span></h1>
-      <svg class="hy-orn--draw" viewBox="0 0 260 24" aria-hidden="true" data-fx-step data-fx-draw>
-        <path d="M2 12 H104" /><path d="M156 12 H258" /><path d="M130 3 C122 9 122 15 130 21 C138 15 138 9 130 3 Z" /><path d="M110 12 C116 6 122 6 126 12 M150 12 C144 6 138 6 134 12" />
-      </svg>
-      <p class="hy-lead xp-lead" data-fx-step>{p.lead}</p>
-      <div class="hy-btns" data-fx-step>
-        {p.ctas.map((c) => (
-          <a class:list={['fk-btn', c.primary ? 'fk-btn--solid' : 'fk-btn--line']} href={c.href} data-open={c.book ? 'book' : undefined}>
-            <span>{c.label}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <ul class="xp-pillars" data-fx-pop>
-      {p.pillars.map((pl, i) => (
-        <li class="xp-pillar" style={`--x:${rings[i].x};--y:${rings[i].y};--mx:${ringsM[i].x};--my:${ringsM[i].y}`}>
-          <span class="hy-ring xp-ring"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[pl.icon]} /></span>
+  <section class="xp-band" aria-label={`${p.h1a} highlights`}>
+    <ul class="xp-pillars" data-fk-stagger="80">
+      {p.pillars.map((pl) => (
+        <li class="xp-pillar">
+          <span class="xp-ring"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[pl.icon]} /></span>
           <span class="xp-pt"><strong>{pl.title}</strong><small>{pl.line}</small></span>
         </li>
       ))}
     </ul>
 
-    <div class="xp-moments" data-fx-reveal>
-      <h2 class="hy-h2 xp-h2">{p.momentsA} <em class="hl">{p.momentsB}</em>
-        <svg class="xp-sprig" viewBox="0 0 48 24" aria-hidden="true"><path d="M2 20C14 20 26 14 38 4M16 17c-1-5 1-8 5-10M24 13c0-5 3-8 7-9M10 19c-3-3-3-6-1-9" /></svg></h2>
-      <p class="hy-lead">{p.momentsText}</p>
-      {p.momentsCta && (
-        <a class="fk-btn fk-btn--line" href={p.momentsCta.href} data-open={p.momentsCta.book ? 'book' : undefined}>
-          <span>{p.momentsCta.label}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-        </a>
-      )}
+    <div class="xp-moments">
+      <div class="xp-mo-text" data-fk-reveal>
+        <h2 class="xp-h2">{p.momentsA} <em>{p.momentsB}</em></h2>
+        <p class="xp-mo-lead">{p.momentsText}</p>
+        {p.momentsCta && (
+          <a class="fk-btn fk-btn--line" href={p.momentsCta.href} data-open={p.momentsCta.book ? 'book' : undefined}>
+            <span>{p.momentsCta.label}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+        )}
+      </div>
+      <div class="xp-mo-photos" data-fk-stagger="90">
+        {[p.big, p.top, p.bottom].map((ph, i) => (
+          <figure class={`xp-ph xp-ph--${i}`}><img src={ph.src} alt={ph.alt} width={ph.w ?? 1200} height={ph.h ?? 1600} loading="lazy" decoding="async" style={ph.pos ? `object-position:${ph.pos}` : undefined} /></figure>
+        ))}
+      </div>
     </div>
 
-    <div class="xp-closing" data-fx-reveal>
+    <div class="xp-closing">
       <p class="xp-tagline">Good Food. <em>Great Company.</em></p>
-      <div class="hy-orn xp-orn" aria-hidden="true"><i></i><svg viewBox="0 0 140 176"><path d={elephant} /></svg><i></i></div>
+      <div class="xp-orn" aria-hidden="true"><i></i><svg viewBox="0 0 140 176"><path d={elephant} /></svg><i></i></div>
     </div>
   </section>
 
@@ -165,34 +147,38 @@ const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPa
   .xp { background: #10261a; color: var(--fk-ink); font-family: var(--fk-sans); overflow-x: clip; }
   .xp :where(h1, h2, h3, p, ul, figure) { margin: 0; padding: 0; }
   .xp :where(ul) { list-style: none; }
-  .xp-stage { aspect-ratio: 1000 / 1499; background: url(/assets/bg/exp-desk-0.webp) top / 100% auto no-repeat #f6e6d1; }
 
-  .xp-hero { z-index: 3; left: calc(70 * var(--u)); top: calc(116 * var(--u)); width: calc(362 * var(--u)); display: grid; gap: calc(12 * var(--u)); }
-  .xp-hero .hy-btns { flex-wrap: nowrap; gap: calc(12 * var(--u)); }
-  .xp-hero .fk-btn { padding: 0 calc(20 * var(--u)); font-size: clamp(13px, calc(15 * var(--u)), 1.05rem); white-space: nowrap; }
-  .xp-h1 { font-size: calc(41 * var(--u)); }   /* 2 lines, so the whole hero fits a 1366×768 laptop screen at full width */
-  .xp-h1 .hl { display: block; }
-  .xp-lead { max-width: calc(300 * var(--u)); }
 
-  .xp-pillars { z-index: 3; inset: 0; pointer-events: none; margin: 0; padding: 0; list-style: none; }
-  .xp-pillar { position: absolute; left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u)); width: 0; height: 0; }
-  .xp-ring { position: absolute; left: 0; top: 0; --r: 38; }
-  .xp-pt { position: absolute; left: 0; top: calc(48 * var(--u)); width: calc(210 * var(--u)); translate: -50% 0; text-align: center; display: grid; gap: calc(5 * var(--u)); }
-  .xp-pt strong { font: 500 calc(19 * var(--u)) / 1.12 var(--fk-serif); color: #fbf3e6; text-wrap: balance; }
-  .xp-pt small { font: 400 max(10.5px, calc(12.5 * var(--u))) / 1.35 var(--fk-sans); color: rgba(246, 234, 214, .82); }
 
-  .xp-moments { z-index: 3; left: calc(64 * var(--u)); top: calc(990 * var(--u)); width: calc(320 * var(--u)); display: grid; gap: calc(20 * var(--u)); justify-items: start; }
-  .xp-h2 { font-size: calc(36 * var(--u)); }
-  .xp-h2 em { font-style: italic; }
-  .xp-sprig { display: inline-block; width: calc(36 * var(--u)); min-width: 22px; height: auto; fill: none; stroke: #2f6b43; stroke-width: 1.6; stroke-linecap: round; vertical-align: middle; margin-left: 4px; }
 
-  .xp-closing { z-index: 3; left: 0; width: 100%; top: calc(1352 * var(--u)); display: grid; justify-items: center; gap: calc(16 * var(--u)); }
-  .xp-tagline { font: italic 500 calc(40 * var(--u)) / 1.1 var(--fk-serif); color: #fbf3e6; }
-  .xp-tagline em { color: #eda05a; }
-  .xp-orn { width: calc(300 * var(--u)); }
-  .xp-orn svg { fill: #eda05a; }
 
   /* below the stage: the green band continues */
+  /* v5.17 band under the corner hero: highlights, moments photos, closing line (replaces the old traced art stage) */
+  .xp-band { background: radial-gradient(120% 80% at 50% 0%, #1b3a26 0%, #10261a 70%); color: #fbf3e6; padding: clamp(40px, 5vw, 72px) clamp(16px, 5vw, 80px); }
+  .xp-pillars { max-width: 1240px; margin: 0 auto clamp(40px, 5vw, 72px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
+  .xp-pillar { display: grid; justify-items: center; text-align: center; gap: 12px; padding: 22px 16px; border-radius: 22px; background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px rgba(243,197,107,.28); }
+  .xp-ring { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2b5236, #14321e); box-shadow: 0 0 0 2px #c99a43, 0 0 0 6px rgba(201,154,67,.16); }
+  .xp-ring svg { width: 30px; height: 30px; fill: none; stroke: #f3c56b; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .xp-pt { display: grid; gap: 4px; }
+  .xp-pt strong { font: 500 1.15rem/1.2 var(--fk-serif); color: #fbf3e6; text-wrap: balance; }
+  .xp-pt small { font: 400 .88rem/1.45 var(--fk-sans); color: rgba(246,234,214,.78); }
+  .xp-moments { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+  .xp-mo-text { display: grid; gap: 16px; justify-items: start; }
+  .xp-h2 { font: 500 clamp(2rem, 3.4vw, 3rem)/1.1 var(--fk-serif); letter-spacing: -.015em; color: #fbf3e6; text-wrap: balance; }
+  .xp-h2 em { font-style: italic; color: #f3c56b; }
+  .xp-mo-lead { font: 400 1.02rem/1.65 var(--fk-sans); color: rgba(246,234,214,.85); max-width: 46ch; }
+  .xp-mo-photos { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: 1fr 1fr; gap: 14px; aspect-ratio: 5 / 4; }
+  .xp-ph { margin: 0; overflow: hidden; border-radius: 22px; background: linear-gradient(135deg, #2a4a33, #1a3323); box-shadow: 0 0 0 1px rgba(243,197,107,.4), 0 20px 40px -24px rgba(0,0,0,.6); }
+  .xp-ph--0 { grid-row: 1 / 3; border-radius: 120px 22px 22px 22px; }
+  .xp-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .xp-closing { display: grid; justify-items: center; gap: 14px; margin-top: clamp(44px, 5vw, 72px); text-align: center; }
+  .xp-tagline { font: italic 500 clamp(1.8rem, 3.4vw, 2.8rem)/1.1 var(--fk-serif); color: #fbf3e6; }
+  .xp-tagline em { color: #eda05a; }
+  .xp-orn { display: flex; align-items: center; gap: 14px; width: min(300px, 70%); }
+  .xp-orn i { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #c99a43, transparent); }
+  .xp-orn svg { width: 28px; height: 34px; fill: #eda05a; }
+  @media (max-width: 900px) { .xp-pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); } .xp-moments { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { .xp-pt small { display: none; } .xp-pillar { padding: 18px 10px; } }
   .xp-cards-sec, .xp-faq { background: #10261a; padding: clamp(32px, 4vw, 64px) clamp(16px, 5vw, 80px) clamp(40px, 5vw, 72px); text-align: center; }
   .xp-sec-kicker { font: 600 .78rem/1.3 var(--fk-sans); letter-spacing: .2em; text-transform: uppercase; color: #e8c27a; }
   .xp-sec-h { font: var(--fk-t-h2); letter-spacing: var(--fk-ls-h); color: #fbf3e6; margin: .35rem 0 clamp(24px, 3vw, 40px) !important; }
@@ -209,27 +195,6 @@ const faqLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPa
 
   /* ── phone: its own taller art and composition ── */
   @media (max-width: 767px) {
-    .xp-stage { aspect-ratio: 1000 / 3392.5; background-image: url(/assets/bg/exp-phone-0.webp); }
-    .xp-hero { left: calc(64 * var(--u)); top: calc(228 * var(--u)); width: calc(810 * var(--u)); gap: calc(22 * var(--u)); }
-    .hy-kicker { font-size: 12px; letter-spacing: .14em; }
-    .xp-h1 { font-size: calc(105 * var(--u)); }
-    .xp-h1 .hl { display: inline; }
-    .xp-lead { max-width: none; font-size: 13.5px; line-height: 1.5; }
-    .xp .fk-btn, .xp-hero .fk-btn { min-height: 44px; padding: 0 14px; font-size: 13.5px; }
-    .xp-hero .hy-btns { flex-wrap: nowrap; gap: 8px; }
-    .xp-hero .fk-btn svg { display: none; }
-    .xp-pillar { left: calc(var(--mx) * var(--u)); top: calc(var(--my) * var(--u)); }
-    .xp-ring { --r: 64; }
-    .xp-pt { left: calc(92 * var(--u)); top: 0; translate: 0 -50%; width: calc(190 * var(--u)); text-align: left; }
-    .xp-pillar:nth-child(odd) .xp-pt { width: calc(290 * var(--u)); }
-    .xp-pt strong { font-size: 14px; line-height: 1.15; }
-    .xp-pt small { display: none; }
-    .xp-moments { left: calc(64 * var(--u)); top: calc(1712 * var(--u)); width: calc(872 * var(--u)); gap: calc(26 * var(--u)); }
-    .xp-h2 { font-size: calc(78 * var(--u)); }
-    .xp-moments .hy-lead { font-size: 13.5px; line-height: 1.5; }
-    .xp-closing { top: calc(3196 * var(--u)); gap: calc(30 * var(--u)); }
-    .xp-tagline { font-size: calc(76 * var(--u)); }
-    .xp-orn { width: calc(560 * var(--u)); }
     .xp-cards { max-width: 420px; }
   }
   /* v5.12b clip-path wipe on the first card photo (see inline script) */

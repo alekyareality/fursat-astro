@@ -9,52 +9,24 @@ import SiteFooter from '../components/SiteFooter.astro';
 import MobileBar from '../components/MobileBar.astro';
 import MascotOfferModal from '../components/MascotOfferModal.astro';
 import PackageBuilder from '../components/banquet/PackageBuilder.astro';
+import CornerHero from '../components/CornerHero.astro';
 ---
 <Base
   title="Banquet Hall — Fursat Kitchen | Bar | Madhapur Events"
-  description="Host your wedding, corporate event, or milestone celebration at Fursat's grand banquet hall in Madhapur. Packages from ₹925 per person. Up to 300 guests."
+  description="Host your wedding, corporate event, or milestone celebration at Fursat's grand banquet hall in Madhapur. Packages from ₹925 per person."
   canonical="https://fursatind.in/banquet/"
   ogImage="https://fursatind.in/assets/venue/banquet/banquet-tables-05.webp"
   ogImageAlt="Fursat Banquet Hall — grand event space in Madhapur Hyderabad"
-  preloadImages={[
-    {
-      href: '/assets/interior/fursat_space_18-m480.webp',
-      media: '(max-width: 480px)',
-      type: 'image/webp'
-    },
-    {
-      href: '/assets/interior/fursat_space_18-m720.webp',
-      media: '(min-width: 481px) and (max-width: 767px)',
-      type: 'image/webp'
-    }
-  ]}
+  preloadImages={[{ href: '/assets/heroes/banquet-768.webp', media: '(max-width: 820px)', type: 'image/webp' }, { href: '/assets/heroes/banquet-1536.webp', media: '(min-width: 821px)', type: 'image/webp' }]}
 >
   <SiteHeader active="banquet" variant="plaster" />
 
   <main class="bq-page" id="main">
-    <!-- Hero Section -->
-    <section class="bq-hero">
-      <div class="bq-hero-bg">
-        <picture class="bq-hero-pic">
-          <source media="(max-width: 480px)" type="image/webp" srcset="/assets/venue/banquet/banquet-tables-05-480.webp" />
-          <source media="(max-width: 767px)" type="image/webp" srcset="/assets/venue/banquet/banquet-tables-05-720.webp" />
-          <source media="(min-width: 768px)" type="image/webp" srcset="/assets/venue/banquet/banquet-tables-05-720.webp 720w, /assets/venue/banquet/banquet-tables-05.webp 1200w" sizes="100vw" />
-          <img src="/assets/venue/banquet/banquet-tables-05-720.webp" alt="The Fursat banquet hall set with long red and gold tables" class="bq-hero-img" width="720" height="900" fetchpriority="high" decoding="async" />
-        </picture>
-        <div class="bq-hero-overlay"></div>
-      </div>
-      <div class="bq-hero-content">
-        <span class="bq-kicker">ROYAL CELEBRATIONS & CORPORATE GALAS</span>
-        <h1 class="bq-title mot-headline">The Grand Banquet at Fursat</h1>
-        <p class="bq-sub">
-          A pillarless, acoustics-tuned luxury celebration venue at Capital Park, Madhapur. Accommodating 50 to 350 guests with bespoke royal buffets, state-of-the-art AV, and dedicated banquet concierges.
-        </p>
-        <div class="bq-hero-actions">
-          <a href="#enquire" class="bq-btn-gold">Enquire for Dates & Rates</a>
-          <a href="#packages" class="bq-btn-ghost">View Banquet Packages</a>
-        </div>
-      </div>
-    </section>
+    <CornerHero page="banquet" id="bq-h1" kicker="Banquet hall · Capital Park"
+      h1a="The Grand Banquet" h1b="at Fursat"
+      lead="Birthdays, weddings and corporate events in Madhapur, with buffet packages from ₹925 per guest. Build your menu below and send it on WhatsApp."
+      alt="The Fursat banquet hall set with long red and gold tables, framed in gold"
+      ctas={[{ label: 'Build your menu', href: '#packages', primary: true }, { label: 'Enquire for dates', href: '#enquire' }]} />
 
     <!-- Venue Capacity & Specs -->
     <section class="bq-specs">
@@ -256,32 +228,6 @@ import PackageBuilder from '../components/banquet/PackageBuilder.astro';
     max-width: 1300px;
     margin: 0 auto;
     padding: 0 clamp(16px, 4vw, 40px)}
-  .bq-hero {
-    position: relative;
-    min-height: 75vh;
-    display: flex;
-    align-items: center;
-    padding: clamp(60px, 10vw, 120px) clamp(16px, 4vw, 40px);
-    overflow: hidden}
-  .bq-hero-bg {
-    position: absolute;
-    inset: 0}
-  .bq-hero-pic {
-    display: block;
-    width: 100%;
-    height: 100%}
-  .bq-hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover}
-  .bq-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(238,212,178,.97) 0%, rgba(238,212,178,.9) 42%, rgba(238,212,178,.35) 75%, rgba(238,212,178,.1) 100%)}
-  .bq-hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 760px}
   .bq-kicker {
     font-size: 0.8125rem;
     font-weight:600;
@@ -301,10 +247,6 @@ import PackageBuilder from '../components/banquet/PackageBuilder.astro';
     color: #4a4232;
     line-height: 1.6;
     margin: 0 0 32px}
-  .bq-hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px}
   .bq-btn-gold {
     padding: 14px 28px;
     border-radius: 999px;

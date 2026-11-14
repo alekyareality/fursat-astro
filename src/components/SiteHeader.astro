@@ -141,6 +141,10 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
     </div>
   </div>
 </header>
+<script is:inline>
+/* --sh-h = real header height, so page heroes start below the fixed header (no overlap) */
+(function(){var h=document.getElementById('site-header');if(!h)return;var set=function(){document.documentElement.style.setProperty('--sh-h',h.offsetHeight+'px')};set();addEventListener('resize',set,{passive:true});if('ResizeObserver' in window)new ResizeObserver(set).observe(h);})();
+</script>
 
 <script is:inline>
   // Open-now badge + time-of-day mood, both in India time (Asia/Kolkata) whatever the visitor's clock says.
@@ -594,7 +598,7 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
   .sh-plaster.sh-header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; pointer-events: none;
     background: linear-gradient(90deg, transparent, rgba(201,154,67,.65) 18%, rgba(243,197,107,.9) 50%, rgba(201,154,67,.65) 82%, transparent); opacity: 0; transition: opacity 300ms ease; }
   .sh-plaster.sh-header.sh-scrolled::after { opacity: 1; }
-  .sh-plaster .sh-link { position: relative; box-shadow: none !important; border-radius: 999px; padding-inline: 12px;
+  .sh-plaster .sh-link { position: relative; box-shadow: none !important; border-radius: 999px; padding-inline: clamp(6px, .7vw, 12px); white-space: nowrap;
     transition-property: color, background-color; transition-duration: 200ms; transition-timing-function: cubic-bezier(.23,1,.32,1); }
   .sh-plaster .sh-link::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 1.5px; border-radius: 2px;
     background: linear-gradient(90deg, #c99a43, #9c4f1c); transform: scaleX(0); transform-origin: center;
