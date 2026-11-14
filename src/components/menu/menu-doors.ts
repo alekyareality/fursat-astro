@@ -2,10 +2,10 @@
 // Drinks: hexagon hotspots glow, the bar zooms toward the shelf, then its drink group opens
 // (the hotspot keeps data-go, so menu-v2 still owns the jump and the 21+ notice).
 // Food: a half-visible rotating table. Drag or swipe turns it with momentum and a spring snap,
-// the front dish grows, tapping it opens the dish sheet. Dishes drop onto the table the first time
-// it is seen. Motion = springs and in-view; Anime.js = the drop stagger and the hotspot glow.
+// the front dish grows, tapping it opens the dish sheet. Dishes hang above the table and fall onto it as
+// the page scrolls (prototype 02). Motion = springs, in-view, the landing tween; Anime.js = the hotspot glow.
 import { animate as mAnimate, inView } from 'motion';
-import { animate as aAnimate, stagger } from 'animejs';
+import { animate as aAnimate } from 'animejs';
 
 type Side = 'food' | 'drinks';
 const md = document.getElementById('md');
@@ -13,6 +13,7 @@ if (md) init(md);
 
 function init(md: HTMLElement) {
   const root = (md.closest('.mv') as HTMLElement) || document.body;
+  md.classList.add('md--js');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const narrow = matchMedia('(max-width: 820px)');
@@ -31,6 +32,7 @@ function init(md: HTMLElement) {
     splitAnim = mAnimate(split, to, { type: 'spring', stiffness, damping, onUpdate: (v: number) => { split = v; paint(); relayout(); } });
   };
   let open: Side | null = null;
+  let landAll = () => {}; // set once the table exists
   let dragged = 0; // time of the last table drag: a click right after it is not a tap
   const setOpen = (side: Side | null, px?: number, py?: number) => {
     open = side;
@@ -38,7 +40,7 @@ function init(md: HTMLElement) {
     xBtn.hidden = !side;
     springTo(side === 'drinks' ? 75 : side === 'food' ? 25 : 50);
     if (side && px != null && py != null && !reduce) flash(px, py);
-    if (side === 'food') wake();
+    if (side === 'food') { wake(); landAll(); }
   };
   // a small gold ring where the guest tapped, as the side opens
   function flash(x: number, y: number) {
@@ -50,11 +52,11 @@ function init(md: HTMLElement) {
   xBtn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(null); });
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && open && !document.querySelector('dialog[open]')) setOpen(null); });
 
-  // desktop hover leans the seam toward the side under the pointer (only while nothing is open)
+  // desktop: the seam follows the pointer on a spring, as in the Richmond reference (only while nothing is open)
   md.addEventListener('pointermove', (e) => {
     if (open || reduce || !fine.matches || narrow.matches) return;
     const r = md.getBoundingClientRect();
-    springTo((e.clientX - r.left) / r.width < 0.5 ? 56 : 44);
+    springTo(Math.min(68, Math.max(32, ((e.clientX - r.left) / r.width) * 100)));
   });
   md.addEventListener('pointerleave', () => { if (!open && fine.matches && !narrow.matches) springTo(50, 90, 20); });
 
@@ -118,6 +120,8 @@ function init(md: HTMLElement) {
   let angle = 0; // degrees; dish i is in front when angle = i * STEP
   let geo = { W: 0, H: 0, cx: 0, cy: 0, rx: 0, ry: 0, D: 0 };
   let front = -1;
+  // 0 = dishes hang above the table, 1 = all landed. Driven by the scroll; opening Food lands them too.
+  let fallP = reduce ? 1 : 0, autoP = reduce ? 1 : 0;
 
   function measure() {
     const W = mt.clientWidth, H = mt.clientHeight;
@@ -143,7 +147,14 @@ function init(md: HTMLElement) {
       const k = (depth + 1) / 2;
       const s = 0.4 + 0.6 * Math.pow(k, 1.6);
       const x = cx + rx * Math.sin(th), y = cy + ry * depth;
-      d.style.transform = `translate(${(x - D / 2).toFixed(1)}px,${(y - D / 2 - D * 0.18 * k).toFixed(1)}px) scale(${s.toFixed(3)})`;
+      // falling onto the table (prototype 02): each dish lags a little behind the one before
+      const q = Math.min(1, Math.max(0, (fallP - i * 0.05) / (1 - (N - 1) * 0.05)));
+      const e = q * q; // gravity: slow at the top, fast at the table
+      const lift = (1 - e) * geo.H * (narrow.matches ? 0.22 : 0.26);
+      const rot = (1 - e) * (i % 2 ? 14 : -14);
+      if (q >= 1 && !d.dataset.landed) { d.dataset.landed = '1'; if (!reduce) d.querySelector('.mt-drop')!.animate({ scale: ['1 .86', '1 1.05', '1 1'] }, { duration: 460, easing: 'cubic-bezier(.23,1,.32,1)' }); }
+      else if (q < 0.98) delete d.dataset.landed;
+      d.style.transform = `translate(${(x - D / 2).toFixed(1)}px,${(y - D / 2 - D * 0.18 * k - lift).toFixed(1)}px) scale(${s.toFixed(3)}) rotate(${rot.toFixed(1)}deg)`;
       d.style.zIndex = String(Math.round(k * 100));
       d.style.opacity = (0.35 + 0.65 * k).toFixed(2);
       d.style.filter = k < 0.55 ? `brightness(${(0.6 + 0.5 * k).toFixed(2)})` : '';
@@ -226,7 +237,7 @@ function init(md: HTMLElement) {
 
   // gentle turn every 4.5 s until the guest touches the table
   let auto = 0, touched = false, visible = false;
-  function interacted() { touched = true; clearInterval(auto); }
+  function interacted() { touched = true; clearInterval(auto); landAll(); }
   function wake() {
     if (reduce || touched || auto) return;
     auto = window.setInterval(() => { if (visible && !drag && !document.hidden && open !== 'drinks') spinTo(norm(angle) + STEP); }, 4500);
@@ -235,12 +246,21 @@ function init(md: HTMLElement) {
   relayout();
   if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(mt);
 
-  // first view: the dishes drop onto the table one after another
-  const drops = dishes.map((d) => d.querySelector<HTMLElement>('.mt-drop')!);
-  if (!reduce) drops.forEach((el) => { el.style.opacity = '0'; });
-  inView(mt, () => {
-    visible = true; wake();
-    if (!reduce) aAnimate(drops, { y: ['-70vh', '0vh'], opacity: [0, 1], rotate: [-12, 0], duration: 900, delay: stagger(85), ease: 'outBounce' });
-    return () => { visible = false; };
-  }, { amount: 0.3 });
+  // the dishes fall onto the table as the page scrolls (land by 30% of this screen);
+  // opening the Food side, or touching the table, lands them without scrolling
+  const fall = () => {
+    const sp = Math.min(1, Math.max(0, window.scrollY / (md.offsetHeight * 0.3)));
+    fallP = Math.max(sp, autoP);
+    md.toggleAttribute('data-float', fallP < 0.02);
+    layout();
+  };
+  let fallRaf = 0;
+  addEventListener('scroll', () => { if (!fallRaf) fallRaf = requestAnimationFrame(() => { fallRaf = 0; fall(); }); }, { passive: true });
+  landAll = () => {
+    if (autoP >= 1) return;
+    if (reduce) { autoP = 1; fall(); return; }
+    mAnimate(autoP, 1, { duration: 1.1, ease: [0.55, 0, 1, 0.45], onUpdate: (v: number) => { autoP = v; fall(); } });
+  };
+  fall();
+  inView(mt, () => { visible = true; wake(); return () => { visible = false; }; }, { amount: 0.3 });
 }
