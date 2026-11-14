@@ -64,23 +64,27 @@ const { active = '' } = Astro.props;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid rgba(217, 179, 106, 0.6);
-      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-      justify-content: space-around;
+      padding: 8px 4px max(8px, env(safe-area-inset-bottom));
+      gap: 2px;
       align-items: center;
     }
 
     .mb-item {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 44px;
+      justify-content: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 3px;
       text-decoration: none;
       color: rgba(244, 236, 218, 0.6);
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       font-weight: 600;
       font-family: var(--sans, "Manrope", system-ui, sans-serif);
-      letter-spacing: 0.04em;
-      padding: 4px 12px;
+      letter-spacing: 0.02em;
+      padding: 4px 2px;
       border-radius: 12px;
       transition: color 0.2s, background 0.2s;
       -webkit-tap-highlight-color: transparent;
@@ -101,7 +105,7 @@ const { active = '' } = Astro.props;
       background: linear-gradient(135deg, #E0A63C 0%, #C88D25 100%);
       color: #12190B !important;
       border-radius: 999px;
-      padding: 6px 16px;
+      padding: 6px 2px;
       box-shadow: 0 4px 16px rgba(224, 166, 60, 0.4);
     }
 

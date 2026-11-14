@@ -1,0 +1,57 @@
+---
+// "What brings you in?": 5 slim tiles, one per space. Real venue photos only.
+const TILES = [
+  { href: '/restaurant-bar', label: 'Restaurant & Bar', src: '/assets/interior/fursat_space_04-720.webp', alt: 'Restaurant seating with red banquettes and framed art' },
+  { href: '/cafe', label: 'Café', src: '/assets/interior/fursat_space_02-720.webp', alt: 'Café lounge with sofas and a marble coffee table' },
+  { href: '/party', label: 'Parties & Events', src: '/assets/venue/banquet/banquet-stage-01-720.webp', alt: 'Banquet hall set with chairs facing the stage' },
+  { href: '/banquet', label: 'Banquet', src: '/assets/venue/banquet/banquet-tables-05-720.webp', alt: 'Banquet hall with a long U-shaped table setup' },
+  { href: '/catering', label: 'Catering', src: '/assets/b8761a51b5.webp', alt: 'Nalli gosht biryani in a brass handi' },
+];
+---
+<section class="hw" id="spaces" aria-labelledby="hw-h">
+  <h2 id="hw-h">What brings you in?</h2>
+  <ul class="hw-row">
+    {TILES.map((t) => (
+      <li>
+        <a class="hw-tile" href={t.href}>
+          <img src={t.src} alt={t.alt} loading="lazy" decoding="async" width="720" height="960" />
+          <span class="hw-label">{t.label}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+<script is:inline>
+/* Tiles sit below the fold: after the page has loaded and the browser is idle, fetch all five photos so a fast scroll never shows an empty tile. */
+(function(){function go(){document.querySelectorAll('.hw-tile img').forEach(function(i){i.loading='eager'})}
+function arm(){(window.requestIdleCallback||function(f){setTimeout(f,1200)})(go,{timeout:3000})}
+if(document.readyState==='complete')arm();else addEventListener('load',arm,{once:true})})();
+</script>
+
+<style is:global>
+.hw{background:#EFE4CB;color:#1A1608;padding:clamp(36px,5vw,64px) 0 clamp(32px,4.5vw,56px)}
+.hw h2{margin:0 0 clamp(18px,2.6vw,30px);padding:0 clamp(12px,2vw,28px);text-align:center;font:500 clamp(28px,3.8vw,44px)/1.12 "Playfair Display",Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
+.hw-row{list-style:none;margin:0;padding:0 clamp(12px,2vw,28px);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,1.4vw,20px)}
+.hw-tile{position:relative;display:block;aspect-ratio:3/4;max-height:380px;width:100%;border-radius:22px;overflow:hidden;background:#2a2514;color:#F8F3E6;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.hw-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.hw-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(14,12,5,.82) 0,rgba(14,12,5,.25) 46%,transparent 70%)}
+.hw-label{position:absolute;z-index:1;left:16px;right:14px;bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;font:500 clamp(16px,1.4vw,19px)/1.2 "Playfair Display",Georgia,serif}
+.hw-label svg{flex:none;width:16px;height:16px}
+.hw-tile:focus-visible{outline:3px solid #C94716;outline-offset:3px}
+@media(hover:hover){.hw-tile:hover img{transform:scale(1.05)}}
+@media(max-width:999px){
+  .hw-row{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .hw-row li{grid-column:span 2}
+  .hw-row li:nth-child(4),.hw-row li:nth-child(5){grid-column:span 3}
+  .hw-tile{aspect-ratio:4/5}
+}
+@media(max-width:599px){
+  .hw-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hw-row li,.hw-row li:nth-child(4),.hw-row li:nth-child(5){grid-column:span 1}
+  .hw-row li:nth-child(5){grid-column:1/-1}
+  .hw-row li:nth-child(5) .hw-tile{aspect-ratio:16/9}
+  .hw-tile{aspect-ratio:4/5;border-radius:18px}
+  .hw-label{left:12px;font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){.hw-tile img{transition:none}}
+</style>

@@ -63,13 +63,3 @@
 .pk-also i{font-style:normal;display:inline-block;margin:2px 4px 2px 0;padding:.2rem .6rem;border-radius:999px;background:#fff;font-weight:700;font-size:.74rem}
 .pk-also button{border:0;cursor:pointer;border-radius:999px;padding:.5rem .95rem;font:800 .76rem var(--sans);color:#fff;background:linear-gradient(135deg,#B5532A,#C4161C)}
 
-.ll{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 0 .6rem;border:0;cursor:pointer;border-radius:999px;padding:.85rem 1.3rem;font:800 .7rem var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#fff6e6;background:linear-gradient(135deg,#0F3B1E,#55642A);box-shadow:0 14px 24px -14px #0F3B1E;transition:transform .3s}@media(hover:hover){.ll:hover{transform:translateY(-2px)}}
-.cdn{display:flex;gap:10px;margin-top:1rem}.cdn span{display:flex;flex-direction:column;align-items:center;min-width:3.6rem;padding:.55rem .5rem .45rem;border-radius:16px;background:rgba(255,252,246,0.92);border:1px solid rgba(255,255,255,.8);box-shadow:0 12px 22px -16px rgba(60,40,20,.6);font:700 .56rem var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#9A3A18}.cdn b{font:700 1.6rem/1.1 var(--serif);letter-spacing:0;color:#0F3B1E;font-variant-numeric:tabular-nums}
-.mood{position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity 2s}.mood-t{margin:0 0 .8rem;font:800 .66rem var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#9A3A18}
-[data-mood=morning] .mood{background:linear-gradient(180deg,rgba(255,238,205,.4),transparent 60%)}
-[data-mood=golden] .mood{background:radial-gradient(ellipse 80% 60% at 82% 18%,rgba(255,150,60,.38),transparent 70%),linear-gradient(0deg,rgba(255,120,40,.16),transparent 55%);mix-blend-mode:multiply}
-[data-mood=night] .mood{background:linear-gradient(180deg,rgba(48,36,104,.34),rgba(110,44,70,.2));mix-blend-mode:multiply}
-[data-mood=night] .mood:after{content:"";position:absolute;left:0;right:0;top:0;height:90px;background:radial-gradient(circle,rgba(255,214,120,.95) 0 2px,transparent 3.5px) 0 0/84px 56px,radial-gradient(circle,rgba(255,170,90,.8) 0 1.5px,transparent 3px) 42px 28px/84px 56px;mix-blend-mode:normal;animation:twk 3.4s ease-in-out infinite alternate}
-@keyframes twk{from{opacity:.35}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){[data-mood=night] .mood:after{animation:none}}
-@media(max-width:860px){.ll{margin-left:0}.cdn span{min-width:3.2rem}}

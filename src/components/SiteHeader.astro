@@ -553,6 +553,9 @@ const hoursData = JSON.stringify(site.hours.schedule.map((s) => ({ d: s.dayOfWee
   .sh-open--panel { display: flex; margin-bottom: 6px; font-size: .85rem; }
   .sh-actions > .sh-open { margin-right: 6px; }
   @media (max-width: 1399px), (max-height: 746px) { .sh-actions > .sh-open { display: none; } }
+  /* phones: 44px Reserve button; at <=360px the header WhatsApp icon is hidden (WhatsApp stays in the phone bar) so logo + Reserve + burger fit at 320 */
+  @media (max-width: 760px) { .sh-reserve-btn { min-height: 44px; } }
+  @media (max-width: 360px) { .sh-wa { display: none; } .sh-actions { gap: 8px; } }
 </style>
 
 <script is:inline>

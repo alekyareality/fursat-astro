@@ -135,7 +135,7 @@ var ad=Object.keys(st.add).filter(function(i){return st.add[i]}).map(function(i)
 L.push("Estimate: "+inr(e.lo)+(e.ex?" \u2013 "+inr(e.hi):"")+(p.k==="party"?" + taxes":""));if(f.note.trim())L.push("Notes: "+f.note.trim().replace(/\s+/g," "));if(t)L.push("My number: +91 "+t.slice(0,5)+" "+t.slice(5));return L.join("\n")}
 /* ---------- entry points ---------- */
 function mount(){var card=document.querySelector("#ask-fursat .af-card"),c=card&&card.querySelector(".af-contact");if(card&&!card.querySelector(".pk-open")){var b=document.createElement("button");b.type="button";b.className="pk-open";b.innerHTML="\uD83C\uDF89 Party &amp; banquet packages <small>from "+inr(925)+"</small>";b.addEventListener("click",function(){open({tab:"party"})});card.insertBefore(b,c||null)}
-var g=$("wz-g");if(g&&!g.querySelector('input[value="Party Packages"]')&&g.firstElementChild){var n=g.firstElementChild.cloneNode(true);n.style.setProperty("--c","#C4161C");n.querySelector("input").value="Party Packages";n.querySelector("b").textContent="Party Packages";n.querySelector("small").textContent="Platinum \u00B7 Gold \u00B7 buffets";var pa=n.querySelector(".wz-ic svg");if(pa)pa.innerHTML='<path d="M5 21l4-12 8 8-12 4zM14 4l1 3M18 8l3-1M17 3l-1 2M9 9l6 6"/>';g.appendChild(n);var m=n.cloneNode(true);m.style.setProperty("--c","#55642A");m.querySelector("input").value="Launch list";m.querySelector("b").textContent="Launch list";m.querySelector("small").textContent="Be first to know";g.appendChild(m)}}
+var g=$("wz-g");if(g&&!g.querySelector('input[value="Party Packages"]')&&g.firstElementChild){var n=g.firstElementChild.cloneNode(true);n.style.setProperty("--c","#C4161C");n.querySelector("input").value="Party Packages";n.querySelector("b").textContent="Party Packages";n.querySelector("small").textContent="Platinum \u00B7 Gold \u00B7 buffets";var pa=n.querySelector(".wz-ic svg");if(pa)pa.innerHTML='<path d="M5 21l4-12 8 8-12 4zM14 4l1 3M18 8l3-1M17 3l-1 2M9 9l6 6"/>';g.appendChild(n);}}
 /* intercept party / package / banquet questions typed or spoken into Ask Fursat */
 var RX=/\b(packages?|banquet|buffet|catering|bulk order|platinum|silver|elite|beer bash|unlimited|per (head|person|plate)|corporate|event|function|reception|engagement|kitty)\b|\bparty\b(?!\s*(night|starters))/i;
 function route(q){st.lq=q||"";st.mic=0;if(!q||!RX.test(q))return false;var low=q.toLowerCase(),cap=0;try{cap=window.AskFursatCore.parseCap(q)||0}catch(e){}
@@ -149,9 +149,6 @@ var raf=0;function also(){raf=0;var b=$("af-body");if(!b||b.querySelector(".pk-a
 var q=st.lq||(st.mic&&$("af-q")?$("af-q").value:"");if(!q)return;var r=pfind(q);if(!r.length)return;
 var d=document.createElement("div");d.className="pk-also";d.innerHTML="\uD83C\uDF89 <b>On our party &amp; banquet menu</b> \u00B7 "+r.length+" dish"+(r.length>1?"es":"")+"<div>"+r.slice(0,6).map(function(x){return"<i>"+(x.nv?"\uD83D\uDD34 ":"\uD83D\uDFE2 ")+esc(x.n)+"</i>"}).join("")+(r.length>6?"<i>+"+(r.length-6)+" more</i>":"")+'</div><button type="button" data-pk="'+esc(q)+'">See in party menu \u2192</button>';b.insertBefore(d,b.firstChild)}
 new MutationObserver(function(){if(!raf)raf=requestAnimationFrame(also)}).observe(document.body,{childList:true,subtree:true});
-/* keep the hero tall enough for the Ask dock on short desktop screens */
-(function(){var h=$("top"),dk=h&&h.querySelector(".askdock");if(!dk)return;function fit2(){if(innerWidth<=860)return;var tx=h.querySelector(".txt"),by=$("by"),need=Math.max(dk.offsetTop+dk.offsetHeight+28,tx?tx.offsetTop+tx.offsetHeight+(by?by.offsetHeight:0)+48:0),cur=parseFloat(h.style.minHeight)||0;if(need>Math.max(cur,h.offsetHeight))h.style.minHeight=Math.ceil(need)+"px"}
-addEventListener("resize",function(){setTimeout(fit2,0)});addEventListener("load",fit2);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit2);if(window.ResizeObserver){new ResizeObserver(function(){setTimeout(fit2,0)}).observe(dk)}setTimeout(fit2,400)})();
 /* ---------- WhatsApp quick-action button ---------- */
 var fab;function fabOpen(v){if(fab)fab.classList.toggle("open",v)}
 function mkFab(){fab=document.createElement("div");fab.className="fab";
@@ -161,16 +158,5 @@ fb.addEventListener("click",function(){var o=!fab.classList.contains("open");fab
 fab.addEventListener("click",function(e){var q=e.target.closest("[data-q]");if(!q)return;fabOpen(false);fb.setAttribute("aria-expanded","false");if(q.getAttribute("data-q")==="chat")window.openFursatChat?window.openFursatChat():window.open("https://wa.me/"+WA,"_blank","noopener");else open({tab:"party"})});
 document.addEventListener("pointerdown",function(e){if(fab.classList.contains("open")&&!fab.contains(e.target))fabOpen(false)});
 var iv=setInterval(function(){if($("intro")||$("gate"))return;clearInterval(iv);setTimeout(function(){fab.classList.add("on")},900)},300)}
-/* ---------- launch: countdown + list, time-of-day mood ---------- */
-window.FursatLaunchDate=window.FursatLaunchDate||""; /* set e.g. "2026-12-01T18:00:00+05:30" to show the live countdown */
-function hero2(){var h=$("top"),tx=h&&h.querySelector(".txt"),pl=tx&&tx.querySelector(".pill");if(!h||!tx||!pl||$("ll"))return;
-var ll=document.createElement("button");ll.type="button";ll.id="ll";ll.className="ll";ll.innerHTML="\uD83D\uDD14 <span class='llx'>Join the </span>launch list";ll.addEventListener("click",function(){window.openFursatChat?window.openFursatChat(["Launch list"]):window.open("https://wa.me/"+WA,"_blank","noopener")});pl.insertAdjacentElement("afterend",ll);
-var T=Date.parse(window.FursatLaunchDate);if(T>Date.now()){var c=document.createElement("div");c.className="cdn";c.setAttribute("role","timer");c.setAttribute("aria-label","Time until Fursat\u2019s new website launches");c.innerHTML=["days","hrs","min","sec"].map(function(u,i){return'<span><b data-u="'+i+'">00</b>'+u+"</span>"}).join("");ll.insertAdjacentElement("afterend",c);
-var tick=function(){var d=Math.max(0,T-Date.now()),v=[Math.floor(d/864e5),Math.floor(d/36e5)%24,Math.floor(d/6e4)%60,Math.floor(d/1e3)%60];[].forEach.call(c.querySelectorAll("b"),function(b,i){b.textContent=("0"+v[i]).slice(-2)});if(!d)c.remove()};tick();setInterval(tick,1000)}
-var m=document.createElement("div");m.className="mood";m.id="mood";m.setAttribute("aria-hidden","true");var sun=h.querySelector(".sun");h.insertBefore(m,sun?sun.nextSibling:h.firstChild);
-var mt=document.createElement("p");mt.className="mood-t";mt.id="mood-t";tx.insertBefore(mt,tx.firstChild);
-function mood(){var H=new Date().getHours(),k,l;if(H>=5&&H<11){k="morning";l="\uD83C\uDF05 Good morning \u00B7 slow brunch mood"}else if(H>=11&&H<16){k="day";l="\u2600\uFE0F Good afternoon \u00B7 lunch & chill"}else if(H>=16&&H<19){k="golden";l="\uD83C\uDF07 Golden hour \u00B7 cocktails o\u2019clock"}else{k="night";l="\uD83C\uDF19 Good evening \u00B7 lights low, music up"}h.setAttribute("data-mood",k);mt.textContent=l}
-mood();setInterval(mood,6e5)}
-hero2();
 mount();mkFab();window.FursatPackages={open:open,packages:PK};
 })();

@@ -1,6 +1,6 @@
 (function(){
 var WA="919059670033",$=function(i){return document.getElementById(i)},d=$("wz"),f=$("wz-f");if(!d||!f)return;
-var lg=document.querySelector(".top .brand");if(lg)$("wz-logo").src=lg.src;
+var lg=document.querySelector(".sh-logo img");if(lg)$("wz-logo").src=lg.src;
 var n=$("wz-n"),m=$("wz-m"),o=$("wz-o"),pv=$("wz-pv"),er=$("wz-e"),go=$("wz-go"),last=null;
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}}
 function digits(){var x=m.value.replace(/\D/g,"");if(x.length>10&&x.indexOf("91")===0)x=x.slice(2);if(x.length===11&&x[0]==="0")x=x.slice(1);return x}

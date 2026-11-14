@@ -1,0 +1,132 @@
+---
+// "Crafted for the Season": 4 cards, each slowly rotating through real dishes.
+// Names, prices and descriptions come from the menu data (menus 5/7), never typed here.
+import food from '../../data/food.json';
+import drinks from '../../data/drinks.json';
+import dishPhotos from '../../data/dish-photos.json';
+
+type Row = { name: string; price: number; description?: string; section: string };
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+const rows: Row[] = [...(food as any[]), ...(drinks as any[])].flatMap((sec) =>
+  sec.items.map((i: any) => ({ ...i, section: sec.section })),
+);
+const photos = (dishPhotos as any).photos as Record<string, { src: string; sm: string; w: number; h: number; todo?: string }>;
+
+type Dish = { name: string; alt: string; photo?: string; hashed?: string };
+type Card = { kind: string; dishes: Dish[] };
+
+// `photo` = key in dish-photos.json. `hashed` = photo already in /assets (checked by eye, no entry in dish-photos.json).
+const CARDS: Card[] = [
+  { kind: 'drink', dishes: [
+    { name: 'Fursat Rahasyam', alt: 'Fursat Rahasyam mocktail', photo: 'FURSAT RAHASYAM' },
+    { name: 'Life Fursat Bhai', alt: 'Life Fursat Bhai cocktail', photo: 'LIFE FURSAT BHAI' },
+    { name: 'Gongura Muchatlu', alt: 'Gongura Muchatlu cocktail', photo: 'GONGURA MUCHATLU' },
+    { name: 'Iced Latte', alt: 'Iced latte', photo: 'ICED LATTE' },
+  ] },
+  { kind: 'plate', dishes: [
+    { name: 'Ustad Special Nalli Gosht Biryani', alt: 'Ustad Special Nalli Gosht Biryani', photo: 'Ustad Special Nalli Gosht Biryani' },
+    { name: 'Fursat Spl Coriander Chicken', alt: 'Coriander chicken with garlic bread', hashed: '3904d620bd' },
+    { name: 'Jamaican Jerk Chicken with Fries', alt: 'Jamaican jerk chicken with fries', photo: 'Jamaican Jerk Chicken with Fries' },
+    { name: 'Loose Prawns', alt: 'Loose prawns on a plate', hashed: 'eb8b3a9e42' },
+  ] },
+  { kind: 'sweet', dishes: [
+    { name: 'Biscoff Cheesecake', alt: 'Biscoff cheesecake', photo: 'Biscoff Cheesecake' },
+    { name: 'Apricot Delight', alt: 'Apricot delight', photo: 'Apricot Delight' },
+  ] },
+  { kind: 'bite', dishes: [
+    { name: 'Crispy Chicken with Mayo', alt: 'Crispy fried chicken with dips', hashed: '22a02d4ff8' },
+    { name: 'Thai Chilli, Basil, Chicken Momos', alt: 'Chicken momos on a plate', hashed: '2ff8792a04' },
+    { name: 'Boti Fry', alt: 'Boti fry with bread and lemon', hashed: 'a0027c64d3' },
+    { name: 'Mutton Paya Soup', alt: 'Mutton paya soup in a blue bowl', hashed: 'e1ceeaf4fe' },
+  ] },
+];
+
+const rupee = (n: number) => `₹${n.toLocaleString('en-IN')}`;
+const cards = CARDS.map((c) => ({
+  kind: c.kind,
+  dishes: c.dishes.map((d) => {
+    const row = rows.find((r) => norm(r.name) === norm(d.name));
+    if (!row) throw new Error(`HomeSeason: "${d.name}" is not in food.json / drinks.json`);
+    // Menu row "Half ₹599 | Full ₹999": show both, as the menu does.
+    const hf = /half\s*₹?\s*(\d+).*full\s*₹?\s*(\d+)/i.exec(row.description ?? '');
+    const priceText = hf ? `Half ${rupee(+hf[1])} · Full ${rupee(+hf[2])}` : rupee(row.price);
+    const tray = hf ? `${hf[1]} half / ${hf[2]} full` : String(row.price);
+    // Short line under the name: the menu's own description, else the menu section.
+    const note = hf ? row.section : (row.description || row.section);
+    let img: { src: string; srcset?: string; w: number; h: number };
+    if (d.photo) {
+      const ph = photos[d.photo];
+      if (!ph || ph.todo) throw new Error(`HomeSeason: no confirmed photo for "${d.photo}"`);
+      img = { src: ph.sm, srcset: `${ph.sm} 427w, ${ph.src} ${ph.w}w`, w: ph.w, h: ph.h };
+    } else {
+      img = { src: `/assets/${d.hashed}.webp`, w: 900, h: 514 };
+    }
+    return { name: row.name === row.name.toUpperCase() ? d.name : row.name, alt: d.alt, note, priceText, tray, img };
+  }),
+}));
+---
+<section class="hs" id="season" aria-labelledby="hs-h">
+  <div class="hs-head">
+    <h2 id="hs-h">Crafted for the Season</h2>
+    <p>A few favorites, curated with intention.</p>
+    <a class="hs-all" href="/menu">View full menu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+  <div class="hs-cards">
+    {cards.map((c) => {
+      const d0 = c.dishes[0];
+      return (
+        <article class="hs-card" data-name={d0.name} data-price={d0.tray} data-kind={c.kind} data-dishes={JSON.stringify(c.dishes.map((d) => [d.name, d.note, d.priceText, d.tray]))}>
+          <div class="hs-img">
+            {c.dishes.map((d, i) => (
+              <img class:list={['hs-sl', { on: i === 0 }]} src={d.img.src} srcset={d.img.srcset} sizes="(min-width: 900px) 25vw, 72vw" alt={d.alt} width={d.img.w} height={d.img.h} loading="lazy" decoding="async" />
+            ))}
+          </div>
+          <div class="hs-body">
+            <h3>{d0.name}</h3>
+            <p>{d0.note}</p>
+            <b class="hs-price">{d0.priceText}</b>
+          </div>
+          <button class="hs-add" type="button" aria-label={`Add ${d0.name} to my picks`} aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<style is:global>
+.hs{background:#F4ECDA;color:#1A1608;padding:clamp(40px,6vw,72px) 0 clamp(36px,5vw,64px)}
+.hs-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:0 clamp(12px,2vw,28px);margin-bottom:clamp(20px,3vw,34px)}
+.hs-head h2{margin:0;font:500 clamp(30px,4.2vw,48px)/1.12 "Playfair Display",Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
+.hs-head p{margin:0;font:400 14px/1.5 Poppins,system-ui,sans-serif;color:#4a4330}
+.hs-all{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:2px;padding:0 4px;font:500 14px/1 Poppins,system-ui,sans-serif;color:#1A1608;text-decoration:none;border-bottom:1px solid #1A1608}
+.hs-all svg{width:14px;height:14px;transition:transform .25s}
+.hs-all:focus-visible,.hs-add:focus-visible{outline:2px solid #C94716;outline-offset:3px}
+@media(hover:hover){.hs-all:hover svg{transform:translateX(4px)}}
+
+.hs-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.6vw,24px);padding:0 clamp(12px,2vw,28px)}
+.hs-card{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:26px;overflow:hidden;background:linear-gradient(180deg,#FCF8EC,#F6EEDA);border:1px solid rgba(176,146,84,.32);box-shadow:0 18px 30px -22px rgba(70,50,15,.55)}
+.hs-img{position:relative;aspect-ratio:1/1;background:#d9cdb3;overflow:hidden}
+.hs-sl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
+.hs-sl.on{opacity:1}
+.hs-body{padding:16px 64px 18px 18px;min-height:112px;transition:opacity .45s ease}
+.hs-body.sw{opacity:0}
+.hs-body h3{margin:0;font:500 clamp(17px,1.5vw,20px)/1.25 "Playfair Display",Georgia,serif;color:#1A1608}
+.hs-body p{margin:4px 0 0;font:400 12.5px/1.45 Poppins,system-ui,sans-serif;color:#4a4330;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hs-price{display:block;margin-top:8px;font:600 14px/1.2 Poppins,system-ui,sans-serif;color:#1A1608;font-variant-numeric:tabular-nums}
+.hs-add{position:absolute;right:12px;bottom:12px;width:44px;height:44px;border-radius:50%;border:0;background:#404517;color:#F8F3E6;display:grid;place-items:center;cursor:pointer;transition:transform .2s,background .2s;touch-action:manipulation}
+.hs-add svg{width:18px;height:18px;transition:transform .25s}
+.hs-add:active{transform:scale(.96)}
+.hs-add[aria-pressed=true]{background:#C94716}.hs-add[aria-pressed=true] svg{transform:rotate(45deg)}
+@media(hover:hover){.hs-add:hover{background:#2c300e}.hs-add[aria-pressed=true]:hover{background:#a83a10}}
+
+@media(max-width:899px){
+  .hs-cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px}
+  .hs-cards::-webkit-scrollbar{display:none}
+  .hs-card{flex:0 0 min(72vw,320px);scroll-snap-align:center}
+  .hs-card:first-child{margin-left:0}
+  .hs-img{aspect-ratio:4/3}
+}
+@media(prefers-reduced-motion:reduce){.hs-sl,.hs-body,.hs-add,.hs-all svg{transition:none}}
+</style>
